@@ -3,7 +3,7 @@
   "name": "Visy",
   "version": "0.1.0",
   "description": "Voice-first shopping assistant. You press Place order yourself.",
-  "permissions": ["sidePanel", "tabs", "tabGroups", "storage", "scripting", "activeTab", "webNavigation"],
+  "permissions": ["sidePanel", "tabs", "tabGroups", "storage", "scripting", "activeTab", "identity", "identity.email", "webNavigation"],
   "host_permissions": [
     "<all_urls>"
   ],

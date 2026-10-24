@@ -81,6 +81,7 @@ wss.on("connection", (ws) => {
       case "hello":
         send({ type: "welcome", sessionId: `mock-${Date.now()}`, protocol: CONTRACT_VERSION });
         snapshot({ phase: "idle", candidates: [], shortlist: [] });
+        say("What do you want?");
         break;
       case "user.text":
       case "audio.end": {
