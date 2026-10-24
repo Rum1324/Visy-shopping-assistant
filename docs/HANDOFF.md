@@ -1,5 +1,7 @@
 # Team split & data handoff rules
 
+> **Hackathon project:** ship over polish. No extensibility work or cleanup refactors unless they unblock the demo. See [CLAUDE.md](../CLAUDE.md).
+
 Goal: **nobody waits on anybody.** Every track builds against `packages/contracts` (types, fixtures, mocks, mock server) from minute one and swaps in real neighbors as they land.
 
 ## Tracks
