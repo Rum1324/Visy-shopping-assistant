@@ -1,4 +1,5 @@
 import { CAPTCHA_PROBE_JS } from "./driver/blocked.ts";
+import { RECIPE_SCRIPTS } from "./recipes.ts";
 import { AMAZON_SCRIPTS } from "./sites/amazon.ts";
 
 /**
@@ -14,6 +15,7 @@ export const PAGE_SCRIPTS = {
   complete: `document.readyState === 'complete'`,
   blockProbe: CAPTCHA_PROBE_JS,
   ...AMAZON_SCRIPTS,
+  ...RECIPE_SCRIPTS,
 } satisfies Record<string, string>;
 
 export type ScriptName = keyof typeof PAGE_SCRIPTS;
