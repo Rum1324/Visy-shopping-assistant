@@ -25,7 +25,6 @@ Line format: `[status] ID · task · owner · branch · since HH:MM PT`. Use one
 - [open] C-TGT · Real Target search and detail flow (sample listings today)
 - [open] C-WMT · Real Walmart search and detail flow (sample listings today)
 - [open] B-PRELOAD · Agent calls C1b `flow.preload()` as soon as the shortlist is final (check whether the tool loop already does)
-- [open] B-INTEL · Plug Track D's review summary and photo description into the tool loop (after D-MAIN)
 - [open] D-APIFY · External reviews from Reddit, YouTube and articles via Apify (`collectExternal`; needs an Apify token)
 - [open] D-PAGEQA · Answer "what's on this page?" over the C5 `PageState` capture
 - [open] A-VOICE · Decide whether voice-only must work with no clicks at all (motor-impaired users)
@@ -33,6 +32,7 @@ Line format: `[status] ID · task · owner · branch · since HH:MM PT`. Use one
 
 ## Done
 
+- [done] B-INTEL · Track D review summary, accessibility answers and photo description feed the tool loop's product answers · [PR #11](https://github.com/Rum1324/Visy-shopping-assistant/pull/11)
 - [done] D-MAIN · Track D on `main`: review synthesis, Moss review Q&A, photo descriptions, wired into the tool loop · [PR #11](https://github.com/Rum1324/Visy-shopping-assistant/pull/11)
 - [done] A+B · Chrome side panel, Cartesia voice, conversation server · `561b7dd`
 - [done] C1a · Moss embeds only the ~30 most plausible elements · `39bd8bd`
