@@ -49,4 +49,4 @@ Coordination: **A** needs to run `INDEXER_JS` in the content script, plus named 
 3. `collectExternal` (Apify) and `VisionService`. **Vision ✅** (`src/intel/vision.ts`; live getDetail fills `imageUrls` from `#landingImage`): the real product photo is described correctly at confidence 0.9, and a mismatched photo gets confidence 0.02. Apify not started: no `APIFY_TOKEN`; `collectExternal` returns `[]`.
 4. Page-text Q&A for "what's on this page?", over C5's `PageState`.
 
-Wiring: `NAV=amazon` (or `INTEL=claude` with mock navigation) swaps in the real D services in `src/ws.ts`; `INTEL=mock` keeps fixtures. `INTEL_MODEL` / `INTEL_EFFORT` pick the model (default `claude-opus-5-5`, low effort); `MOSS_REVIEW_ALPHA` overrides the review index's hybrid weight.
+Wiring: `NAV=amazon` (or `INTEL=claude` with mock navigation) swaps in the real D services in `src/ws.ts`; `INTEL=mock` keeps fixtures. `INTEL_MODEL` / `INTEL_EFFORT` pick the model (default `claude-haiku-5-5` for speed, low effort; `claude-opus-5-5` is slower); `MOSS_REVIEW_ALPHA` overrides the review index's hybrid weight.
