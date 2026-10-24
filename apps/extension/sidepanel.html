@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Visy</title>
+    <link rel="stylesheet" href="sidepanel.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Visy</h1>
+      <p id="status">Connecting…</p>
+    </header>
+    <div id="captions" aria-live="assertive" aria-atomic="true"></div>
+    <ol id="options"></ol>
+    <div id="log" aria-label="Conversation"></div>
+    <section id="checkout" hidden>
+      <p id="checkout-text"></p>
+      <button type="button" id="confirm">The total matches. I will press Place order myself.</button>
+    </section>
+    <form id="composer">
+      <label class="sr" for="text">Type to Visy</label>
+      <input id="text" name="text" autocomplete="off" placeholder="picnic blanket" />
+      <button type="submit">Send</button>
+      <button type="button" id="mic" aria-pressed="false">Hold to talk</button>
+      <button type="button" id="stop">Stop</button>
+    </form>
+    <script src="sidepanel.js"></script>
+  </body>
+</html>

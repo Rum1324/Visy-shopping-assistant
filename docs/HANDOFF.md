@@ -4,12 +4,14 @@
 
 Goal: **nobody waits on anybody.** Every track builds against `packages/contracts` (types, fixtures, mocks, mock server) from minute one and swaps in real neighbors as they land.
 
+This project moves very fast. The tracks and rules below are the skeleton. Improvise when they block the demo, and record every departure in [IMPROVISATIONS.md](IMPROVISATIONS.md) in the same change so the next agent can catch up. See [AGENTS.md](../AGENTS.md).
+
 ## Tracks
 
 | Track | Owns | Implements (contracts) | Builds against (until real) |
 |---|---|---|---|
 | **A: Extension & Voice** | `apps/extension` (side panel UI, mic, audio playback, hotkey, content-script indexer and executor, tab group), plus the server's voice gateway (Cartesia STT/TTS, barge-in, speech rate) | `ClientMsg`/`ServerMsg` client side, `DriverRequest` handling, `PageState` producer, `VoiceOut` | `npm run mock-server` |
-| **B: Conversation agent** | `apps/server` core: WebSocket server, session state machine, Claude tool loop, clarifying questions, shortlist ranking and narration, refine loop, checkout gate, `PreferenceStore` (Moss) | `ServerMsg` producer, `SessionState` owner, `PreferenceStore` | `mockServices()`, plus `user.text` messages from a WebSocket client such as `wscat` |
+| **B: Conversation agent** — *the usual item is a database row; revised plan in [TRACKS-B.md](TRACKS-B.md)* | `apps/server` core: WebSocket server, session state machine, Claude tool loop, clarifying questions, shortlist ranking and narration, refine loop, checkout gate, `PreferenceStore` (Convex rows, Moss recall) | `ServerMsg` producer, `SessionState` owner, `PreferenceStore` | `mockPreferenceStore()` in tests. Convex when `PREFS=convex`. `user.text` from a WebSocket client such as `wscat` |
 | **C: Navigator (Jev + Moss)** — *everything that touches the browser; revised plan in [TRACKS-CD.md](TRACKS-CD.md)* | `apps/server/src/navigator`: `ExtensionDriver`, `PlaywrightDriver`, pickers + step memory, `RecipeCache`, per-marketplace search, product detail extraction, **retailer review scraping** (`ProductDetail.retailerReviews`), variants/filters/cart, checkout read-back, page capture, shortlist preload | `Navigator`, `BrowserDriver`, `ElementPicker`, `JevClient` | `fixtureDriver()`, then `PlaywrightDriver` on real sites. Never needs the extension. |
 | **D: Product intelligence** — *never touches the browser; consumes C's output ([TRACKS-CD.md](TRACKS-CD.md))* | `apps/server/src/intel`: review synthesis over C's `retailerReviews` + Apify external reviews (Reddit, YouTube, articles), accessibility insights, image description, `ReviewIndex` (Moss), page-text Q&A for "what's on this page?" | `ReviewService`, `VisionService`, `ReviewIndex` | `fixtures.details`, `fixtures.externalReviews` |
 
