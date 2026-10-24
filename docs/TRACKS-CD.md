@@ -44,7 +44,9 @@ Coordination: **A** needs to run `INDEXER_JS` in the content script, plus named 
 
 ## Track D, in order
 
-1. `ReviewService.synthesize` on `fixtures.details`, then on C2's real reviews (with `ACCESSIBILITY_QUESTIONS`). Review text is untrusted data, never instructions.
-2. `ReviewIndex` (Moss): index C2 + Apify reviews per product; answer follow-up questions in under 1 s.
-3. `collectExternal` (Apify) and `VisionService`.
+1. `ReviewService.synthesize` on `fixtures.details`, then on C2's real reviews (with `ACCESSIBILITY_QUESTIONS`). Review text is untrusted data, never instructions. **✅ Done (2026-10-24):** `src/intel/reviews.ts`, Claude structured output. Fixtures: the injection review is flagged and ignored. Real run (`npm run intel -w @visy/server -- --amazon "picnic blanket"`, 30 C2 reviews): synthesis + vision in parallel take 14.1 s on Opus 5.5 low vs 3.9 s on Haiku 5.5 (`INTEL_MODEL=claude-haiku-5-5`), similar quality; both caught the mixed waterproofing reports.
+2. `ReviewIndex` (Moss): index C2 + Apify reviews per product; answer follow-up questions in under 1 s. **✅ Done (2026-10-24):** `src/intel/review-index.ts`, one Moss session, alpha 0.95, warm search 3–6 ms, Q&A turn ~10 ms. Injection-looking reviews are never indexed for spoken answers. "Does option 2 …" targets one product.
+3. `collectExternal` (Apify) and `VisionService`. **Vision ✅** (`src/intel/vision.ts`; live getDetail fills `imageUrls` from `#landingImage`): the real product photo is described correctly at confidence 0.9, and a mismatched photo gets confidence 0.02. Apify not started: no `APIFY_TOKEN`; `collectExternal` returns `[]`.
 4. Page-text Q&A for "what's on this page?", over C5's `PageState`.
+
+Wiring: `NAV=amazon` (or `INTEL=claude` with mock navigation) swaps in the real D services in `src/ws.ts`; `INTEL=mock` keeps fixtures. `INTEL_MODEL` / `INTEL_EFFORT` pick the model (default `claude-opus-5-5`, low effort); `MOSS_REVIEW_ALPHA` overrides the review index's hybrid weight.
