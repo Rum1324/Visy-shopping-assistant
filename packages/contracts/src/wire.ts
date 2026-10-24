@@ -16,7 +16,13 @@ export const AudioFormat = z.object({
 });
 
 export const ClientMsg = z.discriminatedUnion("type", [
-  z.object({ type: z.literal("hello"), protocol: z.number().int(), userId: z.string(), client: z.enum(["extension", "web", "cli"]) }),
+  z.object({
+    type: z.literal("hello"),
+    protocol: z.number().int(),
+    userId: z.string(),
+    client: z.enum(["extension", "web", "cli"]),
+    displayName: z.string().optional(),
+  }),
   z.object({ type: z.literal("audio.start"), format: AudioFormat }),
   z.object({ type: z.literal("audio.end") }),
   /** Typed input. Also how the server track tests without the voice stack. */

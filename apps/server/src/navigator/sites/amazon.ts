@@ -376,22 +376,28 @@ export class AmazonFlow {
       }
       const reviews = toRawReviews(asin, scraped);
       return reviews.length ? ok({ reviews, pages, via: "reviews_page", gated: false }) : await this.productPageReviews(tab, asin);
+    } catch (e) {
+      return err("internal", `reviews failed: ${(e as Error).message}`, true);
     } finally {
       await this.driver.closeTab(tab);
     }
   }
 
   private async productPageReviews(tab: number, asin: string): Promise<Result<ReviewsResult>> {
-    const t0 = performance.now();
-    const gated = await this.driver.extract<boolean>(tab, "amazon.signin").catch(() => false);
-    const r = await this.driver.navigate(tab, `https://www.amazon.com/dp/${asin}`, "commit");
-    if (!r.ok) return r;
-    await this.driver.waitFor(tab, "amazon.productReviewsReady", 10_000);
-    const g = await this.blockedGate(tab);
-    if (!g.ok) return g;
-    const reviews = toRawReviews(asin, await this.driver.extract<ScrapedReview[]>(tab, "amazon.reviews"));
-    this.mark("reviews product page", t0);
-    return ok({ reviews, pages: 1, via: "product_page", gated });
+    try {
+      const t0 = performance.now();
+      const gated = await this.driver.extract<boolean>(tab, "amazon.signin").catch(() => false);
+      const r = await this.driver.navigate(tab, `https://www.amazon.com/dp/${asin}`, "commit");
+      if (!r.ok) return r;
+      await this.driver.waitFor(tab, "amazon.productReviewsReady", 10_000);
+      const g = await this.blockedGate(tab);
+      if (!g.ok) return g;
+      const reviews = toRawReviews(asin, await this.driver.extract<ScrapedReview[]>(tab, "amazon.reviews"));
+      this.mark("reviews product page", t0);
+      return ok({ reviews, pages: 1, via: "product_page", gated });
+    } catch (e) {
+      return err("internal", `product reviews failed: ${(e as Error).message}`, true);
+    }
   }
 
   /**
@@ -402,23 +408,29 @@ export class AmazonFlow {
     const asin = candidate.id.replace(/^amazon:/, "");
     emit({ stage: "reading_product", message: "Reading the Amazon product page", marketplace: "amazon", at: new Date().toISOString() });
     const reviewsP = this.reviews(asin);
-    const opened = await this.open(asin);
-    if (!opened.ok) return opened;
-    await this.driver.waitFor(this.tabId!, "amazon.detailReady", 10_000);
-    const g = await this.blockedGate();
-    if (!g.ok) return g;
-    const d = await this.driver.extract<{ bullets: string[]; description: string }>(this.tabId!, "amazon.detail");
-    emit({ stage: "reviews", message: "Reading Amazon reviews", marketplace: "amazon", at: new Date().toISOString() });
-    const rv = await reviewsP;
-    return ok({
-      ...candidate,
-      description: d.description || d.bullets.join(" ") || candidate.title,
-      bullets: d.bullets,
-      specs: {},
-      banners: [],
-      variants: [],
-      retailerReviews: rv.ok ? rv.data.reviews : [],
-    });
+    try {
+      const opened = await this.open(asin);
+      if (!opened.ok) return opened;
+      await this.driver.waitFor(this.tabId!, "amazon.detailReady", 10_000);
+      const g = await this.blockedGate();
+      if (!g.ok) return g;
+      const d = await this.driver.extract<{ bullets: string[]; description: string }>(this.tabId!, "amazon.detail");
+      emit({ stage: "reviews", message: "Reading Amazon reviews", marketplace: "amazon", at: new Date().toISOString() });
+      const rv = await reviewsP;
+      return ok({
+        ...candidate,
+        description: d.description || d.bullets.join(" ") || candidate.title,
+        bullets: d.bullets,
+        specs: {},
+        banners: [],
+        variants: [],
+        retailerReviews: rv.ok ? rv.data.reviews : [],
+      });
+    } catch (e) {
+      return err("internal", `getDetail failed: ${(e as Error).message}`, true);
+    } finally {
+      await reviewsP.catch(() => undefined);
+    }
   }
 
   /** Goes to the cart and reads the subtotal. Never proceeds to checkout's final button. */

@@ -170,7 +170,13 @@ export class PlaywrightDriver implements FlowDriver {
 
   /** Any JS string, Playwright only (bench and C1c's parallel tabs). Site flows use extract() so the extension can run them too. */
   async evaluate<T>(tabId: number, js: string): Promise<T> {
-    return (await this.pages.get(tabId)!.evaluate(js)) as T;
+    const page = this.pages.get(tabId);
+    if (!page) throw new Error(`no tab ${tabId}`);
+    try {
+      return (await page.evaluate(js)) as T;
+    } catch (e) {
+      throw new Error(`evaluate failed: ${(e as Error).message}`);
+    }
   }
 
   async close() {

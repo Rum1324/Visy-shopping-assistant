@@ -42,7 +42,7 @@ export function createAgent(services: Services, sink: AgentSink) {
     sink.send({ type: "session.snapshot", state });
   }
 
-  async function hello(userId: string) {
+  async function hello(userId: string, displayName?: string) {
     const profile = await services.prefs.getProfile(userId);
     if (profile.ok) speechRate = profile.data.speechRate;
     publish(
@@ -57,7 +57,8 @@ export function createAgent(services: Services, sink: AgentSink) {
       }),
     );
     sink.send({ type: "welcome", sessionId: state!.sessionId, protocol: CONTRACT_VERSION });
-    await sink.say("What do you want?", "question");
+    const name = displayName?.trim();
+    await sink.say(name ? `Hi ${name}, What can I do for you today?` : "Hi, What can I do for you today?", "question");
   }
 
   function interrupt() {
@@ -169,8 +170,8 @@ export function createAgent(services: Services, sink: AgentSink) {
     publish({ ...state, phase: "searching", need, candidates: [], shortlist: [], cart: [] });
     const where =
       process.env.NAV === "amazon"
-        ? `${need.query}. I'll check Amazon. Target and Walmart stay on sample listings.`
-        : `${need.query}. I'll check Amazon, Target, and Walmart.`;
+        ? "I'll check Amazon. Target and Walmart stay on sample listings."
+        : "I'll check Amazon, Target, and Walmart.";
     await sink.say(where);
     if (id !== run || !state) return;
     const results = await Promise.all(need.marketplaces.map((m) => services.navigator.search(need, m, emit)));

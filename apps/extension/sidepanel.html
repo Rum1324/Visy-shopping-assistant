@@ -6,19 +6,25 @@
     <link rel="stylesheet" href="sidepanel.css" />
   </head>
   <body>
+    <canvas class="bg" id="bg" aria-hidden="true"></canvas>
     <p id="status" hidden></p>
     <div id="welcome">
       <svg class="mark" viewBox="0 0 64 64" aria-hidden="true">
-        <circle cx="32" cy="32" r="30" fill="none" stroke="#f5d90a" stroke-width="3"/>
-        <path d="M18 22 32 46 46 22" fill="none" stroke="#f5f5f0" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <defs>
+          <linearGradient id="visy-blue" x1="14" y1="8" x2="50" y2="56" gradientUnits="userSpaceOnUse">
+            <stop offset="0" stop-color="#d7f0ff"/>
+            <stop offset="0.4" stop-color="#5abeFF"/>
+            <stop offset="1" stop-color="#2a6fe0"/>
+          </linearGradient>
+        </defs>
+        <path d="M16 15h6.4L32 47.2 41.6 15H48L33.7 53h-3.4L16 15z"/>
+        <path d="M31.2 6.2 32 4.4l.8 1.8 1.8.8-1.8.8-.8 1.8-.8-1.8-1.8-.8 1.8-.8z"/>
       </svg>
-      <p id="welcome-hi">Hi</p>
-      <p id="welcome-ask">What can I do for you today?</p>
+      <p id="welcome-line" aria-live="polite"></p>
     </div>
     <div id="chat">
-      <div id="captions" aria-live="assertive" aria-atomic="true"></div>
       <ol id="options"></ol>
-      <div id="log" aria-label="Conversation"></div>
+      <div id="log" aria-live="polite" aria-label="Conversation"></div>
       <section id="checkout" hidden>
         <p id="checkout-text"></p>
         <button type="button" id="confirm">The total matches. I will press Place order myself.</button>
@@ -36,6 +42,7 @@
         </svg>
       </button>
     </form>
+    <script src="bg.js"></script>
     <script src="sidepanel.js"></script>
   </body>
 </html>

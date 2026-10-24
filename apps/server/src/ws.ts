@@ -82,7 +82,7 @@ export function start(
       if (gen !== generation) return;
       const id = `say-${++sayId}`;
       send({ type: "agent.say", id, text });
-      if (_kind === "progress" || !cartesia.enabled || gen !== generation) return;
+      if (!cartesia.enabled || gen !== generation) return;
       const ac = new AbortController();
       aborters.add(ac);
       try {
@@ -128,7 +128,7 @@ export function start(
       const msg = parsed.data;
       if (msg.type === "hello") {
         if (msg.client === "extension" && !extensions.includes(driver)) extensions.push(driver);
-        enqueue(() => agent.hello(msg.userId));
+        enqueue(() => agent.hello(msg.userId, msg.displayName));
         return;
       }
       if (msg.type === "user.text") {
@@ -194,6 +194,9 @@ export function start(
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+  process.on("unhandledRejection", (reason) => {
+    console.warn("unhandledRejection", reason instanceof Error ? reason.message : reason);
+  });
   const wss = start();
   wss.on("listening", () => {
     const addr = wss.address();
