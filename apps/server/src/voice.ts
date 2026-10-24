@@ -1,0 +1,112 @@
+/**
+ * Cartesia TTS and STT. The API key stays in the server process.
+ * Never log it, and never send it to the extension.
+ */
+import WebSocket from "ws";
+
+const CARTESIA_VERSION = "2026-08-14";
+const DEFAULT_VOICE = "db6b0ed5-d5d3-463d-ae85-518a07d3c2b4";
+
+export class Cartesia {
+  constructor(
+    private apiKey = process.env.CARTESIA_API_KEY?.trim() ?? "",
+    private voiceId = process.env.CARTESIA_VOICE_ID?.trim() || DEFAULT_VOICE,
+  ) {}
+
+  get enabled(): boolean {
+    return this.apiKey.length > 0;
+  }
+
+  async speak(text: string, speed = 1, signal?: AbortSignal): Promise<Buffer> {
+    if (!this.enabled) throw new Error("CARTESIA_API_KEY is not set");
+    const res = await fetch("https://api.cartesia.ai/tts/bytes", {
+      method: "POST",
+      signal,
+      headers: {
+        Authorization: `Bearer ${this.apiKey}`,
+        "X-API-Key": this.apiKey,
+        "Cartesia-Version": CARTESIA_VERSION,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model_id: process.env.CARTESIA_TTS_MODEL?.trim() || "sonic-3.6",
+        transcript: text,
+        voice: this.voiceId,
+        language: "en",
+        output_format: { container: "raw", encoding: "pcm_s16le", sample_rate: 24000 },
+        generation_config: { speed: clamp(speed, 0.6, 1.5) },
+      }),
+    });
+    if (!res.ok) {
+      const detail = (await res.text()).slice(0, 180);
+      throw new Error(`Cartesia TTS failed (${res.status}): ${detail}`);
+    }
+    return Buffer.from(await res.arrayBuffer());
+  }
+
+  /** pcm is raw s16le mono. Resolves to the final transcript. */
+  transcribe(pcm: Buffer, sampleRate: number, signal?: AbortSignal): Promise<string> {
+    if (!this.enabled) return Promise.reject(new Error("CARTESIA_API_KEY is not set"));
+    if (pcm.length < 2) return Promise.resolve("");
+
+    const url = new URL("wss://api.cartesia.ai/stt/websocket");
+    url.searchParams.set("model", process.env.CARTESIA_STT_MODEL?.trim() || "ink-2");
+    url.searchParams.set("encoding", "pcm_s16le");
+    url.searchParams.set("sample_rate", String(sampleRate));
+    url.searchParams.set("cartesia_version", CARTESIA_VERSION);
+    url.searchParams.set("language", "en");
+
+    const socket = new WebSocket(url, {
+      headers: {
+        Authorization: `Bearer ${this.apiKey}`,
+        "X-API-Key": this.apiKey,
+      },
+    });
+
+    return new Promise((resolve, reject) => {
+      const finals: string[] = [];
+      let settled = false;
+      const finish = (err?: Error, text?: string) => {
+        if (settled) return;
+        settled = true;
+        clearTimeout(timer);
+        signal?.removeEventListener("abort", onAbort);
+        socket.close();
+        if (err) reject(err);
+        else resolve((text ?? "").trim());
+      };
+      const onAbort = () => finish(new Error("aborted"));
+      const timer = setTimeout(() => finish(new Error("Cartesia STT timed out")), 12_000);
+      signal?.addEventListener("abort", onAbort);
+
+      socket.on("open", () => {
+        const chunk = Math.max(2, Math.floor(sampleRate * 0.1) * 2);
+        for (let i = 0; i < pcm.length; i += chunk) socket.send(pcm.subarray(i, i + chunk));
+        socket.send("finalize");
+      });
+
+      socket.on("message", (data, isBinary) => {
+        if (isBinary) return;
+        let msg: { type?: string; is_final?: boolean; text?: string; message?: string };
+        try {
+          msg = JSON.parse(data.toString()) as typeof msg;
+        } catch {
+          return;
+        }
+        if (msg.type === "transcript" && msg.is_final && msg.text) finals.push(msg.text);
+        if (msg.type === "flush_done") finish(undefined, finals.join(""));
+        if (msg.type === "error") finish(new Error(msg.message || "Cartesia STT error"));
+      });
+
+      socket.on("error", (err) => finish(err instanceof Error ? err : new Error("Cartesia STT socket error")));
+      socket.on("close", () => {
+        if (!settled && finals.length) finish(undefined, finals.join(""));
+      });
+    });
+  }
+}
+
+function clamp(n: number, min: number, max: number): number {
+  if (Number.isNaN(n)) return 1;
+  return Math.min(max, Math.max(min, n));
+}
