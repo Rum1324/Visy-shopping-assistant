@@ -98,14 +98,17 @@ export function liveServices(): Services {
       if (!base.ok) return base;
       let title = candidate.title;
       let cents = candidate.price.cents;
+      let imageUrls = base.data.imageUrls;
       if (flow.tabId != null) {
         const page = await driver
-          .evaluate<{ title: string; price: string | null }>(
+          .evaluate<{ title: string; price: string | null; image: string | null }>(
             flow.tabId,
-            `({ title: (document.querySelector("#productTitle")?.innerText || "").trim(), price: document.querySelector(".a-price .a-offscreen")?.textContent?.trim() || null })`,
+            `({ title: (document.querySelector("#productTitle")?.innerText || "").trim(), price: document.querySelector(".a-price .a-offscreen")?.textContent?.trim() || null, image: (() => { const i = document.querySelector("#landingImage, #imgBlkFront"); return i?.getAttribute("data-old-hires") || i?.getAttribute("src") || null; })() })`,
           )
-          .catch(() => ({ title: "", price: null }));
+          .catch(() => ({ title: "", price: null, image: null }));
         if (page.title) title = page.title;
+        // D3 vision needs a photo URL; skip data: placeholders.
+        if (page.image?.startsWith("https://")) imageUrls = [page.image];
         const parsed = parseDollars(page.price);
         if (parsed != null) cents = parsed;
       }
@@ -113,6 +116,7 @@ export function liveServices(): Services {
         ...base.data,
         title,
         price: { cents, currency: "USD" },
+        imageUrls,
         description: base.data.description || title,
       });
       seen.set(detail.id, detail);

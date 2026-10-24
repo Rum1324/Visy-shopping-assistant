@@ -125,22 +125,27 @@ export function createAgent(services: Services, sink: AgentSink) {
   async function answerQuestion(text: string, id: number) {
     if (!state) return;
     publish({ ...state, phase: "qa" });
+    // D2: Moss ranks by meaning within a product, so each product's top hit is its best answer even with no shared words.
+    // Across products: most word overlap wins; with none, the focused product's hit.
+    // "does option 2 …" / "is the second one …" asks about that product only.
+    const named = /(?:option|number)\s*[123]\b|\b(first|second|third)\b/i.test(text) ? state.shortlist[optionIndex(text)] : undefined;
     const words = text.toLowerCase().split(/\W+/).filter((w) => w.length > 3);
-    let quote = "";
-    let best = 0;
-    for (const item of state.shortlist) {
-      const found = await services.reviewIndex.search(item.product.id, text, 3);
-      if (!found.ok) continue;
-      for (const review of found.data) {
-        const score = words.filter((w) => review.body.toLowerCase().includes(w)).length;
-        if (score > best) {
-          best = score;
-          quote = review.body;
-        }
-      }
-    }
+    const hits = await Promise.all(
+      (named ? [named] : state.shortlist).map(async (item) => {
+        const found = await services.reviewIndex.search(item.product.id, text, 3);
+        const top = found.ok ? found.data[0] : undefined;
+        const body = top ? (top.title ? `${top.title}. ${top.body}` : top.body) : "";
+        const overlap = words.filter((w) => body.toLowerCase().includes(w)).length;
+        return { item, body, overlap, focused: item.product.id === state?.focusedProductId };
+      }),
+    );
+    const best = hits
+      .filter((h) => h.body)
+      .sort((a, b) => b.overlap - a.overlap || Number(b.focused) - Number(a.focused))[0];
+    const quote = best?.body ?? "";
+    const about = best && state.shortlist.length > 1 ? `For option ${best.item.rank}, ` : "";
     if (id !== run || !state) return;
-    await sink.say(quote ? `Reviewers say: ${quote.slice(0, 180)}` : "I don't have a review that answers that.");
+    await sink.say(quote ? `${about || "A"}${about ? "a" : ""} reviewer says: ${quote.slice(0, 220)}` : "I don't have a review that answers that.");
     if (id !== run || !state) return;
     publish({ ...state, phase: "presenting" });
   }
