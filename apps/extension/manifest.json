@@ -3,13 +3,9 @@
   "name": "Visy",
   "version": "0.1.0",
   "description": "Voice-first shopping assistant. You press Place order yourself.",
-  "permissions": ["sidePanel", "tabs", "tabGroups", "storage", "scripting", "activeTab"],
+  "permissions": ["sidePanel", "tabs", "tabGroups", "storage", "scripting", "activeTab", "identity", "identity.email"],
   "host_permissions": [
-    "http://localhost/*",
-    "http://127.0.0.1/*",
-    "https://www.amazon.com/*",
-    "https://www.target.com/*",
-    "https://www.walmart.com/*"
+    "<all_urls>"
   ],
   "background": { "service_worker": "background.js", "type": "module" },
   "action": { "default_title": "Open Visy" },
@@ -23,7 +19,7 @@
   "content_scripts": [
     {
       "matches": ["https://www.amazon.com/*", "https://www.target.com/*", "https://www.walmart.com/*"],
-      "js": ["content.js"],
+      "js": ["indexer.js", "content.js"],
       "run_at": "document_idle"
     }
   ]

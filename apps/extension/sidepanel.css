@@ -4,10 +4,45 @@
   background: #111;
   color: #f5f5f0;
 }
-body { margin: 0; padding: 16px; display: flex; flex-direction: column; gap: 12px; min-height: 100vh; }
-h1 { font-size: 1.6rem; margin: 0; }
-#status { margin: 4px 0 0; color: #d6d6c8; }
+html, body { height: 100%; overflow: hidden; }
+body {
+  margin: 0;
+  padding: 10px 16px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-sizing: border-box;
+}
+#status { margin: 0; flex-shrink: 0; color: #d6d6c8; }
+#status[hidden] { display: none; }
+#welcome {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  gap: 0;
+  padding-bottom: 8vh;
+}
+#welcome .mark {
+  width: 48px;
+  height: 48px;
+  margin-bottom: 28px;
+}
+#welcome-hi { margin: 0 0 8px; font-size: 1.7rem; font-weight: 500; letter-spacing: -0.02em; }
+#welcome-ask { margin: 0; font-size: 1.15rem; color: #c8c8bc; font-weight: 400; }
+#chat {
+  display: none;
+  flex: 1;
+  min-height: 0;
+  flex-direction: column;
+  gap: 12px;
+}
+body.chatting #welcome { display: none; }
+body.chatting #chat { display: flex; }
 #captions {
+  flex-shrink: 0;
   min-height: 4.5rem;
   font-size: 1.35rem;
   line-height: 1.35;
@@ -15,12 +50,12 @@ h1 { font-size: 1.6rem; margin: 0; }
   background: #1c1c1c;
   border-radius: 12px;
 }
-#options { margin: 0; padding-left: 1.2rem; }
+#options { flex-shrink: 0; margin: 0; padding-left: 1.2rem; }
 #options li { margin: 6px 0; }
-#log { flex: 1; overflow: auto; font-size: 0.95rem; color: #c8c8bc; }
-#checkout { padding: 12px; background: #1c1c1c; border-radius: 12px; }
+#log { flex: 1; min-height: 0; overflow-y: auto; font-size: 0.95rem; color: #c8c8bc; }
+#checkout { flex-shrink: 0; padding: 12px; background: #1c1c1c; border-radius: 12px; }
 #checkout p { margin: 0 0 8px; font-size: 1.1rem; }
-#composer { display: flex; gap: 8px; flex-wrap: wrap; }
+#composer { flex-shrink: 0; display: flex; gap: 8px; align-items: center; }
 input, button {
   font: inherit;
   border-radius: 10px;
@@ -29,8 +64,24 @@ input, button {
   color: inherit;
   padding: 10px 12px;
 }
-input { flex: 1; }
+input { flex: 1; min-width: 0; }
 button { cursor: pointer; }
+.go {
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 1.5px solid #f5f5f0;
+  border-radius: 50%;
+  background: transparent;
+  color: #f5f5f0;
+  display: grid;
+  place-items: center;
+  flex: none;
+}
+.go svg { width: 15px; height: 15px; }
+.go .icon-stop { display: none; }
+.go.busy .icon-send { display: none; }
+.go.busy .icon-stop { display: block; }
 button:focus, input:focus { outline: 3px solid #f5d90a; outline-offset: 2px; }
-#mic[aria-pressed="true"] { background: #f5d90a; color: #111; }
+.go:focus { outline-offset: 2px; }
 .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }

@@ -1,32 +1,78 @@
 const statusEl = document.querySelector("#status");
+const welcomeHi = document.querySelector("#welcome-hi");
 const captions = document.querySelector("#captions");
 const options = document.querySelector("#options");
 const log = document.querySelector("#log");
 const form = document.querySelector("#composer");
 const text = document.querySelector("#text");
-const mic = document.querySelector("#mic");
-const stop = document.querySelector("#stop");
+const go = document.querySelector("#go");
 const checkout = document.querySelector("#checkout");
 const checkoutText = document.querySelector("#checkout-text");
 const confirmBtn = document.querySelector("#confirm");
 
 let ws = null;
 let checkoutTotal = null;
+let busy = false;
+let chatting = false;
+const WORKING = new Set(["clarifying", "searching", "shortlisting"]);
+paintWelcome();
 connect();
+
+function startChat() {
+  chatting = true;
+  document.body.classList.add("chatting");
+}
+
+function showWelcome() {
+  chatting = false;
+  document.body.classList.remove("chatting");
+  captions.textContent = "";
+  options.replaceChildren();
+  log.replaceChildren();
+}
+
+async function paintWelcome() {
+  const name = await getDisplayName();
+  welcomeHi.textContent = name ? `Hi ${name}` : "Hi";
+}
+
+async function getDisplayName() {
+  try {
+    const info = await chrome.identity.getProfileUserInfo({ accountStatus: "ANY" });
+    const local = info?.email?.split("@")[0] ?? "";
+    const token = local.split(/[._+-]/)[0]?.replace(/\d+$/, "") ?? "";
+    if (!token) return "";
+    return token.charAt(0).toUpperCase() + token.slice(1);
+  } catch {
+    return "";
+  }
+}
+
+function setBusy(next) {
+  busy = next;
+  go.classList.toggle("busy", busy);
+  go.setAttribute("aria-label", busy ? "Stop" : "Send");
+  go.title = busy ? "Stop" : "Send";
+}
+
+function showLink(message) {
+  statusEl.hidden = !message;
+  statusEl.textContent = message ?? "";
+}
 
 function connect() {
   ws = new WebSocket("ws://localhost:8787");
   ws.binaryType = "arraybuffer";
   ws.onopen = () => {
-    statusEl.textContent = "Connected";
+    showLink(null);
     send({ type: "hello", protocol: 1, userId: "demo-user", client: "extension" });
   };
   ws.onclose = () => {
-    statusEl.textContent = "Reconnecting…";
+    showLink("Reconnecting…");
     setTimeout(connect, 1000);
   };
   ws.onerror = () => {
-    statusEl.textContent = "Can't reach ws://localhost:8787";
+    showLink("Reconnecting…");
   };
   ws.onmessage = onMessage;
 }
@@ -36,9 +82,6 @@ let ttsRate = 24000;
 let ttsOn = false;
 let audioCtx = null;
 let nextTime = 0;
-let micStream = null;
-let micNode = null;
-let micCtx = null;
 
 function line(who, message) {
   const p = document.createElement("p");
@@ -58,6 +101,7 @@ async function onMessage(ev) {
   }
   const msg = JSON.parse(ev.data);
   if (msg.type === "agent.say") {
+    if (!chatting) return;
     captions.textContent = msg.text;
     line("Visy", msg.text);
   } else if (msg.type === "transcript") {
@@ -77,7 +121,7 @@ async function onMessage(ev) {
     audioCtx?.close();
     audioCtx = null;
   } else if (msg.type === "session.snapshot") {
-    statusEl.textContent = msg.state.phase;
+    setBusy(WORKING.has(msg.state.phase));
     options.replaceChildren();
     for (const item of msg.state.shortlist ?? []) {
       const li = document.createElement("li");
@@ -86,7 +130,7 @@ async function onMessage(ev) {
       options.append(li);
     }
   } else if (msg.type === "progress") {
-    statusEl.textContent = msg.event.message;
+    setBusy(true);
   } else if (msg.type === "driver.request") {
     const res = await chrome.runtime.sendMessage({ type: "visy.driver", req: msg.req });
     send({
@@ -108,7 +152,6 @@ async function onMessage(ev) {
   }
 }
 
-stop.addEventListener("click", () => send({ type: "user.interrupt" }));
 confirmBtn.addEventListener("click", () => {
   if (!checkoutTotal) return;
   send({ type: "checkout.confirm", total: checkoutTotal });
@@ -116,57 +159,22 @@ confirmBtn.addEventListener("click", () => {
 
 form.addEventListener("submit", (ev) => {
   ev.preventDefault();
-  const value = text.value.trim();
-  if (!value) return;
-  send({ type: "user.text", text: value });
-  text.value = "";
-});
-
-mic.addEventListener("pointerdown", () => startMic());
-mic.addEventListener("pointerup", () => stopMic());
-mic.addEventListener("pointercancel", () => stopMic());
-
-async function startMic() {
-  if (mic.getAttribute("aria-pressed") === "true") return;
-  micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-  micCtx = new AudioContext();
-  const source = micCtx.createMediaStreamSource(micStream);
-  micNode = micCtx.createScriptProcessor(4096, 1, 1);
-  const gain = micCtx.createGain();
-  gain.gain.value = 0;
-  source.connect(micNode);
-  micNode.connect(gain);
-  gain.connect(micCtx.destination);
-  send({ type: "audio.start", format: { encoding: "pcm_s16le", sampleRate: 16000 } });
-  mic.setAttribute("aria-pressed", "true");
-  micNode.onaudioprocess = (e) => {
-    const pcm = downsample(e.inputBuffer.getChannelData(0), micCtx.sampleRate, 16000);
-    if (pcm.byteLength && ws.readyState === WebSocket.OPEN) ws.send(pcm);
-  };
-}
-
-function stopMic() {
-  if (mic.getAttribute("aria-pressed") !== "true") return;
-  mic.setAttribute("aria-pressed", "false");
-  micNode?.disconnect();
-  micStream?.getTracks().forEach((t) => t.stop());
-  micCtx?.close();
-  micNode = null;
-  micStream = null;
-  micCtx = null;
-  send({ type: "audio.end" });
-}
-
-function downsample(input, inRate, outRate) {
-  const ratio = inRate / outRate;
-  const len = Math.floor(input.length / ratio);
-  const out = new Int16Array(len);
-  for (let i = 0; i < len; i++) {
-    const s = Math.max(-1, Math.min(1, input[Math.floor(i * ratio)] ?? 0));
-    out[i] = s < 0 ? s * 0x8000 : s * 0x7fff;
+  if (busy) {
+    send({ type: "user.interrupt" });
+    setBusy(false);
+    return;
   }
-  return out.buffer;
-}
+  const value = text.value.trim();
+  if (value) {
+    startChat();
+    send({ type: "user.text", text: value });
+    text.value = "";
+    setBusy(true);
+    return;
+  }
+  showWelcome();
+  send({ type: "hello", protocol: 1, userId: "demo-user", client: "extension" });
+});
 
 function concat(chunks) {
   const len = chunks.reduce((n, c) => n + c.length, 0);

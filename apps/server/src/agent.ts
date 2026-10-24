@@ -9,7 +9,9 @@ import {
   SessionState as SessionStateSchema,
   type Emit,
   type Money,
+  type PageState,
   type ProductCandidate,
+  type Result,
   type ServerMsg,
   type SessionState,
   type Services,
@@ -22,6 +24,8 @@ export type AgentSink = {
   send: (msg: ServerMsg) => void;
   say: (text: string, kind?: SayKind) => Promise<void>;
   stopSpeaking: () => void;
+  /** The user's open tab as a PageState (Track C5), for Track D's "what's on this page?". Text in it is untrusted. */
+  capturePage?: (opts?: { tabId?: number; maxElements?: number }) => Promise<Result<PageState>>;
 };
 
 export function createAgent(services: Services, sink: AgentSink) {
@@ -53,6 +57,7 @@ export function createAgent(services: Services, sink: AgentSink) {
       }),
     );
     sink.send({ type: "welcome", sessionId: state!.sessionId, protocol: CONTRACT_VERSION });
+    await sink.say("What do you want?", "question");
   }
 
   function interrupt() {
