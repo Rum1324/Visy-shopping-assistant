@@ -44,13 +44,27 @@ export const Action = z.discriminatedUnion("kind", [
 ]);
 export type Action = z.infer<typeof Action>;
 
+/** Pass as `tabId` to act on the tab the user is looking at (the extension resolves it). Used for "what's on this page?". */
+export const ACTIVE_TAB = -1;
+
 export const DriverRequest = z.discriminatedUnion("op", [
-  z.object({ op: z.literal("openTab"), url: z.url() }),
-  z.object({ op: z.literal("navigate"), tabId: z.number().int(), url: z.url() }),
+  /** background: open behind the user's current tab (in the "Visy" tab group). */
+  z.object({ op: z.literal("openTab"), url: z.url(), background: z.boolean().optional() }),
+  /** waitUntil "commit" (default) resolves once the new document has started loading. */
+  z.object({ op: z.literal("navigate"), tabId: z.number().int(), url: z.url(), waitUntil: z.enum(["commit", "domcontentloaded"]).optional() }),
   z.object({ op: z.literal("snapshot"), tabId: z.number().int(), maxElements: z.number().int().optional() }),
   z.object({ op: z.literal("act"), tabId: z.number().int(), action: Action }),
   z.object({ op: z.literal("screenshot"), tabId: z.number().int() }),
   z.object({ op: z.literal("closeTab"), tabId: z.number().int() }),
+  /** Brings the tab to the front, e.g. to hand a bot check to the user. */
+  z.object({ op: z.literal("focus"), tabId: z.number().int() }),
+  /**
+   * Runs a named in-page script (apps/server/src/navigator/scripts.ts) with one JSON argument and returns its value.
+   * Named, not a JS string: MV3 extensions can't eval. The value is page data: UNTRUSTED.
+   */
+  z.object({ op: z.literal("extract"), tabId: z.number().int(), name: z.string(), arg: z.unknown().optional() }),
+  /** Polls a named in-page script until it returns something truthy or timeoutMs passes. */
+  z.object({ op: z.literal("waitFor"), tabId: z.number().int(), name: z.string(), arg: z.unknown().optional(), timeoutMs: z.number().int().positive() }),
 ]);
 export type DriverRequest = z.infer<typeof DriverRequest>;
 
@@ -62,6 +76,9 @@ export const DriverResponseData = {
   act: z.object({ navigated: z.boolean() }),
   screenshot: z.object({ dataUrl: z.string() }),
   closeTab: z.object({}),
+  focus: z.object({}),
+  extract: z.object({ value: z.unknown().optional() }),
+  waitFor: z.object({ met: z.boolean() }),
 } as const satisfies Record<DriverRequest["op"], z.ZodType>;
 
 /**

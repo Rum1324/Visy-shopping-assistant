@@ -10,10 +10,11 @@ import {
   type ProductDetail,
   type Result,
 } from "@visy/contracts";
-import type { PlaywrightDriver } from "../driver/playwright.ts";
+import type { FlowDriver } from "../driver/flow.ts";
 import { pickWithChain, type ChainPick } from "../chain.ts";
 import { strictPicker, type FindStep } from "../pickers/common.ts";
 import type { MemoryPicker } from "../pickers/memory.ts";
+import { ClaudeRecipeWriter, extractWithRecipes, RecipeCache, type Extracted, type RawDetail, type RecipeFields, type RecipeWriter } from "../recipes.ts";
 
 export type AmazonResult = { asin: string; title: string; price: string | null; rating: string | null; sponsored: boolean };
 
@@ -31,8 +32,8 @@ const SUBTOTAL_SEL = "#sc-subtotal-amount-activecart, #sc-subtotal-amount-buybox
 const SUBTOTAL_JS = `(document.querySelector('${SUBTOTAL_SEL}')?.innerText || '').trim()`;
 const CHALLENGE_JS = `!!document.querySelector('#checkpointForm, form[action*=validateCaptcha]')`;
 // After Add to Cart Amazon either navigates (cart / smart wagon), shows an "Added to cart" sheet, or offers a warranty.
-const ADDED_JS = (before: string) =>
-  `location.href !== ${JSON.stringify(before)} || /added to (your )?cart/i.test(document.body.innerText.slice(0, 20000)) || !!document.querySelector('#attachSiNoCoverage, #attach-warranty-pane, #NATC_SMART_WAGON_CONF_MSG_SUCCESS, #sw-atc-confirmation')`;
+const ADDED_JS =
+  `location.href !== arg || /added to (your )?cart/i.test(document.body.innerText.slice(0, 20000)) || !!document.querySelector('#attachSiNoCoverage, #attach-warranty-pane, #NATC_SMART_WAGON_CONF_MSG_SUCCESS, #sw-atc-confirmation')`;
 const WARRANTY_JS = `!!document.querySelector('#attachSiNoCoverage, #attach-warranty-pane')`;
 
 // C2: reviews. Same data-hook markup on the product page ("Top reviews", ~8) and on /product-reviews/ (10 per page).
@@ -59,11 +60,38 @@ const REVIEWS_JS = `Array.from(document.querySelectorAll('${REVIEW_SEL}')).map((
 const REVIEWS_READY_JS = `!!document.querySelector('${REVIEW_SEL}') || /\\/ap\\/signin/.test(location.pathname) || ${CHALLENGE_JS} || /no customer reviews/i.test(document.body?.innerText || '')`;
 const SHOW_MORE_SEL = '[data-hook="show-more-button"]';
 const NEXT_PAGE_JS = `document.querySelector('.a-pagination .a-last:not(.a-disabled) a')?.href || null`;
-// C2 will be replaced by C3's recipes; until then a few stable ids are enough for D.
+// Fallback when there's no recipe and Claude can't write one (no API key, API down).
 const DETAIL_JS = `({
   bullets: Array.from(document.querySelectorAll('#feature-bullets li, #productFactsDesktopExpander li')).map((l) => l.innerText.trim()).filter(Boolean).slice(0, 10),
   description: (document.querySelector('#productDescription')?.innerText || '').trim().slice(0, 3000),
 })`;
+
+/**
+ * Named page scripts (navigator/scripts.ts): the extension can't eval strings, so every in-page read or wait
+ * here has a name. `arg` is the script's one JSON argument.
+ */
+export const AMAZON_SCRIPTS = {
+  "amazon.results": RESULTS_JS,
+  "amazon.resultsReady": `!!document.querySelector('${RESULT_SEL}') || ${CHALLENGE_JS}`,
+  "amazon.titlesReady": `document.querySelectorAll('${RESULT_SEL} h2').length >= 6 || document.readyState !== 'loading'`,
+  "amazon.loadedOrChallenge": `document.readyState !== 'loading' || ${CHALLENGE_JS}`,
+  "amazon.added": ADDED_JS,
+  "amazon.warranty": WARRANTY_JS,
+  "amazon.reviews": REVIEWS_JS,
+  "amazon.reviewsReady": REVIEWS_READY_JS,
+  "amazon.signin": `/\\/ap\\/signin/.test(location.pathname)`,
+  "amazon.hasShowMore": `!!document.querySelector('${SHOW_MORE_SEL}')`,
+  // A plain "Show 10 more reviews" button, never purchase-risk.
+  "amazon.clickShowMore": `void document.querySelector('${SHOW_MORE_SEL}')?.click()`,
+  "amazon.reviewsGrew": `document.querySelectorAll('${REVIEW_SEL}').length > arg || ${CHALLENGE_JS}`,
+  "amazon.nextPage": NEXT_PAGE_JS,
+  "amazon.productReviewsReady": `!!document.querySelector('${REVIEW_SEL}') || document.readyState === 'complete' || ${CHALLENGE_JS}`,
+  "amazon.detailReady": `!!document.querySelector('#feature-bullets, #productDescription') || document.readyState === 'complete' || ${CHALLENGE_JS}`,
+  "amazon.detail": DETAIL_JS,
+  "amazon.titlePrice": `({ title: (document.querySelector("#productTitle")?.innerText || "").trim(), price: document.querySelector(".a-price .a-offscreen")?.textContent?.trim() || null })`,
+  "amazon.subtotalReady": `!!document.querySelector('${SUBTOTAL_SEL}')`,
+  "amazon.subtotal": SUBTOTAL_JS,
+};
 
 type ScrapedReview = { id: string; rating: number | null; title: string; body: string; date: string; author: string | null; verified: boolean };
 
@@ -98,6 +126,84 @@ export function toRawReviews(asin: string, scraped: ScrapedReview[]): RawReview[
   return out;
 }
 
+/**
+ * C3 fallback: a recipe checked by hand on two live product pages (2026-10-24). Used only when Claude can't write
+ * one (no API key, API down); a Claude-written recipe replaces it on the next miss.
+ */
+export const AMAZON_PRODUCT_SEED: RecipeFields = {
+  title: { css: "#productTitle", attr: null },
+  price: { css: "#corePriceDisplay_desktop_feature_div #apex-pricetopay-accessibility-label, #corePriceDisplay_desktop_feature_div .priceToPay .a-offscreen, #corePrice_feature_div .a-price .a-offscreen", attr: null },
+  listPrice: { css: "#corePriceDisplay_desktop_feature_div .basisPrice .a-offscreen", attr: null },
+  deal: { css: "#dealBadge_feature_div .a-badge-text, #dealBadgeSupportingText", attr: null },
+  prime: { css: "#rightCol .a-icon-prime, #deliveryBlockMessage .a-icon-prime", attr: null },
+  rating: { css: "#acrPopover", attr: "title" },
+  reviewCount: { css: "#acrCustomerReviewText", attr: "aria-label" },
+  brand: { css: "#bylineInfo", attr: null },
+  availability: { css: "#availability .primary-availability-message, #availability", attr: null },
+  delivery: { css: "#mir-layout-DELIVERY_BLOCK-slot-PRIMARY_DELIVERY_MESSAGE_LARGE", attr: null },
+  bullets: { css: "#feature-bullets li .a-list-item", attr: null },
+  description: { css: "#productDescription", attr: null },
+  banners: { css: "#newerVersion_feature_div .a-section, #availability .a-color-price", attr: null },
+  images: { css: "#altImages li.imageThumbnail img", attr: "src" },
+  specRows: { css: "#productOverview_feature_div tr, #prodDetails tr, #detailBullets_feature_div li", attr: null },
+  specKey: { css: "th, td.a-span3, .a-text-bold", attr: null },
+  specValue: { css: "td.a-span9, td.prodDetAttrValue, th + td, .a-text-bold + span", attr: null },
+  variantGroups: { css: "#twister-plus-inline-twister .inline-twister-row", attr: null },
+  variantName: { css: ".dimension-text .a-color-secondary", attr: null },
+  variantOption: { css: ".inline-twister-swatch img", attr: "alt" },
+};
+
+const money = (s: string | null): { cents: number; currency: "USD" } | undefined => {
+  const m = s?.replace(/,/g, "").match(/\$\s?(\d+)(?:\.(\d{1,2}))?/);
+  return m ? { cents: Number(m[1]) * 100 + Number((m[2] ?? "").padEnd(2, "0")), currency: "USD" } : undefined;
+};
+const clean = (s: string) => s.replace(/[\u200e\u200f]/g, "").replace(/\s+/g, " ").replace(/\s*:\s*$/, "").trim();
+
+/** Large image URLs: data-a-dynamic-image is a JSON map of url → size; thumbnails drop their size token. */
+export function imageUrls(values: string[]): string[] {
+  const urls = values.flatMap((v) => {
+    if (v.startsWith("{")) {
+      try {
+        return Object.keys(JSON.parse(v));
+      } catch {
+        return [];
+      }
+    }
+    return [v];
+  });
+  const full = urls.filter((u) => /^https:\/\//.test(u)).map((u) => u.replace(/\._[A-Z0-9,_]+_\./, "."));
+  return [...new Set(full)].slice(0, 8);
+}
+
+/** C3: recipe output (untrusted page text) → ProductDetail fields. Missing fields stay undefined / empty. */
+export function amazonFields(raw: RawDetail) {
+  const reviewCount = raw.reviewCount ? Number(/[\d,]+/.exec(raw.reviewCount)?.[0].replace(/,/g, "")) : NaN;
+  const rating = raw.rating ? parseFloat(raw.rating) : NaN;
+  const avail = raw.availability ?? "";
+  const inStock = /in stock|only \d+ left|available to ship/i.test(avail) ? true : /unavailable|out of stock/i.test(avail) ? false : undefined;
+  const specs: Record<string, string> = {};
+  for (const [k, v] of raw.specs.slice(0, 40)) if (clean(k) && clean(v)) specs[clean(k).slice(0, 80)] ??= clean(v).slice(0, 300);
+  const banners = [...raw.banners];
+  if (/only \d+ left/i.test(avail) && !banners.includes(avail)) banners.push(avail);
+  return {
+    title: raw.title ?? undefined,
+    brand: raw.brand?.replace(/^(Visit the |Brand: )/, "").replace(/ Store$/, "") || undefined,
+    price: money(raw.price),
+    listPrice: money(raw.listPrice),
+    deal: raw.deal ? { label: raw.deal.slice(0, 120), requiresMembership: /prime/i.test(raw.deal) ? "Prime" : undefined } : undefined,
+    rating: rating >= 0 && rating <= 5 ? rating : undefined,
+    reviewCount: Number.isInteger(reviewCount) ? reviewCount : undefined,
+    imageUrls: imageUrls(raw.images),
+    shipping: raw.delivery || raw.prime ? { eta: raw.delivery ?? undefined, free: raw.delivery ? /free/i.test(raw.delivery) : undefined, membership: raw.prime ? "Prime" : undefined } : undefined,
+    inStock,
+    bullets: raw.bullets.map(clean).filter(Boolean),
+    description: raw.description ?? undefined,
+    specs,
+    banners: banners.map(clean).filter(Boolean),
+    variants: raw.variants.map((v) => ({ name: clean(v.name), options: v.options.map((o) => clean(o.replace(/^Click to select /i, ""))) })),
+  };
+}
+
 export type ReviewsResult = { reviews: RawReview[]; pages: number; via: "reviews_page" | "product_page"; gated: boolean };
 
 export const STEPS = {
@@ -114,12 +220,15 @@ export class AmazonFlow {
   private indexing: Promise<unknown> = Promise.resolve();
   /** Sub-step timings for the last call, for the demo's breakdown. */
   marks: Record<string, number> = {};
+  /** C3: how the last getDetail read the page ("replay" = no AI). */
+  lastExtract?: Omit<Extracted, "raw">;
 
   constructor(
-    private driver: PlaywrightDriver,
+    private driver: FlowDriver,
     private pickers: ElementPicker[],
     private memory?: MemoryPicker,
     private onBlocked: () => Promise<void> = async () => {},
+    private recipes: { cache: RecipeCache; writer: RecipeWriter } = { cache: new RecipeCache(), writer: new ClaudeRecipeWriter() },
   ) {}
 
   private mark(label: string, t0: number) {
@@ -136,7 +245,7 @@ export class AmazonFlow {
   private async goto(url: string, waitUntil: "commit" | "domcontentloaded" = "commit") {
     const t0 = performance.now();
     if (this.tabId === undefined) {
-      const t = await this.driver.openTab("about:blank");
+      const t = await this.driver.openTab("about:blank", { background: true });
       if (!t.ok) return t;
       this.tabId = t.data.tabId;
     }
@@ -159,7 +268,7 @@ export class AmazonFlow {
     while (true) {
       attempts++;
       let t0 = performance.now();
-      const ready = (await this.driver.evaluate<string>(this.tabId!, "document.readyState").catch(() => "loading")) !== "loading";
+      const ready = (await this.driver.extract<string>(this.tabId!, "readyState").catch(() => "loading")) !== "loading";
       const s = await this.driver.snapshot(this.tabId!);
       this.mark("snapshot", t0);
       if (!s.ok) {
@@ -210,18 +319,18 @@ export class AmazonFlow {
       if (!g.ok) return g;
     }
     const t0 = performance.now();
-    await this.driver.waitFor(this.tabId!, `!!document.querySelector('${RESULT_SEL}') || ${CHALLENGE_JS}`, 10_000);
+    await this.driver.waitFor(this.tabId!, "amazon.resultsReady", 10_000);
     this.mark("wait results", t0);
     const g = await this.blockedGate();
     if (!g.ok) return g;
     // The page streams in: cards can exist before their titles are parsed. Wait for 6 titled cards or DOM ready.
     const t1 = performance.now();
-    await this.driver.waitFor(this.tabId!, `document.querySelectorAll('${RESULT_SEL} h2').length >= 6 || document.readyState !== 'loading'`, 8000);
+    await this.driver.waitFor(this.tabId!, "amazon.titlesReady", 8000);
     this.mark("wait titles", t1);
-    let results = await this.driver.evaluate<AmazonResult[]>(this.tabId!, RESULTS_JS);
+    let results = await this.driver.extract<AmazonResult[]>(this.tabId!, "amazon.results");
     if (results.length < 3) {
-      await this.driver.waitFor(this.tabId!, `document.readyState !== 'loading'`, 5000);
-      results = await this.driver.evaluate<AmazonResult[]>(this.tabId!, RESULTS_JS);
+      await this.driver.waitFor(this.tabId!, "loaded", 5000);
+      results = await this.driver.extract<AmazonResult[]>(this.tabId!, "amazon.results");
     }
     return results.length ? ok(results) : err("parse_failed", "no result cards found");
   }
@@ -240,13 +349,12 @@ export class AmazonFlow {
   }
 
   private async preloadOne(asin: string): Promise<number | undefined> {
-    const t = await this.driver.openTab("about:blank");
+    const t = await this.driver.openTab("about:blank", { background: true });
     if (!t.ok) return undefined;
     const tabId = t.data.tabId;
-    if (this.tabId !== undefined) await this.driver.focus(this.tabId); // keep the user's tab in front
     const r = await this.driver.navigate(tabId, `https://www.amazon.com/dp/${asin}`, "commit");
     if (!r.ok) return tabId;
-    await this.driver.waitFor(tabId, `document.readyState !== 'loading' || ${CHALLENGE_JS}`, 10_000);
+    await this.driver.waitFor(tabId, "amazon.loadedOrChallenge", 10_000);
     const s = await this.driver.snapshot(tabId);
     const moss = this.pickers.find((p) => p.name === "moss");
     // A bot check is left for open() + step() to surface to the user, in the foreground.
@@ -275,7 +383,6 @@ export class AmazonFlow {
       this.mark("preload wait", t0);
       if (tabId !== undefined) {
         this.tabId = tabId;
-        await this.driver.focus(tabId);
         return ok({ url: `https://www.amazon.com/dp/${asin}` });
       }
     }
@@ -284,14 +391,14 @@ export class AmazonFlow {
 
   async addToCart() {
     this.marks = {};
-    const before = await this.driver.evaluate<string>(this.tabId!, "location.href");
+    const before = await this.driver.extract<string>(this.tabId!, "href");
     const r = await this.step(STEPS.addToCart);
     if (!r.ok) return r;
     const t0 = performance.now();
-    await this.driver.waitFor(this.tabId!, ADDED_JS(before), 5000);
+    await this.driver.waitFor(this.tabId!, "amazon.added", 5000, before);
     this.mark("wait confirmation", t0);
     // Decline the warranty upsell if shown. Deterministic: exact "No Thanks".
-    if (await this.driver.evaluate<boolean>(this.tabId!, WARRANTY_JS).catch(() => false)) {
+    if (await this.driver.extract<boolean>(this.tabId!, "amazon.warranty").catch(() => false)) {
       await sleep(300); // the pane animates in
       const s = await this.driver.snapshot(this.tabId!);
       const no = s.ok ? s.data.elements.find((e) => /^no,? thanks$/i.test(e.name)) : undefined;
@@ -306,44 +413,42 @@ export class AmazonFlow {
    * around that: we fall back to the ~8 "Top reviews" on the product page and report gated: true.
    */
   async reviews(asin: string, target = 30, maxPages = 6): Promise<Result<ReviewsResult>> {
-    const t = await this.driver.openTab("about:blank");
+    const t = await this.driver.openTab("about:blank", { background: true });
     if (!t.ok) return t;
     const tab = t.data.tabId;
-    if (this.tabId !== undefined) await this.driver.focus(this.tabId);
     try {
       const t0 = performance.now();
       const r = await this.driver.navigate(tab, `https://www.amazon.com/product-reviews/${asin}/?reviewerType=all_reviews`, "commit");
       if (!r.ok) return r;
-      await this.driver.waitFor(tab, REVIEWS_READY_JS, 10_000);
+      await this.driver.waitFor(tab, "amazon.reviewsReady", 10_000);
       this.mark("reviews first page", t0);
       const g = await this.blockedGate(tab);
       if (!g.ok) return g;
-      const gated = await this.driver.evaluate<boolean>(tab, `/\\/ap\\/signin/.test(location.pathname)`);
+      const gated = await this.driver.extract<boolean>(tab, "amazon.signin");
       if (gated) return await this.productPageReviews(tab, asin);
 
-      let scraped = await this.driver.evaluate<ScrapedReview[]>(tab, REVIEWS_JS);
+      let scraped = await this.driver.extract<ScrapedReview[]>(tab, "amazon.reviews");
       let pages = 1;
       while (toRawReviews(asin, scraped).length < target && pages < maxPages) {
         const t1 = performance.now();
         const before = scraped.length;
         // Newer layout: "Show 10 more reviews" appends in place. A plain button, never purchase-risk.
-        if (await this.driver.evaluate<boolean>(tab, `!!document.querySelector('${SHOW_MORE_SEL}')`)) {
+        if (await this.driver.extract<boolean>(tab, "amazon.hasShowMore")) {
           // Its click handler is bound late: clicking while the page is still loading does nothing. Retry once.
-          await this.driver.waitFor(tab, `document.readyState === 'complete'`, 5000);
-          const grew = `document.querySelectorAll('${REVIEW_SEL}').length > ${before} || ${CHALLENGE_JS}`;
+          await this.driver.waitFor(tab, "complete", 5000);
           for (let i = 0; i < 2; i++) {
-            await this.driver.evaluate(tab, `document.querySelector('${SHOW_MORE_SEL}')?.click()`);
-            if (await this.driver.waitFor(tab, grew, i ? 6000 : 3000)) break;
+            await this.driver.extract(tab, "amazon.clickShowMore");
+            if (await this.driver.waitFor(tab, "amazon.reviewsGrew", i ? 6000 : 3000, before)) break;
           }
-          scraped = await this.driver.evaluate<ScrapedReview[]>(tab, REVIEWS_JS);
+          scraped = await this.driver.extract<ScrapedReview[]>(tab, "amazon.reviews");
         } else {
           // Older layout: numbered pages.
-          const next = await this.driver.evaluate<string | null>(tab, NEXT_PAGE_JS);
+          const next = await this.driver.extract<string | null>(tab, "amazon.nextPage");
           if (!next) break;
           const n = await this.driver.navigate(tab, next, "commit");
           if (!n.ok) break;
-          await this.driver.waitFor(tab, REVIEWS_READY_JS, 10_000);
-          scraped = scraped.concat(await this.driver.evaluate<ScrapedReview[]>(tab, REVIEWS_JS));
+          await this.driver.waitFor(tab, "amazon.reviewsReady", 10_000);
+          scraped = scraped.concat(await this.driver.extract<ScrapedReview[]>(tab, "amazon.reviews"));
         }
         this.mark("reviews more", t1);
         const g2 = await this.blockedGate(tab);
@@ -360,20 +465,20 @@ export class AmazonFlow {
 
   private async productPageReviews(tab: number, asin: string): Promise<Result<ReviewsResult>> {
     const t0 = performance.now();
-    const gated = await this.driver.evaluate<boolean>(tab, `/\\/ap\\/signin/.test(location.pathname)`).catch(() => false);
+    const gated = await this.driver.extract<boolean>(tab, "amazon.signin").catch(() => false);
     const r = await this.driver.navigate(tab, `https://www.amazon.com/dp/${asin}`, "commit");
     if (!r.ok) return r;
-    await this.driver.waitFor(tab, `!!document.querySelector('${REVIEW_SEL}') || document.readyState === 'complete' || ${CHALLENGE_JS}`, 10_000);
+    await this.driver.waitFor(tab, "amazon.productReviewsReady", 10_000);
     const g = await this.blockedGate(tab);
     if (!g.ok) return g;
-    const reviews = toRawReviews(asin, await this.driver.evaluate<ScrapedReview[]>(tab, REVIEWS_JS));
+    const reviews = toRawReviews(asin, await this.driver.extract<ScrapedReview[]>(tab, "amazon.reviews"));
     this.mark("reviews product page", t0);
     return ok({ reviews, pages: 1, via: "product_page", gated });
   }
 
   /**
    * Navigator.getDetail for Amazon. Opens the product (a tab switch if preloaded) and scrapes reviews in parallel.
-   * Detail fields beyond bullets/description are C3.
+   * C3: detail fields come from a cached recipe (no AI); Claude writes one only on the first visit or a miss.
    */
   async getDetail(candidate: ProductCandidate, emit: Emit = () => {}): Promise<Result<ProductDetail>> {
     const asin = candidate.id.replace(/^amazon:/, "");
@@ -381,19 +486,36 @@ export class AmazonFlow {
     const reviewsP = this.reviews(asin);
     const opened = await this.open(asin);
     if (!opened.ok) return opened;
-    await this.driver.waitFor(this.tabId!, `!!document.querySelector('#feature-bullets, #productDescription') || document.readyState === 'complete' || ${CHALLENGE_JS}`, 10_000);
+    await this.driver.waitFor(this.tabId!, "amazon.loadedOrChallenge", 10_000);
     const g = await this.blockedGate();
     if (!g.ok) return g;
-    const d = await this.driver.evaluate<{ bullets: string[]; description: string }>(this.tabId!, DETAIL_JS);
+    const tab = this.tabId!;
+    const x = await extractWithRecipes("amazon:product", `https://www.amazon.com/dp/${asin}`, (name, arg) => this.driver.extract(tab, name, arg), this.recipes.cache, this.recipes.writer, AMAZON_PRODUCT_SEED);
+    this.lastExtract = { via: x.via, claudeCalls: x.claudeCalls, ms: x.ms };
+    this.marks["recipe"] = x.ms;
+    console.log(`[recipe] amazon:product via ${x.via}: ${x.claudeCalls} Claude call(s), ${x.ms} ms`);
+    const f = x.raw ? amazonFields(x.raw) : undefined;
+    const d = f?.bullets.length || f?.description ? { bullets: f.bullets, description: f.description ?? "" } : await this.driver.extract<{ bullets: string[]; description: string }>(tab, "amazon.detail");
     emit({ stage: "reviews", message: "Reading Amazon reviews", marketplace: "amazon", at: new Date().toISOString() });
     const rv = await reviewsP;
     return ok({
       ...candidate,
+      title: f?.title || candidate.title,
+      brand: f?.brand ?? candidate.brand,
+      price: f?.price ?? candidate.price,
+      listPrice: f?.listPrice ?? candidate.listPrice,
+      deal: f?.deal ?? candidate.deal,
+      rating: f?.rating ?? candidate.rating,
+      reviewCount: f?.reviewCount ?? candidate.reviewCount,
+      imageUrls: f?.imageUrls.length ? f.imageUrls : candidate.imageUrls,
+      shipping: f?.shipping ?? candidate.shipping,
+      inStock: f?.inStock ?? candidate.inStock,
+      source: x.raw ? { via: x.via === "claude" ? "claude" : "recipe", confidence: 0.9, fetchedAt: new Date().toISOString() } : candidate.source,
       description: d.description || d.bullets.join(" ") || candidate.title,
       bullets: d.bullets,
-      specs: {},
-      banners: [],
-      variants: [],
+      specs: f?.specs ?? {},
+      banners: f?.banners ?? [],
+      variants: f?.variants ?? [],
       retailerReviews: rv.ok ? rv.data.reviews : [],
     });
   }
@@ -404,8 +526,10 @@ export class AmazonFlow {
     const g = await this.goto("https://www.amazon.com/gp/cart/view.html");
     if (!g.ok) return g;
     const t0 = performance.now();
-    await this.driver.waitFor(this.tabId!, `!!document.querySelector('${SUBTOTAL_SEL}')`, 8000);
+    await this.driver.waitFor(this.tabId!, "amazon.subtotalReady", 8000);
     this.mark("wait subtotal", t0);
-    return ok({ subtotal: await this.driver.evaluate<string>(this.tabId!, SUBTOTAL_JS) });
+    // The user presses the final button themselves, so the cart comes to the front.
+    await this.driver.focus(this.tabId!);
+    return ok({ subtotal: await this.driver.extract<string>(this.tabId!, "amazon.subtotal") });
   }
 }

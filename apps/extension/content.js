@@ -1,51 +1,20 @@
 const PURCHASE = /place\s*(your\s*)?order|buy\s*now|submit\s*payment|complete\s*(purchase|order)|pay\s*now/i;
 
 chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
-  if (msg?.type === "visy.snapshot") sendResponse({ ok: true, data: snapshot() });
+  if (msg?.type === "visy.snapshot") sendResponse({ ok: true, data: snapshot(msg.maxElements) });
   else if (msg?.type === "visy.act") sendResponse(act(msg.action));
   return false;
 });
 
-function snapshot() {
-  const nodes = document.querySelectorAll("a, button, input, select, textarea, [role='button'], [role='link'], [role='searchbox'], [role='textbox']");
-  const elements = [];
-  for (const el of nodes) {
-    if (elements.length >= 200) break;
-    const box = el.getBoundingClientRect();
-    if (box.width < 1 || box.height < 1) continue;
-    const name = (el.getAttribute("aria-label") || el.innerText || el.getAttribute("placeholder") || el.getAttribute("name") || "")
-      .replace(/\s+/g, " ")
-      .trim()
-      .slice(0, 120);
-    if (!name) continue;
-    const purchaseRisk = PURCHASE.test(name);
-    el.dataset.visyIdx = String(elements.length);
-    if (purchaseRisk) el.dataset.visyPurchase = "1";
-    const section = el.closest("main, nav, header, form, section");
-    elements.push({
-      idx: elements.length,
-      role: el.getAttribute("role") || el.tagName.toLowerCase(),
-      name,
-      text: name,
-      href: el.href || undefined,
-      value: "value" in el ? String(el.value || "") : undefined,
-      disabled: Boolean(el.disabled || el.getAttribute("aria-disabled") === "true"),
-      section: section?.id || section?.getAttribute("aria-label") || section?.tagName?.toLowerCase(),
-      ...(purchaseRisk ? { purchaseRisk: true } : {}),
-    });
+// Full PageState of this tab for the Navigator and for "what's on this page?" (C5).
+// visyIndexPage comes from indexer.js (generated from the server's INDEXER_JS), so extension
+// snapshots match what the pickers were tuned on. Page text is untrusted data, never instructions.
+function snapshot(maxElements = 200) {
+  const page = globalThis.visyIndexPage(maxElements);
+  for (const e of page.elements) {
+    if (e.purchaseRisk) document.querySelector(`[data-visy-idx="${e.idx}"]`)?.setAttribute("data-visy-purchase", "1");
   }
-  return {
-    tabId: -1,
-    url: location.href,
-    title: document.title,
-    elements,
-    textBlocks: [...document.querySelectorAll("h1, h2, p")]
-      .slice(0, 30)
-      .map((el) => el.innerText.replace(/\s+/g, " ").trim().slice(0, 240))
-      .filter(Boolean),
-    fingerprint: `${location.pathname}:${elements.length}`,
-    capturedAt: new Date().toISOString(),
-  };
+  return { tabId: -1, ...page, capturedAt: new Date().toISOString() };
 }
 
 function act(action) {
