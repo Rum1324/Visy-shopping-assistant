@@ -93,10 +93,9 @@ export function liveServices(): Services {
 
     async getDetail(candidate, emit) {
       if (!candidate.id.startsWith("amazon:")) return mocks.getDetail(candidate, emit);
-      emit({ stage: "reading_product", marketplace: "amazon", message: "Reading the Amazon product page", at: new Date().toISOString() });
-      const asin = candidate.id.slice("amazon:".length);
-      const opened = await flow.open(asin);
-      if (!opened.ok) return opened;
+      // C2: opens the product and scrapes retailer reviews in parallel (emits reading_product, reviews).
+      const base = await flow.getDetail(candidate, emit);
+      if (!base.ok) return base;
       let title = candidate.title;
       let cents = candidate.price.cents;
       if (flow.tabId != null) {
@@ -111,10 +110,10 @@ export function liveServices(): Services {
         if (parsed != null) cents = parsed;
       }
       const detail = ProductDetail.parse({
-        ...candidate,
+        ...base.data,
         title,
         price: { cents, currency: "USD" },
-        description: title,
+        description: base.data.description || title,
       });
       seen.set(detail.id, detail);
       return ok(detail);
