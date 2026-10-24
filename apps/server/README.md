@@ -40,7 +40,7 @@ Claude sees elements as `e<idx>`, not bare numbers. With bare numbers, every mod
 What made it fast (`PROFILE=1 npm run demo` prints the breakdown):
 - Navigate with `waitUntil: "commit"`, then poll for what the step needs: result cards, the control, the confirmation, the subtotal. No fixed sleeps, and no waiting for DOMContentLoaded after clicks; that wait alone cost 1.7 s.
 - Pick while the page is still streaming. Memory, and Moss in strict mode (trusted only on an exact role+name match), run on every ~150 ms snapshot, so Moss embeds new element text while the network is still busy. The full chain, with Claude, runs only once the DOM is ready: at most one Claude call per step.
-- Moss indexes only the first 150 elements (viewport first). Every bench target sits at idx ≤ 101.
+- Moss embeds only the 30 most plausible elements per step (role + keyword prefilter, `MOSS_PREFILTER`, C1a), out of the first 150 (viewport first). Bench: the correct element survived the filter 38/38, 0 wrong clicks, embedding 445 → 144 ms per page. `npm run bench -- --no-claude` re-runs it without API calls (Claude rows come from `bench/claude-cache.json`).
 
 The rest is Amazon: about 0.9 s for the search results to arrive, about 0.5 s for each page's first byte.
 

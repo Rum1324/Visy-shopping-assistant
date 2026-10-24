@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { ok, type ElementPicker, type PageState } from "@visy/contracts";
-import { candidates, elementDoc, exactIntentMatch, strictPicker } from "../src/navigator/pickers/common.ts";
+import { candidates, elementDoc, exactIntentMatch, prefilter, strictPicker, tokens } from "../src/navigator/pickers/common.ts";
 import { pickWithChain } from "../src/navigator/chain.ts";
 
 const state: PageState = {
@@ -59,4 +59,22 @@ test("strict mode only trusts exact role+name matches (no keyboard-shortcut deco
 test("chain never returns a purchase-risk element even if a picker trusts it", async () => {
   const r = await pickWithChain([fake("moss", 3, true)], state, step);
   assert.equal(r.ok, false);
+});
+
+test("tokens split camelCase section ids and stem plurals", () => {
+  assert.deepEqual(tokens("averageCustomerReviews > acrPopover"), ["average", "customer", "review", "acr", "popover"]);
+});
+
+test("prefilter keeps the keyword match and fills up to k in page order", () => {
+  const filler = Array.from({ length: 40 }, (_, i) => ({ idx: 100 + i, role: "link", name: `Footer link ${i}`, section: "footer" }));
+  const reviews = { idx: 200, role: "button", name: "4.6 out of 5 stars", section: "averageCustomerReviews > acrPopover" };
+  const pool = prefilter([...filler, reviews], { kind: "find_control", intent: "link: customer ratings and reviews", then: "click" }, 10);
+  assert.equal(pool.length, 10);
+  assert.equal(pool[0]!.idx, 200);
+});
+
+test("prefilter is a no-op when k is 0 or there are few candidates", () => {
+  const atc = { kind: "find_control" as const, intent: "button: Add to Cart", then: "click" as const };
+  assert.equal(prefilter(state.elements, atc, 0).length, state.elements.length);
+  assert.equal(prefilter(state.elements, atc, 30).length, state.elements.length);
 });
