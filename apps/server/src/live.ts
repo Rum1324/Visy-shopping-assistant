@@ -3,7 +3,9 @@
  * Target and Walmart stay on fixtures until those flows exist.
  * Set NAV=amazon. A bot check is handed to the human; we never solve it.
  *
- * Called from apps/server/src/ws.ts start() when NAV=amazon.
+ * Called from apps/server/src/ws.ts start() when NAV=amazon. `driver()` returns the connected extension's
+ * driver, so the flow runs in the user's own signed-in Chrome. With no extension connected (or DRIVER=playwright)
+ * it falls back to a separate Playwright Chrome.
  */
 import {
   err,
@@ -14,6 +16,7 @@ import {
   type Marketplace,
   type Navigator,
   type ProductCandidate as Candidate,
+  type Result,
   type Services,
 } from "@visy/contracts";
 import {
@@ -25,10 +28,14 @@ import {
   mockVisionService,
 } from "@visy/contracts/mocks";
 import { buildChain } from "./navigator/chain.ts";
+import type { FlowDriver } from "./navigator/driver/flow.ts";
 import { PlaywrightDriver } from "./navigator/driver/playwright.ts";
 import { AmazonFlow } from "./navigator/sites/amazon.ts";
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+/** A driver call can throw (tab closed, extension reloaded mid-call). Turn it into an error the agent can say. */
+const safe = <T>(p: Promise<Result<T>>): Promise<Result<T>> =>
+  p.catch((e) => err("internal", `Amazon flow failed: ${e instanceof Error ? e.message : e}`, true));
 
 export function parseDollars(price: string | null | undefined): number | undefined {
   if (!price) return;
@@ -45,20 +52,29 @@ function ratingOf(text: string | null): number | undefined {
   return n >= 0 && n <= 5 ? n : undefined;
 }
 
-export function liveServices(): Services {
+export function liveServices(opts: { driver?: () => FlowDriver | undefined } = {}): Services {
   const mocks = mockNavigator({ latencyMs: 0 });
-  const driver = new PlaywrightDriver();
   const chain = buildChain();
-  let flow: AmazonFlow;
+  let playwright: PlaywrightDriver | undefined;
+  let current: { driver: FlowDriver; flow: AmazonFlow } | undefined;
   let announce: (message: string) => void = (message) => console.log(message);
-  flow = new AmazonFlow(driver, chain.pickers, chain.memory, async () => {
-    announce("Amazon is showing a bot check. Solve it in the browser window. I will not bypass it.");
-    const end = Date.now() + 90_000;
-    while (Date.now() < end && flow.tabId != null) {
-      if (!(await driver.isBlocked(flow.tabId))) return;
-      await sleep(2000);
-    }
-  });
+  /** One AmazonFlow per driver: a new extension connection starts with fresh tabs. */
+  const use = () => {
+    const ext = process.env.DRIVER === "playwright" ? undefined : opts.driver?.();
+    const driver = ext ?? (playwright ??= new PlaywrightDriver());
+    if (current?.driver === driver) return current;
+    console.log(ext ? "[nav] driving your Chrome through the Visy extension" : "[nav] no extension connected: using a Playwright Chrome");
+    const flow: AmazonFlow = new AmazonFlow(driver, chain.pickers, chain.memory, async () => {
+      announce("Amazon is showing a bot check. Solve it in the browser tab I just brought up. I will not bypass it.");
+      const end = Date.now() + 90_000;
+      while (Date.now() < end && flow.tabId != null) {
+        if (!(await driver.isBlocked(flow.tabId))) return;
+        await sleep(2000);
+      }
+    });
+    current = { driver, flow };
+    return current;
+  };
   const seen = new Map<string, Candidate>();
   let lastAdded: Candidate | undefined;
 
@@ -67,7 +83,8 @@ export function liveServices(): Services {
       announce = (message) => emit({ stage: "searching", marketplace, message, at: new Date().toISOString() });
       if (marketplace !== "amazon") return mocks.search(need, marketplace, emit);
       emit({ stage: "searching", marketplace: "amazon", message: "Searching Amazon now", at: new Date().toISOString() });
-      const found = await flow.search(need.query);
+      const { flow } = use();
+      const found = await safe(flow.search(need.query));
       if (!found.ok) return found;
       const candidates: Candidate[] = [];
       for (const row of found.data) {
@@ -94,17 +111,15 @@ export function liveServices(): Services {
     async getDetail(candidate, emit) {
       if (!candidate.id.startsWith("amazon:")) return mocks.getDetail(candidate, emit);
       // C2 + C3: opens the product, reads details via a cached recipe and scrapes retailer reviews in parallel.
-      const base = await flow.getDetail(candidate, emit);
+      const { flow, driver } = use();
+      const base = await safe(flow.getDetail(candidate, emit));
       if (!base.ok) return base;
       let title = base.data.title;
       let cents = base.data.price.cents;
       // C3's recipe already read title and price; this is only the no-recipe fallback.
       if (flow.tabId != null && flow.lastExtract?.via === "none") {
         const page = await driver
-          .evaluate<{ title: string; price: string | null }>(
-            flow.tabId,
-            `({ title: (document.querySelector("#productTitle")?.innerText || "").trim(), price: document.querySelector(".a-price .a-offscreen")?.textContent?.trim() || null })`,
-          )
+          .extract<{ title: string; price: string | null }>(flow.tabId, "amazon.titlePrice")
           .catch(() => ({ title: "", price: null }));
         if (page.title) title = page.title;
         const parsed = parseDollars(page.price);
@@ -125,11 +140,12 @@ export function liveServices(): Services {
       const product = seen.get(id);
       if (!product) return err("not_found", `No Amazon product ${id}`);
       emit({ stage: "carting", marketplace: "amazon", message: "Adding it to your Amazon cart", at: new Date().toISOString() });
+      const { flow } = use();
       if (!flow.tabId) {
-        const opened = await flow.open(id.slice("amazon:".length));
+        const opened = await safe(flow.open(id.slice("amazon:".length)));
         if (!opened.ok) return opened;
       }
-      const added = await flow.addToCart();
+      const added = await safe(flow.addToCart());
       if (!added.ok) return added;
       lastAdded = product;
       return ok({ productId: id, title: product.title, quantity: 1, price: product.price });
@@ -138,7 +154,7 @@ export function liveServices(): Services {
     async openCheckout(marketplace, emit) {
       if (marketplace !== "amazon") return mocks.openCheckout(marketplace, emit);
       emit({ stage: "checkout", marketplace: "amazon", message: "Opening your Amazon cart", at: new Date().toISOString() });
-      const cart = await flow.viewCart();
+      const cart = await safe(use().flow.viewCart());
       if (!cart.ok) return cart;
       const cents = parseDollars(cart.data.subtotal);
       if (cents == null) return err("parse_failed", "Amazon cart subtotal was not on the page");

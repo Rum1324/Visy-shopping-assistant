@@ -123,6 +123,10 @@ export const OUTLINE_JS = `((budget) => {
   return cut(ser(root), budget);
 })`;
 
+/** Named page scripts (navigator/scripts.ts), so the extension (which can't eval strings) runs recipes too. */
+export const RECIPE_SCRIPTS = { "recipe.replay": `(${REPLAY_JS})(arg)`, "recipe.outline": `${OUTLINE_JS}(arg)` };
+export type RecipeScript = keyof typeof RECIPE_SCRIPTS;
+
 const FIELDS = ["title", "price", "listPrice", "deal", "prime", "rating", "reviewCount", "brand", "availability", "delivery", "bullets", "description", "banners", "images", "specs", "variants"] as const;
 
 /** Fields that produced a value. prime counts only when present (false is a fine answer but proves nothing). */
@@ -241,13 +245,13 @@ export type Extracted = { raw: RawDetail | null; via: "replay" | "claude" | "see
 
 /**
  * Replay cached recipes; on a miss, ask Claude for a new one, check it on this page, and cache it if it reads at
- * least 3 fields. If Claude can't write one, a site's hand-checked `seed` recipe takes its place. `evaluate` runs
- * JS in the page.
+ * least 3 fields. If Claude can't write one, a site's hand-checked `seed` recipe takes its place. `run` runs a
+ * RECIPE_SCRIPTS script in the page (FlowDriver.extract).
  */
 export async function extractWithRecipes(
   pageType: string,
   url: string,
-  evaluate: <T>(js: string) => Promise<T>,
+  run: <T>(name: RecipeScript, arg: unknown) => Promise<T>,
   cache: RecipeCache,
   writer: RecipeWriter,
   seed?: RecipeFields,
@@ -256,7 +260,7 @@ export async function extractWithRecipes(
   const ms = () => Math.round(performance.now() - t0);
   let best: RawDetail | null = null;
   for (const r of cache.get(pageType)) {
-    const raw = await evaluate<RawDetail>(replayJs(r.fields)).catch(() => null);
+    const raw = await run<RawDetail>("recipe.replay", r.fields).catch(() => null);
     if (!raw) continue;
     if (isHit(raw, r.expect)) {
       cache.hit(pageType, r);
@@ -264,7 +268,7 @@ export async function extractWithRecipes(
     }
     if (!best || foundFields(raw).length > foundFields(best).length) best = raw;
   }
-  const outline = await evaluate<string>(`${OUTLINE_JS}(120000)`).catch(() => "");
+  const outline = await run<string>("recipe.outline", 120000).catch(() => "");
   if (!outline) return { raw: best, via: best ? "replay" : "none", claudeCalls: 0, ms: ms() };
   const before = writer.calls;
   const w = await writer.write(pageType, url, outline);
@@ -272,7 +276,7 @@ export async function extractWithRecipes(
   if (!w.ok) console.warn(`[recipe] ${pageType}: ${w.error.message}${seed ? "; trying the seed recipe" : ""}`);
   const fields = w.ok ? w.data : seed;
   if (!fields) return { raw: best, via: best ? "replay" : "none", claudeCalls, ms: ms() };
-  const raw = await evaluate<RawDetail>(replayJs(fields)).catch(() => null);
+  const raw = await run<RawDetail>("recipe.replay", fields).catch(() => null);
   const expect = raw ? foundFields(raw) : [];
   if (raw && expect.length >= 3) cache.add(pageType, { fields, expect });
   const via = !raw ? "none" : w.ok ? "claude" : "seed";

@@ -1,5 +1,7 @@
 import { chromium, type BrowserContext, type Page } from "playwright";
-import { err, ok, BUDGETS_MS, type Action, type BrowserDriver, type PageState, type Result } from "@visy/contracts";
+import { err, ok, BUDGETS_MS, type Action, type PageState, type Result } from "@visy/contracts";
+import { scriptCall, type ScriptName } from "../scripts.ts";
+import type { FlowDriver } from "./flow.ts";
 import { INDEXER_JS } from "./indexer.ts";
 
 import { CAPTCHA, looksBlocked } from "./blocked.ts";
@@ -8,8 +10,10 @@ import { CAPTCHA, looksBlocked } from "./blocked.ts";
  * Local Chromium driver. Headed + persistent profile by default: Amazon blocks headless datacenter traffic,
  * and a persistent profile keeps the user's own login. We never solve CAPTCHAs: snapshot returns err("blocked").
  */
-export class PlaywrightDriver implements BrowserDriver {
+export class PlaywrightDriver implements FlowDriver {
   private ctx?: BrowserContext;
+  /** The page the user should be looking at: background openTab brings it back to the front. */
+  private front?: Page;
   private pages = new Map<number, Page>();
   private last = new Map<number, PageState>();
   private nextId = 1;
@@ -34,6 +38,7 @@ export class PlaywrightDriver implements BrowserDriver {
       this.ctx = undefined;
       this.pages.clear();
       this.last.clear();
+      this.front = undefined;
     });
     return this.ctx;
   }
@@ -42,12 +47,15 @@ export class PlaywrightDriver implements BrowserDriver {
     return this.pages.get(tabId);
   }
 
-  async openTab(url: string): Promise<Result<{ tabId: number }>> {
+  async openTab(url: string, opts: { background?: boolean } = {}): Promise<Result<{ tabId: number }>> {
     try {
       const ctx = await this.context();
       const page = ctx.pages().find((p) => p.url() === "about:blank" && ![...this.pages.values()].includes(p)) ?? (await ctx.newPage());
       const tabId = this.nextId++;
       this.pages.set(tabId, page);
+      // A new page comes to the front in headed Chrome; put the user's page back on top.
+      if (opts.background && this.front && this.front !== page && !this.front.isClosed()) await this.front.bringToFront().catch(() => {});
+      else this.front = page;
       await page.goto(url, { waitUntil: "domcontentloaded", timeout: BUDGETS_MS.marketplaceSearch });
       return ok({ tabId });
     } catch (e) {
@@ -136,29 +144,31 @@ export class PlaywrightDriver implements BrowserDriver {
 
   /** Brings the tab to the front. Preload tabs are opened in the background (the extension: tabs.create({ active: false })). */
   async focus(tabId: number) {
-    await this.pages.get(tabId)?.bringToFront().catch(() => {});
+    const page = this.pages.get(tabId);
+    if (page) this.front = page;
+    await page?.bringToFront().catch(() => {});
   }
 
-  /** Polls a JS predicate in the page (every 100 ms). Returns false on timeout instead of throwing. */
-  async waitFor(tabId: number, js: string, timeoutMs: number): Promise<boolean> {
+  /** Polls a named page script (every 100 ms). Returns false on timeout instead of throwing. */
+  async waitFor(tabId: number, name: ScriptName, timeoutMs: number, arg?: unknown): Promise<boolean> {
     try {
-      await this.pages.get(tabId)!.waitForFunction(js, undefined, { timeout: timeoutMs, polling: 100 });
+      await this.pages.get(tabId)!.waitForFunction(scriptCall(name, arg), undefined, { timeout: timeoutMs, polling: 100 });
       return true;
     } catch {
       return false;
     }
   }
 
-  /** Cheap bot-check test (no full index): URL, title, top of the page text, challenge forms. */
+  async extract<T>(tabId: number, name: ScriptName, arg?: unknown): Promise<T> {
+    return this.evaluate<T>(tabId, scriptCall(name, arg));
+  }
+
   async isBlocked(tabId: number): Promise<boolean> {
-    const probe = await this.evaluate<string>(
-      tabId,
-      `location.href + " " + document.title + " " + (document.body ? document.body.innerText.slice(0, 600) : "") + (document.querySelector("#checkpointForm, form[action*=validateCaptcha]") ? " captcha" : "")`,
-    ).catch(() => "");
+    const probe = await this.extract<string>(tabId, "blockProbe").catch(() => "");
     return CAPTCHA.test(probe);
   }
 
-  /** Not in BrowserDriver: site-specific extraction (result cards, cart subtotal). The extension will need an equivalent op. */
+  /** Any JS string, Playwright only (bench and C1c's parallel tabs). Site flows use extract() so the extension can run them too. */
   async evaluate<T>(tabId: number, js: string): Promise<T> {
     return (await this.pages.get(tabId)!.evaluate(js)) as T;
   }

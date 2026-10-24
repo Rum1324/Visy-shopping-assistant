@@ -4,7 +4,7 @@ import { mkdtempSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { err, ok } from "@visy/contracts";
-import { extractWithRecipes, isHit, OUTLINE_JS, RecipeCache, type RawDetail, type RecipeFields, type RecipeWriter } from "../src/navigator/recipes.ts";
+import { extractWithRecipes, isHit, RecipeCache, type RawDetail, type RecipeFields, type RecipeWriter } from "../src/navigator/recipes.ts";
 import { amazonFields, imageUrls } from "../src/navigator/sites/amazon.ts";
 
 const sel = (css: string, attr: string | null = null) => ({ css, attr });
@@ -54,8 +54,8 @@ const page = (over: Partial<RawDetail> = {}): RawDetail => ({
 /** Fake page: the outline is canned, and any recipe replay returns `current`. Counts what ran. */
 function fakePage(current: () => RawDetail) {
   const ran = { outline: 0, replay: 0 };
-  const evaluate = async <T>(js: string): Promise<T> => {
-    if (js.startsWith(OUTLINE_JS)) {
+  const evaluate = async <T>(name: string): Promise<T> => {
+    if (name === "recipe.outline") {
       ran.outline++;
       return "<div id=\"dp\">…</div>" as T;
     }
