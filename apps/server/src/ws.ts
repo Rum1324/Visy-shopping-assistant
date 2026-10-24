@@ -11,6 +11,9 @@ import { pageCapture, type CapturePage } from "./navigator/capture.ts";
 import { ExtensionDriver } from "./navigator/driver/extension.ts";
 import { liveServices } from "./live.ts";
 import { convexPreferenceStore } from "./prefs-convex.ts";
+import { claudeReviewService } from "./intel/reviews.ts";
+import { claudeVisionService } from "./intel/vision.ts";
+import { mossReviewIndex } from "./intel/review-index.ts";
 import { Cartesia } from "./voice.ts";
 
 const TTS_RATE = 24000;
@@ -26,7 +29,14 @@ export function start(
   // NAV=amazon drives the most recently connected extension's Chrome (Playwright when none is connected).
   const extensions: ExtensionDriver[] = [];
   const base = process.env.NAV === "amazon" ? liveServices({ driver: () => extensions.at(-1) }) : mockServices({ latencyMs });
-  const services = process.env.PREFS === "convex" ? { ...base, prefs: convexPreferenceStore() } : base;
+  const withPrefs = process.env.PREFS === "convex" ? { ...base, prefs: convexPreferenceStore() } : base;
+  // Track D: real review synthesis + vision with NAV=amazon or INTEL=claude. INTEL=mock keeps fixtures.
+  const intel = process.env.INTEL ? process.env.INTEL === "claude" : process.env.NAV === "amazon";
+  const reviewIndex = intel && process.env.MOSS_PROJECT_ID ? mossReviewIndex() : undefined;
+  void reviewIndex?.warm(); // load the embedding model now, not on the first question
+  const services = intel
+    ? { ...withPrefs, reviews: claudeReviewService(), vision: claudeVisionService(), reviewIndex: reviewIndex ?? withPrefs.reviewIndex }
+    : withPrefs;
   const cartesia = opts.disableVoice ? new Cartesia("") : new Cartesia();
   const wss = new WebSocketServer({ port });
 

@@ -218,7 +218,7 @@ export function createAgent(services: Services, sink: AgentSink, opts: { llm?: L
     const data = [];
     for (const item of items) {
       const found = await services.reviewIndex.search(item.product.id, question, 3);
-      const reviews = found.ok ? found.data.map((r) => r.body.slice(0, 400)) : [];
+      const reviews = found.ok ? found.data.map((r) => (r.title ? `${r.title}. ${r.body}` : r.body).slice(0, 400)) : [];
       for (const body of reviews) {
         const score = words.filter((w) => body.toLowerCase().includes(w)).length;
         if (score > best) {
@@ -233,6 +233,11 @@ export function createAgent(services: Services, sink: AgentSink, opts: { llm?: L
         description: "description" in product ? product.description.slice(0, 400) : undefined,
         bullets: "bullets" in product ? product.bullets.slice(0, 5) : undefined,
         reviewSummary: item.reviews?.summary,
+        cons: item.reviews?.cons,
+        reviewWarnings: item.reviews?.warnings,
+        // Track D: accessibility answers from the synthesis and what the photo shows.
+        accessibility: item.reviews?.accessibility.filter((a) => a.sentiment !== "unknown").map((a) => ({ question: a.question, answer: a.answer })),
+        looks: item.visual ? `${item.visual.short} ${item.visual.detailed}` : undefined,
         reviews,
       });
     }
@@ -311,22 +316,27 @@ export function createAgent(services: Services, sink: AgentSink, opts: { llm?: L
   async function answerQuestion(text: string, id: number) {
     if (!state) return;
     publish({ ...state, phase: "qa" });
+    // D2: Moss ranks by meaning within a product, so each product's top hit is its best answer even with no shared words.
+    // Across products: most word overlap wins; with none, the focused product's hit.
+    // "does option 2 …" / "is the second one …" asks about that product only.
+    const named = /(?:option|number)\s*[123]\b|\b(first|second|third)\b/i.test(text) ? state.shortlist[optionIndex(text)] : undefined;
     const words = text.toLowerCase().split(/\W+/).filter((w) => w.length > 3);
-    let quote = "";
-    let best = 0;
-    for (const item of state.shortlist) {
-      const found = await services.reviewIndex.search(item.product.id, text, 3);
-      if (!found.ok) continue;
-      for (const review of found.data) {
-        const score = words.filter((w) => review.body.toLowerCase().includes(w)).length;
-        if (score > best) {
-          best = score;
-          quote = review.body;
-        }
-      }
-    }
+    const hits = await Promise.all(
+      (named ? [named] : state.shortlist).map(async (item) => {
+        const found = await services.reviewIndex.search(item.product.id, text, 3);
+        const top = found.ok ? found.data[0] : undefined;
+        const body = top ? (top.title ? `${top.title}. ${top.body}` : top.body) : "";
+        const overlap = words.filter((w) => body.toLowerCase().includes(w)).length;
+        return { item, body, overlap, focused: item.product.id === state?.focusedProductId };
+      }),
+    );
+    const best = hits
+      .filter((h) => h.body)
+      .sort((a, b) => b.overlap - a.overlap || Number(b.focused) - Number(a.focused))[0];
+    const quote = best?.body ?? "";
+    const about = best && state.shortlist.length > 1 ? `For option ${best.item.rank}, ` : "";
     if (id !== run || !state) return;
-    await say(quote ? `Reviewers say: ${quote.slice(0, 180)}` : "I don't have a review that answers that.");
+    await say(quote ? `${about || "A"}${about ? "a" : ""} reviewer says: ${quote.slice(0, 220)}` : "I don't have a review that answers that.");
     if (id !== run || !state) return;
     publish({ ...state, phase: "presenting" });
   }
@@ -369,12 +379,18 @@ export function createAgent(services: Services, sink: AgentSink, opts: { llm?: L
       let reviews: ShortlistItem["reviews"];
       let visual: ShortlistItem["visual"];
       if (detail.ok) {
-        const external = await services.reviews.collectExternal(detail.data, emit);
-        const pool = [...detail.data.retailerReviews, ...(external.ok ? external.data : [])];
-        if (pool.length) await services.reviewIndex.index(detail.data.id, pool);
-        const synth = await services.reviews.synthesize(detail.data, pool, need);
+        // Vision only needs the photo, so it runs alongside review collection, indexing and synthesis.
+        const synthP = (async () => {
+          const external = await services.reviews.collectExternal(detail.data, emit);
+          const pool = [...detail.data.retailerReviews, ...(external.ok ? external.data : [])];
+          const [, synth] = await Promise.all([
+            pool.length ? services.reviewIndex.index(detail.data.id, pool) : undefined,
+            services.reviews.synthesize(detail.data, pool, need),
+          ]);
+          return synth;
+        })();
+        const [synth, vis] = await Promise.all([synthP, services.vision.describe(detail.data)]);
         if (synth.ok) reviews = synth.data;
-        const vis = await services.vision.describe(detail.data);
         if (vis.ok) visual = vis.data;
       }
       const item: ShortlistItem = {
