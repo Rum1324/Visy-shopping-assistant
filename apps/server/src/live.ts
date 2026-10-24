@@ -93,12 +93,13 @@ export function liveServices(): Services {
 
     async getDetail(candidate, emit) {
       if (!candidate.id.startsWith("amazon:")) return mocks.getDetail(candidate, emit);
-      // C2: opens the product and scrapes retailer reviews in parallel (emits reading_product, reviews).
+      // C2 + C3: opens the product, reads details via a cached recipe and scrapes retailer reviews in parallel.
       const base = await flow.getDetail(candidate, emit);
       if (!base.ok) return base;
-      let title = candidate.title;
-      let cents = candidate.price.cents;
-      if (flow.tabId != null) {
+      let title = base.data.title;
+      let cents = base.data.price.cents;
+      // C3's recipe already read title and price; this is only the no-recipe fallback.
+      if (flow.tabId != null && flow.lastExtract?.via === "none") {
         const page = await driver
           .evaluate<{ title: string; price: string | null }>(
             flow.tabId,
