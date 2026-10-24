@@ -53,6 +53,21 @@ The rest is Amazon: about 0.9 s for the search results to arrive, about 0.5 s fo
 
 Preloading 3 pages took 5.0–6.0 s, which is less than the narration, so `open` never waited. Most of what's left is Playwright's click (~0.7 s).
 
+**Retailer reviews (C2).** `flow.getDetail(candidate)` opens the product page and, at the same time, scrapes reviews in a background tab (`flow.reviews(asin, 30)`). It returns `ProductDetail.retailerReviews` as `RawReview { source: "retailer", untrusted: true }` with rating, title, body, date, author and verified purchase. Run it with `npm run reviews -w @visy/server -- "<query>" | <ASIN>`.
+
+- **Sign-in required.** Amazon redirects `/product-reviews/` and `/portal/customer-reviews/` to `/ap/signin` when signed out. Signed out, `reviews()` falls back to the product page's top reviews (13 for the picnic blanket) and reports `gated: true`. Sign in once with `npm run reviews -- --login "<query>"`.
+- **Paging:** "Show 10 more reviews" appends in place; `pageNumber=N` URLs are ignored. Its click handler is bound late, so the scraper waits for `readyState === 'complete'` and retries the click once.
+
+Measured 2026-10-24, signed-in profile, browser warm:
+
+| Product | Reviews | `reviews()` alone | `getDetail` (product page + reviews in parallel) |
+|---|---|---|---|
+| Picnic blanket B0FC2HQHQ4 | 30, all with rating+title+body+date (3 pages) | 2.7–3.1 s | 1.6 s |
+| USB-C cable B0CZDJTRPZ | 30, all complete (3 pages) | 1.6 s | 1.8 s |
+| Picnic blanket, signed out | 13 from the product page | 3.9 s | 3.0 s |
+
+First page ~0.3–0.5 s, then ~0.5 s per "show more". Review text is untrusted data for D; nothing here acts on it.
+
 ## Setup
 
 1. Copy the root `.env.example` to `apps/server/.env`, then fill in `ANTHROPIC_API_KEY`, `MOSS_PROJECT_ID` and `MOSS_PROJECT_KEY`. Get the Moss values from the moss.dev portal; redeem `CALHACKS` on its billing page.
@@ -68,6 +83,7 @@ Preloading 3 pages took 5.0–6.0 s, which is less than the narration, so `open`
 | `npm run snap -- amazon walmart target` | a terminal (bot checks) | Saves real `PageState`s to `bench/snapshots/` |
 | `npm run bench [-- --no-claude]` | Moss (+ Anthropic) keys | Per-picker accuracy and latency, a `MOSS_GAP` sweep with zero wrong clicks, and chain vs Claude-only |
 | `npm run demo -- "picnic blanket"` | keys + headed Chrome | Live run: search, top 3, open #1, Add to Cart, cart subtotal. Stops before checkout |
+| `npm run reviews -- "picnic blanket"` | headed Chrome, signed-in profile | C2: getDetail review count, a sample, timings. No cart actions |
 
 Speed claim for the demo:
 

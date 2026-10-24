@@ -45,7 +45,7 @@ const REVIEWS_JS = `Array.from(document.querySelectorAll('${REVIEW_SEL}')).map((
   const stars = r.querySelector('[data-hook="review-star-rating"], [data-hook="cmps-review-star-rating"], .review-rating')?.textContent || '';
   const lines = (el) => (el?.innerText || '').split('\\n').map((l) => l.trim()).filter(Boolean);
   const title = lines(q('reviewTitle', 'review-title')).filter((l) => !/out of 5 stars/.test(l)).join(' ');
-  const body = lines(q('reviewText', 'review-body')).filter((l) => !/^(Read more|See more|Report|Helpful)$/i.test(l)).join('\\n');
+  const body = lines(q('reviewText', 'review-body')).filter((l) => !/^(Read more|See more|Report|Helpful|Click to play video)$/i.test(l)).join('\\n');
   return {
     id: (r.id || '').replace(/^customer_review(_foreign)?-/, ''),
     rating: parseFloat(stars) || null,
@@ -328,8 +328,13 @@ export class AmazonFlow {
         const before = scraped.length;
         // Newer layout: "Show 10 more reviews" appends in place. A plain button, never purchase-risk.
         if (await this.driver.evaluate<boolean>(tab, `!!document.querySelector('${SHOW_MORE_SEL}')`)) {
-          await this.driver.evaluate(tab, `document.querySelector('${SHOW_MORE_SEL}').click()`);
-          await this.driver.waitFor(tab, `document.querySelectorAll('${REVIEW_SEL}').length > ${before} || ${CHALLENGE_JS}`, 8000);
+          // Its click handler is bound late: clicking while the page is still loading does nothing. Retry once.
+          await this.driver.waitFor(tab, `document.readyState === 'complete'`, 5000);
+          const grew = `document.querySelectorAll('${REVIEW_SEL}').length > ${before} || ${CHALLENGE_JS}`;
+          for (let i = 0; i < 2; i++) {
+            await this.driver.evaluate(tab, `document.querySelector('${SHOW_MORE_SEL}')?.click()`);
+            if (await this.driver.waitFor(tab, grew, i ? 6000 : 3000)) break;
+          }
           scraped = await this.driver.evaluate<ScrapedReview[]>(tab, REVIEWS_JS);
         } else {
           // Older layout: numbered pages.
