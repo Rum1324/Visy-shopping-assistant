@@ -2,7 +2,7 @@
 
 Branch: `ab/extension-and-agent`. Claimed 2026-10-24. Do not start a second extension or conversation agent.
 
-Track C (navigator, Moss picker chain) is already on `main`. This branch does not rewrite it. The agent calls `Services` and uses `mockServices()` until someone swaps in the real navigator.
+Track C (navigator, Moss picker chain) is already on `main`. This branch does not rewrite it. With `NAV=amazon` the agent searches Amazon through that flow. Target and Walmart stay on fixtures.
 
 ## Direction
 
@@ -27,11 +27,11 @@ Load `apps/extension` as an unpacked extension. Side panel: type "picnic blanket
 ## Working on this branch
 
 - Type or hold the mic. Cartesia transcribes on the server and speaks the replies. Progress lines stay on screen and are not all spoken, so the shortlist is not buried under status chatter.
-- "picnic blanket" searches the three stores through `Services` (mocks until Track C is swapped in) and speaks an accessibility line when the reviews have one.
+- "picnic blanket" searches Amazon, Target, and Walmart. Set `NAV=amazon` in `apps/server/.env` for a real Amazon search. Target and Walmart stay sample listings, and the spoken line says so. Reviews for a live Amazon product are skipped until Track D exists. A bot check is handed to the person at the browser. Nothing presses Place order.
 - "is the backing waterproof?" answers from the review index. Review text is quoted, not obeyed.
 - "under $20" filters the shortlist. "add option 1" reads checkout back and stops. "yes" checks that total and still does not press Place order. The side panel has Stop, and a button that sends `checkout.confirm` for the total that was read back.
 - The extension reconnects if the server is not up yet.
 
 ## Not this branch
 
-Picker bake-off, Playwright shopping, Apify reviews, and replacing `mockServices()` with Track C. Contract changes stay additive. `npm test` must pass.
+Picker bake-off, real Target and Walmart flows, and Apify reviews. Contract changes stay additive. `npm test` must pass.

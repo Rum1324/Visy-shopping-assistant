@@ -149,7 +149,11 @@ export function createAgent(services: Services, sink: AgentSink) {
     if (!state) return;
     const need = Need.parse({ query: text.trim(), marketplaces: ["amazon", "target", "walmart"] });
     publish({ ...state, phase: "searching", need, candidates: [], shortlist: [], cart: [] });
-    await sink.say(`${need.query}. I'll check Amazon, Target, and Walmart.`);
+    const where =
+      process.env.NAV === "amazon"
+        ? `${need.query}. I'll check Amazon. Target and Walmart stay on sample listings.`
+        : `${need.query}. I'll check Amazon, Target, and Walmart.`;
+    await sink.say(where);
     if (id !== run || !state) return;
     const results = await Promise.all(need.marketplaces.map((m) => services.navigator.search(need, m, emit)));
     if (id !== run || !state) return;
@@ -213,7 +217,7 @@ export function createAgent(services: Services, sink: AgentSink) {
       await sink.say("I couldn't open checkout.");
       return;
     }
-    const readBack = `${item.product.title}. Total $${(review.data.total.cents / 100).toFixed(2)}. I will not place the order. Press Place your order when you are ready.`;
+    const readBack = `${review.data.readBack} I will not place the order. Press Place your order when you are ready.`;
     const checkout = { ...review.data, readBack };
     publish({ ...state, phase: "checkout_review", checkout });
     sink.send({ type: "checkout.confirmRequired", review: checkout });
