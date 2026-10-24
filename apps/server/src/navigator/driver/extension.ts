@@ -59,6 +59,18 @@ export class ExtensionDriver implements FlowDriver {
 
   private call<T>(req: DriverRequest, timeoutMs = this.timeoutMs): Promise<Result<T>> {
     const id = `drv-${++this.seq}`;
+    if (process.env.DEBUG_DRIVER) {
+      const t0 = performance.now();
+      const label = `${req.op}${"name" in req ? ` ${req.name}` : ""}${"url" in req ? ` ${req.url}` : ""}`;
+      return this.send0<T>(id, req, timeoutMs).then((r) => {
+        console.log(`[driver] ${label} → ${r.ok ? "ok" : r.error.code} ${Math.round(performance.now() - t0)} ms`);
+        return r;
+      });
+    }
+    return this.send0<T>(id, req, timeoutMs);
+  }
+
+  private send0<T>(id: string, req: DriverRequest, timeoutMs: number): Promise<Result<T>> {
     return new Promise((resolve) => {
       const timer = setTimeout(() => {
         this.pending.delete(id);
