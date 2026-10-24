@@ -110,7 +110,7 @@ The Navigator's chain is configurable (`recipe → jev → moss → claude`, or 
 
 ## 5. Where retrieval (Moss) fits
 
-1. **PreferenceStore:** "ran out of seaweed, order the usual" → retrieve past purchases and preferences.
+1. **PreferenceStore:** "ran out of seaweed, order the usual" → retrieve past purchases and preferences. The rows live in Convex. Moss only retrieves them. See [TRACKS-B.md](TRACKS-B.md).
 2. **ReviewIndex:** chunk and index all collected reviews for the current shortlist so follow-up questions ("is the strap adjustable?") get grounded answers in under a second.
 3. **RecipeCache lookup** (stretch): find the closest known recipe for an unseen but similar site.
 
