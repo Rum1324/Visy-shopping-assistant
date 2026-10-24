@@ -13,7 +13,8 @@
     "parallel": "tsx --env-file-if-exists=.env bench/parallel-demo.ts",
     "reviews": "tsx --env-file-if-exists=.env bench/reviews.ts",
     "start": "tsx --env-file-if-exists=.env src/ws.ts",
-    "seed-prefs": "tsx --env-file-if-exists=.env src/seed-prefs.ts"
+    "seed-prefs": "tsx --env-file-if-exists=.env src/seed-prefs.ts",
+    "gen-indexer": "tsx scripts/gen-indexer.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^1.3.0",

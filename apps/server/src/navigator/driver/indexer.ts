@@ -118,3 +118,11 @@ export const INDEXER_JS = String.raw`(maxElements) => {
 
   return { url: location.href, title: document.title, elements, textBlocks, fingerprint: (h >>> 0).toString(36) };
 }`;
+
+/**
+ * Source of apps/extension/indexer.js, the content-script copy of INDEXER_JS (MV3 can't eval strings).
+ * Regenerate with `npm run gen-indexer -w @visy/server`; test/capture.test.ts fails when it drifts.
+ */
+export function extensionIndexerSource() {
+  return `// GENERATED from apps/server/src/navigator/driver/indexer.ts by \`npm run gen-indexer -w @visy/server\`. Do not edit.\nglobalThis.visyIndexPage = ${INDEXER_JS};\n`;
+}

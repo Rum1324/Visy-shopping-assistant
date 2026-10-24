@@ -44,6 +44,9 @@ export const Action = z.discriminatedUnion("kind", [
 ]);
 export type Action = z.infer<typeof Action>;
 
+/** Pass as `tabId` to act on the tab the user is looking at (the extension resolves it). Used for "what's on this page?". */
+export const ACTIVE_TAB = -1;
+
 export const DriverRequest = z.discriminatedUnion("op", [
   z.object({ op: z.literal("openTab"), url: z.url() }),
   z.object({ op: z.literal("navigate"), tabId: z.number().int(), url: z.url() }),

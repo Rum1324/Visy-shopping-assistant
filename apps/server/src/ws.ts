@@ -7,13 +7,20 @@ import { WebSocketServer } from "ws";
 import { ClientMsg, ServerMsg, type ServerMsg as ServerMsgT } from "@visy/contracts";
 import { mockServices } from "@visy/contracts/mocks";
 import { createAgent, type SayKind } from "./agent.ts";
+import { pageCapture, type CapturePage } from "./navigator/capture.ts";
+import { ExtensionDriver } from "./navigator/driver/extension.ts";
 import { liveServices } from "./live.ts";
 import { convexPreferenceStore } from "./prefs-convex.ts";
 import { Cartesia } from "./voice.ts";
 
 const TTS_RATE = 24000;
 
-export function start(opts: { port?: number; latencyMs?: number; disableVoice?: boolean } = {}) {
+/** One per connected client. `capturePage()` returns the user's open tab as a PageState (C5). */
+export type Connection = { driver: ExtensionDriver; capturePage: CapturePage };
+
+export function start(
+  opts: { port?: number; latencyMs?: number; disableVoice?: boolean; onConnection?: (conn: Connection) => void } = {},
+) {
   const port = opts.port ?? Number(process.env.PORT ?? 8787);
   const latencyMs = opts.latencyMs ?? Number(process.env.MOCK_LATENCY_MS ?? 400);
   const base = process.env.NAV === "amazon" ? liveServices() : mockServices({ latencyMs });
@@ -34,10 +41,16 @@ export function start(opts: { port?: number; latencyMs?: number; disableVoice?: 
       turn = turn.then(fn, fn);
     };
 
+    const driver = new ExtensionDriver(send);
+    const capturePage = pageCapture(driver);
+    ws.on("close", () => driver.dispose());
+    opts.onConnection?.({ driver, capturePage });
+
     const agent = createAgent(services, {
       send,
       say,
       stopSpeaking,
+      capturePage,
     });
 
     function send(msg: ServerMsgT) {
@@ -143,7 +156,7 @@ export function start(opts: { port?: number; latencyMs?: number; disableVoice?: 
         return;
       }
       if (msg.type === "driver.response") {
-        console.log("driver.response", msg.id, msg.ok ? "ok" : msg.error?.code);
+        driver.handle(msg);
       }
     });
 
