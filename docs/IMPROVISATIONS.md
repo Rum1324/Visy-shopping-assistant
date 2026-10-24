@@ -6,7 +6,9 @@ If you improvise, add an entry in the same commit and push it. Say what changed,
 
 ## 2026-10-24 — Listen after the greeting
 
-When the Cartesia welcome clip ends, the side panel opens the mic (`audio.start` / PCM / `audio.end`) and Cartesia STT turns the utterance into `handleText`. It listens again after Visy finishes speaking. Chrome will ask for microphone access once.
+When the Cartesia welcome clip ends, the side panel opens the mic (`audio.start` / PCM / `audio.end`) and Cartesia STT turns the utterance into `handleText`. It listens again after Visy finishes speaking.
+
+Chrome will not show a mic prompt inside the side panel. The extension opens `mic.html` as a tab; the user clicks Allow microphone there, then the side panel can use the same origin permission.
 
 ## 2026-10-24 — Real Chrome via the extension (a/real-chrome)
 

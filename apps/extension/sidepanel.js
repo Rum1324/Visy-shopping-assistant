@@ -428,6 +428,8 @@ function playPcm(bytes, rate) {
   return { ctx: audioCtx, start, duration: buffer.duration };
 }
 
+let askingMic = false;
+
 async function ensureMic() {
   if (micStream) return true;
   try {
@@ -436,9 +438,28 @@ async function ensureMic() {
     });
     return true;
   } catch {
+    void askMicTab();
     return false;
   }
 }
+
+async function askMicTab() {
+  if (askingMic || !chrome.tabs?.create) return;
+  askingMic = true;
+  try {
+    await chrome.tabs.create({ url: chrome.runtime.getURL("mic.html"), active: true });
+  } catch {
+    askingMic = false;
+  }
+}
+
+chrome.runtime.onMessage.addListener((msg) => {
+  if (msg?.type !== "visy.mic.granted") return;
+  askingMic = false;
+  void ensureMic().then((ok) => {
+    if (ok) maybeListen();
+  });
+});
 
 function maybeListen() {
   if (paused || busy || ttsOn || pendingSay.size || playingCount > 0) return;
