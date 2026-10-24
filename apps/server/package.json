@@ -6,16 +6,17 @@
   "scripts": {
     "typecheck": "tsc --noEmit",
     "test": "tsx --test test/*.test.ts",
-    "spike": "tsx --env-file-if-exists=.env bench/moss-spike.ts",
-    "snap": "tsx --env-file-if-exists=.env bench/snap.ts",
-    "bench": "tsx --env-file-if-exists=.env bench/run.ts",
-    "demo": "tsx --env-file-if-exists=.env src/demo.ts",
-    "parallel": "tsx --env-file-if-exists=.env bench/parallel-demo.ts",
-    "reviews": "tsx --env-file-if-exists=.env bench/reviews.ts",
-    "detail": "tsx --env-file-if-exists=.env bench/detail.ts",
-    "start": "tsx --env-file-if-exists=.env src/ws.ts",
-    "seed-prefs": "tsx --env-file-if-exists=.env src/seed-prefs.ts",
-    "gen-indexer": "tsx scripts/gen-indexer.ts"
+    "spike": "tsx --env-file-if-exists=$HOME/.config/visy/server.env --env-file-if-exists=.env bench/moss-spike.ts",
+    "snap": "tsx --env-file-if-exists=$HOME/.config/visy/server.env --env-file-if-exists=.env bench/snap.ts",
+    "bench": "tsx --env-file-if-exists=$HOME/.config/visy/server.env --env-file-if-exists=.env bench/run.ts",
+    "demo": "tsx --env-file-if-exists=$HOME/.config/visy/server.env --env-file-if-exists=.env src/demo.ts",
+    "parallel": "tsx --env-file-if-exists=$HOME/.config/visy/server.env --env-file-if-exists=.env bench/parallel-demo.ts",
+    "reviews": "tsx --env-file-if-exists=$HOME/.config/visy/server.env --env-file-if-exists=.env bench/reviews.ts",
+    "detail": "tsx --env-file-if-exists=$HOME/.config/visy/server.env --env-file-if-exists=.env bench/detail.ts",
+    "start": "tsx --env-file-if-exists=$HOME/.config/visy/server.env --env-file-if-exists=.env src/ws.ts",
+    "seed-prefs": "tsx --env-file-if-exists=$HOME/.config/visy/server.env --env-file-if-exists=.env src/seed-prefs.ts",
+    "gen-indexer": "tsx scripts/gen-indexer.ts",
+    "convex:deploy": "node --env-file-if-exists=$HOME/.config/visy/server.env --env-file-if-exists=.env \"$(command -v convex)\" deploy -y"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^1.3.0",
