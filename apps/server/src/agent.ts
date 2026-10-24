@@ -57,6 +57,7 @@ export function createAgent(services: Services, sink: AgentSink) {
       }),
     );
     sink.send({ type: "welcome", sessionId: state!.sessionId, protocol: CONTRACT_VERSION });
+    await sink.say("What do you want?", "question");
   }
 
   function interrupt() {
