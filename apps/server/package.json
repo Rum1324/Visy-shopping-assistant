@@ -11,6 +11,7 @@
     "bench": "tsx --env-file-if-exists=.env bench/run.ts",
     "demo": "tsx --env-file-if-exists=.env src/demo.ts",
     "parallel": "tsx --env-file-if-exists=.env bench/parallel-demo.ts",
+    "reviews": "tsx --env-file-if-exists=.env bench/reviews.ts",
     "start": "tsx --env-file-if-exists=.env src/ws.ts",
     "seed-prefs": "tsx --env-file-if-exists=.env src/seed-prefs.ts"
   },
