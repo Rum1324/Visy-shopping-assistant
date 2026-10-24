@@ -101,6 +101,13 @@ Run the same steps with `JevPicker`, `MossPicker` and `ClaudePicker` and log eve
 
 The Navigator's chain is configurable (`recipe → jev → moss → claude`, or any order) so the winner is a config change, not a rewrite.
 
+**Result (2026-10-24, Moss + Claude; Jev not tested yet).** 38 cases on 10 real pages; details in `apps/server/README.md`.
+- **Chain:** `memory → moss → claude` (`PICKER_CHAIN`).
+- **Moss:** α=0.2 (mostly keyword), `MOSS_GAP=0.1`. It handles 63% of steps alone with **0 wrong clicks**, at about 4 ms per query. Moss's default α=0.8 makes confident wrong clicks.
+- **Claude fallback:** Haiku 5.5, low effort, thinking off. 38/38 correct, p50 1.17 s. Sonnet 5.5 and Opus 5.5 were no more accurate and were slower.
+- **Live Amazon flow** (search, open product, Add to Cart, cart): **3.4–4.0 s warm** with 0 Claude calls, 6.1 s cold. The Claude-only chain took 6.8 s.
+- **Bot walls:** Walmart and Target block or empty out the automated browser after one page, so they're only in the bench as search pages. The extension's real browser should fare better.
+
 ## 5. Where retrieval (Moss) fits
 
 1. **PreferenceStore:** "ran out of seaweed, order the usual" → retrieve past purchases and preferences.

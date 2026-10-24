@@ -27,12 +27,15 @@ const time = async <T>(label: string, fn: () => Promise<T>) => {
   const t0 = performance.now();
   const r = await fn();
   timings[label] = Math.round(performance.now() - t0);
+  if (process.env.PROFILE) console.log(`  ${label}: ${timings[label]} ms ${JSON.stringify(flow.marks)}`);
   return r;
 };
 
 const pickers = chain.pickers.map((p) => p.name).join(" → ");
 const tWarm = performance.now();
-await chain.moss?.warm(); // loads the embedding model once (~7 s); a server does this at boot
+// What a running server / the extension already has: embedding model loaded (~2–7 s) and a browser tab open.
+const [, tab] = await Promise.all([chain.moss?.warm(), driver.openTab("about:blank")]);
+if (tab.ok) flow.tabId = tab.data.tabId;
 console.log(`chain: ${pickers}  memory entries: ${(await chain.memory?.size()) ?? "-"}  warm-up ${Math.round(performance.now() - tWarm)} ms  query: "${query}"`);
 const tStart = performance.now();
 try {

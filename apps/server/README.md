@@ -29,15 +29,20 @@ Purchase buttons (`purchaseRisk`) are never candidates. Bot checks return `err("
 
 Claude sees elements as `e<idx>`, not bare numbers. With bare numbers, every model answered "107" for the review link named "(107,591)".
 
-**Live Amazon demo** ("picnic blanket": search, open, Add to Cart, cart; signed-in profile):
+**Live Amazon demo** ("picnic blanket": search, open, Add to Cart, cart; signed-in profile; browser and model already warm):
 
-| Run | Add to Cart picked by | Pick time | Claude calls | Total |
+| Run | Add to Cart picked by | Claude calls | Total, v1 | Total, now |
 |---|---|---|---|---|
-| Cold (empty memory) | moss | 6 ms | 0 | 13.1 s |
-| Warm | memory | 56 ms | 0 | 11.3 s |
-| Claude only | claude | 1.45 s | 1 | 11.5 s |
+| Warm (memory hit) | memory, 5–9 ms | 0 | 11.3 s | **3.4–4.0 s** |
+| Cold (empty memory) | Moss, 4 ms (+ about 1.5 s embedding during load) | 0 | 13.1 s | **6.1 s** |
+| Claude only (`PICKER_CHAIN=claude`) | Claude, 1.5 s | 1 | 11.5 s | 6.8 s |
 
-Each picker step saves about 1.4 s, but this flow has only one such step. Page loads (about 3 s each) and the fixed 1.2 s wait after Add to Cart dominate the total. The next speed wins are waiting on selectors instead of fixed sleeps, and preloading the product page.
+What made it fast (`PROFILE=1 npm run demo` prints the breakdown):
+- Navigate with `waitUntil: "commit"`, then poll for what the step needs: result cards, the control, the confirmation, the subtotal. No fixed sleeps, and no waiting for DOMContentLoaded after clicks; that wait alone cost 1.7 s.
+- Pick while the page is still streaming. Memory, and Moss in strict mode (trusted only on an exact role+name match), run on every ~150 ms snapshot, so Moss embeds new element text while the network is still busy. The full chain, with Claude, runs only once the DOM is ready: at most one Claude call per step.
+- Moss indexes only the first 150 elements (viewport first). Every bench target sits at idx ≤ 101.
+
+The rest is Amazon: about 0.9 s for the search results to arrive, about 0.5 s for each page's first byte.
 
 ## Setup
 

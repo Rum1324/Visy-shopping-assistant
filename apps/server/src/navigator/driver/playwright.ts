@@ -56,11 +56,12 @@ export class PlaywrightDriver implements BrowserDriver {
     }
   }
 
-  async navigate(tabId: number, url: string): Promise<Result<{ url: string }>> {
+  /** waitUntil "commit" returns as soon as the response starts; callers then poll for what they need. */
+  async navigate(tabId: number, url: string, waitUntil: "commit" | "domcontentloaded" = "domcontentloaded"): Promise<Result<{ url: string }>> {
     const page = this.pages.get(tabId);
     if (!page) return err("not_found", `no tab ${tabId}`);
     try {
-      await page.goto(url, { waitUntil: "domcontentloaded", timeout: BUDGETS_MS.marketplaceSearch });
+      await page.goto(url, { waitUntil, timeout: BUDGETS_MS.marketplaceSearch });
       return ok({ url: page.url() });
     } catch (e) {
       return err("timeout", `navigate failed: ${(e as Error).message}`, true);
@@ -117,7 +118,8 @@ export class PlaywrightDriver implements BrowserDriver {
           await page.keyboard.press(action.key);
           break;
       }
-      await page.waitForLoadState("domcontentloaded", { timeout: 3000 }).catch(() => {});
+      // No load wait here: callers wait for the signal they actually need (results, confirmation, …).
+      // Waiting for DOMContentLoaded cost ~1.7 s when we click a button before the page finished loading.
       return ok({ navigated: page.url() !== before });
     } catch (e) {
       return err("internal", `act ${action.kind} failed: ${(e as Error).message}`, true);
@@ -136,6 +138,25 @@ export class PlaywrightDriver implements BrowserDriver {
     this.pages.delete(tabId);
     this.last.delete(tabId);
     return ok({});
+  }
+
+  /** Polls a JS predicate in the page (every 100 ms). Returns false on timeout instead of throwing. */
+  async waitFor(tabId: number, js: string, timeoutMs: number): Promise<boolean> {
+    try {
+      await this.pages.get(tabId)!.waitForFunction(js, undefined, { timeout: timeoutMs, polling: 100 });
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  /** Cheap bot-check test (no full index): URL, title, top of the page text, challenge forms. */
+  async isBlocked(tabId: number): Promise<boolean> {
+    const probe = await this.evaluate<string>(
+      tabId,
+      `location.href + " " + document.title + " " + (document.body ? document.body.innerText.slice(0, 600) : "") + (document.querySelector("#checkpointForm, form[action*=validateCaptcha]") ? " captcha" : "")`,
+    ).catch(() => "");
+    return CAPTCHA.test(probe);
   }
 
   /** Not in BrowserDriver: site-specific extraction (result cards, cart subtotal). The extension will need an equivalent op. */

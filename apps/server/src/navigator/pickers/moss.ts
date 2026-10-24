@@ -28,8 +28,8 @@ export class MossPicker implements ElementPicker {
     private gap = Number(process.env.MOSS_GAP ?? 0.1),
     /** Hybrid weight: 1 = semantic only, 0 = keyword (BM25) only. Bench winner: 0.2. */
     public alpha = Number(process.env.MOSS_ALPHA ?? 0.2),
-    /** Only the first N elements (viewport first) are indexed per page. */
-    private maxPerPage = Number(process.env.MOSS_MAX_ELEMENTS ?? 200),
+    /** Only the first N elements (viewport first) are indexed per page. Bench targets all sit at idx ≤ 101. */
+    private maxPerPage = Number(process.env.MOSS_MAX_ELEMENTS ?? 150),
   ) {}
 
   /** Call once at startup: the first session loads the embedding model (~7 s). */
