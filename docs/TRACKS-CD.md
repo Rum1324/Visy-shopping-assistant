@@ -30,7 +30,7 @@ Contracts: **no change needed now.** `ProductDetail.retailerReviews` already exi
 
 | # | Item | Why | Done when |
 |---|---|---|---|
-| C1a | **Candidate-filter experiment.** Embed only plausible elements (role + keyword prefilter, ~30 instead of 150) | Cold embedding ~1.5 s → est. ~0.1–0.3 s | Bench shows accuracy unchanged (0 wrong clicks) against the current 38-case result |
+| C1a | **Candidate-filter experiment.** Embed only plausible elements (role + keyword prefilter, ~30 instead of 150) | Cold embedding ~1.5 s → est. ~0.1–0.3 s | Bench shows accuracy unchanged (0 wrong clicks) against the current 38-case result. **✅ Done (2026-10-24):** the correct element survived the filter 38/38 (ranked #1 each time), 0 wrong clicks, embedding 445 → 144 ms per page, and Moss alone handles 66% of steps (was 63%). Default `MOSS_PREFILTER=30` |
 | C1b | **Preload and pre-index the 3 shortlisted product pages** in background tabs while B narrates them | Hides open + page wait + embedding (est. −3 s per chosen product) | "Add the first one" runs at warm speed on a product never visited before |
 | C1c | **One Moss session per tab, in parallel**, for multi-site search | Embedding (CPU) overlaps page loads (network) | A 3-marketplace search takes about as long as the slowest site, not the sum |
 | C2 | **Retailer review scraping** in `getDetail` (Amazon first) | Core demo moment and the longest browser task; feeds D | `ProductDetail.retailerReviews` has ≥ 30 reviews for a real product, with rating, title, body, date and `source: "retailer"` |

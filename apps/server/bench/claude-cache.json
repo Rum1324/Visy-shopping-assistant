@@ -1,0 +1,384 @@
+[
+ {
+  "picker": "haiku-5-5/low/think-off",
+  "snap": "amazon-product-picnic-blanket.json",
+  "intent": "button: Add to Cart | section: buy box",
+  "correct": true,
+  "trusted": true,
+  "gap": 0.95,
+  "latencyMs": 1538.4983749999997,
+  "indexMs": 0
+ },
+ {
+  "picker": "haiku-5-5/low/think-off",
+  "snap": "amazon-product-picnic-blanket.json",
+  "intent": "combobox: Quantity",
+  "correct": true,
+  "trusted": true,
+  "gap": 0.95,
+  "latencyMs": 873.4162500000002,
+  "indexMs": 0
+ },
+ {
+  "picker": "haiku-5-5/low/think-off",
+  "snap": "amazon-product-picnic-blanket.json",
+  "intent": "link: customer ratings and reviews",
+  "correct": true,
+  "trusted": true,
+  "gap": 0.85,
+  "latencyMs": 957.7009580000004,
+  "indexMs": 0
+ },
+ {
+  "picker": "haiku-5-5/low/think-off",
+  "snap": "amazon-product-picnic-blanket.json",
+  "intent": "searchbox: Search Amazon | section: navigation bar",
+  "correct": true,
+  "trusted": true,
+  "gap": 0.97,
+  "latencyMs": 697.5282079999997,
+  "indexMs": 0
+ },
+ {
+  "picker": "haiku-5-5/low/think-off",
+  "snap": "amazon-product-picnic-blanket.json",
+  "intent": "link: Cart | section: navigation bar",
+  "correct": true,
+  "trusted": true,
+  "gap": 0.95,
+  "latencyMs": 1009.8116250000003,
+  "indexMs": 0
+ },
+ {
+  "picker": "haiku-5-5/low/think-off",
+  "snap": "amazon-product-seaweed-snacks.json",
+  "intent": "button: Add to Cart | section: buy box",
+  "correct": true,
+  "trusted": true,
+  "gap": 0.97,
+  "latencyMs": 1158.8950829999994,
+  "indexMs": 0
+ },
+ {
+  "picker": "haiku-5-5/low/think-off",
+  "snap": "amazon-product-seaweed-snacks.json",
+  "intent": "combobox: Quantity",
+  "correct": true,
+  "trusted": true,
+  "gap": 0.95,
+  "latencyMs": 1118.530084,
+  "indexMs": 0
+ },
+ {
+  "picker": "haiku-5-5/low/think-off",
+  "snap": "amazon-product-seaweed-snacks.json",
+  "intent": "link: customer ratings and reviews",
+  "correct": true,
+  "trusted": true,
+  "gap": 0.8,
+  "latencyMs": 1546.9097909999982,
+  "indexMs": 0
+ },
+ {
+  "picker": "haiku-5-5/low/think-off",
+  "snap": "amazon-product-seaweed-snacks.json",
+  "intent": "searchbox: Search Amazon | section: navigation bar",
+  "correct": true,
+  "trusted": true,
+  "gap": 0.97,
+  "latencyMs": 1286.8005410000005,
+  "indexMs": 0
+ },
+ {
+  "picker": "haiku-5-5/low/think-off",
+  "snap": "amazon-product-seaweed-snacks.json",
+  "intent": "link: Cart | section: navigation bar",
+  "correct": true,
+  "trusted": true,
+  "gap": 0.93,
+  "latencyMs": 1255.305209000002,
+  "indexMs": 0
+ },
+ {
+  "picker": "haiku-5-5/low/think-off",
+  "snap": "amazon-product-usb-c-cable.json",
+  "intent": "button: Add to Cart | section: buy box",
+  "correct": true,
+  "trusted": true,
+  "gap": 0.97,
+  "latencyMs": 816.9240829999981,
+  "indexMs": 0
+ },
+ {
+  "picker": "haiku-5-5/low/think-off",
+  "snap": "amazon-product-usb-c-cable.json",
+  "intent": "combobox: Quantity",
+  "correct": true,
+  "trusted": true,
+  "gap": 0.95,
+  "latencyMs": 1315.2567920000001,
+  "indexMs": 0
+ },
+ {
+  "picker": "haiku-5-5/low/think-off",
+  "snap": "amazon-product-usb-c-cable.json",
+  "intent": "link: customer ratings and reviews",
+  "correct": true,
+  "trusted": true,
+  "gap": 0.8,
+  "latencyMs": 812.9299170000013,
+  "indexMs": 0
+ },
+ {
+  "picker": "haiku-5-5/low/think-off",
+  "snap": "amazon-product-usb-c-cable.json",
+  "intent": "searchbox: Search Amazon | section: navigation bar",
+  "correct": true,
+  "trusted": true,
+  "gap": 0.97,
+  "latencyMs": 846.2621670000008,
+  "indexMs": 0
+ },
+ {
+  "picker": "haiku-5-5/low/think-off",
+  "snap": "amazon-product-usb-c-cable.json",
+  "intent": "link: Cart | section: navigation bar",
+  "correct": true,
+  "trusted": true,
+  "gap": 0.9,
+  "latencyMs": 1004.3834999999963,
+  "indexMs": 0
+ },
+ {
+  "picker": "haiku-5-5/low/think-off",
+  "snap": "amazon-search-picnic-blanket.json",
+  "intent": "searchbox: Search Amazon | section: navigation bar",
+  "correct": true,
+  "trusted": true,
+  "gap": 0.97,
+  "latencyMs": 956.4102910000001,
+  "indexMs": 0
+ },
+ {
+  "picker": "haiku-5-5/low/think-off",
+  "snap": "amazon-search-picnic-blanket.json",
+  "intent": "button: Go (submit search)",
+  "correct": true,
+  "trusted": true,
+  "gap": 0.97,
+  "latencyMs": 1153.851499999997,
+  "indexMs": 0
+ },
+ {
+  "picker": "haiku-5-5/low/think-off",
+  "snap": "amazon-search-picnic-blanket.json",
+  "intent": "link: Cart | section: navigation bar",
+  "correct": true,
+  "trusted": true,
+  "gap": 0.3,
+  "latencyMs": 789.0078330000033,
+  "indexMs": 0
+ },
+ {
+  "picker": "haiku-5-5/low/think-off",
+  "snap": "amazon-search-picnic-blanket.json",
+  "intent": "link: Next page of results",
+  "correct": true,
+  "trusted": true,
+  "gap": 0.8,
+  "latencyMs": 842.1317920000001,
+  "indexMs": 0
+ },
+ {
+  "picker": "haiku-5-5/low/think-off",
+  "snap": "amazon-search-picnic-blanket.json",
+  "intent": "link: Sign in / account",
+  "correct": true,
+  "trusted": true,
+  "gap": 0.9,
+  "latencyMs": 1125.760792000001,
+  "indexMs": 0
+ },
+ {
+  "picker": "haiku-5-5/low/think-off",
+  "snap": "amazon-search-seaweed-snacks.json",
+  "intent": "searchbox: Search Amazon | section: navigation bar",
+  "correct": true,
+  "trusted": true,
+  "gap": 0.97,
+  "latencyMs": 1086.7596249999988,
+  "indexMs": 0
+ },
+ {
+  "picker": "haiku-5-5/low/think-off",
+  "snap": "amazon-search-seaweed-snacks.json",
+  "intent": "button: Go (submit search)",
+  "correct": true,
+  "trusted": true,
+  "gap": 0.97,
+  "latencyMs": 939.0996660000019,
+  "indexMs": 0
+ },
+ {
+  "picker": "haiku-5-5/low/think-off",
+  "snap": "amazon-search-seaweed-snacks.json",
+  "intent": "link: Cart | section: navigation bar",
+  "correct": true,
+  "trusted": true,
+  "gap": 0.6,
+  "latencyMs": 1074.9876670000012,
+  "indexMs": 0
+ },
+ {
+  "picker": "haiku-5-5/low/think-off",
+  "snap": "amazon-search-seaweed-snacks.json",
+  "intent": "link: Next page of results",
+  "correct": true,
+  "trusted": true,
+  "gap": 0.95,
+  "latencyMs": 1261.7655410000007,
+  "indexMs": 0
+ },
+ {
+  "picker": "haiku-5-5/low/think-off",
+  "snap": "amazon-search-seaweed-snacks.json",
+  "intent": "link: Sign in / account",
+  "correct": true,
+  "trusted": true,
+  "gap": 0.92,
+  "latencyMs": 1017.992624999999,
+  "indexMs": 0
+ },
+ {
+  "picker": "haiku-5-5/low/think-off",
+  "snap": "amazon-search-usb-c-cable.json",
+  "intent": "searchbox: Search Amazon | section: navigation bar",
+  "correct": true,
+  "trusted": true,
+  "gap": 0.97,
+  "latencyMs": 1078.401165999996,
+  "indexMs": 0
+ },
+ {
+  "picker": "haiku-5-5/low/think-off",
+  "snap": "amazon-search-usb-c-cable.json",
+  "intent": "button: Go (submit search)",
+  "correct": true,
+  "trusted": true,
+  "gap": 0.97,
+  "latencyMs": 706.3380000000034,
+  "indexMs": 0
+ },
+ {
+  "picker": "haiku-5-5/low/think-off",
+  "snap": "amazon-search-usb-c-cable.json",
+  "intent": "link: Cart | section: navigation bar",
+  "correct": true,
+  "trusted": true,
+  "gap": 0.6,
+  "latencyMs": 1073.3288329999996,
+  "indexMs": 0
+ },
+ {
+  "picker": "haiku-5-5/low/think-off",
+  "snap": "amazon-search-usb-c-cable.json",
+  "intent": "link: Next page of results",
+  "correct": true,
+  "trusted": true,
+  "gap": 0.8,
+  "latencyMs": 862.2827919999982,
+  "indexMs": 0
+ },
+ {
+  "picker": "haiku-5-5/low/think-off",
+  "snap": "amazon-search-usb-c-cable.json",
+  "intent": "link: Sign in / account",
+  "correct": true,
+  "trusted": true,
+  "gap": 0.93,
+  "latencyMs": 1370.9858339999992,
+  "indexMs": 0
+ },
+ {
+  "picker": "haiku-5-5/low/think-off",
+  "snap": "target-search-picnic-blanket.json",
+  "intent": "searchbox: Search Target | section: header",
+  "correct": true,
+  "trusted": true,
+  "gap": 0.97,
+  "latencyMs": 729.995167000001,
+  "indexMs": 0
+ },
+ {
+  "picker": "haiku-5-5/low/think-off",
+  "snap": "target-search-picnic-blanket.json",
+  "intent": "link: Cart | section: header",
+  "correct": true,
+  "trusted": true,
+  "gap": 0.93,
+  "latencyMs": 1023.0954159999965,
+  "indexMs": 0
+ },
+ {
+  "picker": "haiku-5-5/low/think-off",
+  "snap": "target-search-seaweed-snacks.json",
+  "intent": "searchbox: Search Target | section: header",
+  "correct": true,
+  "trusted": true,
+  "gap": 0.95,
+  "latencyMs": 1156.467374999993,
+  "indexMs": 0
+ },
+ {
+  "picker": "haiku-5-5/low/think-off",
+  "snap": "target-search-seaweed-snacks.json",
+  "intent": "link: Cart | section: header",
+  "correct": true,
+  "trusted": true,
+  "gap": 0.95,
+  "latencyMs": 1147.9029169999994,
+  "indexMs": 0
+ },
+ {
+  "picker": "haiku-5-5/low/think-off",
+  "snap": "target-search-usb-c-cable.json",
+  "intent": "searchbox: Search Target | section: header",
+  "correct": true,
+  "trusted": true,
+  "gap": 0.95,
+  "latencyMs": 884.7006249999977,
+  "indexMs": 0
+ },
+ {
+  "picker": "haiku-5-5/low/think-off",
+  "snap": "target-search-usb-c-cable.json",
+  "intent": "link: Cart | section: header",
+  "correct": true,
+  "trusted": true,
+  "gap": 0.93,
+  "latencyMs": 976.5957079999935,
+  "indexMs": 0
+ },
+ {
+  "picker": "haiku-5-5/low/think-off",
+  "snap": "walmart-search-picnic-blanket.json",
+  "intent": "searchbox: Search Walmart | section: header",
+  "correct": false,
+  "trusted": false,
+  "gap": 0,
+  "latencyMs": 0,
+  "indexMs": 0,
+  "error": "claude 400: 400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"You have reached your specified API usage limits. You will regain access on 2026-11-01 at 00:00 UTC.\"},\"request_id\":\"req_011CgMeSoa7xh5ZALH59Q2oW\"}"
+ },
+ {
+  "picker": "haiku-5-5/low/think-off",
+  "snap": "walmart-search-picnic-blanket.json",
+  "intent": "link: Cart | section: header",
+  "correct": false,
+  "trusted": false,
+  "gap": 0,
+  "latencyMs": 0,
+  "indexMs": 0,
+  "error": "claude 400: 400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"You have reached your specified API usage limits. You will regain access on 2026-11-01 at 00:00 UTC.\"},\"request_id\":\"req_011CgMeSq3uv9LM1Kc3KindL\"}"
+ }
+]
