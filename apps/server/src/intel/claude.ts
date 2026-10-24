@@ -1,8 +1,11 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { err, type Result } from "@visy/contracts";
 
-/** Model for D's synthesis and vision. INTEL_MODEL / INTEL_EFFORT override (e.g. claude-haiku-5-5 for speed). */
-export const INTEL_MODEL = process.env.INTEL_MODEL || "claude-opus-5-5";
+/**
+ * Model for D's synthesis and vision. INTEL_MODEL / INTEL_EFFORT override.
+ * Haiku for the demo: 30 real reviews, synthesis + vision 3.9 s vs 14.1 s on claude-opus-5-5 (low), similar quality.
+ */
+export const INTEL_MODEL = process.env.INTEL_MODEL || "claude-haiku-5-5";
 export const INTEL_EFFORT = (process.env.INTEL_EFFORT || "low") as "low" | "medium" | "high";
 
 // Same pinning as the Claude picker: ANTHROPIC_BASE_URL may point elsewhere in the host shell.
