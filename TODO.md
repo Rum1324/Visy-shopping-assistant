@@ -16,7 +16,6 @@ Line format: `[status] ID · task · owner · branch · since HH:MM PT`. Use one
 
 ## In progress
 
-- [working] D-MAIN · Land Track D (PR #10 went to the wrong branch) on `main`, merged with the tool loop · agent: Visy Track D (for Sota) · `d/intel` · since 16:45 PT
 - [working] DOCS-ARCH · Architecture flow diagram · agent: Architecture flow diagram (for Sota) · branch unknown · since 16:40 PT
 
 ## Open
@@ -34,6 +33,7 @@ Line format: `[status] ID · task · owner · branch · since HH:MM PT`. Use one
 
 ## Done
 
+- [done] D-MAIN · Track D on `main`: review synthesis, Moss review Q&A, photo descriptions, wired into the tool loop · [PR #11](https://github.com/Rum1324/Visy-shopping-assistant/pull/11)
 - [done] A+B · Chrome side panel, Cartesia voice, conversation server · `561b7dd`
 - [done] C1a · Moss embeds only the ~30 most plausible elements · `39bd8bd`
 - [done] C1b · Preload the shortlisted product pages · `187df2f`
