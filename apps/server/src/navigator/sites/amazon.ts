@@ -1,4 +1,15 @@
-import { err, ok, type ElementPicker, type PageState, type Result } from "@visy/contracts";
+import {
+  err,
+  ok,
+  productId,
+  RawReview,
+  type ElementPicker,
+  type Emit,
+  type PageState,
+  type ProductCandidate,
+  type ProductDetail,
+  type Result,
+} from "@visy/contracts";
 import type { PlaywrightDriver } from "../driver/playwright.ts";
 import { pickWithChain, type ChainPick } from "../chain.ts";
 import { strictPicker, type FindStep } from "../pickers/common.ts";
@@ -23,6 +34,71 @@ const CHALLENGE_JS = `!!document.querySelector('#checkpointForm, form[action*=va
 const ADDED_JS = (before: string) =>
   `location.href !== ${JSON.stringify(before)} || /added to (your )?cart/i.test(document.body.innerText.slice(0, 20000)) || !!document.querySelector('#attachSiNoCoverage, #attach-warranty-pane, #NATC_SMART_WAGON_CONF_MSG_SUCCESS, #sw-atc-confirmation')`;
 const WARRANTY_JS = `!!document.querySelector('#attachSiNoCoverage, #attach-warranty-pane')`;
+
+// C2: reviews. Same data-hook markup on the product page ("Top reviews", ~8) and on /product-reviews/ (10 per page).
+// Text is untrusted: we only read it, and it goes out as RawReview { untrusted: true }.
+const REVIEW_SEL = '[data-hook="review"]';
+// Two markups seen: classic (review-title / review-body, id "customer_review-R…") and 2026 product page
+// (reviewTitle / reviewText, id "R…"). Hidden teaser helpers are display:none, so innerText skips them.
+const REVIEWS_JS = `Array.from(document.querySelectorAll('${REVIEW_SEL}')).map((r) => {
+  const q = (...hs) => hs.map((h) => r.querySelector('[data-hook="' + h + '"]')).find(Boolean);
+  const stars = r.querySelector('[data-hook="review-star-rating"], [data-hook="cmps-review-star-rating"], .review-rating')?.textContent || '';
+  const lines = (el) => (el?.innerText || '').split('\\n').map((l) => l.trim()).filter(Boolean);
+  const title = lines(q('reviewTitle', 'review-title')).filter((l) => !/out of 5 stars/.test(l)).join(' ');
+  const body = lines(q('reviewText', 'review-body')).filter((l) => !/^(Read more|See more|Report|Helpful)$/i.test(l)).join('\\n');
+  return {
+    id: (r.id || '').replace(/^customer_review(_foreign)?-/, ''),
+    rating: parseFloat(stars) || null,
+    title,
+    body,
+    date: q('review-date')?.innerText?.trim() || '',
+    author: r.querySelector('.a-profile-name')?.textContent?.trim() || null,
+    verified: !!q('avp-badge', 'avp-badge-linkless'),
+  };
+}).filter((r) => /^R[A-Z0-9]+$/.test(r.id) && r.body)`;
+const REVIEWS_READY_JS = `!!document.querySelector('${REVIEW_SEL}') || /\\/ap\\/signin/.test(location.pathname) || ${CHALLENGE_JS} || /no customer reviews/i.test(document.body?.innerText || '')`;
+const SHOW_MORE_SEL = '[data-hook="show-more-button"]';
+const NEXT_PAGE_JS = `document.querySelector('.a-pagination .a-last:not(.a-disabled) a')?.href || null`;
+// C2 will be replaced by C3's recipes; until then a few stable ids are enough for D.
+const DETAIL_JS = `({
+  bullets: Array.from(document.querySelectorAll('#feature-bullets li, #productFactsDesktopExpander li')).map((l) => l.innerText.trim()).filter(Boolean).slice(0, 10),
+  description: (document.querySelector('#productDescription')?.innerText || '').trim().slice(0, 3000),
+})`;
+
+type ScrapedReview = { id: string; rating: number | null; title: string; body: string; date: string; author: string | null; verified: boolean };
+
+/** "Reviewed in the United States on October 1, 2026" → ISO, or undefined. */
+export function reviewDate(s: string): string | undefined {
+  const m = /on (.+)$/.exec(s.trim());
+  const t = m ? Date.parse(`${m[1]} UTC`) : NaN;
+  return Number.isNaN(t) ? undefined : new Date(t).toISOString();
+}
+
+export function toRawReviews(asin: string, scraped: ScrapedReview[]): RawReview[] {
+  const seen = new Set<string>();
+  const out: RawReview[] = [];
+  for (const r of scraped) {
+    if (seen.has(r.id)) continue;
+    seen.add(r.id);
+    const parsed = RawReview.safeParse({
+      id: `amazon:${r.id}`,
+      productId: productId("amazon", asin),
+      source: "retailer",
+      url: `https://www.amazon.com/gp/customer-reviews/${r.id}`,
+      author: r.author ?? undefined,
+      rating: r.rating ?? undefined,
+      title: r.title || undefined,
+      body: r.body.slice(0, 4000),
+      date: reviewDate(r.date),
+      verifiedPurchase: r.verified,
+      untrusted: true,
+    });
+    if (parsed.success) out.push(parsed.data);
+  }
+  return out;
+}
+
+export type ReviewsResult = { reviews: RawReview[]; pages: number; via: "reviews_page" | "product_page"; gated: boolean };
 
 export const STEPS = {
   searchBox: { kind: "find_control", intent: "searchbox: Search Amazon | section: navigation bar", then: "type" },
@@ -50,10 +126,11 @@ export class AmazonFlow {
     this.marks[label] = Math.round((this.marks[label] ?? 0) + performance.now() - t0);
   }
 
-  private async blockedGate(): Promise<Result<{}>> {
-    if (!(await this.driver.isBlocked(this.tabId!))) return ok({});
+  private async blockedGate(tabId = this.tabId!): Promise<Result<{}>> {
+    if (!(await this.driver.isBlocked(tabId))) return ok({});
+    await this.driver.focus(tabId);
     await this.onBlocked();
-    return (await this.driver.isBlocked(this.tabId!)) ? err("blocked", "bot check not solved") : ok({});
+    return (await this.driver.isBlocked(tabId)) ? err("blocked", "bot check not solved") : ok({});
   }
 
   private async goto(url: string, waitUntil: "commit" | "domcontentloaded" = "commit") {
@@ -221,6 +298,99 @@ export class AmazonFlow {
       if (no) await this.driver.act(this.tabId!, { kind: "click", idx: no.idx });
     }
     return r;
+  }
+
+  /**
+   * C2: up to `target` retailer reviews, in a background tab so the product tab stays put for Add to Cart.
+   * The full review pages need a signed-in profile; signed out, Amazon redirects to /ap/signin. We don't work
+   * around that: we fall back to the ~8 "Top reviews" on the product page and report gated: true.
+   */
+  async reviews(asin: string, target = 30, maxPages = 6): Promise<Result<ReviewsResult>> {
+    const t = await this.driver.openTab("about:blank");
+    if (!t.ok) return t;
+    const tab = t.data.tabId;
+    if (this.tabId !== undefined) await this.driver.focus(this.tabId);
+    try {
+      const t0 = performance.now();
+      const r = await this.driver.navigate(tab, `https://www.amazon.com/product-reviews/${asin}/?reviewerType=all_reviews`, "commit");
+      if (!r.ok) return r;
+      await this.driver.waitFor(tab, REVIEWS_READY_JS, 10_000);
+      this.mark("reviews first page", t0);
+      const g = await this.blockedGate(tab);
+      if (!g.ok) return g;
+      const gated = await this.driver.evaluate<boolean>(tab, `/\\/ap\\/signin/.test(location.pathname)`);
+      if (gated) return await this.productPageReviews(tab, asin);
+
+      let scraped = await this.driver.evaluate<ScrapedReview[]>(tab, REVIEWS_JS);
+      let pages = 1;
+      while (toRawReviews(asin, scraped).length < target && pages < maxPages) {
+        const t1 = performance.now();
+        const before = scraped.length;
+        // Newer layout: "Show 10 more reviews" appends in place. A plain button, never purchase-risk.
+        if (await this.driver.evaluate<boolean>(tab, `!!document.querySelector('${SHOW_MORE_SEL}')`)) {
+          await this.driver.evaluate(tab, `document.querySelector('${SHOW_MORE_SEL}').click()`);
+          await this.driver.waitFor(tab, `document.querySelectorAll('${REVIEW_SEL}').length > ${before} || ${CHALLENGE_JS}`, 8000);
+          scraped = await this.driver.evaluate<ScrapedReview[]>(tab, REVIEWS_JS);
+        } else {
+          // Older layout: numbered pages.
+          const next = await this.driver.evaluate<string | null>(tab, NEXT_PAGE_JS);
+          if (!next) break;
+          const n = await this.driver.navigate(tab, next, "commit");
+          if (!n.ok) break;
+          await this.driver.waitFor(tab, REVIEWS_READY_JS, 10_000);
+          scraped = scraped.concat(await this.driver.evaluate<ScrapedReview[]>(tab, REVIEWS_JS));
+        }
+        this.mark("reviews more", t1);
+        const g2 = await this.blockedGate(tab);
+        if (!g2.ok) return g2;
+        pages++;
+        if (scraped.length <= before) break;
+      }
+      const reviews = toRawReviews(asin, scraped);
+      return reviews.length ? ok({ reviews, pages, via: "reviews_page", gated: false }) : await this.productPageReviews(tab, asin);
+    } finally {
+      await this.driver.closeTab(tab);
+    }
+  }
+
+  private async productPageReviews(tab: number, asin: string): Promise<Result<ReviewsResult>> {
+    const t0 = performance.now();
+    const gated = await this.driver.evaluate<boolean>(tab, `/\\/ap\\/signin/.test(location.pathname)`).catch(() => false);
+    const r = await this.driver.navigate(tab, `https://www.amazon.com/dp/${asin}`, "commit");
+    if (!r.ok) return r;
+    await this.driver.waitFor(tab, `!!document.querySelector('${REVIEW_SEL}') || document.readyState === 'complete' || ${CHALLENGE_JS}`, 10_000);
+    const g = await this.blockedGate(tab);
+    if (!g.ok) return g;
+    const reviews = toRawReviews(asin, await this.driver.evaluate<ScrapedReview[]>(tab, REVIEWS_JS));
+    this.mark("reviews product page", t0);
+    return ok({ reviews, pages: 1, via: "product_page", gated });
+  }
+
+  /**
+   * Navigator.getDetail for Amazon. Opens the product (a tab switch if preloaded) and scrapes reviews in parallel.
+   * Detail fields beyond bullets/description are C3.
+   */
+  async getDetail(candidate: ProductCandidate, emit: Emit = () => {}): Promise<Result<ProductDetail>> {
+    const asin = candidate.id.replace(/^amazon:/, "");
+    emit({ stage: "reading_product", message: "Reading the Amazon product page", marketplace: "amazon", at: new Date().toISOString() });
+    const reviewsP = this.reviews(asin);
+    const opened = await this.open(asin);
+    if (!opened.ok) return opened;
+    await this.driver.waitFor(this.tabId!, `!!document.querySelector('#feature-bullets, #productDescription') || document.readyState === 'complete' || ${CHALLENGE_JS}`, 10_000);
+    const g = await this.blockedGate();
+    if (!g.ok) return g;
+    const d = await this.driver.evaluate<{ bullets: string[]; description: string }>(this.tabId!, DETAIL_JS);
+    emit({ stage: "reviews", message: "Reading Amazon reviews", marketplace: "amazon", at: new Date().toISOString() });
+    const rv = await reviewsP;
+    return ok({
+      ...candidate,
+      description: d.description || d.bullets.join(" ") || candidate.title,
+      bullets: d.bullets,
+      specs: {},
+      banners: [],
+      variants: [],
+      retailerReviews: rv.ok ? rv.data.reviews : [],
+    });
   }
 
   /** Goes to the cart and reads the subtotal. Never proceeds to checkout's final button. */
