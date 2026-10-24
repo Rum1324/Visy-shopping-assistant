@@ -8,6 +8,10 @@ Write every improvisation in [docs/IMPROVISATIONS.md](docs/IMPROVISATIONS.md) in
 
 Keep `npm test` passing on `main`. If a change breaks a handoff rule (rename, remove, or tighten a contract field), put that at the top of the log entry. Bump `CONTRACT_VERSION` only when the wire format actually changes.
 
+## Claim tasks in TODO.md
+
+Before touching a task, `git pull` and read [TODO.md](TODO.md). Claim an `[open]` line by changing it to `[working]` with owner, branch and time, commit only that file (`claim: <ID>`), and push to `main` right away. If the push is rejected, rebase and re-read: the first claim wins. Never work on a `[working]` task that isn't yours. Mark it `[done]` with the PR link when it merges.
+
 ## Cursor Cloud specific instructions
 
 - Node 22+ is required (`engines` in the root `package.json`). The default image already provides it on the login-shell `PATH`.

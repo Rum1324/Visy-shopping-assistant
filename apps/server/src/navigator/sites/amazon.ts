@@ -14,6 +14,7 @@ import type { FlowDriver } from "../driver/flow.ts";
 import { pickWithChain, type ChainPick } from "../chain.ts";
 import { strictPicker, type FindStep } from "../pickers/common.ts";
 import type { MemoryPicker } from "../pickers/memory.ts";
+import { ClaudeRecipeWriter, extractWithRecipes, RecipeCache, type Extracted, type RawDetail, type RecipeFields, type RecipeWriter } from "../recipes.ts";
 
 export type AmazonResult = { asin: string; title: string; price: string | null; rating: string | null; sponsored: boolean };
 
@@ -59,7 +60,7 @@ const REVIEWS_JS = `Array.from(document.querySelectorAll('${REVIEW_SEL}')).map((
 const REVIEWS_READY_JS = `!!document.querySelector('${REVIEW_SEL}') || /\\/ap\\/signin/.test(location.pathname) || ${CHALLENGE_JS} || /no customer reviews/i.test(document.body?.innerText || '')`;
 const SHOW_MORE_SEL = '[data-hook="show-more-button"]';
 const NEXT_PAGE_JS = `document.querySelector('.a-pagination .a-last:not(.a-disabled) a')?.href || null`;
-// C2 will be replaced by C3's recipes; until then a few stable ids are enough for D.
+// Fallback when there's no recipe and Claude can't write one (no API key, API down).
 const DETAIL_JS = `({
   bullets: Array.from(document.querySelectorAll('#feature-bullets li, #productFactsDesktopExpander li')).map((l) => l.innerText.trim()).filter(Boolean).slice(0, 10),
   description: (document.querySelector('#productDescription')?.innerText || '').trim().slice(0, 3000),
@@ -125,6 +126,84 @@ export function toRawReviews(asin: string, scraped: ScrapedReview[]): RawReview[
   return out;
 }
 
+/**
+ * C3 fallback: a recipe checked by hand on two live product pages (2026-10-24). Used only when Claude can't write
+ * one (no API key, API down); a Claude-written recipe replaces it on the next miss.
+ */
+export const AMAZON_PRODUCT_SEED: RecipeFields = {
+  title: { css: "#productTitle", attr: null },
+  price: { css: "#corePriceDisplay_desktop_feature_div #apex-pricetopay-accessibility-label, #corePriceDisplay_desktop_feature_div .priceToPay .a-offscreen, #corePrice_feature_div .a-price .a-offscreen", attr: null },
+  listPrice: { css: "#corePriceDisplay_desktop_feature_div .basisPrice .a-offscreen", attr: null },
+  deal: { css: "#dealBadge_feature_div .a-badge-text, #dealBadgeSupportingText", attr: null },
+  prime: { css: "#rightCol .a-icon-prime, #deliveryBlockMessage .a-icon-prime", attr: null },
+  rating: { css: "#acrPopover", attr: "title" },
+  reviewCount: { css: "#acrCustomerReviewText", attr: "aria-label" },
+  brand: { css: "#bylineInfo", attr: null },
+  availability: { css: "#availability .primary-availability-message, #availability", attr: null },
+  delivery: { css: "#mir-layout-DELIVERY_BLOCK-slot-PRIMARY_DELIVERY_MESSAGE_LARGE", attr: null },
+  bullets: { css: "#feature-bullets li .a-list-item", attr: null },
+  description: { css: "#productDescription", attr: null },
+  banners: { css: "#newerVersion_feature_div .a-section, #availability .a-color-price", attr: null },
+  images: { css: "#altImages li.imageThumbnail img", attr: "src" },
+  specRows: { css: "#productOverview_feature_div tr, #prodDetails tr, #detailBullets_feature_div li", attr: null },
+  specKey: { css: "th, td.a-span3, .a-text-bold", attr: null },
+  specValue: { css: "td.a-span9, td.prodDetAttrValue, th + td, .a-text-bold + span", attr: null },
+  variantGroups: { css: "#twister-plus-inline-twister .inline-twister-row", attr: null },
+  variantName: { css: ".dimension-text .a-color-secondary", attr: null },
+  variantOption: { css: ".inline-twister-swatch img", attr: "alt" },
+};
+
+const money = (s: string | null): { cents: number; currency: "USD" } | undefined => {
+  const m = s?.replace(/,/g, "").match(/\$\s?(\d+)(?:\.(\d{1,2}))?/);
+  return m ? { cents: Number(m[1]) * 100 + Number((m[2] ?? "").padEnd(2, "0")), currency: "USD" } : undefined;
+};
+const clean = (s: string) => s.replace(/[\u200e\u200f]/g, "").replace(/\s+/g, " ").replace(/\s*:\s*$/, "").trim();
+
+/** Large image URLs: data-a-dynamic-image is a JSON map of url → size; thumbnails drop their size token. */
+export function imageUrls(values: string[]): string[] {
+  const urls = values.flatMap((v) => {
+    if (v.startsWith("{")) {
+      try {
+        return Object.keys(JSON.parse(v));
+      } catch {
+        return [];
+      }
+    }
+    return [v];
+  });
+  const full = urls.filter((u) => /^https:\/\//.test(u)).map((u) => u.replace(/\._[A-Z0-9,_]+_\./, "."));
+  return [...new Set(full)].slice(0, 8);
+}
+
+/** C3: recipe output (untrusted page text) → ProductDetail fields. Missing fields stay undefined / empty. */
+export function amazonFields(raw: RawDetail) {
+  const reviewCount = raw.reviewCount ? Number(/[\d,]+/.exec(raw.reviewCount)?.[0].replace(/,/g, "")) : NaN;
+  const rating = raw.rating ? parseFloat(raw.rating) : NaN;
+  const avail = raw.availability ?? "";
+  const inStock = /in stock|only \d+ left|available to ship/i.test(avail) ? true : /unavailable|out of stock/i.test(avail) ? false : undefined;
+  const specs: Record<string, string> = {};
+  for (const [k, v] of raw.specs.slice(0, 40)) if (clean(k) && clean(v)) specs[clean(k).slice(0, 80)] ??= clean(v).slice(0, 300);
+  const banners = [...raw.banners];
+  if (/only \d+ left/i.test(avail) && !banners.includes(avail)) banners.push(avail);
+  return {
+    title: raw.title ?? undefined,
+    brand: raw.brand?.replace(/^(Visit the |Brand: )/, "").replace(/ Store$/, "") || undefined,
+    price: money(raw.price),
+    listPrice: money(raw.listPrice),
+    deal: raw.deal ? { label: raw.deal.slice(0, 120), requiresMembership: /prime/i.test(raw.deal) ? "Prime" : undefined } : undefined,
+    rating: rating >= 0 && rating <= 5 ? rating : undefined,
+    reviewCount: Number.isInteger(reviewCount) ? reviewCount : undefined,
+    imageUrls: imageUrls(raw.images),
+    shipping: raw.delivery || raw.prime ? { eta: raw.delivery ?? undefined, free: raw.delivery ? /free/i.test(raw.delivery) : undefined, membership: raw.prime ? "Prime" : undefined } : undefined,
+    inStock,
+    bullets: raw.bullets.map(clean).filter(Boolean),
+    description: raw.description ?? undefined,
+    specs,
+    banners: banners.map(clean).filter(Boolean),
+    variants: raw.variants.map((v) => ({ name: clean(v.name), options: v.options.map((o) => clean(o.replace(/^Click to select /i, ""))) })),
+  };
+}
+
 export type ReviewsResult = { reviews: RawReview[]; pages: number; via: "reviews_page" | "product_page"; gated: boolean };
 
 export const STEPS = {
@@ -141,12 +220,15 @@ export class AmazonFlow {
   private indexing: Promise<unknown> = Promise.resolve();
   /** Sub-step timings for the last call, for the demo's breakdown. */
   marks: Record<string, number> = {};
+  /** C3: how the last getDetail read the page ("replay" = no AI). */
+  lastExtract?: Omit<Extracted, "raw">;
 
   constructor(
     private driver: FlowDriver,
     private pickers: ElementPicker[],
     private memory?: MemoryPicker,
     private onBlocked: () => Promise<void> = async () => {},
+    private recipes: { cache: RecipeCache; writer: RecipeWriter } = { cache: new RecipeCache(), writer: new ClaudeRecipeWriter() },
   ) {}
 
   private mark(label: string, t0: number) {
@@ -402,7 +484,7 @@ export class AmazonFlow {
 
   /**
    * Navigator.getDetail for Amazon. Opens the product (a tab switch if preloaded) and scrapes reviews in parallel.
-   * Detail fields beyond bullets/description are C3.
+   * C3: detail fields come from a cached recipe (no AI); Claude writes one only on the first visit or a miss.
    */
   async getDetail(candidate: ProductCandidate, emit: Emit = () => {}): Promise<Result<ProductDetail>> {
     const asin = candidate.id.replace(/^amazon:/, "");
@@ -411,19 +493,36 @@ export class AmazonFlow {
     try {
       const opened = await this.open(asin);
       if (!opened.ok) return opened;
-      await this.driver.waitFor(this.tabId!, "amazon.detailReady", 10_000);
+      await this.driver.waitFor(this.tabId!, "amazon.loadedOrChallenge", 10_000);
       const g = await this.blockedGate();
       if (!g.ok) return g;
-      const d = await this.driver.extract<{ bullets: string[]; description: string }>(this.tabId!, "amazon.detail");
+      const tab = this.tabId!;
+      const x = await extractWithRecipes("amazon:product", `https://www.amazon.com/dp/${asin}`, (name, arg) => this.driver.extract(tab, name, arg), this.recipes.cache, this.recipes.writer, AMAZON_PRODUCT_SEED);
+      this.lastExtract = { via: x.via, claudeCalls: x.claudeCalls, ms: x.ms };
+      this.marks["recipe"] = x.ms;
+      console.log(`[recipe] amazon:product via ${x.via}: ${x.claudeCalls} Claude call(s), ${x.ms} ms`);
+      const f = x.raw ? amazonFields(x.raw) : undefined;
+      const d = f?.bullets.length || f?.description ? { bullets: f.bullets, description: f.description ?? "" } : await this.driver.extract<{ bullets: string[]; description: string }>(tab, "amazon.detail");
       emit({ stage: "reviews", message: "Reading Amazon reviews", marketplace: "amazon", at: new Date().toISOString() });
       const rv = await reviewsP;
       return ok({
         ...candidate,
+        title: f?.title || candidate.title,
+        brand: f?.brand ?? candidate.brand,
+        price: f?.price ?? candidate.price,
+        listPrice: f?.listPrice ?? candidate.listPrice,
+        deal: f?.deal ?? candidate.deal,
+        rating: f?.rating ?? candidate.rating,
+        reviewCount: f?.reviewCount ?? candidate.reviewCount,
+        imageUrls: f?.imageUrls.length ? f.imageUrls : candidate.imageUrls,
+        shipping: f?.shipping ?? candidate.shipping,
+        inStock: f?.inStock ?? candidate.inStock,
+        source: x.raw ? { via: x.via === "claude" ? "claude" : "recipe", confidence: 0.9, fetchedAt: new Date().toISOString() } : candidate.source,
         description: d.description || d.bullets.join(" ") || candidate.title,
         bullets: d.bullets,
-        specs: {},
-        banners: [],
-        variants: [],
+        specs: f?.specs ?? {},
+        banners: f?.banners ?? [],
+        variants: f?.variants ?? [],
         retailerReviews: rv.ok ? rv.data.reviews : [],
       });
     } catch (e) {

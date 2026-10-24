@@ -16,6 +16,7 @@ import {
   type Marketplace,
   type Navigator,
   type ProductCandidate as Candidate,
+  type Result,
   type Services,
 } from "@visy/contracts";
 import {
@@ -32,6 +33,9 @@ import { PlaywrightDriver } from "./navigator/driver/playwright.ts";
 import { AmazonFlow } from "./navigator/sites/amazon.ts";
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+/** A driver call can throw (tab closed, extension reloaded mid-call). Turn it into an error the agent can say. */
+const safe = <T>(p: Promise<Result<T>>): Promise<Result<T>> =>
+  p.catch((e) => err("internal", `Amazon flow failed: ${e instanceof Error ? e.message : e}`, true));
 
 export function parseDollars(price: string | null | undefined): number | undefined {
   if (!price) return;
@@ -80,7 +84,7 @@ export function liveServices(opts: { driver?: () => FlowDriver | undefined } = {
       if (marketplace !== "amazon") return mocks.search(need, marketplace, emit);
       emit({ stage: "searching", marketplace: "amazon", message: "Searching Amazon now", at: new Date().toISOString() });
       const { flow } = use();
-      const found = await flow.search(need.query);
+      const found = await safe(flow.search(need.query));
       if (!found.ok) return found;
       const candidates: Candidate[] = [];
       for (const row of found.data) {
@@ -106,13 +110,14 @@ export function liveServices(opts: { driver?: () => FlowDriver | undefined } = {
 
     async getDetail(candidate, emit) {
       if (!candidate.id.startsWith("amazon:")) return mocks.getDetail(candidate, emit);
-      // C2: opens the product and scrapes retailer reviews in parallel (emits reading_product, reviews).
+      // C2 + C3: opens the product, reads details via a cached recipe and scrapes retailer reviews in parallel.
       const { flow, driver } = use();
-      const base = await flow.getDetail(candidate, emit);
+      const base = await safe(flow.getDetail(candidate, emit));
       if (!base.ok) return base;
-      let title = candidate.title;
-      let cents = candidate.price.cents;
-      if (flow.tabId != null) {
+      let title = base.data.title;
+      let cents = base.data.price.cents;
+      // C3's recipe already read title and price; this is only the no-recipe fallback.
+      if (flow.tabId != null && flow.lastExtract?.via === "none") {
         const page = await driver
           .extract<{ title: string; price: string | null }>(flow.tabId, "amazon.titlePrice")
           .catch(() => ({ title: "", price: null }));
@@ -137,10 +142,10 @@ export function liveServices(opts: { driver?: () => FlowDriver | undefined } = {
       emit({ stage: "carting", marketplace: "amazon", message: "Adding it to your Amazon cart", at: new Date().toISOString() });
       const { flow } = use();
       if (!flow.tabId) {
-        const opened = await flow.open(id.slice("amazon:".length));
+        const opened = await safe(flow.open(id.slice("amazon:".length)));
         if (!opened.ok) return opened;
       }
-      const added = await flow.addToCart();
+      const added = await safe(flow.addToCart());
       if (!added.ok) return added;
       lastAdded = product;
       return ok({ productId: id, title: product.title, quantity: 1, price: product.price });
@@ -149,7 +154,7 @@ export function liveServices(opts: { driver?: () => FlowDriver | undefined } = {
     async openCheckout(marketplace, emit) {
       if (marketplace !== "amazon") return mocks.openCheckout(marketplace, emit);
       emit({ stage: "checkout", marketplace: "amazon", message: "Opening your Amazon cart", at: new Date().toISOString() });
-      const cart = await use().flow.viewCart();
+      const cart = await safe(use().flow.viewCart());
       if (!cart.ok) return cart;
       const cents = parseDollars(cart.data.subtotal);
       if (cents == null) return err("parse_failed", "Amazon cart subtotal was not on the page");
