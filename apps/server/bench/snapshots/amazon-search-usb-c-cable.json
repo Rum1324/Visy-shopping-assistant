@@ -1,0 +1,2229 @@
+{
+ "pageType": "amazon-search",
+ "state": {
+  "url": "https://www.amazon.com/s?k=usb+c+cable",
+  "title": "Amazon.com : usb c cable",
+  "elements": [
+   {
+    "idx": 0,
+    "role": "link",
+    "name": "main content",
+    "section": "a-page > Shortcuts menu",
+    "href": "https://www.amazon.com/s?k=usb+c+cable#skippedLink"
+   },
+   {
+    "idx": 1,
+    "role": "link",
+    "name": "Results",
+    "section": "a-page > Shortcuts menu",
+    "href": "https://www.amazon.com/.s-asin%20a:has(h2)"
+   },
+   {
+    "idx": 2,
+    "role": "link",
+    "name": "Filters",
+    "section": "a-page > Shortcuts menu",
+    "href": "https://www.amazon.com/s?k=usb+c+cable#s-refinements%20%3E%20div.a-section%20%3E%20div:first-child"
+   },
+   {
+    "idx": 3,
+    "role": "link",
+    "name": "Search, option, forward slash",
+    "section": "Shortcuts menu > nav-assist-shortcuts-container",
+    "href": "javascript:void(0)"
+   },
+   {
+    "idx": 4,
+    "role": "link",
+    "name": "Cart, shift, option, c",
+    "section": "Shortcuts menu > nav-assist-shortcuts-container",
+    "href": "javascript:void(0)"
+   },
+   {
+    "idx": 5,
+    "role": "link",
+    "name": "Home, shift, option, h",
+    "section": "Shortcuts menu > nav-assist-shortcuts-container",
+    "href": "javascript:void(0)"
+   },
+   {
+    "idx": 6,
+    "role": "link",
+    "name": "Your orders, shift, option, o",
+    "section": "Shortcuts menu > nav-assist-shortcuts-container",
+    "href": "javascript:void(0)"
+   },
+   {
+    "idx": 7,
+    "role": "button",
+    "name": "Show/hide shortcuts, shift, option, z",
+    "section": "Shortcuts menu > nav-assist-shortcuts-container"
+   },
+   {
+    "idx": 8,
+    "role": "link",
+    "name": "Amazon",
+    "section": "nav-belt > nav-logo",
+    "href": "https://www.amazon.com/ref=nav_logo"
+   },
+   {
+    "idx": 9,
+    "role": "button",
+    "name": "Delivering to Berkeley 94720 Update location",
+    "section": "nav-global-location-slot > nav-global-location-data-modal-action",
+    "href": "https://www.amazon.com/s?k=usb+c+cable"
+   },
+   {
+    "idx": 10,
+    "role": "searchbox",
+    "name": "Search Amazon",
+    "section": "nav-search > nav-search-bar-form",
+    "value": "usb c cable"
+   },
+   {
+    "idx": 11,
+    "role": "button",
+    "name": "Go",
+    "section": "nav-search-bar-form > Go"
+   },
+   {
+    "idx": 12,
+    "role": "link",
+    "name": "Choose a language for shopping in Amazon United States. The current selection is English (EN).",
+    "section": "nav-tools > icp-nav-flyout",
+    "href": "https://www.amazon.com/customer-preferences/edit?ie=UTF8&preferencesReturnUrl=%2F&ref_=topnav_lang"
+   },
+   {
+    "idx": 13,
+    "role": "button",
+    "name": "Expand to Change Language or Country",
+    "section": "nav-tools > icp-nav-flyout"
+   },
+   {
+    "idx": 14,
+    "role": "link",
+    "name": "Hello, sign in Account & Lists",
+    "section": "nav-tools > nav-link-accountList",
+    "href": "https://www.amazon.com/ap/signin?openid.return_to=https%3A%2F%2Fwww.amazon.com%2Fs%3Fk%3Dusb%2Bc%2Bcable%26ref_%3Dnav_ya_signin&openid.identity=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0%2Fidentifier_select&openid.assoc_handle=usflex&openid.mode=checkid_setup&openid.claimed_id=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0%2Fidentifier_select&openid.ns=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0"
+   },
+   {
+    "idx": 15,
+    "role": "button",
+    "name": "Expand Account and Lists",
+    "section": "nav-tools > nav-link-accountList"
+   },
+   {
+    "idx": 16,
+    "role": "link",
+    "name": "Returns & Orders",
+    "section": "nav-belt > nav-tools",
+    "href": "https://www.amazon.com/gp/css/order-history?ref_=nav_orders_first"
+   },
+   {
+    "idx": 17,
+    "role": "link",
+    "name": "0 items in cart",
+    "section": "nav-belt > nav-tools",
+    "href": "https://www.amazon.com/gp/cart/view.html?ref_=nav_cart"
+   },
+   {
+    "idx": 18,
+    "role": "link",
+    "name": "Sign in",
+    "section": "nav-flyout-anchor > nav-signin-tooltip",
+    "href": "https://www.amazon.com/ap/signin?openid.return_to=https%3A%2F%2Fwww.amazon.com%2Fs%3Fk%3Dusb%2Bc%2Bcable%26ref_%3Dnav_custrec_signin&openid.identity=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0%2Fidentifier_select&openid.assoc_handle=usflex&openid.mode=checkid_setup&openid.claimed_id=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0%2Fidentifier_select&openid.ns=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0"
+   },
+   {
+    "idx": 19,
+    "role": "link",
+    "name": "New to Amazon? Start here to create an account",
+    "section": "nav-flyout-anchor > nav-signin-tooltip",
+    "href": "https://www.amazon.com/ap/register?openid.return_to=https%3A%2F%2Fwww.amazon.com%2Fs%2F%3F_encoding%3DUTF8%26k%3Dusb%2520c%2520cable%26ref_%3Dnav_custrec_newcust&openid.identity=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0%2Fidentifier_select&openid.assoc_handle=usflex&openid.mode=checkid_setup&openid.claimed_id=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0%2Fidentifier_select&openid.ns=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0"
+   },
+   {
+    "idx": 20,
+    "role": "button",
+    "name": "Open All Categories Menu",
+    "section": "Primary > nav-main",
+    "href": "javascript: void(0)"
+   },
+   {
+    "idx": 21,
+    "role": "link",
+    "name": "Prime",
+    "section": "nav-xshop > nav-link-amazonprime",
+    "href": "https://www.amazon.com/prime?ref_=nav_cs_primelink_nonmember"
+   },
+   {
+    "idx": 22,
+    "role": "button",
+    "name": "Prime Details",
+    "section": "nav-xshop > nav-link-amazonprime"
+   },
+   {
+    "idx": 23,
+    "role": "link",
+    "name": "Groceries",
+    "section": "nav-xshop-container > nav-xshop",
+    "href": "https://www.amazon.com/fmc/grocery-gateway?gsc=fe16aGPfFs46S&ref_=nav_cs_groceries"
+   },
+   {
+    "idx": 24,
+    "role": "link",
+    "name": "Today's Deals",
+    "section": "nav-xshop-container > nav-xshop",
+    "href": "https://www.amazon.com/deals?ref_=nav_cs_gb"
+   },
+   {
+    "idx": 25,
+    "role": "link",
+    "name": "Coupons",
+    "section": "nav-xshop-container > nav-xshop",
+    "href": "https://www.amazon.com/coupons?ref_=nav_cs_coupons"
+   },
+   {
+    "idx": 26,
+    "role": "link",
+    "name": "Pharmacy",
+    "section": "nav-xshop-container > nav-xshop",
+    "href": "https://pharmacy.amazon.com/?nodl=0&ref_=nav_cs_pharmacy"
+   },
+   {
+    "idx": 27,
+    "role": "link",
+    "name": "Audible",
+    "section": "nav-xshop-container > nav-xshop",
+    "href": "https://www.amazon.com/Audible-Books-and-Originals/b/?ie=UTF8&node=18145289011&ref_=nav_cs_audible"
+   },
+   {
+    "idx": 28,
+    "role": "link",
+    "name": "Whole Foods",
+    "section": "nav-xshop-container > nav-xshop",
+    "href": "https://www.amazon.com/alm/storefront?almBrandId=VUZHIFdob2xlIEZvb2Rz&ref_=nav_cs_whole_foods"
+   },
+   {
+    "idx": 29,
+    "role": "link",
+    "name": "Music",
+    "section": "nav-xshop-container > nav-xshop",
+    "href": "https://www.amazon.com/music/player?ref_=nav_cs_music"
+   },
+   {
+    "idx": 30,
+    "role": "link",
+    "name": "Beauty & Personal Care",
+    "section": "nav-xshop-container > nav-xshop",
+    "href": "https://www.amazon.com/Beauty-Makeup-Skin-Hair-Products/b/?ie=UTF8&node=3760911&ref_=nav_cs_beauty"
+   },
+   {
+    "idx": 31,
+    "role": "link",
+    "name": "Registry",
+    "section": "nav-xshop-container > nav-xshop",
+    "href": "https://www.amazon.com/gp/browse.html?node=16115931011&ref_=nav_cs_registry"
+   },
+   {
+    "idx": 32,
+    "role": "link",
+    "name": "Amazon Home",
+    "section": "nav-xshop > nav_flyout_amazonHome",
+    "href": "https://www.amazon.com/home-garden-kitchen-furniture-bedding/b/?ie=UTF8&node=1055398&ref_=nav_cs_home"
+   },
+   {
+    "idx": 33,
+    "role": "button",
+    "name": "Amazon Home Details",
+    "section": "nav-xshop > nav_flyout_amazonHome"
+   },
+   {
+    "idx": 34,
+    "role": "link",
+    "name": "Automotive",
+    "section": "nav-xshop-container > nav-xshop",
+    "href": "https://www.amazon.com/automotive-auto-truck-replacements-parts/b/?ie=UTF8&node=15684181&ref_=nav_cs_automotive"
+   },
+   {
+    "idx": 35,
+    "role": "link",
+    "name": "Pet Supplies",
+    "section": "nav-xshop-container > nav-xshop",
+    "href": "https://www.amazon.com/pet-shops-dogs-cats-hamsters-kittens/b/?ie=UTF8&node=2619533011&ref_=nav_cs_pets"
+   },
+   {
+    "idx": 36,
+    "role": "link",
+    "name": "New Releases",
+    "section": "nav-xshop-container > nav-xshop",
+    "href": "https://www.amazon.com/gp/new-releases/?ref_=nav_cs_newreleases"
+   },
+   {
+    "idx": 37,
+    "role": "link",
+    "name": "Fashion",
+    "section": "nav-xshop-container > nav-xshop",
+    "href": "https://www.amazon.com/amazon-fashion/b/?ie=UTF8&node=7141123011&ref_=nav_cs_fashion"
+   },
+   {
+    "idx": 38,
+    "role": "link",
+    "name": "Video Games",
+    "section": "nav-xshop-container > nav-xshop",
+    "href": "https://www.amazon.com/computer-video-games-hardware-accessories/b/?ie=UTF8&node=468642&ref_=nav_cs_video_games"
+   },
+   {
+    "idx": 39,
+    "role": "link",
+    "name": "Handmade",
+    "section": "nav-xshop-container > nav-xshop",
+    "href": "https://www.amazon.com/gp/browse.html?node=120955898011&ref_=nav_cs_handmade"
+   },
+   {
+    "idx": 40,
+    "role": "link",
+    "name": "Baby",
+    "section": "nav-xshop-container > nav-xshop",
+    "href": "https://www.amazon.com/baby-car-seats-strollers-bedding/b/?ie=UTF8&node=165796011&ref_=nav_cs_baby"
+   },
+   {
+    "idx": 41,
+    "role": "link",
+    "name": "Toys & Games",
+    "section": "nav-xshop > nav_flyout_toysGames",
+    "href": "https://www.amazon.com/toys/b/?ie=UTF8&node=165793011&ref_=nav_cs_toys"
+   },
+   {
+    "idx": 42,
+    "role": "button",
+    "name": "Toys & Games Details",
+    "section": "nav-xshop > nav_flyout_toysGames"
+   },
+   {
+    "idx": 43,
+    "role": "link",
+    "name": "Smart Home",
+    "section": "nav-xshop-container > nav-xshop",
+    "href": "https://www.amazon.com/Smart-Home/b/?ie=UTF8&node=6563140011&ref_=nav_cs_smart_home"
+   },
+   {
+    "idx": 44,
+    "role": "link",
+    "name": "Gift Shop",
+    "section": "nav-xshop-container > nav-xshop",
+    "href": "https://www.amazon.com/gcx/Gifts-for-Everyone/gfhz/?ref_=nav_cs_giftfinder"
+   },
+   {
+    "idx": 45,
+    "role": "link",
+    "name": "Subscribe & Save",
+    "section": "nav-xshop-container > nav-xshop",
+    "href": "https://www.amazon.com/auto-deliveries/landing?ref_=nav_cs_sns"
+   },
+   {
+    "idx": 46,
+    "role": "link",
+    "name": "Custom Products",
+    "section": "nav-xshop > nav_flyout_amazonCustom",
+    "href": "https://www.amazon.com/Amazon-Custom/b/?ie=UTF8&node=11032013011&ref_=nav_cs_custom"
+   },
+   {
+    "idx": 47,
+    "role": "button",
+    "name": "Custom Products Details",
+    "section": "nav-xshop > nav_flyout_amazonCustom"
+   },
+   {
+    "idx": 48,
+    "role": "link",
+    "name": "Amazon Haul",
+    "section": "nav-xshop-container > nav-xshop",
+    "href": "https://www.amazon.com/haul/store?ref_=nav_cs_hul_disb"
+   },
+   {
+    "idx": 49,
+    "role": "link",
+    "name": "Sports & Outdoors",
+    "section": "nav-xshop-container > nav-xshop",
+    "href": "https://www.amazon.com/gp/browse.html?node=220556511011&ref_=nav_cs_sports"
+   },
+   {
+    "idx": 50,
+    "role": "link",
+    "name": "Works with Alexa",
+    "section": "nav-xshop-container > nav-xshop",
+    "href": "https://www.amazon.com/gp/browse.html?node=73846268011&ref_=nav_cs_wwa"
+   },
+   {
+    "idx": 51,
+    "role": "link",
+    "name": "Best Sellers",
+    "section": "nav-xshop-container > nav-xshop",
+    "href": "https://www.amazon.com/gp/bestsellers/?ref_=nav_cs_bestsellers"
+   },
+   {
+    "idx": 52,
+    "role": "link",
+    "name": "Luxury",
+    "section": "nav-xshop-container > nav-xshop",
+    "href": "https://www.amazon.com/luxurystores?ref_=nav_cs_luxury_disc"
+   },
+   {
+    "idx": 53,
+    "role": "link",
+    "name": "Kindle Books",
+    "section": "nav-xshop-container > nav-xshop",
+    "href": "https://www.amazon.com/Kindle-eBooks/b/?ie=UTF8&node=154606011&ref_=nav_cs_kindle_books"
+   },
+   {
+    "idx": 54,
+    "role": "link",
+    "name": "Books",
+    "section": "nav-xshop-container > nav-xshop",
+    "href": "https://www.amazon.com/books-used-books-textbooks/b/?ie=UTF8&node=283155&ref_=nav_cs_books"
+   },
+   {
+    "idx": 55,
+    "role": "combobox",
+    "name": "Sort by:",
+    "section": "s-result-info-bar > form",
+    "value": "relevanceblender"
+   },
+   {
+    "idx": 56,
+    "role": "link",
+    "name": "Sponsored ad from Dasku. \"Upgraded Extra Durable Braided USB to USB C Cable.\" Shop Dasku.",
+    "section": "s-search-results > CardInstanceX26MQSKeDi6XNmNO1QEO4w",
+    "href": "https://sponsored-ads.amazon.com/clk/?_encoding=UTF8&p=eAF1kEFq20AUhklC29SktHiRBO9qqBdpxh5JliWniCBp5NjIkW1JcYw3YiSNZTWKpGjGKOnCR-im0Ev0Al2UHqKLbgo9RE5QnBZKF_3hwQ__e7yfr4J3P3-7__64-kx1p2NkDswZRIZd3-KO9hckjW8989ZPzP5lSRP7tdzzs5N98S0x0klnxpwQ2oE1vENtPYjspxwvN4Um14TzbUfzd1XD7Rv2wKkeVJ6EhF6xLK_uXVi2oY_OrMHcQLX3W5XdTeJhtqhW8DV-l6XNILuuHVIfrNJ4EZMQUIKLYAlyHBHA1R-R1LtwjnjqA7Yk1yQEQZYkJGBxloI_X0CAi5CCHMcpIwUIspSRlPEvNVu1kKePhkNDdwcjy_GcsWqbQ8NDhmO6o3H9tLIFX_z89OPr_RdUO8ArlgGa4-IqIWBJMWCEFTGtP-chhGK3K8CO0O1IHL9z4aCTHX2sH5nVN0hT9bw3AJK61m5-K1LX2oSmeVmq_2qtRWttstbUBxPV9vTIuD1TjUgYDgj_cbvyYXvJWE5PWq2yLJt_CbUoywpCWxsqLaQLfFsyEOgJsgbaIicAGcpdIEADoq6BkNiWTx8OvIIsFEfzVMiJUkcUedt1pt3xROjLMxeokIdtmRMFazafyCoaSR37vJGHXhF6ebIMC4U1lhR7QeHFoQIbSe5hGqdU0WDv0rTm553h8YMdm9P55FiDZ-3pvN-T-pvNmxUp7pQV9V_xMNgM9hOyCWiSMeU_qBuxgnPawJvajNpiKUXnhfsL1zTbow&v=c1&r=https%3A%2F%2Fwww.amazon.com%2Fstores%2Fpage%2FDC3247ED-F38B-4513-8089-30E0D9EDD548%3Fstore_ref%3DSB_A01576552RTSV9PQ3H8XT-A02048153NXZQ8ADO76RM%26pd_rd_plhdr%3Dt%26hsa_cr_id%3D0%26lp_asins%3DB0FWKNZM6L%2CB0FWKPKVZQ%2CB0G4VZHF7H%26lp_query%3Dusb%2520c%2520cable%26lp_slot%3Dauto-sparkle-hsa-tetris%26i%3Daps%26aref%3DtsR5w7gMrT&ref_=sbx_s_sparkle_sbtcd_bkgd&pd_rd_w=FALnW&content-id=amzn1.sym.22e060df-ce87-467b-805a-61b8bd37fbe9%3Aamzn1.sym.22e060df-ce87-467b-805a-61b8bd37fbe9&pf_rd_p=22e060df-ce87-467b-805a-61b8bd37fbe9&pf_rd_r=CC1K9CMHB5M6WRTSZBBZ&pd_rd_wg=eL0oX&pd_rd_r=a3d5a010-8c4e-4368-8339-c65e9a81210e"
+   },
+   {
+    "idx": 57,
+    "role": "link",
+    "name": "Dasku",
+    "section": "s-search-results > CardInstanceX26MQSKeDi6XNmNO1QEO4w",
+    "href": "https://sponsored-ads.amazon.com/clk/?_encoding=UTF8&p=eAF1kEFq20AUhklC29SktHiRBO9qqBdpxh5JliWniCBp5NjIkW1JcYw3YiSNZTWKpGjGKOnCR-im0Ev0Al2UHqKLbgo9RE5QnBZKF_3hwQ__e7yfr4J3P3-7__64-kx1p2NkDswZRIZd3-KO9hckjW8989ZPzP5lSRP7tdzzs5N98S0x0klnxpwQ2oE1vENtPYjspxwvN4Um14TzbUfzd1XD7Rv2wKkeVJ6EhF6xLK_uXVi2oY_OrMHcQLX3W5XdTeJhtqhW8DV-l6XNILuuHVIfrNJ4EZMQUIKLYAlyHBHA1R-R1LtwjnjqA7Yk1yQEQZYkJGBxloI_X0CAi5CCHMcpIwUIspSRlPEvNVu1kKePhkNDdwcjy_GcsWqbQ8NDhmO6o3H9tLIFX_z89OPr_RdUO8ArlgGa4-IqIWBJMWCEFTGtP-chhGK3K8CO0O1IHL9z4aCTHX2sH5nVN0hT9bw3AJK61m5-K1LX2oSmeVmq_2qtRWttstbUBxPV9vTIuD1TjUgYDgj_cbvyYXvJWE5PWq2yLJt_CbUoywpCWxsqLaQLfFsyEOgJsgbaIicAGcpdIEADoq6BkNiWTx8OvIIsFEfzVMiJUkcUedt1pt3xROjLMxeokIdtmRMFazafyCoaSR37vJGHXhF6ebIMC4U1lhR7QeHFoQIbSe5hGqdU0WDv0rTm553h8YMdm9P55FiDZ-3pvN-T-pvNmxUp7pQV9V_xMNgM9hOyCWiSMeU_qBuxgnPawJvajNpiKUXnhfsL1zTbow&v=c1&r=https%3A%2F%2Fwww.amazon.com%2Fstores%2Fpage%2FDC3247ED-F38B-4513-8089-30E0D9EDD548%3Fstore_ref%3DSB_A01576552RTSV9PQ3H8XT-A02048153NXZQ8ADO76RM%26pd_rd_plhdr%3Dt%26hsa_cr_id%3D0%26lp_asins%3DB0FWKNZM6L%2CB0FWKPKVZQ%2CB0G4VZHF7H%26lp_query%3Dusb%2520c%2520cable%26lp_slot%3Dauto-sparkle-hsa-tetris%26i%3Daps%26aref%3DtsR5w7gMrT&ref_=sbx_s_sparkle_sbtcd_logo&pd_rd_w=FALnW&content-id=amzn1.sym.22e060df-ce87-467b-805a-61b8bd37fbe9%3Aamzn1.sym.22e060df-ce87-467b-805a-61b8bd37fbe9&pf_rd_p=22e060df-ce87-467b-805a-61b8bd37fbe9&pf_rd_r=CC1K9CMHB5M6WRTSZBBZ&pd_rd_wg=eL0oX&pd_rd_r=a3d5a010-8c4e-4368-8339-c65e9a81210e"
+   },
+   {
+    "idx": 58,
+    "role": "link",
+    "name": "Upgraded Extra Durable Braided USB to USB C Cable",
+    "section": "s-search-results > CardInstanceX26MQSKeDi6XNmNO1QEO4w",
+    "href": "https://sponsored-ads.amazon.com/clk/?_encoding=UTF8&p=eAF1kEFq20AUhklC29SktHiRBO9qqBdpxh5JliWniCBp5NjIkW1JcYw3YiSNZTWKpGjGKOnCR-im0Ev0Al2UHqKLbgo9RE5QnBZKF_3hwQ__e7yfr4J3P3-7__64-kx1p2NkDswZRIZd3-KO9hckjW8989ZPzP5lSRP7tdzzs5N98S0x0klnxpwQ2oE1vENtPYjspxwvN4Um14TzbUfzd1XD7Rv2wKkeVJ6EhF6xLK_uXVi2oY_OrMHcQLX3W5XdTeJhtqhW8DV-l6XNILuuHVIfrNJ4EZMQUIKLYAlyHBHA1R-R1LtwjnjqA7Yk1yQEQZYkJGBxloI_X0CAi5CCHMcpIwUIspSRlPEvNVu1kKePhkNDdwcjy_GcsWqbQ8NDhmO6o3H9tLIFX_z89OPr_RdUO8ArlgGa4-IqIWBJMWCEFTGtP-chhGK3K8CO0O1IHL9z4aCTHX2sH5nVN0hT9bw3AJK61m5-K1LX2oSmeVmq_2qtRWttstbUBxPV9vTIuD1TjUgYDgj_cbvyYXvJWE5PWq2yLJt_CbUoywpCWxsqLaQLfFsyEOgJsgbaIicAGcpdIEADoq6BkNiWTx8OvIIsFEfzVMiJUkcUedt1pt3xROjLMxeokIdtmRMFazafyCoaSR37vJGHXhF6ebIMC4U1lhR7QeHFoQIbSe5hGqdU0WDv0rTm553h8YMdm9P55FiDZ-3pvN-T-pvNmxUp7pQV9V_xMNgM9hOyCWiSMeU_qBuxgnPawJvajNpiKUXnhfsL1zTbow&v=c1&r=https%3A%2F%2Fwww.amazon.com%2Fstores%2Fpage%2FDC3247ED-F38B-4513-8089-30E0D9EDD548%3Fstore_ref%3DSB_A01576552RTSV9PQ3H8XT-A02048153NXZQ8ADO76RM%26pd_rd_plhdr%3Dt%26hsa_cr_id%3D0%26lp_asins%3DB0FWKNZM6L%2CB0FWKPKVZQ%2CB0G4VZHF7H%26lp_query%3Dusb%2520c%2520cable%26lp_slot%3Dauto-sparkle-hsa-tetris%26i%3Daps%26aref%3DtsR5w7gMrT&ref_=sbx_s_sparkle_sbtcd_hl&pd_rd_w=FALnW&content-id=amzn1.sym.22e060df-ce87-467b-805a-61b8bd37fbe9%3Aamzn1.sym.22e060df-ce87-467b-805a-61b8bd37fbe9&pf_rd_p=22e060df-ce87-467b-805a-61b8bd37fbe9&pf_rd_r=CC1K9CMHB5M6WRTSZBBZ&pd_rd_wg=eL0oX&pd_rd_r=a3d5a010-8c4e-4368-8339-c65e9a81210e"
+   },
+   {
+    "idx": 59,
+    "role": "button",
+    "name": "Leave feedback on Sponsored ad",
+    "section": "s-search-results > CardInstanceX26MQSKeDi6XNmNO1QEO4w"
+   },
+   {
+    "idx": 60,
+    "role": "link",
+    "name": "Shop Dasku",
+    "section": "s-search-results > CardInstanceX26MQSKeDi6XNmNO1QEO4w",
+    "href": "https://sponsored-ads.amazon.com/clk/?_encoding=UTF8&p=eAF1kEFq20AUhklC29SktHiRBO9qqBdpxh5JliWniCBp5NjIkW1JcYw3YiSNZTWKpGjGKOnCR-im0Ev0Al2UHqKLbgo9RE5QnBZKF_3hwQ__e7yfr4J3P3-7__64-kx1p2NkDswZRIZd3-KO9hckjW8989ZPzP5lSRP7tdzzs5N98S0x0klnxpwQ2oE1vENtPYjspxwvN4Um14TzbUfzd1XD7Rv2wKkeVJ6EhF6xLK_uXVi2oY_OrMHcQLX3W5XdTeJhtqhW8DV-l6XNILuuHVIfrNJ4EZMQUIKLYAlyHBHA1R-R1LtwjnjqA7Yk1yQEQZYkJGBxloI_X0CAi5CCHMcpIwUIspSRlPEvNVu1kKePhkNDdwcjy_GcsWqbQ8NDhmO6o3H9tLIFX_z89OPr_RdUO8ArlgGa4-IqIWBJMWCEFTGtP-chhGK3K8CO0O1IHL9z4aCTHX2sH5nVN0hT9bw3AJK61m5-K1LX2oSmeVmq_2qtRWttstbUBxPV9vTIuD1TjUgYDgj_cbvyYXvJWE5PWq2yLJt_CbUoywpCWxsqLaQLfFsyEOgJsgbaIicAGcpdIEADoq6BkNiWTx8OvIIsFEfzVMiJUkcUedt1pt3xROjLMxeokIdtmRMFazafyCoaSR37vJGHXhF6ebIMC4U1lhR7QeHFoQIbSe5hGqdU0WDv0rTm553h8YMdm9P55FiDZ-3pvN-T-pvNmxUp7pQV9V_xMNgM9hOyCWiSMeU_qBuxgnPawJvajNpiKUXnhfsL1zTbow&v=c1&r=https%3A%2F%2Fwww.amazon.com%2Fstores%2Fpage%2FDC3247ED-F38B-4513-8089-30E0D9EDD548%3Fstore_ref%3DSB_A01576552RTSV9PQ3H8XT-A02048153NXZQ8ADO76RM%26pd_rd_plhdr%3Dt%26hsa_cr_id%3D0%26lp_asins%3DB0FWKNZM6L%2CB0FWKPKVZQ%2CB0G4VZHF7H%26lp_query%3Dusb%2520c%2520cable%26lp_slot%3Dauto-sparkle-hsa-tetris%26i%3Daps%26aref%3DtsR5w7gMrT&ref_=sbx_s_sparkle_sbtcd_cta&pd_rd_w=FALnW&content-id=amzn1.sym.22e060df-ce87-467b-805a-61b8bd37fbe9%3Aamzn1.sym.22e060df-ce87-467b-805a-61b8bd37fbe9&pf_rd_p=22e060df-ce87-467b-805a-61b8bd37fbe9&pf_rd_r=CC1K9CMHB5M6WRTSZBBZ&pd_rd_wg=eL0oX&pd_rd_r=a3d5a010-8c4e-4368-8339-c65e9a81210e"
+   },
+   {
+    "idx": 61,
+    "role": "link",
+    "name": "USB C Cable 3A Fast Charging [2 Pack 6FT], USB A to USB C Cable, Upgraded Extra Durable Braided USB …",
+    "section": "CardInstanceX26MQSKeDi6XNmNO1QEO4w > anonCarousel7",
+    "href": "https://sponsored-ads.amazon.com/clk/?_encoding=UTF8&p=eAFVkE1u00AARhUqoFhFoCxalB1ZZBE08YydOHGQVfkvrWXXSeyEVtlYE3vsmDq265nKgUWOwAqJQ3ABFohDsGCDxCF6AsSPhHirT3qLT3ocPvz09e7bg-ZjdfFqZtiWfQUN02s3UPc4Jnm6C-zdOrPPL2uaeS9Gk3UxPh68JmY-l66YH0EvdJ03Rl8PE-8REkY9sYd6cHXP19aHqrk4Nz3Lb55wDyNCr1lRNo-Wrmfq0zPXWplG612DO_xlAsziJoe3-G2R98Ji23pG1-A2T-OURIASXIUbUOKEANS-T_Jg6XcFugZsQ7YkAmGRZSRkaZGDvy8gxFVEQYnTnJEKhEXOSM6E55qnukagTx3H1BfW1PUDf6Z6tmMGhunbi-msfco14NMfH79_uftstE7wLSsALXF1nRGwoRgwwqqUtp8IEMKBLItQEmVpiISDpW-MD_SZ3rWbLw1N1cuJBYbqXrv5Q6LutTnNy7pW_2evJXttvtfU3yNpHemJuTtTzUR0LCJ8aHDvGxvGSjrm-bque_8K8UnJ45qPeA1OLm13dSE5p2UUVFFQZpuoUlhnQ3EQVkEaKbBzk0YKGsrCqC8hUerQSkEAgZiEUESwD6QYIdAX-gIYxUMZoEGMiTCSpViSOqmCS9rBFYkVRr1BPUwuqsVPm7axwg&v=c1&r=https%3A%2F%2Fwww.amazon.com%2Fgp%2Faw%2Fd%2FB0FWKNZM6L%3Fpd_rd_plhdr%3Dt%26hsa_cr_id%3D0%26qid%3D1792846136%26sr%3D1-1-fec03104-6f11-4242-8f79-15fae2896f66%26i%3Daps%26aref%3DtsR5w7gMrT&ref_=sbx_s_sparkle_sbtcd_asin_0_img&pd_rd_w=FALnW&content-id=amzn1.sym.22e060df-ce87-467b-805a-61b8bd37fbe9%3Aamzn1.sym.22e060df-ce87-467b-805a-61b8bd37fbe9&pf_rd_p=22e060df-ce87-467b-805a-61b8bd37fbe9&pf_rd_r=CC1K9CMHB5M6WRTSZBBZ&pd_rd_wg=eL0oX&pd_rd_r=a3d5a010-8c4e-4368-8339-c65e9a81210e"
+   },
+   {
+    "idx": 62,
+    "role": "link",
+    "name": "USB C Cable 3A Fast Charging [2 Pack 6FT], USB A to USB C Cable, Upgraded Extra Durable Braided USB …",
+    "section": "CardInstanceX26MQSKeDi6XNmNO1QEO4w > anonCarousel7",
+    "href": "https://sponsored-ads.amazon.com/clk/?_encoding=UTF8&p=eAFVkE1u00AARhUqoFhFoCxalB1ZZBE08YydOHGQVfkvrWXXSeyEVtlYE3vsmDq265nKgUWOwAqJQ3ABFohDsGCDxCF6AsSPhHirT3qLT3ocPvz09e7bg-ZjdfFqZtiWfQUN02s3UPc4Jnm6C-zdOrPPL2uaeS9Gk3UxPh68JmY-l66YH0EvdJ03Rl8PE-8REkY9sYd6cHXP19aHqrk4Nz3Lb55wDyNCr1lRNo-Wrmfq0zPXWplG612DO_xlAsziJoe3-G2R98Ji23pG1-A2T-OURIASXIUbUOKEANS-T_Jg6XcFugZsQ7YkAmGRZSRkaZGDvy8gxFVEQYnTnJEKhEXOSM6E55qnukagTx3H1BfW1PUDf6Z6tmMGhunbi-msfco14NMfH79_uftstE7wLSsALXF1nRGwoRgwwqqUtp8IEMKBLItQEmVpiISDpW-MD_SZ3rWbLw1N1cuJBYbqXrv5Q6LutTnNy7pW_2evJXttvtfU3yNpHemJuTtTzUR0LCJ8aHDvGxvGSjrm-bque_8K8UnJ45qPeA1OLm13dSE5p2UUVFFQZpuoUlhnQ3EQVkEaKbBzk0YKGsrCqC8hUerQSkEAgZiEUESwD6QYIdAX-gIYxUMZoEGMiTCSpViSOqmCS9rBFYkVRr1BPUwuqsVPm7axwg&v=c1&r=https%3A%2F%2Fwww.amazon.com%2Fgp%2Faw%2Fd%2FB0FWKNZM6L%3Fpd_rd_plhdr%3Dt%26hsa_cr_id%3D0%26qid%3D1792846136%26sr%3D1-1-fec03104-6f11-4242-8f79-15fae2896f66%26i%3Daps%26aref%3DtsR5w7gMrT&ref_=sbx_s_sparkle_sbtcd_asin_0_title&pd_rd_w=FALnW&content-id=amzn1.sym.22e060df-ce87-467b-805a-61b8bd37fbe9%3Aamzn1.sym.22e060df-ce87-467b-805a-61b8bd37fbe9&pf_rd_p=22e060df-ce87-467b-805a-61b8bd37fbe9&pf_rd_r=CC1K9CMHB5M6WRTSZBBZ&pd_rd_wg=eL0oX&pd_rd_r=a3d5a010-8c4e-4368-8339-c65e9a81210e"
+   },
+   {
+    "idx": 63,
+    "role": "link",
+    "name": "Rated 4.5 out of 5 stars by 766 reviews. Go to review section.",
+    "section": "CardInstanceX26MQSKeDi6XNmNO1QEO4w > anonCarousel7",
+    "href": "https://sponsored-ads.amazon.com/clk/?_encoding=UTF8&p=eAFVkE1u00AARhUqoFhFoCxalB1ZZBE08YydOHGQVfkvrWXXSeyEVtlYE3vsmDq265nKgUWOwAqJQ3ABFohDsGCDxCF6AsSPhHirT3qLT3ocPvz09e7bg-ZjdfFqZtiWfQUN02s3UPc4Jnm6C-zdOrPPL2uaeS9Gk3UxPh68JmY-l66YH0EvdJ03Rl8PE-8REkY9sYd6cHXP19aHqrk4Nz3Lb55wDyNCr1lRNo-Wrmfq0zPXWplG612DO_xlAsziJoe3-G2R98Ji23pG1-A2T-OURIASXIUbUOKEANS-T_Jg6XcFugZsQ7YkAmGRZSRkaZGDvy8gxFVEQYnTnJEKhEXOSM6E55qnukagTx3H1BfW1PUDf6Z6tmMGhunbi-msfco14NMfH79_uftstE7wLSsALXF1nRGwoRgwwqqUtp8IEMKBLItQEmVpiISDpW-MD_SZ3rWbLw1N1cuJBYbqXrv5Q6LutTnNy7pW_2evJXttvtfU3yNpHemJuTtTzUR0LCJ8aHDvGxvGSjrm-bque_8K8UnJ45qPeA1OLm13dSE5p2UUVFFQZpuoUlhnQ3EQVkEaKbBzk0YKGsrCqC8hUerQSkEAgZiEUESwD6QYIdAX-gIYxUMZoEGMiTCSpViSOqmCS9rBFYkVRr1BPUwuqsVPm7axwg&v=c1&r=https%3A%2F%2Fwww.amazon.com%2Fgp%2Faw%2Fd%2FB0FWKNZM6L%3Fpd_rd_plhdr%3Dt%26hsa_cr_id%3D0%26qid%3D1792846136%26sr%3D1-1-fec03104-6f11-4242-8f79-15fae2896f66%26i%3Daps%26aref%3DtsR5w7gMrT&ref_=sbx_s_sparkle_sbtcd_asin_0_rating&pd_rd_w=FALnW&content-id=amzn1.sym.22e060df-ce87-467b-805a-61b8bd37fbe9%3Aamzn1.sym.22e060df-ce87-467b-805a-61b8bd37fbe9&pf_rd_p=22e060df-ce87-467b-805a-61b8bd37fbe9&pf_rd_r=CC1K9CMHB5M6WRTSZBBZ&pd_rd_wg=eL0oX&pd_rd_r=a3d5a010-8c4e-4368-8339-c65e9a81210e#customerReviews"
+   },
+   {
+    "idx": 64,
+    "role": "link",
+    "name": "$15.49 $15 . 49 ( $1.29 $1.29 / feet)",
+    "section": "CardInstanceX26MQSKeDi6XNmNO1QEO4w > anonCarousel7",
+    "href": "https://sponsored-ads.amazon.com/clk/?_encoding=UTF8&p=eAFVkE1u00AARhUqoFhFoCxalB1ZZBE08YydOHGQVfkvrWXXSeyEVtlYE3vsmDq265nKgUWOwAqJQ3ABFohDsGCDxCF6AsSPhHirT3qLT3ocPvz09e7bg-ZjdfFqZtiWfQUN02s3UPc4Jnm6C-zdOrPPL2uaeS9Gk3UxPh68JmY-l66YH0EvdJ03Rl8PE-8REkY9sYd6cHXP19aHqrk4Nz3Lb55wDyNCr1lRNo-Wrmfq0zPXWplG612DO_xlAsziJoe3-G2R98Ji23pG1-A2T-OURIASXIUbUOKEANS-T_Jg6XcFugZsQ7YkAmGRZSRkaZGDvy8gxFVEQYnTnJEKhEXOSM6E55qnukagTx3H1BfW1PUDf6Z6tmMGhunbi-msfco14NMfH79_uftstE7wLSsALXF1nRGwoRgwwqqUtp8IEMKBLItQEmVpiISDpW-MD_SZ3rWbLw1N1cuJBYbqXrv5Q6LutTnNy7pW_2evJXttvtfU3yNpHemJuTtTzUR0LCJ8aHDvGxvGSjrm-bque_8K8UnJ45qPeA1OLm13dSE5p2UUVFFQZpuoUlhnQ3EQVkEaKbBzk0YKGsrCqC8hUerQSkEAgZiEUESwD6QYIdAX-gIYxUMZoEGMiTCSpViSOqmCS9rBFYkVRr1BPUwuqsVPm7axwg&v=c1&r=https%3A%2F%2Fwww.amazon.com%2Fgp%2Faw%2Fd%2FB0FWKNZM6L%3Fpd_rd_plhdr%3Dt%26hsa_cr_id%3D0%26qid%3D1792846136%26sr%3D1-1-fec03104-6f11-4242-8f79-15fae2896f66%26i%3Daps%26aref%3DtsR5w7gMrT&ref_=sbx_s_sparkle_sbtcd_asin_0_price&pd_rd_w=FALnW&content-id=amzn1.sym.22e060df-ce87-467b-805a-61b8bd37fbe9%3Aamzn1.sym.22e060df-ce87-467b-805a-61b8bd37fbe9&pf_rd_p=22e060df-ce87-467b-805a-61b8bd37fbe9&pf_rd_r=CC1K9CMHB5M6WRTSZBBZ&pd_rd_wg=eL0oX&pd_rd_r=a3d5a010-8c4e-4368-8339-c65e9a81210e"
+   },
+   {
+    "idx": 65,
+    "role": "link",
+    "name": "USB to USB C Cable 3A Fast Charging [2 Pack 10FT], USB A to USB C Cable, Upgraded Extra Durable Brai…",
+    "section": "CardInstanceX26MQSKeDi6XNmNO1QEO4w > anonCarousel7",
+    "href": "https://sponsored-ads.amazon.com/clk/?_encoding=UTF8&p=eAFVkEtu00AAhhWqQrCKQFm0KLtmkUXQxDN24sRBVuVXWsshDztpq2ysiT1-UMd2PVM5sMgRWCFxCC7AAnEIFmyQOERPgHhIiG_1S9_ilz4O1z99vf_2sPFEXV7ODduyr6FhOq0a6hyHJEt2nr3bpPbFVUVT58VwvMlHx_3XxMwW0jVzA-j408kbo6f7kfMYCcOu2EVduH7gapu6ai4vTMdyGyfco4DQG5YXjaPV1DH12fnUWptG812Nq_8yHmZhg8Nb_DbPun6-bT6nG3CXJWFCAkAJLv0YFDgiALUOSeat3I5AN4DFZEsC4OdpSnyW5Bn4-wJ8XAYUFDjJGCmBn2eMZEw41Rx1anj6bDIx9aU1m7qeO1cde2J6hunay9m8dcbV4LMfH79_uf9sNE_wHcsBLXB5kxIQUwwYYWVCW08FCGFflkUoibI0QMLByjVGB_pc79iNl4am6sXYAgN1r93-IVL32oJmRVWp_7PXor222Gvq7xE1j_TI3J2rZiROLCJ8qHHvazFjBR3xfFVV3X-F-KjgccUHvAbHV_bcvlwvzorAKwOvSOOgVFg7ptjzSy8JFNi-TQIFDWRh2JOQKLVpqSAggJD4UESwB6QQIdATegIYhgMZoH6IiTCUpVCS2omCC9rGJQkVRp1-NYhelcufq5-x6A&v=c1&r=https%3A%2F%2Fwww.amazon.com%2Fgp%2Faw%2Fd%2FB0FWKPKVZQ%3Fpd_rd_plhdr%3Dt%26hsa_cr_id%3D0%26qid%3D1792846136%26sr%3D1-2-fec03104-6f11-4242-8f79-15fae2896f66%26i%3Daps%26aref%3DtsR5w7gMrT&ref_=sbx_s_sparkle_sbtcd_asin_1_img&pd_rd_w=FALnW&content-id=amzn1.sym.22e060df-ce87-467b-805a-61b8bd37fbe9%3Aamzn1.sym.22e060df-ce87-467b-805a-61b8bd37fbe9&pf_rd_p=22e060df-ce87-467b-805a-61b8bd37fbe9&pf_rd_r=CC1K9CMHB5M6WRTSZBBZ&pd_rd_wg=eL0oX&pd_rd_r=a3d5a010-8c4e-4368-8339-c65e9a81210e"
+   },
+   {
+    "idx": 66,
+    "role": "link",
+    "name": "USB to USB C Cable 3A Fast Charging [2 Pack 10FT], USB A to USB C Cable, Upgraded Extra Durable Brai…",
+    "section": "CardInstanceX26MQSKeDi6XNmNO1QEO4w > anonCarousel7",
+    "href": "https://sponsored-ads.amazon.com/clk/?_encoding=UTF8&p=eAFVkEtu00AAhhWqQrCKQFm0KLtmkUXQxDN24sRBVuVXWsshDztpq2ysiT1-UMd2PVM5sMgRWCFxCC7AAnEIFmyQOERPgHhIiG_1S9_ilz4O1z99vf_2sPFEXV7ODduyr6FhOq0a6hyHJEt2nr3bpPbFVUVT58VwvMlHx_3XxMwW0jVzA-j408kbo6f7kfMYCcOu2EVduH7gapu6ai4vTMdyGyfco4DQG5YXjaPV1DH12fnUWptG812Nq_8yHmZhg8Nb_DbPun6-bT6nG3CXJWFCAkAJLv0YFDgiALUOSeat3I5AN4DFZEsC4OdpSnyW5Bn4-wJ8XAYUFDjJGCmBn2eMZEw41Rx1anj6bDIx9aU1m7qeO1cde2J6hunay9m8dcbV4LMfH79_uf9sNE_wHcsBLXB5kxIQUwwYYWVCW08FCGFflkUoibI0QMLByjVGB_pc79iNl4am6sXYAgN1r93-IVL32oJmRVWp_7PXor222Gvq7xE1j_TI3J2rZiROLCJ8qHHvazFjBR3xfFVV3X-F-KjgccUHvAbHV_bcvlwvzorAKwOvSOOgVFg7ptjzSy8JFNi-TQIFDWRh2JOQKLVpqSAggJD4UESwB6QQIdATegIYhgMZoH6IiTCUpVCS2omCC9rGJQkVRp1-NYhelcufq5-x6A&v=c1&r=https%3A%2F%2Fwww.amazon.com%2Fgp%2Faw%2Fd%2FB0FWKPKVZQ%3Fpd_rd_plhdr%3Dt%26hsa_cr_id%3D0%26qid%3D1792846136%26sr%3D1-2-fec03104-6f11-4242-8f79-15fae2896f66%26i%3Daps%26aref%3DtsR5w7gMrT&ref_=sbx_s_sparkle_sbtcd_asin_1_title&pd_rd_w=FALnW&content-id=amzn1.sym.22e060df-ce87-467b-805a-61b8bd37fbe9%3Aamzn1.sym.22e060df-ce87-467b-805a-61b8bd37fbe9&pf_rd_p=22e060df-ce87-467b-805a-61b8bd37fbe9&pf_rd_r=CC1K9CMHB5M6WRTSZBBZ&pd_rd_wg=eL0oX&pd_rd_r=a3d5a010-8c4e-4368-8339-c65e9a81210e"
+   },
+   {
+    "idx": 67,
+    "role": "link",
+    "name": "Rated 4.5 out of 5 stars by 766 reviews. Go to review section.",
+    "section": "CardInstanceX26MQSKeDi6XNmNO1QEO4w > anonCarousel7",
+    "href": "https://sponsored-ads.amazon.com/clk/?_encoding=UTF8&p=eAFVkEtu00AAhhWqQrCKQFm0KLtmkUXQxDN24sRBVuVXWsshDztpq2ysiT1-UMd2PVM5sMgRWCFxCC7AAnEIFmyQOERPgHhIiG_1S9_ilz4O1z99vf_2sPFEXV7ODduyr6FhOq0a6hyHJEt2nr3bpPbFVUVT58VwvMlHx_3XxMwW0jVzA-j408kbo6f7kfMYCcOu2EVduH7gapu6ai4vTMdyGyfco4DQG5YXjaPV1DH12fnUWptG812Nq_8yHmZhg8Nb_DbPun6-bT6nG3CXJWFCAkAJLv0YFDgiALUOSeat3I5AN4DFZEsC4OdpSnyW5Bn4-wJ8XAYUFDjJGCmBn2eMZEw41Rx1anj6bDIx9aU1m7qeO1cde2J6hunay9m8dcbV4LMfH79_uf9sNE_wHcsBLXB5kxIQUwwYYWVCW08FCGFflkUoibI0QMLByjVGB_pc79iNl4am6sXYAgN1r93-IVL32oJmRVWp_7PXor222Gvq7xE1j_TI3J2rZiROLCJ8qHHvazFjBR3xfFVV3X-F-KjgccUHvAbHV_bcvlwvzorAKwOvSOOgVFg7ptjzSy8JFNi-TQIFDWRh2JOQKLVpqSAggJD4UESwB6QQIdATegIYhgMZoH6IiTCUpVCS2omCC9rGJQkVRp1-NYhelcufq5-x6A&v=c1&r=https%3A%2F%2Fwww.amazon.com%2Fgp%2Faw%2Fd%2FB0FWKPKVZQ%3Fpd_rd_plhdr%3Dt%26hsa_cr_id%3D0%26qid%3D1792846136%26sr%3D1-2-fec03104-6f11-4242-8f79-15fae2896f66%26i%3Daps%26aref%3DtsR5w7gMrT&ref_=sbx_s_sparkle_sbtcd_asin_1_rating&pd_rd_w=FALnW&content-id=amzn1.sym.22e060df-ce87-467b-805a-61b8bd37fbe9%3Aamzn1.sym.22e060df-ce87-467b-805a-61b8bd37fbe9&pf_rd_p=22e060df-ce87-467b-805a-61b8bd37fbe9&pf_rd_r=CC1K9CMHB5M6WRTSZBBZ&pd_rd_wg=eL0oX&pd_rd_r=a3d5a010-8c4e-4368-8339-c65e9a81210e#customerReviews"
+   },
+   {
+    "idx": 68,
+    "role": "link",
+    "name": "$15.99 $15 . 99 ( $0.80 $0.80 / feet)",
+    "section": "CardInstanceX26MQSKeDi6XNmNO1QEO4w > anonCarousel7",
+    "href": "https://sponsored-ads.amazon.com/clk/?_encoding=UTF8&p=eAFVkEtu00AAhhWqQrCKQFm0KLtmkUXQxDN24sRBVuVXWsshDztpq2ysiT1-UMd2PVM5sMgRWCFxCC7AAnEIFmyQOERPgHhIiG_1S9_ilz4O1z99vf_2sPFEXV7ODduyr6FhOq0a6hyHJEt2nr3bpPbFVUVT58VwvMlHx_3XxMwW0jVzA-j408kbo6f7kfMYCcOu2EVduH7gapu6ai4vTMdyGyfco4DQG5YXjaPV1DH12fnUWptG812Nq_8yHmZhg8Nb_DbPun6-bT6nG3CXJWFCAkAJLv0YFDgiALUOSeat3I5AN4DFZEsC4OdpSnyW5Bn4-wJ8XAYUFDjJGCmBn2eMZEw41Rx1anj6bDIx9aU1m7qeO1cde2J6hunay9m8dcbV4LMfH79_uf9sNE_wHcsBLXB5kxIQUwwYYWVCW08FCGFflkUoibI0QMLByjVGB_pc79iNl4am6sXYAgN1r93-IVL32oJmRVWp_7PXor222Gvq7xE1j_TI3J2rZiROLCJ8qHHvazFjBR3xfFVV3X-F-KjgccUHvAbHV_bcvlwvzorAKwOvSOOgVFg7ptjzSy8JFNi-TQIFDWRh2JOQKLVpqSAggJD4UESwB6QQIdATegIYhgMZoH6IiTCUpVCS2omCC9rGJQkVRp1-NYhelcufq5-x6A&v=c1&r=https%3A%2F%2Fwww.amazon.com%2Fgp%2Faw%2Fd%2FB0FWKPKVZQ%3Fpd_rd_plhdr%3Dt%26hsa_cr_id%3D0%26qid%3D1792846136%26sr%3D1-2-fec03104-6f11-4242-8f79-15fae2896f66%26i%3Daps%26aref%3DtsR5w7gMrT&ref_=sbx_s_sparkle_sbtcd_asin_1_price&pd_rd_w=FALnW&content-id=amzn1.sym.22e060df-ce87-467b-805a-61b8bd37fbe9%3Aamzn1.sym.22e060df-ce87-467b-805a-61b8bd37fbe9&pf_rd_p=22e060df-ce87-467b-805a-61b8bd37fbe9&pf_rd_r=CC1K9CMHB5M6WRTSZBBZ&pd_rd_wg=eL0oX&pd_rd_r=a3d5a010-8c4e-4368-8339-c65e9a81210e"
+   },
+   {
+    "idx": 69,
+    "role": "link",
+    "name": "USB C Cable Fast Charging 6FT, 2Pack USB A o USB C Cable, Upgraded Extra | Durable Braided USB A to …",
+    "section": "CardInstanceX26MQSKeDi6XNmNO1QEO4w > anonCarousel7",
+    "href": "https://sponsored-ads.amazon.com/clk/?_encoding=UTF8&p=eAFVkMuK01AAhqmDOoYRpYuZoTu76KJympwkTZpKGHJrG1J7Sdpx6CacJicXJ00yOWdIddFHcCX4EL6AC_EhXLgRfIh5AvEC4rf64Vv88DHo-NPXu28Pmo-11eXCdGznijMtt92A3dMI5-ned_bbzJm8qknmPh-MtsXwtP8aW_lSuqJeyLnBbPrGFI0gdh9BftATerDHbe55-vZYs1YTy7W95hnzMMTkmhZl82Q9cy1jPp7ZG8tsvWswx7-Mj2jUZNAOvS3yXlDsWudkC27zNEpxCAhGVZCAEsUYwPZ9nPtrr8uTLaAJ3uEQBEWW4YCmRQ7-voAAVSEBJUpziisQFDnFOeWf6a42M31jPp1axsqezzzfW2iuM7V80_Kc1XzRvmAa3NMfH79_uftsts7QLS0AKVF1nWGQEAQoplVK2k94juP6iiJwkqBIMuSP1p45PDIWRtdpvjB1zShHNpC1g37zh1g76EuSl3Wt_c9Bjw_68qBrv0fcOjFiaz_WrFiY2pj_0GDeNxJKSzJk2bque_8KsXHJopoNWZ0bi5ebyUieXJShX4V-mSVhpdJOQpAfVH4aqlznJg1VKCv8QJSgIHVIpUIggAgHnAA5EUgRhEDkRR4MIlkBsB8hzA8UKZKkTqqiknRQhSOVErdfy_HLavUTixOxnQ&v=c1&r=https%3A%2F%2Fwww.amazon.com%2Fgp%2Faw%2Fd%2FB0G4VZHF7H%3Fpd_rd_plhdr%3Dt%26hsa_cr_id%3D0%26qid%3D1792846136%26sr%3D1-3-fec03104-6f11-4242-8f79-15fae2896f66%26i%3Daps%26aref%3DtsR5w7gMrT&ref_=sbx_s_sparkle_sbtcd_asin_2_img&pd_rd_w=FALnW&content-id=amzn1.sym.22e060df-ce87-467b-805a-61b8bd37fbe9%3Aamzn1.sym.22e060df-ce87-467b-805a-61b8bd37fbe9&pf_rd_p=22e060df-ce87-467b-805a-61b8bd37fbe9&pf_rd_r=CC1K9CMHB5M6WRTSZBBZ&pd_rd_wg=eL0oX&pd_rd_r=a3d5a010-8c4e-4368-8339-c65e9a81210e"
+   },
+   {
+    "idx": 70,
+    "role": "link",
+    "name": "USB C Cable Fast Charging 6FT, 2Pack USB A o USB C Cable, Upgraded Extra | Durable Braided USB A to …",
+    "section": "CardInstanceX26MQSKeDi6XNmNO1QEO4w > anonCarousel7",
+    "href": "https://sponsored-ads.amazon.com/clk/?_encoding=UTF8&p=eAFVkMuK01AAhqmDOoYRpYuZoTu76KJympwkTZpKGHJrG1J7Sdpx6CacJicXJ00yOWdIddFHcCX4EL6AC_EhXLgRfIh5AvEC4rf64Vv88DHo-NPXu28Pmo-11eXCdGznijMtt92A3dMI5-ned_bbzJm8qknmPh-MtsXwtP8aW_lSuqJeyLnBbPrGFI0gdh9BftATerDHbe55-vZYs1YTy7W95hnzMMTkmhZl82Q9cy1jPp7ZG8tsvWswx7-Mj2jUZNAOvS3yXlDsWudkC27zNEpxCAhGVZCAEsUYwPZ9nPtrr8uTLaAJ3uEQBEWW4YCmRQ7-voAAVSEBJUpziisQFDnFOeWf6a42M31jPp1axsqezzzfW2iuM7V80_Kc1XzRvmAa3NMfH79_uftsts7QLS0AKVF1nWGQEAQoplVK2k94juP6iiJwkqBIMuSP1p45PDIWRtdpvjB1zShHNpC1g37zh1g76EuSl3Wt_c9Bjw_68qBrv0fcOjFiaz_WrFiY2pj_0GDeNxJKSzJk2bque_8KsXHJopoNWZ0bi5ebyUieXJShX4V-mSVhpdJOQpAfVH4aqlznJg1VKCv8QJSgIHVIpUIggAgHnAA5EUgRhEDkRR4MIlkBsB8hzA8UKZKkTqqiknRQhSOVErdfy_HLavUTixOxnQ&v=c1&r=https%3A%2F%2Fwww.amazon.com%2Fgp%2Faw%2Fd%2FB0G4VZHF7H%3Fpd_rd_plhdr%3Dt%26hsa_cr_id%3D0%26qid%3D1792846136%26sr%3D1-3-fec03104-6f11-4242-8f79-15fae2896f66%26i%3Daps%26aref%3DtsR5w7gMrT&ref_=sbx_s_sparkle_sbtcd_asin_2_title&pd_rd_w=FALnW&content-id=amzn1.sym.22e060df-ce87-467b-805a-61b8bd37fbe9%3Aamzn1.sym.22e060df-ce87-467b-805a-61b8bd37fbe9&pf_rd_p=22e060df-ce87-467b-805a-61b8bd37fbe9&pf_rd_r=CC1K9CMHB5M6WRTSZBBZ&pd_rd_wg=eL0oX&pd_rd_r=a3d5a010-8c4e-4368-8339-c65e9a81210e"
+   },
+   {
+    "idx": 71,
+    "role": "link",
+    "name": "Rated 4.5 out of 5 stars by 766 reviews. Go to review section.",
+    "section": "CardInstanceX26MQSKeDi6XNmNO1QEO4w > anonCarousel7",
+    "href": "https://sponsored-ads.amazon.com/clk/?_encoding=UTF8&p=eAFVkMuK01AAhqmDOoYRpYuZoTu76KJympwkTZpKGHJrG1J7Sdpx6CacJicXJ00yOWdIddFHcCX4EL6AC_EhXLgRfIh5AvEC4rf64Vv88DHo-NPXu28Pmo-11eXCdGznijMtt92A3dMI5-ned_bbzJm8qknmPh-MtsXwtP8aW_lSuqJeyLnBbPrGFI0gdh9BftATerDHbe55-vZYs1YTy7W95hnzMMTkmhZl82Q9cy1jPp7ZG8tsvWswx7-Mj2jUZNAOvS3yXlDsWudkC27zNEpxCAhGVZCAEsUYwPZ9nPtrr8uTLaAJ3uEQBEWW4YCmRQ7-voAAVSEBJUpziisQFDnFOeWf6a42M31jPp1axsqezzzfW2iuM7V80_Kc1XzRvmAa3NMfH79_uftsts7QLS0AKVF1nWGQEAQoplVK2k94juP6iiJwkqBIMuSP1p45PDIWRtdpvjB1zShHNpC1g37zh1g76EuSl3Wt_c9Bjw_68qBrv0fcOjFiaz_WrFiY2pj_0GDeNxJKSzJk2bque_8KsXHJopoNWZ0bi5ebyUieXJShX4V-mSVhpdJOQpAfVH4aqlznJg1VKCv8QJSgIHVIpUIggAgHnAA5EUgRhEDkRR4MIlkBsB8hzA8UKZKkTqqiknRQhSOVErdfy_HLavUTixOxnQ&v=c1&r=https%3A%2F%2Fwww.amazon.com%2Fgp%2Faw%2Fd%2FB0G4VZHF7H%3Fpd_rd_plhdr%3Dt%26hsa_cr_id%3D0%26qid%3D1792846136%26sr%3D1-3-fec03104-6f11-4242-8f79-15fae2896f66%26i%3Daps%26aref%3DtsR5w7gMrT&ref_=sbx_s_sparkle_sbtcd_asin_2_rating&pd_rd_w=FALnW&content-id=amzn1.sym.22e060df-ce87-467b-805a-61b8bd37fbe9%3Aamzn1.sym.22e060df-ce87-467b-805a-61b8bd37fbe9&pf_rd_p=22e060df-ce87-467b-805a-61b8bd37fbe9&pf_rd_r=CC1K9CMHB5M6WRTSZBBZ&pd_rd_wg=eL0oX&pd_rd_r=a3d5a010-8c4e-4368-8339-c65e9a81210e#customerReviews"
+   },
+   {
+    "idx": 72,
+    "role": "link",
+    "name": "$15.99 $15 . 99 ( $8.00 $8.00 / count)",
+    "section": "CardInstanceX26MQSKeDi6XNmNO1QEO4w > anonCarousel7",
+    "href": "https://sponsored-ads.amazon.com/clk/?_encoding=UTF8&p=eAFVkMuK01AAhqmDOoYRpYuZoTu76KJympwkTZpKGHJrG1J7Sdpx6CacJicXJ00yOWdIddFHcCX4EL6AC_EhXLgRfIh5AvEC4rf64Vv88DHo-NPXu28Pmo-11eXCdGznijMtt92A3dMI5-ned_bbzJm8qknmPh-MtsXwtP8aW_lSuqJeyLnBbPrGFI0gdh9BftATerDHbe55-vZYs1YTy7W95hnzMMTkmhZl82Q9cy1jPp7ZG8tsvWswx7-Mj2jUZNAOvS3yXlDsWudkC27zNEpxCAhGVZCAEsUYwPZ9nPtrr8uTLaAJ3uEQBEWW4YCmRQ7-voAAVSEBJUpziisQFDnFOeWf6a42M31jPp1axsqezzzfW2iuM7V80_Kc1XzRvmAa3NMfH79_uftsts7QLS0AKVF1nWGQEAQoplVK2k94juP6iiJwkqBIMuSP1p45PDIWRtdpvjB1zShHNpC1g37zh1g76EuSl3Wt_c9Bjw_68qBrv0fcOjFiaz_WrFiY2pj_0GDeNxJKSzJk2bque_8KsXHJopoNWZ0bi5ebyUieXJShX4V-mSVhpdJOQpAfVH4aqlznJg1VKCv8QJSgIHVIpUIggAgHnAA5EUgRhEDkRR4MIlkBsB8hzA8UKZKkTqqiknRQhSOVErdfy_HLavUTixOxnQ&v=c1&r=https%3A%2F%2Fwww.amazon.com%2Fgp%2Faw%2Fd%2FB0G4VZHF7H%3Fpd_rd_plhdr%3Dt%26hsa_cr_id%3D0%26qid%3D1792846136%26sr%3D1-3-fec03104-6f11-4242-8f79-15fae2896f66%26i%3Daps%26aref%3DtsR5w7gMrT&ref_=sbx_s_sparkle_sbtcd_asin_2_price&pd_rd_w=FALnW&content-id=amzn1.sym.22e060df-ce87-467b-805a-61b8bd37fbe9%3Aamzn1.sym.22e060df-ce87-467b-805a-61b8bd37fbe9&pf_rd_p=22e060df-ce87-467b-805a-61b8bd37fbe9&pf_rd_r=CC1K9CMHB5M6WRTSZBBZ&pd_rd_wg=eL0oX&pd_rd_r=a3d5a010-8c4e-4368-8339-c65e9a81210e"
+   },
+   {
+    "idx": 73,
+    "role": "button",
+    "name": "Next page",
+    "section": "s-search-results > CardInstanceX26MQSKeDi6XNmNO1QEO4w",
+    "href": "https://www.amazon.com/s?k=usb+c+cable#"
+   },
+   {
+    "idx": 74,
+    "role": "link",
+    "name": "Sponsored Ad - iPhone 18 17 16 15 Charger Fast Charging 3 Pack USB C Charger Block | Type C Charger …",
+    "section": "s-impression-counter > s-product-image",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo1ODU0NzMwMDAyMjAxODUxOjE3OTI4NDYxMzY6c3BfYXRmOjMwMDYzMTY1NzQ3OTkwMjo6MDo6&url=%2FiPhone-Charger-Charging-Compatible-AirPods%2Fdp%2FB0CF9WZXVW%2Fref%3Dsr_1_1_sspa%3Fdib%3DeyJ2IjoiMSJ9.zDerXzkkcCIibp1gD24_gCubJ1DdAyUNubDo5YxBMn3yuF3-ejdznxv1_YoxZmjYL8s_qMb1_IYA1G7xW4aXPdz_iZyEXO8TXtyUMoesjoQOtvKI-eieNWJIXiNyuIf0j4xKf1JUM-MxosH-UaLcSVB0J-iJ9D0V4RAZ3rCQ9g3Yz4M9lFZgoxKmqd1SL9X9j0Nz-8AhEWQYqJVbTB_IO_lJulqXoQbNV8UCBtKsi70.YHaCzRNC8_lnsmHgDx0puLEM889h1AdhDCLMe4mJYrY%26dib_tag%3Dse%26keywords%3Dusb%2Bc%2Bcable%26qid%3D1792846136%26sr%3D8-1-spons%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9hdGY%26psc%3D1"
+   },
+   {
+    "idx": 75,
+    "role": "button",
+    "name": "Sponsored",
+    "section": "s-impression-logger > s-impression-counter",
+    "href": "javascript:void(0)"
+   },
+   {
+    "idx": 76,
+    "role": "link",
+    "name": "iPhone 18 17 16 15 Charger Fast Charging 3 Pack USB C Charger Block",
+    "section": "s-impression-logger > s-impression-counter",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo1ODU0NzMwMDAyMjAxODUxOjE3OTI4NDYxMzY6c3BfYXRmOjMwMDYzMTY1NzQ3OTkwMjo6MDo6&url=%2FiPhone-Charger-Charging-Compatible-AirPods%2Fdp%2FB0CF9WZXVW%2Fref%3Dsr_1_1_sspa%3Fdib%3DeyJ2IjoiMSJ9.zDerXzkkcCIibp1gD24_gCubJ1DdAyUNubDo5YxBMn3yuF3-ejdznxv1_YoxZmjYL8s_qMb1_IYA1G7xW4aXPdz_iZyEXO8TXtyUMoesjoQOtvKI-eieNWJIXiNyuIf0j4xKf1JUM-MxosH-UaLcSVB0J-iJ9D0V4RAZ3rCQ9g3Yz4M9lFZgoxKmqd1SL9X9j0Nz-8AhEWQYqJVbTB_IO_lJulqXoQbNV8UCBtKsi70.YHaCzRNC8_lnsmHgDx0puLEM889h1AdhDCLMe4mJYrY%26dib_tag%3Dse%26keywords%3Dusb%2Bc%2Bcable%26qid%3D1792846136%26sr%3D8-1-spons%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9hdGY%26psc%3D1"
+   },
+   {
+    "idx": 77,
+    "role": "button",
+    "name": "4.6 out of 5 stars, rating details",
+    "section": "s-impression-logger > s-impression-counter",
+    "href": "javascript:void(0)"
+   },
+   {
+    "idx": 78,
+    "role": "link",
+    "name": "3,887 ratings",
+    "section": "s-impression-counter > s-client-side-analytics",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo1ODU0NzMwMDAyMjAxODUxOjE3OTI4NDYxMzY6c3BfYXRmOjMwMDYzMTY1NzQ3OTkwMjo6MDo6&url=%2FiPhone-Charger-Charging-Compatible-AirPods%2Fdp%2FB0CF9WZXVW%2Fref%3Dsr_1_1_sspa%3Fdib%3DeyJ2IjoiMSJ9.zDerXzkkcCIibp1gD24_gCubJ1DdAyUNubDo5YxBMn3yuF3-ejdznxv1_YoxZmjYL8s_qMb1_IYA1G7xW4aXPdz_iZyEXO8TXtyUMoesjoQOtvKI-eieNWJIXiNyuIf0j4xKf1JUM-MxosH-UaLcSVB0J-iJ9D0V4RAZ3rCQ9g3Yz4M9lFZgoxKmqd1SL9X9j0Nz-8AhEWQYqJVbTB_IO_lJulqXoQbNV8UCBtKsi70.YHaCzRNC8_lnsmHgDx0puLEM889h1AdhDCLMe4mJYrY%26dib_tag%3Dse%26keywords%3Dusb%2Bc%2Bcable%26qid%3D1792846136%26sr%3D8-1-spons%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9hdGY%26psc%3D1#customerReviews"
+   },
+   {
+    "idx": 79,
+    "role": "link",
+    "name": "$24.90 $24 . 90",
+    "section": "s-impression-logger > s-impression-counter",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo1ODU0NzMwMDAyMjAxODUxOjE3OTI4NDYxMzY6c3BfYXRmOjMwMDYzMTY1NzQ3OTkwMjo6MDo6&url=%2FiPhone-Charger-Charging-Compatible-AirPods%2Fdp%2FB0CF9WZXVW%2Fref%3Dsr_1_1_sspa%3Fdib%3DeyJ2IjoiMSJ9.zDerXzkkcCIibp1gD24_gCubJ1DdAyUNubDo5YxBMn3yuF3-ejdznxv1_YoxZmjYL8s_qMb1_IYA1G7xW4aXPdz_iZyEXO8TXtyUMoesjoQOtvKI-eieNWJIXiNyuIf0j4xKf1JUM-MxosH-UaLcSVB0J-iJ9D0V4RAZ3rCQ9g3Yz4M9lFZgoxKmqd1SL9X9j0Nz-8AhEWQYqJVbTB_IO_lJulqXoQbNV8UCBtKsi70.YHaCzRNC8_lnsmHgDx0puLEM889h1AdhDCLMe4mJYrY%26dib_tag%3Dse%26keywords%3Dusb%2Bc%2Bcable%26qid%3D1792846136%26sr%3D8-1-spons%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9hdGY%26psc%3D1"
+   },
+   {
+    "idx": 80,
+    "role": "button",
+    "name": "Add to cart",
+    "section": "form > a-autoid-3"
+   },
+   {
+    "idx": 81,
+    "role": "link",
+    "name": "6ft",
+    "section": "topRefinements/0 > filter-",
+    "href": "https://www.amazon.com/s?k=6ft+usb+c+cable&ref=sr_nr_p_rag_integrated_qb_0"
+   },
+   {
+    "idx": 82,
+    "role": "link",
+    "name": "10 Feet",
+    "section": "topRefinements/0 > filter-",
+    "href": "https://www.amazon.com/s?k=10+ft+usb+c+cable&ref=sr_nr_p_rag_integrated_qb_1"
+   },
+   {
+    "idx": 83,
+    "role": "link",
+    "name": "3ft",
+    "section": "topRefinements/0 > filter-",
+    "href": "https://www.amazon.com/s?k=3ft+usb+c+cable&ref=sr_nr_p_rag_integrated_qb_2"
+   },
+   {
+    "idx": 84,
+    "role": "link",
+    "name": "High Speed",
+    "section": "topRefinements/0 > filter-",
+    "href": "https://www.amazon.com/s?k=high+speed+usb+c+cable&ref=sr_nr_p_rag_integrated_qb_3"
+   },
+   {
+    "idx": 85,
+    "role": "button",
+    "name": "See more",
+    "section": "topRefinements/0 > filter-",
+    "href": "javascript:void(0)"
+   },
+   {
+    "idx": 86,
+    "role": "link",
+    "name": "Apply Free Shipping by Amazon filter to narrow results",
+    "section": "primeRefinements > filter-p_76",
+    "href": "https://www.amazon.com/s?k=usb+c+cable&rh=p_76%3A1249137011&dc&qid=1792846136&rnid=1249135011&ref=sr_nr_p_76_1&ds=v1%3Aa%2BfXo350gIyh03sGpUEBFM5TWf0D3YD2AAEp8v32XFo"
+   },
+   {
+    "idx": 87,
+    "role": "link",
+    "name": "Apply Get It Today filter to narrow results",
+    "section": "deliveryRefinements > filter-p_90",
+    "href": "https://www.amazon.com/s?k=usb+c+cable&rh=p_90%3A8308920011&dc&qid=1792846136&rnid=8308919011&ref=sr_nr_p_90_1&ds=v1%3A9Z8FeRp10llqFUSbtiwxQmswoekATkbG1sPNBZxZCDI"
+   },
+   {
+    "idx": 88,
+    "role": "link",
+    "name": "Apply Get It by Tomorrow filter to narrow results",
+    "section": "deliveryRefinements > filter-p_90",
+    "href": "https://www.amazon.com/s?k=usb+c+cable&rh=p_90%3A8308921011&dc&qid=1792846136&rnid=8308919011&ref=sr_nr_p_90_2&ds=v1%3ACvE%2BFn1Io14DLEbzOXMOdKuQ7Erpz5%2BRBSnw1n7jKj0"
+   },
+   {
+    "idx": 89,
+    "role": "link",
+    "name": "Apply Up to 0.9 ft filter to narrow results",
+    "section": "s-filters-panel-view > s-refinements",
+    "href": "https://www.amazon.com/s?k=usb+c+cable&rh=p_n_g-101014941094111%3A119746478011&dc&qid=1792846136&rnid=119746477011&ref=sr_nr_p_n_g-101014941094111_1&ds=v1%3AVFv9u2YhKO7WPP8XQohlwQuzD562Aci%2FJOyEuZvHYh0"
+   },
+   {
+    "idx": 90,
+    "role": "link",
+    "name": "Apply 1 to 1.9 ft filter to narrow results",
+    "section": "s-filters-panel-view > s-refinements",
+    "href": "https://www.amazon.com/s?k=usb+c+cable&rh=p_n_g-101014941094111%3A119746482011&dc&qid=1792846136&rnid=119746477011&ref=sr_nr_p_n_g-101014941094111_2&ds=v1%3AGtGk%2B%2BPOQN6k4GlMqVQX3fMOi3BawDW04UE9SQplVIg"
+   },
+   {
+    "idx": 91,
+    "role": "link",
+    "name": "Apply 2 to 2.9 ft filter to narrow results",
+    "section": "s-filters-panel-view > s-refinements",
+    "href": "https://www.amazon.com/s?k=usb+c+cable&rh=p_n_g-101014941094111%3A119746479011&dc&qid=1792846136&rnid=119746477011&ref=sr_nr_p_n_g-101014941094111_3&ds=v1%3AtmkKMMy8gmgkZnO5l1%2B%2BYlc6IHsur3HMjMxvzElXIts"
+   },
+   {
+    "idx": 92,
+    "role": "link",
+    "name": "Apply 3 to 3.9 ft filter to narrow results",
+    "section": "s-filters-panel-view > s-refinements",
+    "href": "https://www.amazon.com/s?k=usb+c+cable&rh=p_n_g-101014941094111%3A119746480011&dc&qid=1792846136&rnid=119746477011&ref=sr_nr_p_n_g-101014941094111_4&ds=v1%3AETmf4rRUCSqY1S4ZDCC6V%2Bxaswbw7U91Nc7Gwg52eHs"
+   },
+   {
+    "idx": 93,
+    "role": "link",
+    "name": "Apply 4 to 4.9 ft filter to narrow results",
+    "section": "s-filters-panel-view > s-refinements",
+    "href": "https://www.amazon.com/s?k=usb+c+cable&rh=p_n_g-101014941094111%3A119746486011&dc&qid=1792846136&rnid=119746477011&ref=sr_nr_p_n_g-101014941094111_5&ds=v1%3ATD3N5CweT9oL5IDYuzraTIrvVcSPR%2Bv3oSiZgmmx%2Fys"
+   },
+   {
+    "idx": 94,
+    "role": "link",
+    "name": "Apply 5 to 5.9 ft filter to narrow results",
+    "section": "s-filters-panel-view > s-refinements",
+    "href": "https://www.amazon.com/s?k=usb+c+cable&rh=p_n_g-101014941094111%3A119746484011&dc&qid=1792846136&rnid=119746477011&ref=sr_nr_p_n_g-101014941094111_6&ds=v1%3A0NUVl5G55kbkU3QWAnlhCvhL1ccnQZZBQO3Ppw1%2FcGo"
+   },
+   {
+    "idx": 95,
+    "role": "link",
+    "name": "Apply 6 to 7.9 ft filter to narrow results",
+    "section": "s-filters-panel-view > s-refinements",
+    "href": "https://www.amazon.com/s?k=usb+c+cable&rh=p_n_g-101014941094111%3A119746481011&dc&qid=1792846136&rnid=119746477011&ref=sr_nr_p_n_g-101014941094111_7&ds=v1%3Av72y261%2FEJCe25rP0RjV4BZonRhj%2Ba0yDpPF8bpnBNU"
+   },
+   {
+    "idx": 96,
+    "role": "link",
+    "name": "Apply 8 to 9.9 ft filter to narrow results",
+    "section": "s-filters-panel-view > s-refinements",
+    "href": "https://www.amazon.com/s?k=usb+c+cable&rh=p_n_g-101014941094111%3A119746483011&dc&qid=1792846136&rnid=119746477011&ref=sr_nr_p_n_g-101014941094111_8&ds=v1%3AwzAamQu4h5CG9n6dawDTId7%2FWgqAGWWFWWH4Yd%2BqL18"
+   },
+   {
+    "idx": 97,
+    "role": "link",
+    "name": "Apply 10 ft & above filter to narrow results",
+    "section": "s-filters-panel-view > s-refinements",
+    "href": "https://www.amazon.com/s?k=usb+c+cable&rh=p_n_g-101014941094111%3A119746485011&dc&qid=1792846136&rnid=119746477011&ref=sr_nr_p_n_g-101014941094111_9&ds=v1%3AL%2BphC%2BKYjWEuAmQq7K9DFCH%2BybarkXrWr5k6cXwZTxA"
+   },
+   {
+    "idx": 98,
+    "role": "link",
+    "name": "Apply Anker filter to narrow results",
+    "section": "brandsRefinements > filter-p_123",
+    "href": "https://www.amazon.com/s?k=usb+c+cable&rh=p_123%3A3271&dc&qid=1792846136&rnid=85457740011&ref=sr_nr_p_123_1&ds=v1%3Agtej3G0TSxRvbxkk0LPT%2BkUxJeGVsPbhgwcoiYCGWYw"
+   },
+   {
+    "idx": 99,
+    "role": "link",
+    "name": "Apply Amazon Basics filter to narrow results",
+    "section": "brandsRefinements > filter-p_123",
+    "href": "https://www.amazon.com/s?k=usb+c+cable&rh=p_123%3A234478&dc&qid=1792846136&rnid=85457740011&ref=sr_nr_p_123_2&ds=v1%3AeeHNDfpOM3LW0qxEl5A%2BU%2BVnLsWLhuTfoTSiCetmjWE"
+   },
+   {
+    "idx": 100,
+    "role": "link",
+    "name": "Apply Belkin filter to narrow results",
+    "section": "brandsRefinements > filter-p_123",
+    "href": "https://www.amazon.com/s?k=usb+c+cable&rh=p_123%3A157711&dc&qid=1792846136&rnid=85457740011&ref=sr_nr_p_123_3&ds=v1%3A%2FY3MV2Q4yYprXdLPxGb%2FqPw8pDzgTfQx1SfGdAf2kHY"
+   },
+   {
+    "idx": 101,
+    "role": "link",
+    "name": "Apply UGREEN filter to narrow results",
+    "section": "brandsRefinements > filter-p_123",
+    "href": "https://www.amazon.com/s?k=usb+c+cable&rh=p_123%3A48431&dc&qid=1792846136&rnid=85457740011&ref=sr_nr_p_123_4&ds=v1%3AfvYhkz%2BpRVeyL7Wiw88YP1hgUO6jzkNo%2FgIxLBsk6As"
+   },
+   {
+    "idx": 102,
+    "role": "link",
+    "name": "Sponsored Ad - USB C to USB C Cable, USBC Cable for Apple, Fast Charging, 3-Pack 6FT White | For App…",
+    "section": "s-impression-counter > s-product-image",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo1ODU0NzMwMDAyMjAxODUxOjE3OTI4NDYxMzY6c3BfYXRmOjMwMDgzMzgxNzg2MzAwMjo6MDo6&url=%2FUSB-3-Pack-Type-C-Charger-Compatible%2Fdp%2FB0F4D5ZKD2%2Fref%3Dsr_1_2_sspa%3Fdib%3DeyJ2IjoiMSJ9.zDerXzkkcCIibp1gD24_gCubJ1DdAyUNubDo5YxBMn3yuF3-ejdznxv1_YoxZmjYL8s_qMb1_IYA1G7xW4aXPdz_iZyEXO8TXtyUMoesjoQOtvKI-eieNWJIXiNyuIf0j4xKf1JUM-MxosH-UaLcSVB0J-iJ9D0V4RAZ3rCQ9g3Yz4M9lFZgoxKmqd1SL9X9j0Nz-8AhEWQYqJVbTB_IO_lJulqXoQbNV8UCBtKsi70.YHaCzRNC8_lnsmHgDx0puLEM889h1AdhDCLMe4mJYrY%26dib_tag%3Dse%26keywords%3Dusb%2Bc%2Bcable%26qid%3D1792846136%26sr%3D8-2-spons%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9hdGY%26psc%3D1"
+   },
+   {
+    "idx": 103,
+    "role": "button",
+    "name": "Sponsored",
+    "section": "s-impression-logger > s-impression-counter",
+    "href": "javascript:void(0)"
+   },
+   {
+    "idx": 104,
+    "role": "link",
+    "name": "USB C to USB C Cable, USBC Cable for Apple, Fast Charging, 3-Pack 6FT White",
+    "section": "s-impression-logger > s-impression-counter",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo1ODU0NzMwMDAyMjAxODUxOjE3OTI4NDYxMzY6c3BfYXRmOjMwMDgzMzgxNzg2MzAwMjo6MDo6&url=%2FUSB-3-Pack-Type-C-Charger-Compatible%2Fdp%2FB0F4D5ZKD2%2Fref%3Dsr_1_2_sspa%3Fdib%3DeyJ2IjoiMSJ9.zDerXzkkcCIibp1gD24_gCubJ1DdAyUNubDo5YxBMn3yuF3-ejdznxv1_YoxZmjYL8s_qMb1_IYA1G7xW4aXPdz_iZyEXO8TXtyUMoesjoQOtvKI-eieNWJIXiNyuIf0j4xKf1JUM-MxosH-UaLcSVB0J-iJ9D0V4RAZ3rCQ9g3Yz4M9lFZgoxKmqd1SL9X9j0Nz-8AhEWQYqJVbTB_IO_lJulqXoQbNV8UCBtKsi70.YHaCzRNC8_lnsmHgDx0puLEM889h1AdhDCLMe4mJYrY%26dib_tag%3Dse%26keywords%3Dusb%2Bc%2Bcable%26qid%3D1792846136%26sr%3D8-2-spons%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9hdGY%26psc%3D1"
+   },
+   {
+    "idx": 105,
+    "role": "button",
+    "name": "4.6 out of 5 stars, rating details",
+    "section": "s-impression-logger > s-impression-counter",
+    "href": "javascript:void(0)"
+   },
+   {
+    "idx": 106,
+    "role": "link",
+    "name": "5,515 ratings",
+    "section": "s-impression-counter > s-client-side-analytics",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo1ODU0NzMwMDAyMjAxODUxOjE3OTI4NDYxMzY6c3BfYXRmOjMwMDgzMzgxNzg2MzAwMjo6MDo6&url=%2FUSB-3-Pack-Type-C-Charger-Compatible%2Fdp%2FB0F4D5ZKD2%2Fref%3Dsr_1_2_sspa%3Fdib%3DeyJ2IjoiMSJ9.zDerXzkkcCIibp1gD24_gCubJ1DdAyUNubDo5YxBMn3yuF3-ejdznxv1_YoxZmjYL8s_qMb1_IYA1G7xW4aXPdz_iZyEXO8TXtyUMoesjoQOtvKI-eieNWJIXiNyuIf0j4xKf1JUM-MxosH-UaLcSVB0J-iJ9D0V4RAZ3rCQ9g3Yz4M9lFZgoxKmqd1SL9X9j0Nz-8AhEWQYqJVbTB_IO_lJulqXoQbNV8UCBtKsi70.YHaCzRNC8_lnsmHgDx0puLEM889h1AdhDCLMe4mJYrY%26dib_tag%3Dse%26keywords%3Dusb%2Bc%2Bcable%26qid%3D1792846136%26sr%3D8-2-spons%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9hdGY%26psc%3D1#customerReviews"
+   },
+   {
+    "idx": 107,
+    "role": "link",
+    "name": "Limited time deal",
+    "section": "s-impression-logger > s-impression-counter",
+    "href": "https://www.amazon.com/deals"
+   },
+   {
+    "idx": 108,
+    "role": "link",
+    "name": "$8.99 $8 . 99 ( $3.00 $3.00/count) Typical: $9.99 Typical: $9.99 $9.99",
+    "section": "s-impression-logger > s-impression-counter",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo1ODU0NzMwMDAyMjAxODUxOjE3OTI4NDYxMzY6c3BfYXRmOjMwMDgzMzgxNzg2MzAwMjo6MDo6&url=%2FUSB-3-Pack-Type-C-Charger-Compatible%2Fdp%2FB0F4D5ZKD2%2Fref%3Dsr_1_2_sspa%3Fdib%3DeyJ2IjoiMSJ9.zDerXzkkcCIibp1gD24_gCubJ1DdAyUNubDo5YxBMn3yuF3-ejdznxv1_YoxZmjYL8s_qMb1_IYA1G7xW4aXPdz_iZyEXO8TXtyUMoesjoQOtvKI-eieNWJIXiNyuIf0j4xKf1JUM-MxosH-UaLcSVB0J-iJ9D0V4RAZ3rCQ9g3Yz4M9lFZgoxKmqd1SL9X9j0Nz-8AhEWQYqJVbTB_IO_lJulqXoQbNV8UCBtKsi70.YHaCzRNC8_lnsmHgDx0puLEM889h1AdhDCLMe4mJYrY%26dib_tag%3Dse%26keywords%3Dusb%2Bc%2Bcable%26qid%3D1792846136%26sr%3D8-2-spons%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9hdGY%26psc%3D1"
+   },
+   {
+    "idx": 109,
+    "role": "button",
+    "name": "Add to cart",
+    "section": "form > a-autoid-4"
+   },
+   {
+    "idx": 110,
+    "role": "link",
+    "name": "Anker USB C to USB C Cable, 60W Fast Charging Cable (2-Pack, 6 ft, Black) | For iPhone 18 / 17 Serie…",
+    "section": "s-search-result > s-product-image",
+    "href": "https://www.amazon.com/Anker-Charging-MacBook-Galaxy-Charger/dp/B088NRLMPV/ref=sr_1_3?dib=eyJ2IjoiMSJ9.zDerXzkkcCIibp1gD24_gCubJ1DdAyUNubDo5YxBMn3yuF3-ejdznxv1_YoxZmjYL8s_qMb1_IYA1G7xW4aXPdz_iZyEXO8TXtyUMoesjoQOtvKI-eieNWJIXiNyuIf0j4xKf1JUM-MxosH-UaLcSVB0J-iJ9D0V4RAZ3rCQ9g3Yz4M9lFZgoxKmqd1SL9X9j0Nz-8AhEWQYqJVbTB_IO_lJulqXoQbNV8UCBtKsi70.YHaCzRNC8_lnsmHgDx0puLEM889h1AdhDCLMe4mJYrY&dib_tag=se&keywords=usb+c+cable&qid=1792846136&sr=8-3"
+   },
+   {
+    "idx": 111,
+    "role": "link",
+    "name": "Anker USB C to USB C Cable, 60W Fast Charging Cable (2-Pack, 6 ft, Black)",
+    "section": "s-search-results > s-search-result",
+    "href": "https://www.amazon.com/Anker-Charging-MacBook-Galaxy-Charger/dp/B088NRLMPV/ref=sr_1_3?dib=eyJ2IjoiMSJ9.zDerXzkkcCIibp1gD24_gCubJ1DdAyUNubDo5YxBMn3yuF3-ejdznxv1_YoxZmjYL8s_qMb1_IYA1G7xW4aXPdz_iZyEXO8TXtyUMoesjoQOtvKI-eieNWJIXiNyuIf0j4xKf1JUM-MxosH-UaLcSVB0J-iJ9D0V4RAZ3rCQ9g3Yz4M9lFZgoxKmqd1SL9X9j0Nz-8AhEWQYqJVbTB_IO_lJulqXoQbNV8UCBtKsi70.YHaCzRNC8_lnsmHgDx0puLEM889h1AdhDCLMe4mJYrY&dib_tag=se&keywords=usb+c+cable&qid=1792846136&sr=8-3"
+   },
+   {
+    "idx": 112,
+    "role": "button",
+    "name": "4.7 out of 5 stars, rating details",
+    "section": "s-search-results > s-search-result",
+    "href": "javascript:void(0)"
+   },
+   {
+    "idx": 113,
+    "role": "link",
+    "name": "90,341 ratings",
+    "section": "s-search-result > s-client-side-analytics",
+    "href": "https://www.amazon.com/Anker-Charging-MacBook-Galaxy-Charger/dp/B088NRLMPV/ref=sr_1_3?dib=eyJ2IjoiMSJ9.zDerXzkkcCIibp1gD24_gCubJ1DdAyUNubDo5YxBMn3yuF3-ejdznxv1_YoxZmjYL8s_qMb1_IYA1G7xW4aXPdz_iZyEXO8TXtyUMoesjoQOtvKI-eieNWJIXiNyuIf0j4xKf1JUM-MxosH-UaLcSVB0J-iJ9D0V4RAZ3rCQ9g3Yz4M9lFZgoxKmqd1SL9X9j0Nz-8AhEWQYqJVbTB_IO_lJulqXoQbNV8UCBtKsi70.YHaCzRNC8_lnsmHgDx0puLEM889h1AdhDCLMe4mJYrY&dib_tag=se&keywords=usb+c+cable&qid=1792846136&sr=8-3#customerReviews"
+   },
+   {
+    "idx": 114,
+    "role": "link",
+    "name": "$9.99 $9 . 99 ( $5.00 $5.00/count)",
+    "section": "s-search-results > s-search-result",
+    "href": "https://www.amazon.com/Anker-Charging-MacBook-Galaxy-Charger/dp/B088NRLMPV/ref=sr_1_3?dib=eyJ2IjoiMSJ9.zDerXzkkcCIibp1gD24_gCubJ1DdAyUNubDo5YxBMn3yuF3-ejdznxv1_YoxZmjYL8s_qMb1_IYA1G7xW4aXPdz_iZyEXO8TXtyUMoesjoQOtvKI-eieNWJIXiNyuIf0j4xKf1JUM-MxosH-UaLcSVB0J-iJ9D0V4RAZ3rCQ9g3Yz4M9lFZgoxKmqd1SL9X9j0Nz-8AhEWQYqJVbTB_IO_lJulqXoQbNV8UCBtKsi70.YHaCzRNC8_lnsmHgDx0puLEM889h1AdhDCLMe4mJYrY&dib_tag=se&keywords=usb+c+cable&qid=1792846136&sr=8-3"
+   },
+   {
+    "idx": 115,
+    "role": "button",
+    "name": "Carbon impact",
+    "section": "s-search-results > s-search-result",
+    "href": "javascript:void(0)"
+   },
+   {
+    "idx": 116,
+    "role": "button",
+    "name": "Add to cart",
+    "section": "form > a-autoid-5"
+   },
+   {
+    "idx": 117,
+    "role": "link",
+    "name": "(2 used & new offers)",
+    "section": "s-search-results > s-search-result",
+    "href": "https://www.amazon.com/gp/offer-listing/B088NRLMPV/ref=sr_1_3_olp?keywords=usb+c+cable&dib_tag=se&dib=eyJ2IjoiMSJ9.zDerXzkkcCIibp1gD24_gCubJ1DdAyUNubDo5YxBMn3yuF3-ejdznxv1_YoxZmjYL8s_qMb1_IYA1G7xW4aXPdz_iZyEXO8TXtyUMoesjoQOtvKI-eieNWJIXiNyuIf0j4xKf1JUM-MxosH-UaLcSVB0J-iJ9D0V4RAZ3rCQ9g3Yz4M9lFZgoxKmqd1SL9X9j0Nz-8AhEWQYqJVbTB_IO_lJulqXoQbNV8UCBtKsi70.YHaCzRNC8_lnsmHgDx0puLEM889h1AdhDCLMe4mJYrY&qid=1792846136&sr=8-3"
+   },
+   {
+    "idx": 118,
+    "role": "link",
+    "name": "LISEN USB C to USB C Cable, 240W Fast Charging Type C Charger Cord (6.6FT) | 2-Pack | iPhone 18 Pro …",
+    "section": "s-search-result > s-product-image",
+    "href": "https://www.amazon.com/LISEN-Cable-Charging-Charger-6-6FT/dp/B0CG1LGWR6/ref=sr_1_4?dib=eyJ2IjoiMSJ9.zDerXzkkcCIibp1gD24_gCubJ1DdAyUNubDo5YxBMn3yuF3-ejdznxv1_YoxZmjYL8s_qMb1_IYA1G7xW4aXPdz_iZyEXO8TXtyUMoesjoQOtvKI-eieNWJIXiNyuIf0j4xKf1JUM-MxosH-UaLcSVB0J-iJ9D0V4RAZ3rCQ9g3Yz4M9lFZgoxKmqd1SL9X9j0Nz-8AhEWQYqJVbTB_IO_lJulqXoQbNV8UCBtKsi70.YHaCzRNC8_lnsmHgDx0puLEM889h1AdhDCLMe4mJYrY&dib_tag=se&keywords=usb+c+cable&qid=1792846136&sr=8-4"
+   },
+   {
+    "idx": 119,
+    "role": "link",
+    "name": "LISEN USB C to USB C Cable, 240W Fast Charging Type C Charger Cord (6.6FT)",
+    "section": "s-search-results > s-search-result",
+    "href": "https://www.amazon.com/LISEN-Cable-Charging-Charger-6-6FT/dp/B0CG1LGWR6/ref=sr_1_4?dib=eyJ2IjoiMSJ9.zDerXzkkcCIibp1gD24_gCubJ1DdAyUNubDo5YxBMn3yuF3-ejdznxv1_YoxZmjYL8s_qMb1_IYA1G7xW4aXPdz_iZyEXO8TXtyUMoesjoQOtvKI-eieNWJIXiNyuIf0j4xKf1JUM-MxosH-UaLcSVB0J-iJ9D0V4RAZ3rCQ9g3Yz4M9lFZgoxKmqd1SL9X9j0Nz-8AhEWQYqJVbTB_IO_lJulqXoQbNV8UCBtKsi70.YHaCzRNC8_lnsmHgDx0puLEM889h1AdhDCLMe4mJYrY&dib_tag=se&keywords=usb+c+cable&qid=1792846136&sr=8-4"
+   },
+   {
+    "idx": 120,
+    "role": "button",
+    "name": "4.5 out of 5 stars, rating details",
+    "section": "s-search-results > s-search-result",
+    "href": "javascript:void(0)"
+   },
+   {
+    "idx": 121,
+    "role": "link",
+    "name": "12,636 ratings",
+    "section": "s-search-result > s-client-side-analytics",
+    "href": "https://www.amazon.com/LISEN-Cable-Charging-Charger-6-6FT/dp/B0CG1LGWR6/ref=sr_1_4?dib=eyJ2IjoiMSJ9.zDerXzkkcCIibp1gD24_gCubJ1DdAyUNubDo5YxBMn3yuF3-ejdznxv1_YoxZmjYL8s_qMb1_IYA1G7xW4aXPdz_iZyEXO8TXtyUMoesjoQOtvKI-eieNWJIXiNyuIf0j4xKf1JUM-MxosH-UaLcSVB0J-iJ9D0V4RAZ3rCQ9g3Yz4M9lFZgoxKmqd1SL9X9j0Nz-8AhEWQYqJVbTB_IO_lJulqXoQbNV8UCBtKsi70.YHaCzRNC8_lnsmHgDx0puLEM889h1AdhDCLMe4mJYrY&dib_tag=se&keywords=usb+c+cable&qid=1792846136&sr=8-4#customerReviews"
+   },
+   {
+    "idx": 122,
+    "role": "link",
+    "name": "Limited time deal",
+    "section": "s-search-results > s-search-result",
+    "href": "https://www.amazon.com/deals"
+   },
+   {
+    "idx": 123,
+    "role": "link",
+    "name": "$8.97 $8 . 97 ( $4.49 $4.49/count) List: $9.99 List: $9.99 $9.99",
+    "section": "s-search-results > s-search-result",
+    "href": "https://www.amazon.com/LISEN-Cable-Charging-Charger-6-6FT/dp/B0CG1LGWR6/ref=sr_1_4?dib=eyJ2IjoiMSJ9.zDerXzkkcCIibp1gD24_gCubJ1DdAyUNubDo5YxBMn3yuF3-ejdznxv1_YoxZmjYL8s_qMb1_IYA1G7xW4aXPdz_iZyEXO8TXtyUMoesjoQOtvKI-eieNWJIXiNyuIf0j4xKf1JUM-MxosH-UaLcSVB0J-iJ9D0V4RAZ3rCQ9g3Yz4M9lFZgoxKmqd1SL9X9j0Nz-8AhEWQYqJVbTB_IO_lJulqXoQbNV8UCBtKsi70.YHaCzRNC8_lnsmHgDx0puLEM889h1AdhDCLMe4mJYrY&dib_tag=se&keywords=usb+c+cable&qid=1792846136&sr=8-4"
+   },
+   {
+    "idx": 124,
+    "role": "button",
+    "name": "Add to cart",
+    "section": "form > a-autoid-6"
+   },
+   {
+    "idx": 125,
+    "role": "link",
+    "name": "CLEEFUN USB C to USB C Cable 6ft, 5-Pack C to C Cable Fast Charging 60W | Type C Charger for iPhone …",
+    "section": "s-search-result > s-product-image",
+    "href": "https://www.amazon.com/CLEEFUN-Cable-5-Pack-Fast-Charging/dp/B0HGXSF5XC/ref=sr_1_5?dib=eyJ2IjoiMSJ9.zDerXzkkcCIibp1gD24_gCubJ1DdAyUNubDo5YxBMn3yuF3-ejdznxv1_YoxZmjYL8s_qMb1_IYA1G7xW4aXPdz_iZyEXO8TXtyUMoesjoQOtvKI-eieNWJIXiNyuIf0j4xKf1JUM-MxosH-UaLcSVB0J-iJ9D0V4RAZ3rCQ9g3Yz4M9lFZgoxKmqd1SL9X9j0Nz-8AhEWQYqJVbTB_IO_lJulqXoQbNV8UCBtKsi70.YHaCzRNC8_lnsmHgDx0puLEM889h1AdhDCLMe4mJYrY&dib_tag=se&keywords=usb+c+cable&qid=1792846136&sr=8-5"
+   },
+   {
+    "idx": 126,
+    "role": "link",
+    "name": "CLEEFUN USB C to USB C Cable 6ft, 5-Pack C to C Cable Fast Charging 60W",
+    "section": "s-search-results > s-search-result",
+    "href": "https://www.amazon.com/CLEEFUN-Cable-5-Pack-Fast-Charging/dp/B0HGXSF5XC/ref=sr_1_5?dib=eyJ2IjoiMSJ9.zDerXzkkcCIibp1gD24_gCubJ1DdAyUNubDo5YxBMn3yuF3-ejdznxv1_YoxZmjYL8s_qMb1_IYA1G7xW4aXPdz_iZyEXO8TXtyUMoesjoQOtvKI-eieNWJIXiNyuIf0j4xKf1JUM-MxosH-UaLcSVB0J-iJ9D0V4RAZ3rCQ9g3Yz4M9lFZgoxKmqd1SL9X9j0Nz-8AhEWQYqJVbTB_IO_lJulqXoQbNV8UCBtKsi70.YHaCzRNC8_lnsmHgDx0puLEM889h1AdhDCLMe4mJYrY&dib_tag=se&keywords=usb+c+cable&qid=1792846136&sr=8-5"
+   },
+   {
+    "idx": 127,
+    "role": "button",
+    "name": "4.7 out of 5 stars, rating details",
+    "section": "s-search-results > s-search-result",
+    "href": "javascript:void(0)"
+   },
+   {
+    "idx": 128,
+    "role": "link",
+    "name": "2,007 ratings",
+    "section": "s-search-result > s-client-side-analytics",
+    "href": "https://www.amazon.com/CLEEFUN-Cable-5-Pack-Fast-Charging/dp/B0HGXSF5XC/ref=sr_1_5?dib=eyJ2IjoiMSJ9.zDerXzkkcCIibp1gD24_gCubJ1DdAyUNubDo5YxBMn3yuF3-ejdznxv1_YoxZmjYL8s_qMb1_IYA1G7xW4aXPdz_iZyEXO8TXtyUMoesjoQOtvKI-eieNWJIXiNyuIf0j4xKf1JUM-MxosH-UaLcSVB0J-iJ9D0V4RAZ3rCQ9g3Yz4M9lFZgoxKmqd1SL9X9j0Nz-8AhEWQYqJVbTB_IO_lJulqXoQbNV8UCBtKsi70.YHaCzRNC8_lnsmHgDx0puLEM889h1AdhDCLMe4mJYrY&dib_tag=se&keywords=usb+c+cable&qid=1792846136&sr=8-5#customerReviews"
+   },
+   {
+    "idx": 129,
+    "role": "link",
+    "name": "$13.99 $13 . 99",
+    "section": "s-search-results > s-search-result",
+    "href": "https://www.amazon.com/CLEEFUN-Cable-5-Pack-Fast-Charging/dp/B0HGXSF5XC/ref=sr_1_5?dib=eyJ2IjoiMSJ9.zDerXzkkcCIibp1gD24_gCubJ1DdAyUNubDo5YxBMn3yuF3-ejdznxv1_YoxZmjYL8s_qMb1_IYA1G7xW4aXPdz_iZyEXO8TXtyUMoesjoQOtvKI-eieNWJIXiNyuIf0j4xKf1JUM-MxosH-UaLcSVB0J-iJ9D0V4RAZ3rCQ9g3Yz4M9lFZgoxKmqd1SL9X9j0Nz-8AhEWQYqJVbTB_IO_lJulqXoQbNV8UCBtKsi70.YHaCzRNC8_lnsmHgDx0puLEM889h1AdhDCLMe4mJYrY&dib_tag=se&keywords=usb+c+cable&qid=1792846136&sr=8-5"
+   },
+   {
+    "idx": 130,
+    "role": "button",
+    "name": "Add to cart",
+    "section": "form > a-autoid-7"
+   },
+   {
+    "idx": 131,
+    "role": "link",
+    "name": "See all",
+    "section": "search > s-search-results",
+    "href": "https://www.amazon.com/s/ref=sxin_15_pa_sp_search_thematic?k=usb+c+cable&rh=p_n_deal_type%3A23566064011&pd_rd_w=Sje7e&content-id=amzn1.sym.4c1fec13-dc0d-410e-8849-50e4ac9139df:amzn1.sym.4c1fec13-dc0d-410e-8849-50e4ac9139df&pf_rd_p=4c1fec13-dc0d-410e-8849-50e4ac9139df&pf_rd_r=CC1K9CMHB5M6WRTSZBBZ&pd_rd_wg=AzVIl&pd_rd_r=01527afe-9f0f-414d-b90d-75cad30e6618&qid=1792846136"
+   },
+   {
+    "idx": 132,
+    "role": "link",
+    "name": "Sponsored Ad - USB C to USB C Cable, USBC Cable for Apple, Fast Charging, 3-Pack 6FT White | For App…",
+    "section": "s-impression-logger > s-product-image",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MToyNDYzNzYyNTg4MTU4MzczOjE3OTI4NDYxMzY6c3Bfc2VhcmNoX3RoZW1hdGljOjMwMDgzMzgxNzg2MzAwMjo6MDo6&url=%2FUSB-3-Pack-Type-C-Charger-Compatible%2Fdp%2FB0F4D5ZKD2%2Fref%3Dsxin_15_pa_sp_search_thematic_sspa%3Fcontent-id%3Damzn1.sym.4c1fec13-dc0d-410e-8849-50e4ac9139df%253Aamzn1.sym.4c1fec13-dc0d-410e-8849-50e4ac9139df%26cv_ct_cx%3Dusb%2Bc%2Bcable%26keywords%3Dusb%2Bc%2Bcable%26pd_rd_i%3DB0F4D5ZKD2%26pd_rd_r%3D01527afe-9f0f-414d-b90d-75cad30e6618%26pd_rd_w%3DSje7e%26pd_rd_wg%3DAzVIl%26pf_rd_p%3D4c1fec13-dc0d-410e-8849-50e4ac9139df%26pf_rd_r%3DCC1K9CMHB5M6WRTSZBBZ%26qid%3D1792846136%26sbo%3DRZvfv%252F%252FHxDF%252BO5021pAnSA%253D%253D%26sr%3D1-1-73628ac3-efbc-4ed0-91a3-3f4336118b5f-spons%26aref%3DlUrbBJsNkw%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9zZWFyY2hfdGhlbWF0aWM%26psc%3D1&aref=lUrbBJsNkw"
+   },
+   {
+    "idx": 133,
+    "role": "button",
+    "name": "Sponsored",
+    "section": "1 of 6 > s-impression-logger",
+    "href": "javascript:void(0)"
+   },
+   {
+    "idx": 134,
+    "role": "link",
+    "name": "USB C to USB C Cable, USBC Cable for Apple, Fast Charging, 3-Pack 6FT White",
+    "section": "1 of 6 > s-impression-logger",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MToyNDYzNzYyNTg4MTU4MzczOjE3OTI4NDYxMzY6c3Bfc2VhcmNoX3RoZW1hdGljOjMwMDgzMzgxNzg2MzAwMjo6MDo6&url=%2FUSB-3-Pack-Type-C-Charger-Compatible%2Fdp%2FB0F4D5ZKD2%2Fref%3Dsxin_15_pa_sp_search_thematic_sspa%3Fcontent-id%3Damzn1.sym.4c1fec13-dc0d-410e-8849-50e4ac9139df%253Aamzn1.sym.4c1fec13-dc0d-410e-8849-50e4ac9139df%26cv_ct_cx%3Dusb%2Bc%2Bcable%26keywords%3Dusb%2Bc%2Bcable%26pd_rd_i%3DB0F4D5ZKD2%26pd_rd_r%3D01527afe-9f0f-414d-b90d-75cad30e6618%26pd_rd_w%3DSje7e%26pd_rd_wg%3DAzVIl%26pf_rd_p%3D4c1fec13-dc0d-410e-8849-50e4ac9139df%26pf_rd_r%3DCC1K9CMHB5M6WRTSZBBZ%26qid%3D1792846136%26sbo%3DRZvfv%252F%252FHxDF%252BO5021pAnSA%253D%253D%26sr%3D1-1-73628ac3-efbc-4ed0-91a3-3f4336118b5f-spons%26aref%3DlUrbBJsNkw%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9zZWFyY2hfdGhlbWF0aWM%26psc%3D1&aref=lUrbBJsNkw"
+   },
+   {
+    "idx": 135,
+    "role": "button",
+    "name": "4.6 out of 5 stars, rating details",
+    "section": "1 of 6 > s-impression-logger",
+    "href": "javascript:void(0)"
+   },
+   {
+    "idx": 136,
+    "role": "link",
+    "name": "5,515 ratings",
+    "section": "s-impression-logger > s-client-side-analytics",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MToyNDYzNzYyNTg4MTU4MzczOjE3OTI4NDYxMzY6c3Bfc2VhcmNoX3RoZW1hdGljOjMwMDgzMzgxNzg2MzAwMjo6MDo6&url=%2FUSB-3-Pack-Type-C-Charger-Compatible%2Fdp%2FB0F4D5ZKD2%2Fref%3Dsxin_15_pa_sp_search_thematic_sspa%3Fcontent-id%3Damzn1.sym.4c1fec13-dc0d-410e-8849-50e4ac9139df%253Aamzn1.sym.4c1fec13-dc0d-410e-8849-50e4ac9139df%26cv_ct_cx%3Dusb%2Bc%2Bcable%26keywords%3Dusb%2Bc%2Bcable%26pd_rd_i%3DB0F4D5ZKD2%26pd_rd_r%3D01527afe-9f0f-414d-b90d-75cad30e6618%26pd_rd_w%3DSje7e%26pd_rd_wg%3DAzVIl%26pf_rd_p%3D4c1fec13-dc0d-410e-8849-50e4ac9139df%26pf_rd_r%3DCC1K9CMHB5M6WRTSZBBZ%26qid%3D1792846136%26sbo%3DRZvfv%252F%252FHxDF%252BO5021pAnSA%253D%253D%26sr%3D1-1-73628ac3-efbc-4ed0-91a3-3f4336118b5f-spons%26aref%3DlUrbBJsNkw%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9zZWFyY2hfdGhlbWF0aWM%26psc%3D1&aref=lUrbBJsNkw#customerReviews"
+   },
+   {
+    "idx": 137,
+    "role": "link",
+    "name": "Limited time deal",
+    "section": "1 of 6 > s-impression-logger",
+    "href": "https://www.amazon.com/deals"
+   },
+   {
+    "idx": 138,
+    "role": "link",
+    "name": "$8.99 $8 . 99 ( $3.00 $3.00/count) Typical: $9.99 Typical: $9.99 $9.99",
+    "section": "1 of 6 > s-impression-logger",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MToyNDYzNzYyNTg4MTU4MzczOjE3OTI4NDYxMzY6c3Bfc2VhcmNoX3RoZW1hdGljOjMwMDgzMzgxNzg2MzAwMjo6MDo6&url=%2FUSB-3-Pack-Type-C-Charger-Compatible%2Fdp%2FB0F4D5ZKD2%2Fref%3Dsxin_15_pa_sp_search_thematic_sspa%3Fcontent-id%3Damzn1.sym.4c1fec13-dc0d-410e-8849-50e4ac9139df%253Aamzn1.sym.4c1fec13-dc0d-410e-8849-50e4ac9139df%26cv_ct_cx%3Dusb%2Bc%2Bcable%26keywords%3Dusb%2Bc%2Bcable%26pd_rd_i%3DB0F4D5ZKD2%26pd_rd_r%3D01527afe-9f0f-414d-b90d-75cad30e6618%26pd_rd_w%3DSje7e%26pd_rd_wg%3DAzVIl%26pf_rd_p%3D4c1fec13-dc0d-410e-8849-50e4ac9139df%26pf_rd_r%3DCC1K9CMHB5M6WRTSZBBZ%26qid%3D1792846136%26sbo%3DRZvfv%252F%252FHxDF%252BO5021pAnSA%253D%253D%26sr%3D1-1-73628ac3-efbc-4ed0-91a3-3f4336118b5f-spons%26aref%3DlUrbBJsNkw%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9zZWFyY2hfdGhlbWF0aWM%26psc%3D1&aref=lUrbBJsNkw"
+   },
+   {
+    "idx": 139,
+    "role": "button",
+    "name": "Add to cart",
+    "section": "form > a-autoid-8"
+   },
+   {
+    "idx": 140,
+    "role": "link",
+    "name": "JSAUX for iPhone 18 17 Pro Charger Cable, 6.6ft/2-Pack USB to USB C-Red | Type C Fast Charging Cord …",
+    "section": "2 of 6 > s-product-image",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MToyNDYzNzYyNTg4MTU4MzczOjE3OTI4NDYxMzY6c3Bfc2VhcmNoX3RoZW1hdGljOjo6MTpCMDc2RlBHV05aOnNlYXJjaA&url=%2FJSAUX-Charger-Braided-Compatible-Samsung%2Fdp%2FB076FPGWNZ%2Fref%3Dsxin_15_pa_sp_search_thematic_sspa%3Fcontent-id%3Damzn1.sym.4c1fec13-dc0d-410e-8849-50e4ac9139df%253Aamzn1.sym.4c1fec13-dc0d-410e-8849-50e4ac9139df%26cv_ct_cx%3Dusb%2Bc%2Bcable%26keywords%3Dusb%2Bc%2Bcable%26pd_rd_i%3DB076FPGWNZ%26pd_rd_r%3D01527afe-9f0f-414d-b90d-75cad30e6618%26pd_rd_w%3DSje7e%26pd_rd_wg%3DAzVIl%26pf_rd_p%3D4c1fec13-dc0d-410e-8849-50e4ac9139df%26pf_rd_r%3DCC1K9CMHB5M6WRTSZBBZ%26qid%3D1792846136%26sbo%3DRZvfv%252F%252FHxDF%252BO5021pAnSA%253D%253D%26sr%3D1-2-73628ac3-efbc-4ed0-91a3-3f4336118b5f-spons%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9zZWFyY2hfdGhlbWF0aWM%26psc%3D1"
+   },
+   {
+    "idx": 141,
+    "role": "link",
+    "name": "JSAUX for iPhone 18 17 Pro Charger Cable, 6.6ft/2-Pack USB to USB C-Red",
+    "section": "loom-desktop-inline-slot_featuredasins-c… > 2 of 6",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MToyNDYzNzYyNTg4MTU4MzczOjE3OTI4NDYxMzY6c3Bfc2VhcmNoX3RoZW1hdGljOjo6MTpCMDc2RlBHV05aOnNlYXJjaA&url=%2FJSAUX-Charger-Braided-Compatible-Samsung%2Fdp%2FB076FPGWNZ%2Fref%3Dsxin_15_pa_sp_search_thematic_sspa%3Fcontent-id%3Damzn1.sym.4c1fec13-dc0d-410e-8849-50e4ac9139df%253Aamzn1.sym.4c1fec13-dc0d-410e-8849-50e4ac9139df%26cv_ct_cx%3Dusb%2Bc%2Bcable%26keywords%3Dusb%2Bc%2Bcable%26pd_rd_i%3DB076FPGWNZ%26pd_rd_r%3D01527afe-9f0f-414d-b90d-75cad30e6618%26pd_rd_w%3DSje7e%26pd_rd_wg%3DAzVIl%26pf_rd_p%3D4c1fec13-dc0d-410e-8849-50e4ac9139df%26pf_rd_r%3DCC1K9CMHB5M6WRTSZBBZ%26qid%3D1792846136%26sbo%3DRZvfv%252F%252FHxDF%252BO5021pAnSA%253D%253D%26sr%3D1-2-73628ac3-efbc-4ed0-91a3-3f4336118b5f-spons%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9zZWFyY2hfdGhlbWF0aWM%26psc%3D1"
+   },
+   {
+    "idx": 142,
+    "role": "button",
+    "name": "4.6 out of 5 stars, rating details",
+    "section": "loom-desktop-inline-slot_featuredasins-c… > 2 of 6",
+    "href": "javascript:void(0)"
+   },
+   {
+    "idx": 143,
+    "role": "link",
+    "name": "169,123 ratings",
+    "section": "2 of 6 > s-client-side-analytics",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MToyNDYzNzYyNTg4MTU4MzczOjE3OTI4NDYxMzY6c3Bfc2VhcmNoX3RoZW1hdGljOjo6MTpCMDc2RlBHV05aOnNlYXJjaA&url=%2FJSAUX-Charger-Braided-Compatible-Samsung%2Fdp%2FB076FPGWNZ%2Fref%3Dsxin_15_pa_sp_search_thematic_sspa%3Fcontent-id%3Damzn1.sym.4c1fec13-dc0d-410e-8849-50e4ac9139df%253Aamzn1.sym.4c1fec13-dc0d-410e-8849-50e4ac9139df%26cv_ct_cx%3Dusb%2Bc%2Bcable%26keywords%3Dusb%2Bc%2Bcable%26pd_rd_i%3DB076FPGWNZ%26pd_rd_r%3D01527afe-9f0f-414d-b90d-75cad30e6618%26pd_rd_w%3DSje7e%26pd_rd_wg%3DAzVIl%26pf_rd_p%3D4c1fec13-dc0d-410e-8849-50e4ac9139df%26pf_rd_r%3DCC1K9CMHB5M6WRTSZBBZ%26qid%3D1792846136%26sbo%3DRZvfv%252F%252FHxDF%252BO5021pAnSA%253D%253D%26sr%3D1-2-73628ac3-efbc-4ed0-91a3-3f4336118b5f-spons%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9zZWFyY2hfdGhlbWF0aWM%26psc%3D1#customerReviews"
+   },
+   {
+    "idx": 144,
+    "role": "link",
+    "name": "Limited time deal",
+    "section": "loom-desktop-inline-slot_featuredasins-c… > 2 of 6",
+    "href": "https://www.amazon.com/deals"
+   },
+   {
+    "idx": 145,
+    "role": "link",
+    "name": "$6.85 $6 . 85 ( $0.52 $0.52/feet) List: $8.99 List: $8.99 $8.99",
+    "section": "loom-desktop-inline-slot_featuredasins-c… > 2 of 6",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MToyNDYzNzYyNTg4MTU4MzczOjE3OTI4NDYxMzY6c3Bfc2VhcmNoX3RoZW1hdGljOjo6MTpCMDc2RlBHV05aOnNlYXJjaA&url=%2FJSAUX-Charger-Braided-Compatible-Samsung%2Fdp%2FB076FPGWNZ%2Fref%3Dsxin_15_pa_sp_search_thematic_sspa%3Fcontent-id%3Damzn1.sym.4c1fec13-dc0d-410e-8849-50e4ac9139df%253Aamzn1.sym.4c1fec13-dc0d-410e-8849-50e4ac9139df%26cv_ct_cx%3Dusb%2Bc%2Bcable%26keywords%3Dusb%2Bc%2Bcable%26pd_rd_i%3DB076FPGWNZ%26pd_rd_r%3D01527afe-9f0f-414d-b90d-75cad30e6618%26pd_rd_w%3DSje7e%26pd_rd_wg%3DAzVIl%26pf_rd_p%3D4c1fec13-dc0d-410e-8849-50e4ac9139df%26pf_rd_r%3DCC1K9CMHB5M6WRTSZBBZ%26qid%3D1792846136%26sbo%3DRZvfv%252F%252FHxDF%252BO5021pAnSA%253D%253D%26sr%3D1-2-73628ac3-efbc-4ed0-91a3-3f4336118b5f-spons%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9zZWFyY2hfdGhlbWF0aWM%26psc%3D1"
+   },
+   {
+    "idx": 146,
+    "role": "button",
+    "name": "Recycled materials +2 more",
+    "section": "loom-desktop-inline-slot_featuredasins-c… > 2 of 6",
+    "href": "javascript:void(0)"
+   },
+   {
+    "idx": 147,
+    "role": "button",
+    "name": "Add to cart",
+    "section": "form > a-autoid-9"
+   },
+   {
+    "idx": 148,
+    "role": "link",
+    "name": "(3 used & new offers)",
+    "section": "loom-desktop-inline-slot_featuredasins-c… > 2 of 6",
+    "href": "https://www.amazon.com/gp/offer-listing/B076FPGWNZ/ref=sxin_15_pa_sp_search_thematic_olp?pf_rd_p=4c1fec13-dc0d-410e-8849-50e4ac9139df&keywords=usb+c+cable&pd_rd_wg=AzVIl&pf_rd_r=CC1K9CMHB5M6WRTSZBBZ&pd_rd_i=B076FPGWNZ&content-id=amzn1.sym.4c1fec13-dc0d-410e-8849-50e4ac9139df%3Aamzn1.sym.4c1fec13-dc0d-410e-8849-50e4ac9139df&pd_rd_w=Sje7e&qid=1792846136&cv_ct_cx=usb+c+cable&pd_rd_r=01527afe-9f0f-414d-b90d-75cad30e6618&sr=1-2-73628ac3-efbc-4ed0-91a3-3f4336118b5f"
+   },
+   {
+    "idx": 149,
+    "role": "link",
+    "name": "Sponsored Ad - 10FT Fast Charging Cord for iPhone 18 17 16e 15, 3Pack Extra Long 10Foot USB C to Typ…",
+    "section": "s-impression-logger > s-product-image",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MToyNDYzNzYyNTg4MTU4MzczOjE3OTI4NDYxMzY6c3Bfc2VhcmNoX3RoZW1hdGljOjMwMTMxNTM5MDc3NTUwMjo6Mjo6&url=%2FCharger-Biock-Cable-Apple-iPhone%2Fdp%2FB0B6W4ZSW7%2Fref%3Dsxin_15_pa_sp_search_thematic_sspa%3Fcontent-id%3Damzn1.sym.4c1fec13-dc0d-410e-8849-50e4ac9139df%253Aamzn1.sym.4c1fec13-dc0d-410e-8849-50e4ac9139df%26cv_ct_cx%3Dusb%2Bc%2Bcable%26keywords%3Dusb%2Bc%2Bcable%26pd_rd_i%3DB0B6W4ZSW7%26pd_rd_r%3D01527afe-9f0f-414d-b90d-75cad30e6618%26pd_rd_w%3DSje7e%26pd_rd_wg%3DAzVIl%26pf_rd_p%3D4c1fec13-dc0d-410e-8849-50e4ac9139df%26pf_rd_r%3DCC1K9CMHB5M6WRTSZBBZ%26qid%3D1792846136%26sbo%3DRZvfv%252F%252FHxDF%252BO5021pAnSA%253D%253D%26sr%3D1-3-73628ac3-efbc-4ed0-91a3-3f4336118b5f-spons%26aref%3DivRayFOLMW%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9zZWFyY2hfdGhlbWF0aWM%26psc%3D1&aref=ivRayFOLMW"
+   },
+   {
+    "idx": 150,
+    "role": "button",
+    "name": "Sponsored",
+    "section": "3 of 6 > s-impression-logger",
+    "href": "javascript:void(0)"
+   },
+   {
+    "idx": 151,
+    "role": "link",
+    "name": "10FT Fast Charging Cord for iPhone 18 17 16e 15, 3Pack Extra Long 10Foot USB C to Type C Charger Cab…",
+    "section": "3 of 6 > s-impression-logger",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MToyNDYzNzYyNTg4MTU4MzczOjE3OTI4NDYxMzY6c3Bfc2VhcmNoX3RoZW1hdGljOjMwMTMxNTM5MDc3NTUwMjo6Mjo6&url=%2FCharger-Biock-Cable-Apple-iPhone%2Fdp%2FB0B6W4ZSW7%2Fref%3Dsxin_15_pa_sp_search_thematic_sspa%3Fcontent-id%3Damzn1.sym.4c1fec13-dc0d-410e-8849-50e4ac9139df%253Aamzn1.sym.4c1fec13-dc0d-410e-8849-50e4ac9139df%26cv_ct_cx%3Dusb%2Bc%2Bcable%26keywords%3Dusb%2Bc%2Bcable%26pd_rd_i%3DB0B6W4ZSW7%26pd_rd_r%3D01527afe-9f0f-414d-b90d-75cad30e6618%26pd_rd_w%3DSje7e%26pd_rd_wg%3DAzVIl%26pf_rd_p%3D4c1fec13-dc0d-410e-8849-50e4ac9139df%26pf_rd_r%3DCC1K9CMHB5M6WRTSZBBZ%26qid%3D1792846136%26sbo%3DRZvfv%252F%252FHxDF%252BO5021pAnSA%253D%253D%26sr%3D1-3-73628ac3-efbc-4ed0-91a3-3f4336118b5f-spons%26aref%3DivRayFOLMW%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9zZWFyY2hfdGhlbWF0aWM%26psc%3D1&aref=ivRayFOLMW"
+   },
+   {
+    "idx": 152,
+    "role": "button",
+    "name": "4.7 out of 5 stars, rating details",
+    "section": "3 of 6 > s-impression-logger",
+    "href": "javascript:void(0)"
+   },
+   {
+    "idx": 153,
+    "role": "link",
+    "name": "1,364 ratings",
+    "section": "s-impression-logger > s-client-side-analytics",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MToyNDYzNzYyNTg4MTU4MzczOjE3OTI4NDYxMzY6c3Bfc2VhcmNoX3RoZW1hdGljOjMwMTMxNTM5MDc3NTUwMjo6Mjo6&url=%2FCharger-Biock-Cable-Apple-iPhone%2Fdp%2FB0B6W4ZSW7%2Fref%3Dsxin_15_pa_sp_search_thematic_sspa%3Fcontent-id%3Damzn1.sym.4c1fec13-dc0d-410e-8849-50e4ac9139df%253Aamzn1.sym.4c1fec13-dc0d-410e-8849-50e4ac9139df%26cv_ct_cx%3Dusb%2Bc%2Bcable%26keywords%3Dusb%2Bc%2Bcable%26pd_rd_i%3DB0B6W4ZSW7%26pd_rd_r%3D01527afe-9f0f-414d-b90d-75cad30e6618%26pd_rd_w%3DSje7e%26pd_rd_wg%3DAzVIl%26pf_rd_p%3D4c1fec13-dc0d-410e-8849-50e4ac9139df%26pf_rd_r%3DCC1K9CMHB5M6WRTSZBBZ%26qid%3D1792846136%26sbo%3DRZvfv%252F%252FHxDF%252BO5021pAnSA%253D%253D%26sr%3D1-3-73628ac3-efbc-4ed0-91a3-3f4336118b5f-spons%26aref%3DivRayFOLMW%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9zZWFyY2hfdGhlbWF0aWM%26psc%3D1&aref=ivRayFOLMW#customerReviews"
+   },
+   {
+    "idx": 154,
+    "role": "link",
+    "name": "Limited time deal",
+    "section": "3 of 6 > s-impression-logger",
+    "href": "https://www.amazon.com/deals"
+   },
+   {
+    "idx": 155,
+    "role": "link",
+    "name": "$25.98 $25 . 98 ( $8.66 $8.66/count) List: $33.99 List: $33.99 $33.99",
+    "section": "3 of 6 > s-impression-logger",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MToyNDYzNzYyNTg4MTU4MzczOjE3OTI4NDYxMzY6c3Bfc2VhcmNoX3RoZW1hdGljOjMwMTMxNTM5MDc3NTUwMjo6Mjo6&url=%2FCharger-Biock-Cable-Apple-iPhone%2Fdp%2FB0B6W4ZSW7%2Fref%3Dsxin_15_pa_sp_search_thematic_sspa%3Fcontent-id%3Damzn1.sym.4c1fec13-dc0d-410e-8849-50e4ac9139df%253Aamzn1.sym.4c1fec13-dc0d-410e-8849-50e4ac9139df%26cv_ct_cx%3Dusb%2Bc%2Bcable%26keywords%3Dusb%2Bc%2Bcable%26pd_rd_i%3DB0B6W4ZSW7%26pd_rd_r%3D01527afe-9f0f-414d-b90d-75cad30e6618%26pd_rd_w%3DSje7e%26pd_rd_wg%3DAzVIl%26pf_rd_p%3D4c1fec13-dc0d-410e-8849-50e4ac9139df%26pf_rd_r%3DCC1K9CMHB5M6WRTSZBBZ%26qid%3D1792846136%26sbo%3DRZvfv%252F%252FHxDF%252BO5021pAnSA%253D%253D%26sr%3D1-3-73628ac3-efbc-4ed0-91a3-3f4336118b5f-spons%26aref%3DivRayFOLMW%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9zZWFyY2hfdGhlbWF0aWM%26psc%3D1&aref=ivRayFOLMW"
+   },
+   {
+    "idx": 156,
+    "role": "button",
+    "name": "Add to cart",
+    "section": "form > a-autoid-10"
+   },
+   {
+    "idx": 157,
+    "role": "link",
+    "name": "AINOPE USB C to USB C Cable (60W 2Pack 6.6ft) C to C Cable Fast Charging | Type C Charger Fast Charg…",
+    "section": "4 of 6 > s-product-image",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MToyNDYzNzYyNTg4MTU4MzczOjE3OTI4NDYxMzY6c3Bfc2VhcmNoX3RoZW1hdGljOjo6MzpCMDhUNVdQQzUzOnNlYXJjaA&url=%2FAINOPE-Braided-Charger-Charging-Nintendo%2Fdp%2FB08T5WPC53%2Fref%3Dsxin_15_pa_sp_search_thematic_sspa%3Fcontent-id%3Damzn1.sym.4c1fec13-dc0d-410e-8849-50e4ac9139df%253Aamzn1.sym.4c1fec13-dc0d-410e-8849-50e4ac9139df%26cv_ct_cx%3Dusb%2Bc%2Bcable%26keywords%3Dusb%2Bc%2Bcable%26pd_rd_i%3DB08T5WPC53%26pd_rd_r%3D01527afe-9f0f-414d-b90d-75cad30e6618%26pd_rd_w%3DSje7e%26pd_rd_wg%3DAzVIl%26pf_rd_p%3D4c1fec13-dc0d-410e-8849-50e4ac9139df%26pf_rd_r%3DCC1K9CMHB5M6WRTSZBBZ%26qid%3D1792846136%26sbo%3DRZvfv%252F%252FHxDF%252BO5021pAnSA%253D%253D%26sr%3D1-4-73628ac3-efbc-4ed0-91a3-3f4336118b5f-spons%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9zZWFyY2hfdGhlbWF0aWM%26psc%3D1"
+   },
+   {
+    "idx": 158,
+    "role": "link",
+    "name": "AINOPE USB C to USB C Cable (60W 2Pack 6.6ft) C to C Cable Fast Charging",
+    "section": "loom-desktop-inline-slot_featuredasins-c… > 4 of 6",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MToyNDYzNzYyNTg4MTU4MzczOjE3OTI4NDYxMzY6c3Bfc2VhcmNoX3RoZW1hdGljOjo6MzpCMDhUNVdQQzUzOnNlYXJjaA&url=%2FAINOPE-Braided-Charger-Charging-Nintendo%2Fdp%2FB08T5WPC53%2Fref%3Dsxin_15_pa_sp_search_thematic_sspa%3Fcontent-id%3Damzn1.sym.4c1fec13-dc0d-410e-8849-50e4ac9139df%253Aamzn1.sym.4c1fec13-dc0d-410e-8849-50e4ac9139df%26cv_ct_cx%3Dusb%2Bc%2Bcable%26keywords%3Dusb%2Bc%2Bcable%26pd_rd_i%3DB08T5WPC53%26pd_rd_r%3D01527afe-9f0f-414d-b90d-75cad30e6618%26pd_rd_w%3DSje7e%26pd_rd_wg%3DAzVIl%26pf_rd_p%3D4c1fec13-dc0d-410e-8849-50e4ac9139df%26pf_rd_r%3DCC1K9CMHB5M6WRTSZBBZ%26qid%3D1792846136%26sbo%3DRZvfv%252F%252FHxDF%252BO5021pAnSA%253D%253D%26sr%3D1-4-73628ac3-efbc-4ed0-91a3-3f4336118b5f-spons%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9zZWFyY2hfdGhlbWF0aWM%26psc%3D1"
+   },
+   {
+    "idx": 159,
+    "role": "button",
+    "name": "4.7 out of 5 stars, rating details",
+    "section": "loom-desktop-inline-slot_featuredasins-c… > 4 of 6",
+    "href": "javascript:void(0)"
+   },
+   {
+    "idx": 160,
+    "role": "link",
+    "name": "34,581 ratings",
+    "section": "4 of 6 > s-client-side-analytics",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MToyNDYzNzYyNTg4MTU4MzczOjE3OTI4NDYxMzY6c3Bfc2VhcmNoX3RoZW1hdGljOjo6MzpCMDhUNVdQQzUzOnNlYXJjaA&url=%2FAINOPE-Braided-Charger-Charging-Nintendo%2Fdp%2FB08T5WPC53%2Fref%3Dsxin_15_pa_sp_search_thematic_sspa%3Fcontent-id%3Damzn1.sym.4c1fec13-dc0d-410e-8849-50e4ac9139df%253Aamzn1.sym.4c1fec13-dc0d-410e-8849-50e4ac9139df%26cv_ct_cx%3Dusb%2Bc%2Bcable%26keywords%3Dusb%2Bc%2Bcable%26pd_rd_i%3DB08T5WPC53%26pd_rd_r%3D01527afe-9f0f-414d-b90d-75cad30e6618%26pd_rd_w%3DSje7e%26pd_rd_wg%3DAzVIl%26pf_rd_p%3D4c1fec13-dc0d-410e-8849-50e4ac9139df%26pf_rd_r%3DCC1K9CMHB5M6WRTSZBBZ%26qid%3D1792846136%26sbo%3DRZvfv%252F%252FHxDF%252BO5021pAnSA%253D%253D%26sr%3D1-4-73628ac3-efbc-4ed0-91a3-3f4336118b5f-spons%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9zZWFyY2hfdGhlbWF0aWM%26psc%3D1#customerReviews"
+   },
+   {
+    "idx": 161,
+    "role": "link",
+    "name": "Limited time deal",
+    "section": "loom-desktop-inline-slot_featuredasins-c… > 4 of 6",
+    "href": "https://www.amazon.com/deals"
+   },
+   {
+    "idx": 162,
+    "role": "link",
+    "name": "$7.99 $7 . 99 ( $0.61 $0.61/feet) List: $8.99 List: $8.99 $8.99",
+    "section": "loom-desktop-inline-slot_featuredasins-c… > 4 of 6",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MToyNDYzNzYyNTg4MTU4MzczOjE3OTI4NDYxMzY6c3Bfc2VhcmNoX3RoZW1hdGljOjo6MzpCMDhUNVdQQzUzOnNlYXJjaA&url=%2FAINOPE-Braided-Charger-Charging-Nintendo%2Fdp%2FB08T5WPC53%2Fref%3Dsxin_15_pa_sp_search_thematic_sspa%3Fcontent-id%3Damzn1.sym.4c1fec13-dc0d-410e-8849-50e4ac9139df%253Aamzn1.sym.4c1fec13-dc0d-410e-8849-50e4ac9139df%26cv_ct_cx%3Dusb%2Bc%2Bcable%26keywords%3Dusb%2Bc%2Bcable%26pd_rd_i%3DB08T5WPC53%26pd_rd_r%3D01527afe-9f0f-414d-b90d-75cad30e6618%26pd_rd_w%3DSje7e%26pd_rd_wg%3DAzVIl%26pf_rd_p%3D4c1fec13-dc0d-410e-8849-50e4ac9139df%26pf_rd_r%3DCC1K9CMHB5M6WRTSZBBZ%26qid%3D1792846136%26sbo%3DRZvfv%252F%252FHxDF%252BO5021pAnSA%253D%253D%26sr%3D1-4-73628ac3-efbc-4ed0-91a3-3f4336118b5f-spons%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9zZWFyY2hfdGhlbWF0aWM%26psc%3D1"
+   },
+   {
+    "idx": 163,
+    "role": "button",
+    "name": "Add to cart",
+    "section": "form > a-autoid-11"
+   },
+   {
+    "idx": 164,
+    "role": "link",
+    "name": "Sponsored Ad - USB C to USB C Cable 10ft 240W for Apple, Long Type C Fast Charging Cord | 2Pack Type…",
+    "section": "s-impression-logger > s-product-image",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MToyNDYzNzYyNTg4MTU4MzczOjE3OTI4NDYxMzY6c3Bfc2VhcmNoX3RoZW1hdGljOjMwMTM5NDQ5MDgxOTUwMjo6NDo6&url=%2FCharging-Cable-iPhone-Charger-MacBook%2Fdp%2FB0GWJJDXW8%2Fref%3Dsxin_15_pa_sp_search_thematic_sspa%3Fcontent-id%3Damzn1.sym.4c1fec13-dc0d-410e-8849-50e4ac9139df%253Aamzn1.sym.4c1fec13-dc0d-410e-8849-50e4ac9139df%26cv_ct_cx%3Dusb%2Bc%2Bcable%26keywords%3Dusb%2Bc%2Bcable%26pd_rd_i%3DB0GWJJDXW8%26pd_rd_r%3D01527afe-9f0f-414d-b90d-75cad30e6618%26pd_rd_w%3DSje7e%26pd_rd_wg%3DAzVIl%26pf_rd_p%3D4c1fec13-dc0d-410e-8849-50e4ac9139df%26pf_rd_r%3DCC1K9CMHB5M6WRTSZBBZ%26qid%3D1792846136%26sbo%3DRZvfv%252F%252FHxDF%252BO5021pAnSA%253D%253D%26sr%3D1-5-73628ac3-efbc-4ed0-91a3-3f4336118b5f-spons%26aref%3DvEd9AAapLK%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9zZWFyY2hfdGhlbWF0aWM%26psc%3D1&aref=vEd9AAapLK"
+   },
+   {
+    "idx": 165,
+    "role": "button",
+    "name": "Sponsored",
+    "section": "5 of 6 > s-impression-logger",
+    "href": "javascript:void(0)"
+   },
+   {
+    "idx": 166,
+    "role": "link",
+    "name": "USB C to USB C Cable 10ft 240W for Apple, Long Type C Fast Charging Cord",
+    "section": "5 of 6 > s-impression-logger",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MToyNDYzNzYyNTg4MTU4MzczOjE3OTI4NDYxMzY6c3Bfc2VhcmNoX3RoZW1hdGljOjMwMTM5NDQ5MDgxOTUwMjo6NDo6&url=%2FCharging-Cable-iPhone-Charger-MacBook%2Fdp%2FB0GWJJDXW8%2Fref%3Dsxin_15_pa_sp_search_thematic_sspa%3Fcontent-id%3Damzn1.sym.4c1fec13-dc0d-410e-8849-50e4ac9139df%253Aamzn1.sym.4c1fec13-dc0d-410e-8849-50e4ac9139df%26cv_ct_cx%3Dusb%2Bc%2Bcable%26keywords%3Dusb%2Bc%2Bcable%26pd_rd_i%3DB0GWJJDXW8%26pd_rd_r%3D01527afe-9f0f-414d-b90d-75cad30e6618%26pd_rd_w%3DSje7e%26pd_rd_wg%3DAzVIl%26pf_rd_p%3D4c1fec13-dc0d-410e-8849-50e4ac9139df%26pf_rd_r%3DCC1K9CMHB5M6WRTSZBBZ%26qid%3D1792846136%26sbo%3DRZvfv%252F%252FHxDF%252BO5021pAnSA%253D%253D%26sr%3D1-5-73628ac3-efbc-4ed0-91a3-3f4336118b5f-spons%26aref%3DvEd9AAapLK%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9zZWFyY2hfdGhlbWF0aWM%26psc%3D1&aref=vEd9AAapLK"
+   },
+   {
+    "idx": 167,
+    "role": "button",
+    "name": "4.6 out of 5 stars, rating details",
+    "section": "5 of 6 > s-impression-logger",
+    "href": "javascript:void(0)"
+   },
+   {
+    "idx": 168,
+    "role": "link",
+    "name": "5,444 ratings",
+    "section": "s-impression-logger > s-client-side-analytics",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MToyNDYzNzYyNTg4MTU4MzczOjE3OTI4NDYxMzY6c3Bfc2VhcmNoX3RoZW1hdGljOjMwMTM5NDQ5MDgxOTUwMjo6NDo6&url=%2FCharging-Cable-iPhone-Charger-MacBook%2Fdp%2FB0GWJJDXW8%2Fref%3Dsxin_15_pa_sp_search_thematic_sspa%3Fcontent-id%3Damzn1.sym.4c1fec13-dc0d-410e-8849-50e4ac9139df%253Aamzn1.sym.4c1fec13-dc0d-410e-8849-50e4ac9139df%26cv_ct_cx%3Dusb%2Bc%2Bcable%26keywords%3Dusb%2Bc%2Bcable%26pd_rd_i%3DB0GWJJDXW8%26pd_rd_r%3D01527afe-9f0f-414d-b90d-75cad30e6618%26pd_rd_w%3DSje7e%26pd_rd_wg%3DAzVIl%26pf_rd_p%3D4c1fec13-dc0d-410e-8849-50e4ac9139df%26pf_rd_r%3DCC1K9CMHB5M6WRTSZBBZ%26qid%3D1792846136%26sbo%3DRZvfv%252F%252FHxDF%252BO5021pAnSA%253D%253D%26sr%3D1-5-73628ac3-efbc-4ed0-91a3-3f4336118b5f-spons%26aref%3DvEd9AAapLK%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9zZWFyY2hfdGhlbWF0aWM%26psc%3D1&aref=vEd9AAapLK#customerReviews"
+   },
+   {
+    "idx": 169,
+    "role": "link",
+    "name": "Limited time deal",
+    "section": "5 of 6 > s-impression-logger",
+    "href": "https://www.amazon.com/deals"
+   },
+   {
+    "idx": 170,
+    "role": "link",
+    "name": "$15.29 $15 . 29 ( $7.65 $7.65/count) Typical: $16.99 Typical: $16.99 $16.99",
+    "section": "5 of 6 > s-impression-logger",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MToyNDYzNzYyNTg4MTU4MzczOjE3OTI4NDYxMzY6c3Bfc2VhcmNoX3RoZW1hdGljOjMwMTM5NDQ5MDgxOTUwMjo6NDo6&url=%2FCharging-Cable-iPhone-Charger-MacBook%2Fdp%2FB0GWJJDXW8%2Fref%3Dsxin_15_pa_sp_search_thematic_sspa%3Fcontent-id%3Damzn1.sym.4c1fec13-dc0d-410e-8849-50e4ac9139df%253Aamzn1.sym.4c1fec13-dc0d-410e-8849-50e4ac9139df%26cv_ct_cx%3Dusb%2Bc%2Bcable%26keywords%3Dusb%2Bc%2Bcable%26pd_rd_i%3DB0GWJJDXW8%26pd_rd_r%3D01527afe-9f0f-414d-b90d-75cad30e6618%26pd_rd_w%3DSje7e%26pd_rd_wg%3DAzVIl%26pf_rd_p%3D4c1fec13-dc0d-410e-8849-50e4ac9139df%26pf_rd_r%3DCC1K9CMHB5M6WRTSZBBZ%26qid%3D1792846136%26sbo%3DRZvfv%252F%252FHxDF%252BO5021pAnSA%253D%253D%26sr%3D1-5-73628ac3-efbc-4ed0-91a3-3f4336118b5f-spons%26aref%3DvEd9AAapLK%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9zZWFyY2hfdGhlbWF0aWM%26psc%3D1&aref=vEd9AAapLK"
+   },
+   {
+    "idx": 171,
+    "role": "button",
+    "name": "Add to cart",
+    "section": "form > a-autoid-12"
+   },
+   {
+    "idx": 172,
+    "role": "link",
+    "name": "UGREEN 240W USB C Cable 3-Pack, Fast Charging for Laptops & Phones, 6.6ft | For iPhone 18/17/16/15, …",
+    "section": "6 of 6 > s-product-image",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MToyNDYzNzYyNTg4MTU4MzczOjE3OTI4NDYxMzY6c3Bfc2VhcmNoX3RoZW1hdGljOjo6NTpCMEgyOTRDNTFMOnNlYXJjaA&url=%2FUGREEN-Charging-Laptops-MacBook-ThinkBook%2Fdp%2FB0H294C51L%2Fref%3Dsxin_15_pa_sp_search_thematic_sspa%3Fcontent-id%3Damzn1.sym.4c1fec13-dc0d-410e-8849-50e4ac9139df%253Aamzn1.sym.4c1fec13-dc0d-410e-8849-50e4ac9139df%26cv_ct_cx%3Dusb%2Bc%2Bcable%26keywords%3Dusb%2Bc%2Bcable%26pd_rd_i%3DB0H294C51L%26pd_rd_r%3D01527afe-9f0f-414d-b90d-75cad30e6618%26pd_rd_w%3DSje7e%26pd_rd_wg%3DAzVIl%26pf_rd_p%3D4c1fec13-dc0d-410e-8849-50e4ac9139df%26pf_rd_r%3DCC1K9CMHB5M6WRTSZBBZ%26qid%3D1792846136%26sbo%3DRZvfv%252F%252FHxDF%252BO5021pAnSA%253D%253D%26sr%3D1-6-73628ac3-efbc-4ed0-91a3-3f4336118b5f-spons%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9zZWFyY2hfdGhlbWF0aWM%26psc%3D1"
+   },
+   {
+    "idx": 173,
+    "role": "link",
+    "name": "UGREEN 240W USB C Cable 3-Pack, Fast Charging for Laptops & Phones, 6.6ft",
+    "section": "loom-desktop-inline-slot_featuredasins-c… > 6 of 6",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MToyNDYzNzYyNTg4MTU4MzczOjE3OTI4NDYxMzY6c3Bfc2VhcmNoX3RoZW1hdGljOjo6NTpCMEgyOTRDNTFMOnNlYXJjaA&url=%2FUGREEN-Charging-Laptops-MacBook-ThinkBook%2Fdp%2FB0H294C51L%2Fref%3Dsxin_15_pa_sp_search_thematic_sspa%3Fcontent-id%3Damzn1.sym.4c1fec13-dc0d-410e-8849-50e4ac9139df%253Aamzn1.sym.4c1fec13-dc0d-410e-8849-50e4ac9139df%26cv_ct_cx%3Dusb%2Bc%2Bcable%26keywords%3Dusb%2Bc%2Bcable%26pd_rd_i%3DB0H294C51L%26pd_rd_r%3D01527afe-9f0f-414d-b90d-75cad30e6618%26pd_rd_w%3DSje7e%26pd_rd_wg%3DAzVIl%26pf_rd_p%3D4c1fec13-dc0d-410e-8849-50e4ac9139df%26pf_rd_r%3DCC1K9CMHB5M6WRTSZBBZ%26qid%3D1792846136%26sbo%3DRZvfv%252F%252FHxDF%252BO5021pAnSA%253D%253D%26sr%3D1-6-73628ac3-efbc-4ed0-91a3-3f4336118b5f-spons%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9zZWFyY2hfdGhlbWF0aWM%26psc%3D1"
+   },
+   {
+    "idx": 174,
+    "role": "button",
+    "name": "4.9 out of 5 stars, rating details",
+    "section": "loom-desktop-inline-slot_featuredasins-c… > 6 of 6",
+    "href": "javascript:void(0)"
+   },
+   {
+    "idx": 175,
+    "role": "link",
+    "name": "3,351 ratings",
+    "section": "6 of 6 > s-client-side-analytics",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MToyNDYzNzYyNTg4MTU4MzczOjE3OTI4NDYxMzY6c3Bfc2VhcmNoX3RoZW1hdGljOjo6NTpCMEgyOTRDNTFMOnNlYXJjaA&url=%2FUGREEN-Charging-Laptops-MacBook-ThinkBook%2Fdp%2FB0H294C51L%2Fref%3Dsxin_15_pa_sp_search_thematic_sspa%3Fcontent-id%3Damzn1.sym.4c1fec13-dc0d-410e-8849-50e4ac9139df%253Aamzn1.sym.4c1fec13-dc0d-410e-8849-50e4ac9139df%26cv_ct_cx%3Dusb%2Bc%2Bcable%26keywords%3Dusb%2Bc%2Bcable%26pd_rd_i%3DB0H294C51L%26pd_rd_r%3D01527afe-9f0f-414d-b90d-75cad30e6618%26pd_rd_w%3DSje7e%26pd_rd_wg%3DAzVIl%26pf_rd_p%3D4c1fec13-dc0d-410e-8849-50e4ac9139df%26pf_rd_r%3DCC1K9CMHB5M6WRTSZBBZ%26qid%3D1792846136%26sbo%3DRZvfv%252F%252FHxDF%252BO5021pAnSA%253D%253D%26sr%3D1-6-73628ac3-efbc-4ed0-91a3-3f4336118b5f-spons%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9zZWFyY2hfdGhlbWF0aWM%26psc%3D1#customerReviews"
+   },
+   {
+    "idx": 176,
+    "role": "link",
+    "name": "Limited time deal",
+    "section": "loom-desktop-inline-slot_featuredasins-c… > 6 of 6",
+    "href": "https://www.amazon.com/deals"
+   },
+   {
+    "idx": 177,
+    "role": "link",
+    "name": "$18.98 $18 . 98 ( $0.96 $0.96/feet) List: $26.99 List: $26.99 $26.99",
+    "section": "loom-desktop-inline-slot_featuredasins-c… > 6 of 6",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MToyNDYzNzYyNTg4MTU4MzczOjE3OTI4NDYxMzY6c3Bfc2VhcmNoX3RoZW1hdGljOjo6NTpCMEgyOTRDNTFMOnNlYXJjaA&url=%2FUGREEN-Charging-Laptops-MacBook-ThinkBook%2Fdp%2FB0H294C51L%2Fref%3Dsxin_15_pa_sp_search_thematic_sspa%3Fcontent-id%3Damzn1.sym.4c1fec13-dc0d-410e-8849-50e4ac9139df%253Aamzn1.sym.4c1fec13-dc0d-410e-8849-50e4ac9139df%26cv_ct_cx%3Dusb%2Bc%2Bcable%26keywords%3Dusb%2Bc%2Bcable%26pd_rd_i%3DB0H294C51L%26pd_rd_r%3D01527afe-9f0f-414d-b90d-75cad30e6618%26pd_rd_w%3DSje7e%26pd_rd_wg%3DAzVIl%26pf_rd_p%3D4c1fec13-dc0d-410e-8849-50e4ac9139df%26pf_rd_r%3DCC1K9CMHB5M6WRTSZBBZ%26qid%3D1792846136%26sbo%3DRZvfv%252F%252FHxDF%252BO5021pAnSA%253D%253D%26sr%3D1-6-73628ac3-efbc-4ed0-91a3-3f4336118b5f-spons%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9zZWFyY2hfdGhlbWF0aWM%26psc%3D1"
+   },
+   {
+    "idx": 178,
+    "role": "button",
+    "name": "Add to cart",
+    "section": "form > a-autoid-13"
+   },
+   {
+    "idx": 179,
+    "role": "button",
+    "name": "View Sponsored information or leave ad feedback",
+    "section": "search > s-search-results",
+    "href": "https://www.amazon.com/s?k=usb+c+cable#"
+   },
+   {
+    "idx": 180,
+    "role": "link",
+    "name": "Sponsored Ad - Anehmeta Starlink Mini Cable 32.8FT/10M, Starlink Mini USB C to DC Power Cable 18AWG …",
+    "section": "s-impression-logger > s-product-image",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo3MTY1OTQyNjczNzY2MDQzOjE3OTI4NDYxMzY6c3Bfc2VhcmNoX3RoZW1hdGljOjMwMTUyNDQ1MTAyNDgwMjo6MDo6&url=%2FAnehmeta-Starlink-32-8FT-Compatible-Waterproof%2Fdp%2FB0HC6NT6Z5%2Fref%3Dsxin_16_pa_sp_search_thematic_sspa%3Fcontent-id%3Damzn1.sym.f5d6ed91-1571-47e0-ada6-a2250e10e611%253Aamzn1.sym.f5d6ed91-1571-47e0-ada6-a2250e10e611%26cv_ct_cx%3Dusb%2Bc%2Bcable%26keywords%3Dusb%2Bc%2Bcable%26pd_rd_i%3DB0HC6NT6Z5%26pd_rd_r%3D01527afe-9f0f-414d-b90d-75cad30e6618%26pd_rd_w%3DoaedE%26pd_rd_wg%3DAzVIl%26pf_rd_p%3Df5d6ed91-1571-47e0-ada6-a2250e10e611%26pf_rd_r%3DCC1K9CMHB5M6WRTSZBBZ%26qid%3D1792846136%26sbo%3DRZvfv%252F%252FHxDF%252BO5021pAnSA%253D%253D%26sr%3D1-1-d1d87218-35d9-414f-9801-db7973c52143-spons%26aref%3DsBcdio6jTo%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9zZWFyY2hfdGhlbWF0aWM%26psc%3D1&aref=sBcdio6jTo"
+   },
+   {
+    "idx": 181,
+    "role": "link",
+    "name": "Starlink Mini Cable 32.8FT/10M, Starlink Mini USB C to DC Power Cable 18AWG 20V 5A PD 100W USB Type …",
+    "section": "1 of 8 > s-impression-logger",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo3MTY1OTQyNjczNzY2MDQzOjE3OTI4NDYxMzY6c3Bfc2VhcmNoX3RoZW1hdGljOjMwMTUyNDQ1MTAyNDgwMjo6MDo6&url=%2FAnehmeta-Starlink-32-8FT-Compatible-Waterproof%2Fdp%2FB0HC6NT6Z5%2Fref%3Dsxin_16_pa_sp_search_thematic_sspa%3Fcontent-id%3Damzn1.sym.f5d6ed91-1571-47e0-ada6-a2250e10e611%253Aamzn1.sym.f5d6ed91-1571-47e0-ada6-a2250e10e611%26cv_ct_cx%3Dusb%2Bc%2Bcable%26keywords%3Dusb%2Bc%2Bcable%26pd_rd_i%3DB0HC6NT6Z5%26pd_rd_r%3D01527afe-9f0f-414d-b90d-75cad30e6618%26pd_rd_w%3DoaedE%26pd_rd_wg%3DAzVIl%26pf_rd_p%3Df5d6ed91-1571-47e0-ada6-a2250e10e611%26pf_rd_r%3DCC1K9CMHB5M6WRTSZBBZ%26qid%3D1792846136%26sbo%3DRZvfv%252F%252FHxDF%252BO5021pAnSA%253D%253D%26sr%3D1-1-d1d87218-35d9-414f-9801-db7973c52143-spons%26aref%3DsBcdio6jTo%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9zZWFyY2hfdGhlbWF0aWM%26psc%3D1&aref=sBcdio6jTo"
+   },
+   {
+    "idx": 182,
+    "role": "button",
+    "name": "5.0 out of 5 stars, rating details",
+    "section": "1 of 8 > s-impression-logger",
+    "href": "javascript:void(0)"
+   },
+   {
+    "idx": 183,
+    "role": "link",
+    "name": "10 ratings",
+    "section": "s-impression-logger > s-client-side-analytics",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo3MTY1OTQyNjczNzY2MDQzOjE3OTI4NDYxMzY6c3Bfc2VhcmNoX3RoZW1hdGljOjMwMTUyNDQ1MTAyNDgwMjo6MDo6&url=%2FAnehmeta-Starlink-32-8FT-Compatible-Waterproof%2Fdp%2FB0HC6NT6Z5%2Fref%3Dsxin_16_pa_sp_search_thematic_sspa%3Fcontent-id%3Damzn1.sym.f5d6ed91-1571-47e0-ada6-a2250e10e611%253Aamzn1.sym.f5d6ed91-1571-47e0-ada6-a2250e10e611%26cv_ct_cx%3Dusb%2Bc%2Bcable%26keywords%3Dusb%2Bc%2Bcable%26pd_rd_i%3DB0HC6NT6Z5%26pd_rd_r%3D01527afe-9f0f-414d-b90d-75cad30e6618%26pd_rd_w%3DoaedE%26pd_rd_wg%3DAzVIl%26pf_rd_p%3Df5d6ed91-1571-47e0-ada6-a2250e10e611%26pf_rd_r%3DCC1K9CMHB5M6WRTSZBBZ%26qid%3D1792846136%26sbo%3DRZvfv%252F%252FHxDF%252BO5021pAnSA%253D%253D%26sr%3D1-1-d1d87218-35d9-414f-9801-db7973c52143-spons%26aref%3DsBcdio6jTo%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9zZWFyY2hfdGhlbWF0aWM%26psc%3D1&aref=sBcdio6jTo#customerReviews"
+   },
+   {
+    "idx": 184,
+    "role": "link",
+    "name": "$31.99 $31 . 99 List: $35.99 List: $35.99 $35.99",
+    "section": "1 of 8 > s-impression-logger",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo3MTY1OTQyNjczNzY2MDQzOjE3OTI4NDYxMzY6c3Bfc2VhcmNoX3RoZW1hdGljOjMwMTUyNDQ1MTAyNDgwMjo6MDo6&url=%2FAnehmeta-Starlink-32-8FT-Compatible-Waterproof%2Fdp%2FB0HC6NT6Z5%2Fref%3Dsxin_16_pa_sp_search_thematic_sspa%3Fcontent-id%3Damzn1.sym.f5d6ed91-1571-47e0-ada6-a2250e10e611%253Aamzn1.sym.f5d6ed91-1571-47e0-ada6-a2250e10e611%26cv_ct_cx%3Dusb%2Bc%2Bcable%26keywords%3Dusb%2Bc%2Bcable%26pd_rd_i%3DB0HC6NT6Z5%26pd_rd_r%3D01527afe-9f0f-414d-b90d-75cad30e6618%26pd_rd_w%3DoaedE%26pd_rd_wg%3DAzVIl%26pf_rd_p%3Df5d6ed91-1571-47e0-ada6-a2250e10e611%26pf_rd_r%3DCC1K9CMHB5M6WRTSZBBZ%26qid%3D1792846136%26sbo%3DRZvfv%252F%252FHxDF%252BO5021pAnSA%253D%253D%26sr%3D1-1-d1d87218-35d9-414f-9801-db7973c52143-spons%26aref%3DsBcdio6jTo%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9zZWFyY2hfdGhlbWF0aWM%26psc%3D1&aref=sBcdio6jTo"
+   },
+   {
+    "idx": 185,
+    "role": "button",
+    "name": "Add to cart",
+    "section": "form > a-autoid-14"
+   },
+   {
+    "idx": 186,
+    "role": "link",
+    "name": "Sponsored Ad - Cyberguys! USB-C to RS232 DB9 Male Serial Cable with FTDI Chipset, 10 FT",
+    "section": "s-impression-logger > s-product-image",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo3MTY1OTQyNjczNzY2MDQzOjE3OTI4NDYxMzY6c3Bfc2VhcmNoX3RoZW1hdGljOjMwMTU1ODU2ODAwMjMwMjo6MTo6&url=%2FCyberguys-USB-C-RS232-Serial-Chipset%2Fdp%2FB0HBB9FZGS%2Fref%3Dsxin_16_pa_sp_search_thematic_sspa%3Fcontent-id%3Damzn1.sym.f5d6ed91-1571-47e0-ada6-a2250e10e611%253Aamzn1.sym.f5d6ed91-1571-47e0-ada6-a2250e10e611%26cv_ct_cx%3Dusb%2Bc%2Bcable%26keywords%3Dusb%2Bc%2Bcable%26pd_rd_i%3DB0HBB9FZGS%26pd_rd_r%3D01527afe-9f0f-414d-b90d-75cad30e6618%26pd_rd_w%3DoaedE%26pd_rd_wg%3DAzVIl%26pf_rd_p%3Df5d6ed91-1571-47e0-ada6-a2250e10e611%26pf_rd_r%3DCC1K9CMHB5M6WRTSZBBZ%26qid%3D1792846136%26sbo%3DRZvfv%252F%252FHxDF%252BO5021pAnSA%253D%253D%26sr%3D1-2-d1d87218-35d9-414f-9801-db7973c52143-spons%26aref%3DIqjv7eFfay%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9zZWFyY2hfdGhlbWF0aWM%26psc%3D1&aref=Iqjv7eFfay"
+   },
+   {
+    "idx": 187,
+    "role": "link",
+    "name": "USB-C to RS232 DB9 Male Serial Cable with FTDI Chipset, 10 FT",
+    "section": "2 of 8 > s-impression-logger",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo3MTY1OTQyNjczNzY2MDQzOjE3OTI4NDYxMzY6c3Bfc2VhcmNoX3RoZW1hdGljOjMwMTU1ODU2ODAwMjMwMjo6MTo6&url=%2FCyberguys-USB-C-RS232-Serial-Chipset%2Fdp%2FB0HBB9FZGS%2Fref%3Dsxin_16_pa_sp_search_thematic_sspa%3Fcontent-id%3Damzn1.sym.f5d6ed91-1571-47e0-ada6-a2250e10e611%253Aamzn1.sym.f5d6ed91-1571-47e0-ada6-a2250e10e611%26cv_ct_cx%3Dusb%2Bc%2Bcable%26keywords%3Dusb%2Bc%2Bcable%26pd_rd_i%3DB0HBB9FZGS%26pd_rd_r%3D01527afe-9f0f-414d-b90d-75cad30e6618%26pd_rd_w%3DoaedE%26pd_rd_wg%3DAzVIl%26pf_rd_p%3Df5d6ed91-1571-47e0-ada6-a2250e10e611%26pf_rd_r%3DCC1K9CMHB5M6WRTSZBBZ%26qid%3D1792846136%26sbo%3DRZvfv%252F%252FHxDF%252BO5021pAnSA%253D%253D%26sr%3D1-2-d1d87218-35d9-414f-9801-db7973c52143-spons%26aref%3DIqjv7eFfay%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9zZWFyY2hfdGhlbWF0aWM%26psc%3D1&aref=Iqjv7eFfay"
+   },
+   {
+    "idx": 188,
+    "role": "button",
+    "name": "4.0 out of 5 stars, rating details",
+    "section": "2 of 8 > s-impression-logger",
+    "href": "javascript:void(0)"
+   },
+   {
+    "idx": 189,
+    "role": "link",
+    "name": "1 ratings",
+    "section": "s-impression-logger > s-client-side-analytics",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo3MTY1OTQyNjczNzY2MDQzOjE3OTI4NDYxMzY6c3Bfc2VhcmNoX3RoZW1hdGljOjMwMTU1ODU2ODAwMjMwMjo6MTo6&url=%2FCyberguys-USB-C-RS232-Serial-Chipset%2Fdp%2FB0HBB9FZGS%2Fref%3Dsxin_16_pa_sp_search_thematic_sspa%3Fcontent-id%3Damzn1.sym.f5d6ed91-1571-47e0-ada6-a2250e10e611%253Aamzn1.sym.f5d6ed91-1571-47e0-ada6-a2250e10e611%26cv_ct_cx%3Dusb%2Bc%2Bcable%26keywords%3Dusb%2Bc%2Bcable%26pd_rd_i%3DB0HBB9FZGS%26pd_rd_r%3D01527afe-9f0f-414d-b90d-75cad30e6618%26pd_rd_w%3DoaedE%26pd_rd_wg%3DAzVIl%26pf_rd_p%3Df5d6ed91-1571-47e0-ada6-a2250e10e611%26pf_rd_r%3DCC1K9CMHB5M6WRTSZBBZ%26qid%3D1792846136%26sbo%3DRZvfv%252F%252FHxDF%252BO5021pAnSA%253D%253D%26sr%3D1-2-d1d87218-35d9-414f-9801-db7973c52143-spons%26aref%3DIqjv7eFfay%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9zZWFyY2hfdGhlbWF0aWM%26psc%3D1&aref=Iqjv7eFfay#customerReviews"
+   },
+   {
+    "idx": 190,
+    "role": "link",
+    "name": "$24.99 $24 . 99",
+    "section": "2 of 8 > s-impression-logger",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo3MTY1OTQyNjczNzY2MDQzOjE3OTI4NDYxMzY6c3Bfc2VhcmNoX3RoZW1hdGljOjMwMTU1ODU2ODAwMjMwMjo6MTo6&url=%2FCyberguys-USB-C-RS232-Serial-Chipset%2Fdp%2FB0HBB9FZGS%2Fref%3Dsxin_16_pa_sp_search_thematic_sspa%3Fcontent-id%3Damzn1.sym.f5d6ed91-1571-47e0-ada6-a2250e10e611%253Aamzn1.sym.f5d6ed91-1571-47e0-ada6-a2250e10e611%26cv_ct_cx%3Dusb%2Bc%2Bcable%26keywords%3Dusb%2Bc%2Bcable%26pd_rd_i%3DB0HBB9FZGS%26pd_rd_r%3D01527afe-9f0f-414d-b90d-75cad30e6618%26pd_rd_w%3DoaedE%26pd_rd_wg%3DAzVIl%26pf_rd_p%3Df5d6ed91-1571-47e0-ada6-a2250e10e611%26pf_rd_r%3DCC1K9CMHB5M6WRTSZBBZ%26qid%3D1792846136%26sbo%3DRZvfv%252F%252FHxDF%252BO5021pAnSA%253D%253D%26sr%3D1-2-d1d87218-35d9-414f-9801-db7973c52143-spons%26aref%3DIqjv7eFfay%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9zZWFyY2hfdGhlbWF0aWM%26psc%3D1&aref=Iqjv7eFfay"
+   },
+   {
+    "idx": 191,
+    "role": "button",
+    "name": "Add to cart",
+    "section": "form > a-autoid-15"
+   },
+   {
+    "idx": 192,
+    "role": "link",
+    "name": "Sponsored Ad - USB C to USB C Cable 90 Degree 60W USB C to C Fast Charging Cable 6ft | 2Pack Right A…",
+    "section": "s-impression-logger > s-product-image",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo3MTY1OTQyNjczNzY2MDQzOjE3OTI4NDYxMzY6c3Bfc2VhcmNoX3RoZW1hdGljOjMwMTUwNDY3ODgwNTkwMjo6Mjo6&url=%2FCable-90-Degree-Fast-Charging%2Fdp%2FB0H8YDN581%2Fref%3Dsxin_16_pa_sp_search_thematic_sspa%3Fcontent-id%3Damzn1.sym.f5d6ed91-1571-47e0-ada6-a2250e10e611%253Aamzn1.sym.f5d6ed91-1571-47e0-ada6-a2250e10e611%26cv_ct_cx%3Dusb%2Bc%2Bcable%26keywords%3Dusb%2Bc%2Bcable%26pd_rd_i%3DB0H8YDN581%26pd_rd_r%3D01527afe-9f0f-414d-b90d-75cad30e6618%26pd_rd_w%3DoaedE%26pd_rd_wg%3DAzVIl%26pf_rd_p%3Df5d6ed91-1571-47e0-ada6-a2250e10e611%26pf_rd_r%3DCC1K9CMHB5M6WRTSZBBZ%26qid%3D1792846136%26sbo%3DRZvfv%252F%252FHxDF%252BO5021pAnSA%253D%253D%26sr%3D1-3-d1d87218-35d9-414f-9801-db7973c52143-spons%26aref%3DlobyGtz18X%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9zZWFyY2hfdGhlbWF0aWM%26psc%3D1&aref=lobyGtz18X"
+   },
+   {
+    "idx": 193,
+    "role": "link",
+    "name": "USB C to USB C Cable 90 Degree 60W USB C to C Fast Charging Cable 6ft",
+    "section": "3 of 8 > s-impression-logger",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo3MTY1OTQyNjczNzY2MDQzOjE3OTI4NDYxMzY6c3Bfc2VhcmNoX3RoZW1hdGljOjMwMTUwNDY3ODgwNTkwMjo6Mjo6&url=%2FCable-90-Degree-Fast-Charging%2Fdp%2FB0H8YDN581%2Fref%3Dsxin_16_pa_sp_search_thematic_sspa%3Fcontent-id%3Damzn1.sym.f5d6ed91-1571-47e0-ada6-a2250e10e611%253Aamzn1.sym.f5d6ed91-1571-47e0-ada6-a2250e10e611%26cv_ct_cx%3Dusb%2Bc%2Bcable%26keywords%3Dusb%2Bc%2Bcable%26pd_rd_i%3DB0H8YDN581%26pd_rd_r%3D01527afe-9f0f-414d-b90d-75cad30e6618%26pd_rd_w%3DoaedE%26pd_rd_wg%3DAzVIl%26pf_rd_p%3Df5d6ed91-1571-47e0-ada6-a2250e10e611%26pf_rd_r%3DCC1K9CMHB5M6WRTSZBBZ%26qid%3D1792846136%26sbo%3DRZvfv%252F%252FHxDF%252BO5021pAnSA%253D%253D%26sr%3D1-3-d1d87218-35d9-414f-9801-db7973c52143-spons%26aref%3DlobyGtz18X%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9zZWFyY2hfdGhlbWF0aWM%26psc%3D1&aref=lobyGtz18X"
+   },
+   {
+    "idx": 194,
+    "role": "button",
+    "name": "4.1 out of 5 stars, rating details",
+    "section": "3 of 8 > s-impression-logger",
+    "href": "javascript:void(0)"
+   },
+   {
+    "idx": 195,
+    "role": "link",
+    "name": "42 ratings",
+    "section": "s-impression-logger > s-client-side-analytics",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo3MTY1OTQyNjczNzY2MDQzOjE3OTI4NDYxMzY6c3Bfc2VhcmNoX3RoZW1hdGljOjMwMTUwNDY3ODgwNTkwMjo6Mjo6&url=%2FCable-90-Degree-Fast-Charging%2Fdp%2FB0H8YDN581%2Fref%3Dsxin_16_pa_sp_search_thematic_sspa%3Fcontent-id%3Damzn1.sym.f5d6ed91-1571-47e0-ada6-a2250e10e611%253Aamzn1.sym.f5d6ed91-1571-47e0-ada6-a2250e10e611%26cv_ct_cx%3Dusb%2Bc%2Bcable%26keywords%3Dusb%2Bc%2Bcable%26pd_rd_i%3DB0H8YDN581%26pd_rd_r%3D01527afe-9f0f-414d-b90d-75cad30e6618%26pd_rd_w%3DoaedE%26pd_rd_wg%3DAzVIl%26pf_rd_p%3Df5d6ed91-1571-47e0-ada6-a2250e10e611%26pf_rd_r%3DCC1K9CMHB5M6WRTSZBBZ%26qid%3D1792846136%26sbo%3DRZvfv%252F%252FHxDF%252BO5021pAnSA%253D%253D%26sr%3D1-3-d1d87218-35d9-414f-9801-db7973c52143-spons%26aref%3DlobyGtz18X%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9zZWFyY2hfdGhlbWF0aWM%26psc%3D1&aref=lobyGtz18X#customerReviews"
+   },
+   {
+    "idx": 196,
+    "role": "link",
+    "name": "$18.99 $18 . 99",
+    "section": "3 of 8 > s-impression-logger",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo3MTY1OTQyNjczNzY2MDQzOjE3OTI4NDYxMzY6c3Bfc2VhcmNoX3RoZW1hdGljOjMwMTUwNDY3ODgwNTkwMjo6Mjo6&url=%2FCable-90-Degree-Fast-Charging%2Fdp%2FB0H8YDN581%2Fref%3Dsxin_16_pa_sp_search_thematic_sspa%3Fcontent-id%3Damzn1.sym.f5d6ed91-1571-47e0-ada6-a2250e10e611%253Aamzn1.sym.f5d6ed91-1571-47e0-ada6-a2250e10e611%26cv_ct_cx%3Dusb%2Bc%2Bcable%26keywords%3Dusb%2Bc%2Bcable%26pd_rd_i%3DB0H8YDN581%26pd_rd_r%3D01527afe-9f0f-414d-b90d-75cad30e6618%26pd_rd_w%3DoaedE%26pd_rd_wg%3DAzVIl%26pf_rd_p%3Df5d6ed91-1571-47e0-ada6-a2250e10e611%26pf_rd_r%3DCC1K9CMHB5M6WRTSZBBZ%26qid%3D1792846136%26sbo%3DRZvfv%252F%252FHxDF%252BO5021pAnSA%253D%253D%26sr%3D1-3-d1d87218-35d9-414f-9801-db7973c52143-spons%26aref%3DlobyGtz18X%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9zZWFyY2hfdGhlbWF0aWM%26psc%3D1&aref=lobyGtz18X"
+   },
+   {
+    "idx": 197,
+    "role": "button",
+    "name": "Add to cart",
+    "section": "form > a-autoid-16"
+   },
+   {
+    "idx": 198,
+    "role": "link",
+    "name": "Sponsored Ad - MOVE SPEED 40Gbps USB 4 Cable 4FT,240W PD3.1, 8K/Dual 4K,Black | 8K@60Hz / 4K@240Hz V…",
+    "section": "s-impression-logger > s-product-image",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo3MTY1OTQyNjczNzY2MDQzOjE3OTI4NDYxMzY6c3Bfc2VhcmNoX3RoZW1hdGljOjMwMTU4MDAwOTg0NjUwMjo6Mzo6&url=%2FMOVE-SPEED-40Gbps-Cable-PD3-1%2Fdp%2FB0HGM9H8D7%2Fref%3Dsxin_16_pa_sp_search_thematic_sspa%3Fcontent-id%3Damzn1.sym.f5d6ed91-1571-47e0-ada6-a2250e10e611%253Aamzn1.sym.f5d6ed91-1571-47e0-ada6-a2250e10e611%26cv_ct_cx%3Dusb%2Bc%2Bcable%26keywords%3Dusb%2Bc%2Bcable%26pd_rd_i%3DB0HGM9H8D7%26pd_rd_r%3D01527afe-9f0f-414d-b90d-75cad30e6618%26pd_rd_w%3DoaedE%26pd_rd_wg%3DAzVIl%26pf_rd_p%3Df5d6ed91-1571-47e0-ada6-a2250e10e611%26pf_rd_r%3DCC1K9CMHB5M6WRTSZBBZ%26qid%3D1792846136%26sbo%3D9ZOMT9Jm0JH%252Ft%252BWi68iDSA%253D%253D%26sr%3D1-4-d1d87218-35d9-414f-9801-db7973c52143-spons%26aref%3DgSIHLbnobw%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9zZWFyY2hfdGhlbWF0aWM%26psc%3D1&aref=gSIHLbnobw"
+   },
+   {
+    "idx": 199,
+    "role": "link",
+    "name": "MOVE SPEED 40Gbps USB 4 Cable 4FT,240W PD3.1, 8K/Dual 4K,Black",
+    "section": "4 of 8 > s-impression-logger",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo3MTY1OTQyNjczNzY2MDQzOjE3OTI4NDYxMzY6c3Bfc2VhcmNoX3RoZW1hdGljOjMwMTU4MDAwOTg0NjUwMjo6Mzo6&url=%2FMOVE-SPEED-40Gbps-Cable-PD3-1%2Fdp%2FB0HGM9H8D7%2Fref%3Dsxin_16_pa_sp_search_thematic_sspa%3Fcontent-id%3Damzn1.sym.f5d6ed91-1571-47e0-ada6-a2250e10e611%253Aamzn1.sym.f5d6ed91-1571-47e0-ada6-a2250e10e611%26cv_ct_cx%3Dusb%2Bc%2Bcable%26keywords%3Dusb%2Bc%2Bcable%26pd_rd_i%3DB0HGM9H8D7%26pd_rd_r%3D01527afe-9f0f-414d-b90d-75cad30e6618%26pd_rd_w%3DoaedE%26pd_rd_wg%3DAzVIl%26pf_rd_p%3Df5d6ed91-1571-47e0-ada6-a2250e10e611%26pf_rd_r%3DCC1K9CMHB5M6WRTSZBBZ%26qid%3D1792846136%26sbo%3D9ZOMT9Jm0JH%252Ft%252BWi68iDSA%253D%253D%26sr%3D1-4-d1d87218-35d9-414f-9801-db7973c52143-spons%26aref%3DgSIHLbnobw%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9zZWFyY2hfdGhlbWF0aWM%26psc%3D1&aref=gSIHLbnobw"
+   },
+   {
+    "idx": 200,
+    "role": "button",
+    "name": "4.9 out of 5 stars, rating details",
+    "section": "4 of 8 > s-impression-logger",
+    "href": "javascript:void(0)"
+   },
+   {
+    "idx": 201,
+    "role": "link",
+    "name": "23 ratings",
+    "section": "s-impression-logger > s-client-side-analytics",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo3MTY1OTQyNjczNzY2MDQzOjE3OTI4NDYxMzY6c3Bfc2VhcmNoX3RoZW1hdGljOjMwMTU4MDAwOTg0NjUwMjo6Mzo6&url=%2FMOVE-SPEED-40Gbps-Cable-PD3-1%2Fdp%2FB0HGM9H8D7%2Fref%3Dsxin_16_pa_sp_search_thematic_sspa%3Fcontent-id%3Damzn1.sym.f5d6ed91-1571-47e0-ada6-a2250e10e611%253Aamzn1.sym.f5d6ed91-1571-47e0-ada6-a2250e10e611%26cv_ct_cx%3Dusb%2Bc%2Bcable%26keywords%3Dusb%2Bc%2Bcable%26pd_rd_i%3DB0HGM9H8D7%26pd_rd_r%3D01527afe-9f0f-414d-b90d-75cad30e6618%26pd_rd_w%3DoaedE%26pd_rd_wg%3DAzVIl%26pf_rd_p%3Df5d6ed91-1571-47e0-ada6-a2250e10e611%26pf_rd_r%3DCC1K9CMHB5M6WRTSZBBZ%26qid%3D1792846136%26sbo%3D9ZOMT9Jm0JH%252Ft%252BWi68iDSA%253D%253D%26sr%3D1-4-d1d87218-35d9-414f-9801-db7973c52143-spons%26aref%3DgSIHLbnobw%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9zZWFyY2hfdGhlbWF0aWM%26psc%3D1&aref=gSIHLbnobw#customerReviews"
+   },
+   {
+    "idx": 202,
+    "role": "link",
+    "name": "$15.99 $15 . 99 List Price: $17.99 List Price: $17.99 $17.99",
+    "section": "4 of 8 > s-impression-logger",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo3MTY1OTQyNjczNzY2MDQzOjE3OTI4NDYxMzY6c3Bfc2VhcmNoX3RoZW1hdGljOjMwMTU4MDAwOTg0NjUwMjo6Mzo6&url=%2FMOVE-SPEED-40Gbps-Cable-PD3-1%2Fdp%2FB0HGM9H8D7%2Fref%3Dsxin_16_pa_sp_search_thematic_sspa%3Fcontent-id%3Damzn1.sym.f5d6ed91-1571-47e0-ada6-a2250e10e611%253Aamzn1.sym.f5d6ed91-1571-47e0-ada6-a2250e10e611%26cv_ct_cx%3Dusb%2Bc%2Bcable%26keywords%3Dusb%2Bc%2Bcable%26pd_rd_i%3DB0HGM9H8D7%26pd_rd_r%3D01527afe-9f0f-414d-b90d-75cad30e6618%26pd_rd_w%3DoaedE%26pd_rd_wg%3DAzVIl%26pf_rd_p%3Df5d6ed91-1571-47e0-ada6-a2250e10e611%26pf_rd_r%3DCC1K9CMHB5M6WRTSZBBZ%26qid%3D1792846136%26sbo%3D9ZOMT9Jm0JH%252Ft%252BWi68iDSA%253D%253D%26sr%3D1-4-d1d87218-35d9-414f-9801-db7973c52143-spons%26aref%3DgSIHLbnobw%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9zZWFyY2hfdGhlbWF0aWM%26psc%3D1&aref=gSIHLbnobw"
+   },
+   {
+    "idx": 203,
+    "role": "link",
+    "name": "See options",
+    "section": "s-impression-logger > a-autoid-17",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo3MTY1OTQyNjczNzY2MDQzOjE3OTI4NDYxMzY6c3Bfc2VhcmNoX3RoZW1hdGljOjMwMTU4MDAwOTg0NjUwMjo6Mzo6&url=%2FMOVE-SPEED-40Gbps-Cable-PD3-1%2Fdp%2FB0HGM9H8D7%2Fref%3Dsxin_16_pa_sp_search_thematic_so_ELECTRONIC_CABLE%3Fcontent-id%3Damzn1.sym.f5d6ed91-1571-47e0-ada6-a2250e10e611%253Aamzn1.sym.f5d6ed91-1571-47e0-ada6-a2250e10e611%26cv_ct_cx%3Dusb%2Bc%2Bcable%26keywords%3Dusb%2Bc%2Bcable%26pd_rd_i%3DB0HGM9H8D7%26pd_rd_r%3D01527afe-9f0f-414d-b90d-75cad30e6618%26pd_rd_w%3DoaedE%26pd_rd_wg%3DAzVIl%26pf_rd_p%3Df5d6ed91-1571-47e0-ada6-a2250e10e611%26pf_rd_r%3DCC1K9CMHB5M6WRTSZBBZ%26qid%3D1792846136%26sbo%3D9ZOMT9Jm0JH%252Ft%252BWi68iDSA%253D%253D%26sr%3D1-4-d1d87218-35d9-414f-9801-db7973c52143-spons%26aref%3DgSIHLbnobw%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9zZWFyY2hfdGhlbWF0aWM%26psc%3D1&aref=gSIHLbnobw"
+   },
+   {
+    "idx": 204,
+    "role": "link",
+    "name": "Sponsored Ad - 120W USB A to USB C Cable Coiled, Braided Type C Charger for Apple CarPlay & Android …",
+    "section": "s-impression-logger > s-product-image",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo3MTY1OTQyNjczNzY2MDQzOjE3OTI4NDYxMzY6c3Bfc2VhcmNoX3RoZW1hdGljOjMwMTU0NjEwNDAwMDIwMjo6NDo6&url=%2FBraided-Charger-CarPlay-Android-Charging%2Fdp%2FB0HBMTKHYZ%2Fref%3Dsxin_16_pa_sp_search_thematic_sspa%3Fcontent-id%3Damzn1.sym.f5d6ed91-1571-47e0-ada6-a2250e10e611%253Aamzn1.sym.f5d6ed91-1571-47e0-ada6-a2250e10e611%26cv_ct_cx%3Dusb%2Bc%2Bcable%26keywords%3Dusb%2Bc%2Bcable%26pd_rd_i%3DB0HBMTKHYZ%26pd_rd_r%3D01527afe-9f0f-414d-b90d-75cad30e6618%26pd_rd_w%3DoaedE%26pd_rd_wg%3DAzVIl%26pf_rd_p%3Df5d6ed91-1571-47e0-ada6-a2250e10e611%26pf_rd_r%3DCC1K9CMHB5M6WRTSZBBZ%26qid%3D1792846136%26sbo%3DRZvfv%252F%252FHxDF%252BO5021pAnSA%253D%253D%26sr%3D1-5-d1d87218-35d9-414f-9801-db7973c52143-spons%26aref%3DlfQRnJGIuf%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9zZWFyY2hfdGhlbWF0aWM%26psc%3D1&aref=lfQRnJGIuf"
+   },
+   {
+    "idx": 205,
+    "role": "link",
+    "name": "120W USB A to USB C Cable Coiled, Braided Type C Charger for Apple CarPlay & Android Auto | 3A Fast …",
+    "section": "5 of 8 > s-impression-logger",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo3MTY1OTQyNjczNzY2MDQzOjE3OTI4NDYxMzY6c3Bfc2VhcmNoX3RoZW1hdGljOjMwMTU0NjEwNDAwMDIwMjo6NDo6&url=%2FBraided-Charger-CarPlay-Android-Charging%2Fdp%2FB0HBMTKHYZ%2Fref%3Dsxin_16_pa_sp_search_thematic_sspa%3Fcontent-id%3Damzn1.sym.f5d6ed91-1571-47e0-ada6-a2250e10e611%253Aamzn1.sym.f5d6ed91-1571-47e0-ada6-a2250e10e611%26cv_ct_cx%3Dusb%2Bc%2Bcable%26keywords%3Dusb%2Bc%2Bcable%26pd_rd_i%3DB0HBMTKHYZ%26pd_rd_r%3D01527afe-9f0f-414d-b90d-75cad30e6618%26pd_rd_w%3DoaedE%26pd_rd_wg%3DAzVIl%26pf_rd_p%3Df5d6ed91-1571-47e0-ada6-a2250e10e611%26pf_rd_r%3DCC1K9CMHB5M6WRTSZBBZ%26qid%3D1792846136%26sbo%3DRZvfv%252F%252FHxDF%252BO5021pAnSA%253D%253D%26sr%3D1-5-d1d87218-35d9-414f-9801-db7973c52143-spons%26aref%3DlfQRnJGIuf%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9zZWFyY2hfdGhlbWF0aWM%26psc%3D1&aref=lfQRnJGIuf"
+   },
+   {
+    "idx": 206,
+    "role": "button",
+    "name": "4.1 out of 5 stars, rating details",
+    "section": "5 of 8 > s-impression-logger",
+    "href": "javascript:void(0)"
+   },
+   {
+    "idx": 207,
+    "role": "link",
+    "name": "10 ratings",
+    "section": "s-impression-logger > s-client-side-analytics",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo3MTY1OTQyNjczNzY2MDQzOjE3OTI4NDYxMzY6c3Bfc2VhcmNoX3RoZW1hdGljOjMwMTU0NjEwNDAwMDIwMjo6NDo6&url=%2FBraided-Charger-CarPlay-Android-Charging%2Fdp%2FB0HBMTKHYZ%2Fref%3Dsxin_16_pa_sp_search_thematic_sspa%3Fcontent-id%3Damzn1.sym.f5d6ed91-1571-47e0-ada6-a2250e10e611%253Aamzn1.sym.f5d6ed91-1571-47e0-ada6-a2250e10e611%26cv_ct_cx%3Dusb%2Bc%2Bcable%26keywords%3Dusb%2Bc%2Bcable%26pd_rd_i%3DB0HBMTKHYZ%26pd_rd_r%3D01527afe-9f0f-414d-b90d-75cad30e6618%26pd_rd_w%3DoaedE%26pd_rd_wg%3DAzVIl%26pf_rd_p%3Df5d6ed91-1571-47e0-ada6-a2250e10e611%26pf_rd_r%3DCC1K9CMHB5M6WRTSZBBZ%26qid%3D1792846136%26sbo%3DRZvfv%252F%252FHxDF%252BO5021pAnSA%253D%253D%26sr%3D1-5-d1d87218-35d9-414f-9801-db7973c52143-spons%26aref%3DlfQRnJGIuf%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9zZWFyY2hfdGhlbWF0aWM%26psc%3D1&aref=lfQRnJGIuf#customerReviews"
+   },
+   {
+    "idx": 208,
+    "role": "link",
+    "name": "$19.99 $19 . 99",
+    "section": "5 of 8 > s-impression-logger",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo3MTY1OTQyNjczNzY2MDQzOjE3OTI4NDYxMzY6c3Bfc2VhcmNoX3RoZW1hdGljOjMwMTU0NjEwNDAwMDIwMjo6NDo6&url=%2FBraided-Charger-CarPlay-Android-Charging%2Fdp%2FB0HBMTKHYZ%2Fref%3Dsxin_16_pa_sp_search_thematic_sspa%3Fcontent-id%3Damzn1.sym.f5d6ed91-1571-47e0-ada6-a2250e10e611%253Aamzn1.sym.f5d6ed91-1571-47e0-ada6-a2250e10e611%26cv_ct_cx%3Dusb%2Bc%2Bcable%26keywords%3Dusb%2Bc%2Bcable%26pd_rd_i%3DB0HBMTKHYZ%26pd_rd_r%3D01527afe-9f0f-414d-b90d-75cad30e6618%26pd_rd_w%3DoaedE%26pd_rd_wg%3DAzVIl%26pf_rd_p%3Df5d6ed91-1571-47e0-ada6-a2250e10e611%26pf_rd_r%3DCC1K9CMHB5M6WRTSZBBZ%26qid%3D1792846136%26sbo%3DRZvfv%252F%252FHxDF%252BO5021pAnSA%253D%253D%26sr%3D1-5-d1d87218-35d9-414f-9801-db7973c52143-spons%26aref%3DlfQRnJGIuf%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9zZWFyY2hfdGhlbWF0aWM%26psc%3D1&aref=lfQRnJGIuf"
+   },
+   {
+    "idx": 209,
+    "role": "button",
+    "name": "Add to cart",
+    "section": "form > a-autoid-18"
+   },
+   {
+    "idx": 210,
+    "role": "link",
+    "name": "Anker USB C to USB C Cable, 60W Fast Charging Cable (2-Pack, 3.3 ft, Black) | For iPhone 18 / 17 Ser…",
+    "section": "s-search-result > s-product-image",
+    "href": "https://www.amazon.com/Anker-Charging-MacBook-Galaxy-Charger/dp/B088NMR44C/ref=sr_1_6?dib=eyJ2IjoiMSJ9.zDerXzkkcCIibp1gD24_gCubJ1DdAyUNubDo5YxBMn3yuF3-ejdznxv1_YoxZmjYL8s_qMb1_IYA1G7xW4aXPdz_iZyEXO8TXtyUMoesjoQOtvKI-eieNWJIXiNyuIf0j4xKf1JUM-MxosH-UaLcSVB0J-iJ9D0V4RAZ3rCQ9g3Yz4M9lFZgoxKmqd1SL9X9j0Nz-8AhEWQYqJVbTB_IO_lJulqXoQbNV8UCBtKsi70.YHaCzRNC8_lnsmHgDx0puLEM889h1AdhDCLMe4mJYrY&dib_tag=se&keywords=usb+c+cable&qid=1792846136&sr=8-6"
+   },
+   {
+    "idx": 211,
+    "role": "link",
+    "name": "Anker USB C to USB C Cable, 60W Fast Charging Cable (2-Pack, 3.3 ft, Black)",
+    "section": "s-search-results > s-search-result",
+    "href": "https://www.amazon.com/Anker-Charging-MacBook-Galaxy-Charger/dp/B088NMR44C/ref=sr_1_6?dib=eyJ2IjoiMSJ9.zDerXzkkcCIibp1gD24_gCubJ1DdAyUNubDo5YxBMn3yuF3-ejdznxv1_YoxZmjYL8s_qMb1_IYA1G7xW4aXPdz_iZyEXO8TXtyUMoesjoQOtvKI-eieNWJIXiNyuIf0j4xKf1JUM-MxosH-UaLcSVB0J-iJ9D0V4RAZ3rCQ9g3Yz4M9lFZgoxKmqd1SL9X9j0Nz-8AhEWQYqJVbTB_IO_lJulqXoQbNV8UCBtKsi70.YHaCzRNC8_lnsmHgDx0puLEM889h1AdhDCLMe4mJYrY&dib_tag=se&keywords=usb+c+cable&qid=1792846136&sr=8-6"
+   },
+   {
+    "idx": 212,
+    "role": "button",
+    "name": "4.7 out of 5 stars, rating details",
+    "section": "s-search-results > s-search-result",
+    "href": "javascript:void(0)"
+   },
+   {
+    "idx": 213,
+    "role": "link",
+    "name": "90,341 ratings",
+    "section": "s-search-result > s-client-side-analytics",
+    "href": "https://www.amazon.com/Anker-Charging-MacBook-Galaxy-Charger/dp/B088NMR44C/ref=sr_1_6?dib=eyJ2IjoiMSJ9.zDerXzkkcCIibp1gD24_gCubJ1DdAyUNubDo5YxBMn3yuF3-ejdznxv1_YoxZmjYL8s_qMb1_IYA1G7xW4aXPdz_iZyEXO8TXtyUMoesjoQOtvKI-eieNWJIXiNyuIf0j4xKf1JUM-MxosH-UaLcSVB0J-iJ9D0V4RAZ3rCQ9g3Yz4M9lFZgoxKmqd1SL9X9j0Nz-8AhEWQYqJVbTB_IO_lJulqXoQbNV8UCBtKsi70.YHaCzRNC8_lnsmHgDx0puLEM889h1AdhDCLMe4mJYrY&dib_tag=se&keywords=usb+c+cable&qid=1792846136&sr=8-6#customerReviews"
+   },
+   {
+    "idx": 214,
+    "role": "link",
+    "name": "$9.99 $9 . 99 ( $1.51 $1.51/feet)",
+    "section": "s-search-results > s-search-result",
+    "href": "https://www.amazon.com/Anker-Charging-MacBook-Galaxy-Charger/dp/B088NMR44C/ref=sr_1_6?dib=eyJ2IjoiMSJ9.zDerXzkkcCIibp1gD24_gCubJ1DdAyUNubDo5YxBMn3yuF3-ejdznxv1_YoxZmjYL8s_qMb1_IYA1G7xW4aXPdz_iZyEXO8TXtyUMoesjoQOtvKI-eieNWJIXiNyuIf0j4xKf1JUM-MxosH-UaLcSVB0J-iJ9D0V4RAZ3rCQ9g3Yz4M9lFZgoxKmqd1SL9X9j0Nz-8AhEWQYqJVbTB_IO_lJulqXoQbNV8UCBtKsi70.YHaCzRNC8_lnsmHgDx0puLEM889h1AdhDCLMe4mJYrY&dib_tag=se&keywords=usb+c+cable&qid=1792846136&sr=8-6"
+   },
+   {
+    "idx": 215,
+    "role": "button",
+    "name": "Add to cart",
+    "section": "form > a-autoid-19"
+   },
+   {
+    "idx": 216,
+    "role": "link",
+    "name": "Sponsored Ad - CLEEFUN USB to USB C Cable 3ft, 5-Pack USB A to Type C Cable Fast Charging | for iPho…",
+    "section": "s-impression-counter > s-product-image",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo1ODU0NzMwMDAyMjAxODUxOjE3OTI4NDYxMzY6c3BfbXRmOjMwMDgzMjQzNTk3OTYwMjo6MDo6&url=%2FCLEEFUN-Charging-Charger-Braided-Compatible%2Fdp%2FB09XVCQSR5%2Fref%3Dsr_1_7_sspa%3Fdib%3DeyJ2IjoiMSJ9.zDerXzkkcCIibp1gD24_gCubJ1DdAyUNubDo5YxBMn3yuF3-ejdznxv1_YoxZmjYL8s_qMb1_IYA1G7xW4aXPdz_iZyEXO8TXtyUMoesjoQOtvKI-eieNWJIXiNyuIf0j4xKf1JUM-MxosH-UaLcSVB0J-iJ9D0V4RAZ3rCQ9g3Yz4M9lFZgoxKmqd1SL9X9j0Nz-8AhEWQYqJVbTB_IO_lJulqXoQbNV8UCBtKsi70.YHaCzRNC8_lnsmHgDx0puLEM889h1AdhDCLMe4mJYrY%26dib_tag%3Dse%26keywords%3Dusb%2Bc%2Bcable%26qid%3D1792846136%26sr%3D8-7-spons%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9tdGY%26psc%3D1"
+   },
+   {
+    "idx": 217,
+    "role": "button",
+    "name": "Sponsored",
+    "section": "s-impression-logger > s-impression-counter",
+    "href": "javascript:void(0)"
+   },
+   {
+    "idx": 218,
+    "role": "link",
+    "name": "CLEEFUN USB to USB C Cable 3ft, 5-Pack USB A to Type C Cable Fast Charging",
+    "section": "s-impression-logger > s-impression-counter",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo1ODU0NzMwMDAyMjAxODUxOjE3OTI4NDYxMzY6c3BfbXRmOjMwMDgzMjQzNTk3OTYwMjo6MDo6&url=%2FCLEEFUN-Charging-Charger-Braided-Compatible%2Fdp%2FB09XVCQSR5%2Fref%3Dsr_1_7_sspa%3Fdib%3DeyJ2IjoiMSJ9.zDerXzkkcCIibp1gD24_gCubJ1DdAyUNubDo5YxBMn3yuF3-ejdznxv1_YoxZmjYL8s_qMb1_IYA1G7xW4aXPdz_iZyEXO8TXtyUMoesjoQOtvKI-eieNWJIXiNyuIf0j4xKf1JUM-MxosH-UaLcSVB0J-iJ9D0V4RAZ3rCQ9g3Yz4M9lFZgoxKmqd1SL9X9j0Nz-8AhEWQYqJVbTB_IO_lJulqXoQbNV8UCBtKsi70.YHaCzRNC8_lnsmHgDx0puLEM889h1AdhDCLMe4mJYrY%26dib_tag%3Dse%26keywords%3Dusb%2Bc%2Bcable%26qid%3D1792846136%26sr%3D8-7-spons%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9tdGY%26psc%3D1"
+   },
+   {
+    "idx": 219,
+    "role": "button",
+    "name": "4.6 out of 5 stars, rating details",
+    "section": "s-impression-logger > s-impression-counter",
+    "href": "javascript:void(0)"
+   },
+   {
+    "idx": 220,
+    "role": "link",
+    "name": "5,682 ratings",
+    "section": "s-impression-counter > s-client-side-analytics",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo1ODU0NzMwMDAyMjAxODUxOjE3OTI4NDYxMzY6c3BfbXRmOjMwMDgzMjQzNTk3OTYwMjo6MDo6&url=%2FCLEEFUN-Charging-Charger-Braided-Compatible%2Fdp%2FB09XVCQSR5%2Fref%3Dsr_1_7_sspa%3Fdib%3DeyJ2IjoiMSJ9.zDerXzkkcCIibp1gD24_gCubJ1DdAyUNubDo5YxBMn3yuF3-ejdznxv1_YoxZmjYL8s_qMb1_IYA1G7xW4aXPdz_iZyEXO8TXtyUMoesjoQOtvKI-eieNWJIXiNyuIf0j4xKf1JUM-MxosH-UaLcSVB0J-iJ9D0V4RAZ3rCQ9g3Yz4M9lFZgoxKmqd1SL9X9j0Nz-8AhEWQYqJVbTB_IO_lJulqXoQbNV8UCBtKsi70.YHaCzRNC8_lnsmHgDx0puLEM889h1AdhDCLMe4mJYrY%26dib_tag%3Dse%26keywords%3Dusb%2Bc%2Bcable%26qid%3D1792846136%26sr%3D8-7-spons%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9tdGY%26psc%3D1#customerReviews"
+   },
+   {
+    "idx": 221,
+    "role": "link",
+    "name": "$9.99 $9 . 99 ( $2.00 $2.00/count)",
+    "section": "s-impression-logger > s-impression-counter",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo1ODU0NzMwMDAyMjAxODUxOjE3OTI4NDYxMzY6c3BfbXRmOjMwMDgzMjQzNTk3OTYwMjo6MDo6&url=%2FCLEEFUN-Charging-Charger-Braided-Compatible%2Fdp%2FB09XVCQSR5%2Fref%3Dsr_1_7_sspa%3Fdib%3DeyJ2IjoiMSJ9.zDerXzkkcCIibp1gD24_gCubJ1DdAyUNubDo5YxBMn3yuF3-ejdznxv1_YoxZmjYL8s_qMb1_IYA1G7xW4aXPdz_iZyEXO8TXtyUMoesjoQOtvKI-eieNWJIXiNyuIf0j4xKf1JUM-MxosH-UaLcSVB0J-iJ9D0V4RAZ3rCQ9g3Yz4M9lFZgoxKmqd1SL9X9j0Nz-8AhEWQYqJVbTB_IO_lJulqXoQbNV8UCBtKsi70.YHaCzRNC8_lnsmHgDx0puLEM889h1AdhDCLMe4mJYrY%26dib_tag%3Dse%26keywords%3Dusb%2Bc%2Bcable%26qid%3D1792846136%26sr%3D8-7-spons%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9tdGY%26psc%3D1"
+   },
+   {
+    "idx": 222,
+    "role": "button",
+    "name": "Add to cart",
+    "section": "form > a-autoid-20"
+   },
+   {
+    "idx": 223,
+    "role": "link",
+    "name": "Apple 240W USB-C to USB-C Woven Charge Cable (2 m): Fast and Convenient Charging",
+    "section": "s-search-result > s-product-image",
+    "href": "https://www.amazon.com/Apple-USB-C-Woven-Charge-Cable/dp/B0DCH5B2HF/ref=sr_1_8?dib=eyJ2IjoiMSJ9.zDerXzkkcCIibp1gD24_gCubJ1DdAyUNubDo5YxBMn3yuF3-ejdznxv1_YoxZmjYL8s_qMb1_IYA1G7xW4aXPdz_iZyEXO8TXtyUMoesjoQOtvKI-eieNWJIXiNyuIf0j4xKf1JUM-MxosH-UaLcSVB0J-iJ9D0V4RAZ3rCQ9g3Yz4M9lFZgoxKmqd1SL9X9j0Nz-8AhEWQYqJVbTB_IO_lJulqXoQbNV8UCBtKsi70.YHaCzRNC8_lnsmHgDx0puLEM889h1AdhDCLMe4mJYrY&dib_tag=se&keywords=usb+c+cable&qid=1792846136&sr=8-8"
+   },
+   {
+    "idx": 224,
+    "role": "link",
+    "name": "Apple 240W USB-C to USB-C Woven Charge Cable (2 m): Fast and Convenient Charging",
+    "section": "s-search-results > s-search-result",
+    "href": "https://www.amazon.com/Apple-USB-C-Woven-Charge-Cable/dp/B0DCH5B2HF/ref=sr_1_8?dib=eyJ2IjoiMSJ9.zDerXzkkcCIibp1gD24_gCubJ1DdAyUNubDo5YxBMn3yuF3-ejdznxv1_YoxZmjYL8s_qMb1_IYA1G7xW4aXPdz_iZyEXO8TXtyUMoesjoQOtvKI-eieNWJIXiNyuIf0j4xKf1JUM-MxosH-UaLcSVB0J-iJ9D0V4RAZ3rCQ9g3Yz4M9lFZgoxKmqd1SL9X9j0Nz-8AhEWQYqJVbTB_IO_lJulqXoQbNV8UCBtKsi70.YHaCzRNC8_lnsmHgDx0puLEM889h1AdhDCLMe4mJYrY&dib_tag=se&keywords=usb+c+cable&qid=1792846136&sr=8-8"
+   },
+   {
+    "idx": 225,
+    "role": "button",
+    "name": "4.7 out of 5 stars, rating details",
+    "section": "s-search-results > s-search-result",
+    "href": "javascript:void(0)"
+   },
+   {
+    "idx": 226,
+    "role": "link",
+    "name": "10,420 ratings",
+    "section": "s-search-result > s-client-side-analytics",
+    "href": "https://www.amazon.com/Apple-USB-C-Woven-Charge-Cable/dp/B0DCH5B2HF/ref=sr_1_8?dib=eyJ2IjoiMSJ9.zDerXzkkcCIibp1gD24_gCubJ1DdAyUNubDo5YxBMn3yuF3-ejdznxv1_YoxZmjYL8s_qMb1_IYA1G7xW4aXPdz_iZyEXO8TXtyUMoesjoQOtvKI-eieNWJIXiNyuIf0j4xKf1JUM-MxosH-UaLcSVB0J-iJ9D0V4RAZ3rCQ9g3Yz4M9lFZgoxKmqd1SL9X9j0Nz-8AhEWQYqJVbTB_IO_lJulqXoQbNV8UCBtKsi70.YHaCzRNC8_lnsmHgDx0puLEM889h1AdhDCLMe4mJYrY&dib_tag=se&keywords=usb+c+cable&qid=1792846136&sr=8-8#customerReviews"
+   },
+   {
+    "idx": 227,
+    "role": "link",
+    "name": "$24.00 $24 . 00 List: $29.00 List: $29.00 $29.00",
+    "section": "s-search-results > s-search-result",
+    "href": "https://www.amazon.com/Apple-USB-C-Woven-Charge-Cable/dp/B0DCH5B2HF/ref=sr_1_8?dib=eyJ2IjoiMSJ9.zDerXzkkcCIibp1gD24_gCubJ1DdAyUNubDo5YxBMn3yuF3-ejdznxv1_YoxZmjYL8s_qMb1_IYA1G7xW4aXPdz_iZyEXO8TXtyUMoesjoQOtvKI-eieNWJIXiNyuIf0j4xKf1JUM-MxosH-UaLcSVB0J-iJ9D0V4RAZ3rCQ9g3Yz4M9lFZgoxKmqd1SL9X9j0Nz-8AhEWQYqJVbTB_IO_lJulqXoQbNV8UCBtKsi70.YHaCzRNC8_lnsmHgDx0puLEM889h1AdhDCLMe4mJYrY&dib_tag=se&keywords=usb+c+cable&qid=1792846136&sr=8-8"
+   },
+   {
+    "idx": 228,
+    "role": "button",
+    "name": "Add to cart",
+    "section": "form > a-autoid-21"
+   },
+   {
+    "idx": 229,
+    "role": "link",
+    "name": "(4+ used & new offers)",
+    "section": "s-search-results > s-search-result",
+    "href": "https://www.amazon.com/gp/offer-listing/B0DCH5B2HF/ref=sr_1_8_olp?keywords=usb+c+cable&dib_tag=se&dib=eyJ2IjoiMSJ9.zDerXzkkcCIibp1gD24_gCubJ1DdAyUNubDo5YxBMn3yuF3-ejdznxv1_YoxZmjYL8s_qMb1_IYA1G7xW4aXPdz_iZyEXO8TXtyUMoesjoQOtvKI-eieNWJIXiNyuIf0j4xKf1JUM-MxosH-UaLcSVB0J-iJ9D0V4RAZ3rCQ9g3Yz4M9lFZgoxKmqd1SL9X9j0Nz-8AhEWQYqJVbTB_IO_lJulqXoQbNV8UCBtKsi70.YHaCzRNC8_lnsmHgDx0puLEM889h1AdhDCLMe4mJYrY&qid=1792846136&sr=8-8"
+   },
+   {
+    "idx": 230,
+    "role": "link",
+    "name": "Anker USB A to USB C Cable, USB to USB C Cable (2-Pack, 6 ft, Black) | For iPhone 17 Series, Samsung…",
+    "section": "s-search-result > s-product-image",
+    "href": "https://www.amazon.com/Anker-2-Pack-Premium-Charging-Samsung/dp/B07DC5PPFV/ref=sr_1_9?dib=eyJ2IjoiMSJ9.zDerXzkkcCIibp1gD24_gCubJ1DdAyUNubDo5YxBMn3yuF3-ejdznxv1_YoxZmjYL8s_qMb1_IYA1G7xW4aXPdz_iZyEXO8TXtyUMoesjoQOtvKI-eieNWJIXiNyuIf0j4xKf1JUM-MxosH-UaLcSVB0J-iJ9D0V4RAZ3rCQ9g3Yz4M9lFZgoxKmqd1SL9X9j0Nz-8AhEWQYqJVbTB_IO_lJulqXoQbNV8UCBtKsi70.YHaCzRNC8_lnsmHgDx0puLEM889h1AdhDCLMe4mJYrY&dib_tag=se&keywords=usb+c+cable&qid=1792846136&sr=8-9"
+   },
+   {
+    "idx": 231,
+    "role": "link",
+    "name": "Anker USB A to USB C Cable, USB to USB C Cable (2-Pack, 6 ft, Black)",
+    "section": "s-search-results > s-search-result",
+    "href": "https://www.amazon.com/Anker-2-Pack-Premium-Charging-Samsung/dp/B07DC5PPFV/ref=sr_1_9?dib=eyJ2IjoiMSJ9.zDerXzkkcCIibp1gD24_gCubJ1DdAyUNubDo5YxBMn3yuF3-ejdznxv1_YoxZmjYL8s_qMb1_IYA1G7xW4aXPdz_iZyEXO8TXtyUMoesjoQOtvKI-eieNWJIXiNyuIf0j4xKf1JUM-MxosH-UaLcSVB0J-iJ9D0V4RAZ3rCQ9g3Yz4M9lFZgoxKmqd1SL9X9j0Nz-8AhEWQYqJVbTB_IO_lJulqXoQbNV8UCBtKsi70.YHaCzRNC8_lnsmHgDx0puLEM889h1AdhDCLMe4mJYrY&dib_tag=se&keywords=usb+c+cable&qid=1792846136&sr=8-9"
+   },
+   {
+    "idx": 232,
+    "role": "button",
+    "name": "4.7 out of 5 stars, rating details",
+    "section": "s-search-results > s-search-result",
+    "href": "javascript:void(0)"
+   },
+   {
+    "idx": 233,
+    "role": "link",
+    "name": "149,247 ratings",
+    "section": "s-search-result > s-client-side-analytics",
+    "href": "https://www.amazon.com/Anker-2-Pack-Premium-Charging-Samsung/dp/B07DC5PPFV/ref=sr_1_9?dib=eyJ2IjoiMSJ9.zDerXzkkcCIibp1gD24_gCubJ1DdAyUNubDo5YxBMn3yuF3-ejdznxv1_YoxZmjYL8s_qMb1_IYA1G7xW4aXPdz_iZyEXO8TXtyUMoesjoQOtvKI-eieNWJIXiNyuIf0j4xKf1JUM-MxosH-UaLcSVB0J-iJ9D0V4RAZ3rCQ9g3Yz4M9lFZgoxKmqd1SL9X9j0Nz-8AhEWQYqJVbTB_IO_lJulqXoQbNV8UCBtKsi70.YHaCzRNC8_lnsmHgDx0puLEM889h1AdhDCLMe4mJYrY&dib_tag=se&keywords=usb+c+cable&qid=1792846136&sr=8-9#customerReviews"
+   },
+   {
+    "idx": 234,
+    "role": "link",
+    "name": "$9.99 $9 . 99 ( $0.83 $0.83/feet)",
+    "section": "s-search-results > s-search-result",
+    "href": "https://www.amazon.com/Anker-2-Pack-Premium-Charging-Samsung/dp/B07DC5PPFV/ref=sr_1_9?dib=eyJ2IjoiMSJ9.zDerXzkkcCIibp1gD24_gCubJ1DdAyUNubDo5YxBMn3yuF3-ejdznxv1_YoxZmjYL8s_qMb1_IYA1G7xW4aXPdz_iZyEXO8TXtyUMoesjoQOtvKI-eieNWJIXiNyuIf0j4xKf1JUM-MxosH-UaLcSVB0J-iJ9D0V4RAZ3rCQ9g3Yz4M9lFZgoxKmqd1SL9X9j0Nz-8AhEWQYqJVbTB_IO_lJulqXoQbNV8UCBtKsi70.YHaCzRNC8_lnsmHgDx0puLEM889h1AdhDCLMe4mJYrY&dib_tag=se&keywords=usb+c+cable&qid=1792846136&sr=8-9"
+   },
+   {
+    "idx": 235,
+    "role": "button",
+    "name": "Carbon impact",
+    "section": "s-search-results > s-search-result",
+    "href": "javascript:void(0)"
+   },
+   {
+    "idx": 236,
+    "role": "button",
+    "name": "Add to cart",
+    "section": "form > a-autoid-22"
+   },
+   {
+    "idx": 237,
+    "role": "link",
+    "name": "(2 used & new offers)",
+    "section": "s-search-results > s-search-result",
+    "href": "https://www.amazon.com/gp/offer-listing/B07DC5PPFV/ref=sr_1_9_olp?keywords=usb+c+cable&dib_tag=se&dib=eyJ2IjoiMSJ9.zDerXzkkcCIibp1gD24_gCubJ1DdAyUNubDo5YxBMn3yuF3-ejdznxv1_YoxZmjYL8s_qMb1_IYA1G7xW4aXPdz_iZyEXO8TXtyUMoesjoQOtvKI-eieNWJIXiNyuIf0j4xKf1JUM-MxosH-UaLcSVB0J-iJ9D0V4RAZ3rCQ9g3Yz4M9lFZgoxKmqd1SL9X9j0Nz-8AhEWQYqJVbTB_IO_lJulqXoQbNV8UCBtKsi70.YHaCzRNC8_lnsmHgDx0puLEM889h1AdhDCLMe4mJYrY&qid=1792846136&sr=8-9"
+   },
+   {
+    "idx": 238,
+    "role": "link",
+    "name": "CLEEFUN USB C to USB C Cable 3ft, 5-Pack C to C Cable Fast Charging 60W | Type C Charger for iPhone …",
+    "section": "s-search-result > s-product-image",
+    "href": "https://www.amazon.com/CLEEFUN-Cable-5-Pack-Fast-Charging/dp/B0HGY9B64Z/ref=sr_1_10?dib=eyJ2IjoiMSJ9.zDerXzkkcCIibp1gD24_gCubJ1DdAyUNubDo5YxBMn3yuF3-ejdznxv1_YoxZmjYL8s_qMb1_IYA1G7xW4aXPdz_iZyEXO8TXtyUMoesjoQOtvKI-eieNWJIXiNyuIf0j4xKf1JUM-MxosH-UaLcSVB0J-iJ9D0V4RAZ3rCQ9g3Yz4M9lFZgoxKmqd1SL9X9j0Nz-8AhEWQYqJVbTB_IO_lJulqXoQbNV8UCBtKsi70.YHaCzRNC8_lnsmHgDx0puLEM889h1AdhDCLMe4mJYrY&dib_tag=se&keywords=usb+c+cable&qid=1792846136&sr=8-10"
+   },
+   {
+    "idx": 239,
+    "role": "link",
+    "name": "CLEEFUN USB C to USB C Cable 3ft, 5-Pack C to C Cable Fast Charging 60W",
+    "section": "s-search-results > s-search-result",
+    "href": "https://www.amazon.com/CLEEFUN-Cable-5-Pack-Fast-Charging/dp/B0HGY9B64Z/ref=sr_1_10?dib=eyJ2IjoiMSJ9.zDerXzkkcCIibp1gD24_gCubJ1DdAyUNubDo5YxBMn3yuF3-ejdznxv1_YoxZmjYL8s_qMb1_IYA1G7xW4aXPdz_iZyEXO8TXtyUMoesjoQOtvKI-eieNWJIXiNyuIf0j4xKf1JUM-MxosH-UaLcSVB0J-iJ9D0V4RAZ3rCQ9g3Yz4M9lFZgoxKmqd1SL9X9j0Nz-8AhEWQYqJVbTB_IO_lJulqXoQbNV8UCBtKsi70.YHaCzRNC8_lnsmHgDx0puLEM889h1AdhDCLMe4mJYrY&dib_tag=se&keywords=usb+c+cable&qid=1792846136&sr=8-10"
+   },
+   {
+    "idx": 240,
+    "role": "button",
+    "name": "4.7 out of 5 stars, rating details",
+    "section": "s-search-results > s-search-result",
+    "href": "javascript:void(0)"
+   },
+   {
+    "idx": 241,
+    "role": "link",
+    "name": "2,007 ratings",
+    "section": "s-search-result > s-client-side-analytics",
+    "href": "https://www.amazon.com/CLEEFUN-Cable-5-Pack-Fast-Charging/dp/B0HGY9B64Z/ref=sr_1_10?dib=eyJ2IjoiMSJ9.zDerXzkkcCIibp1gD24_gCubJ1DdAyUNubDo5YxBMn3yuF3-ejdznxv1_YoxZmjYL8s_qMb1_IYA1G7xW4aXPdz_iZyEXO8TXtyUMoesjoQOtvKI-eieNWJIXiNyuIf0j4xKf1JUM-MxosH-UaLcSVB0J-iJ9D0V4RAZ3rCQ9g3Yz4M9lFZgoxKmqd1SL9X9j0Nz-8AhEWQYqJVbTB_IO_lJulqXoQbNV8UCBtKsi70.YHaCzRNC8_lnsmHgDx0puLEM889h1AdhDCLMe4mJYrY&dib_tag=se&keywords=usb+c+cable&qid=1792846136&sr=8-10#customerReviews"
+   },
+   {
+    "idx": 242,
+    "role": "link",
+    "name": "$9.99 $9 . 99",
+    "section": "s-search-results > s-search-result",
+    "href": "https://www.amazon.com/CLEEFUN-Cable-5-Pack-Fast-Charging/dp/B0HGY9B64Z/ref=sr_1_10?dib=eyJ2IjoiMSJ9.zDerXzkkcCIibp1gD24_gCubJ1DdAyUNubDo5YxBMn3yuF3-ejdznxv1_YoxZmjYL8s_qMb1_IYA1G7xW4aXPdz_iZyEXO8TXtyUMoesjoQOtvKI-eieNWJIXiNyuIf0j4xKf1JUM-MxosH-UaLcSVB0J-iJ9D0V4RAZ3rCQ9g3Yz4M9lFZgoxKmqd1SL9X9j0Nz-8AhEWQYqJVbTB_IO_lJulqXoQbNV8UCBtKsi70.YHaCzRNC8_lnsmHgDx0puLEM889h1AdhDCLMe4mJYrY&dib_tag=se&keywords=usb+c+cable&qid=1792846136&sr=8-10"
+   },
+   {
+    "idx": 243,
+    "role": "button",
+    "name": "Add to cart",
+    "section": "form > a-autoid-23"
+   },
+   {
+    "idx": 244,
+    "role": "link",
+    "name": "LISEN USB C to USB C Cable 60W for iPhone 18 Pro Duo Charging Cable, 5-Pack | for iPhone 18 Fast Cha…",
+    "section": "s-search-result > s-product-image",
+    "href": "https://www.amazon.com/LISEN-Charger-Charging-Samsung-MacBook/dp/B0CFQ5T5F6/ref=sr_1_11?dib=eyJ2IjoiMSJ9.zDerXzkkcCIibp1gD24_gCubJ1DdAyUNubDo5YxBMn3yuF3-ejdznxv1_YoxZmjYL8s_qMb1_IYA1G7xW4aXPdz_iZyEXO8TXtyUMoesjoQOtvKI-eieNWJIXiNyuIf0j4xKf1JUM-MxosH-UaLcSVB0J-iJ9D0V4RAZ3rCQ9g3Yz4M9lFZgoxKmqd1SL9X9j0Nz-8AhEWQYqJVbTB_IO_lJulqXoQbNV8UCBtKsi70.YHaCzRNC8_lnsmHgDx0puLEM889h1AdhDCLMe4mJYrY&dib_tag=se&keywords=usb+c+cable&qid=1792846136&sr=8-11"
+   },
+   {
+    "idx": 245,
+    "role": "link",
+    "name": "LISEN USB C to USB C Cable 60W for iPhone 18 Pro Duo Charging Cable, 5-Pack",
+    "section": "s-search-results > s-search-result",
+    "href": "https://www.amazon.com/LISEN-Charger-Charging-Samsung-MacBook/dp/B0CFQ5T5F6/ref=sr_1_11?dib=eyJ2IjoiMSJ9.zDerXzkkcCIibp1gD24_gCubJ1DdAyUNubDo5YxBMn3yuF3-ejdznxv1_YoxZmjYL8s_qMb1_IYA1G7xW4aXPdz_iZyEXO8TXtyUMoesjoQOtvKI-eieNWJIXiNyuIf0j4xKf1JUM-MxosH-UaLcSVB0J-iJ9D0V4RAZ3rCQ9g3Yz4M9lFZgoxKmqd1SL9X9j0Nz-8AhEWQYqJVbTB_IO_lJulqXoQbNV8UCBtKsi70.YHaCzRNC8_lnsmHgDx0puLEM889h1AdhDCLMe4mJYrY&dib_tag=se&keywords=usb+c+cable&qid=1792846136&sr=8-11"
+   },
+   {
+    "idx": 246,
+    "role": "button",
+    "name": "4.6 out of 5 stars, rating details",
+    "section": "s-search-results > s-search-result",
+    "href": "javascript:void(0)"
+   },
+   {
+    "idx": 247,
+    "role": "link",
+    "name": "16,953 ratings",
+    "section": "s-search-result > s-client-side-analytics",
+    "href": "https://www.amazon.com/LISEN-Charger-Charging-Samsung-MacBook/dp/B0CFQ5T5F6/ref=sr_1_11?dib=eyJ2IjoiMSJ9.zDerXzkkcCIibp1gD24_gCubJ1DdAyUNubDo5YxBMn3yuF3-ejdznxv1_YoxZmjYL8s_qMb1_IYA1G7xW4aXPdz_iZyEXO8TXtyUMoesjoQOtvKI-eieNWJIXiNyuIf0j4xKf1JUM-MxosH-UaLcSVB0J-iJ9D0V4RAZ3rCQ9g3Yz4M9lFZgoxKmqd1SL9X9j0Nz-8AhEWQYqJVbTB_IO_lJulqXoQbNV8UCBtKsi70.YHaCzRNC8_lnsmHgDx0puLEM889h1AdhDCLMe4mJYrY&dib_tag=se&keywords=usb+c+cable&qid=1792846136&sr=8-11#customerReviews"
+   },
+   {
+    "idx": 248,
+    "role": "link",
+    "name": "$9.99 $9 . 99 ( $0.33 $0.33/feet)",
+    "section": "s-search-results > s-search-result",
+    "href": "https://www.amazon.com/LISEN-Charger-Charging-Samsung-MacBook/dp/B0CFQ5T5F6/ref=sr_1_11?dib=eyJ2IjoiMSJ9.zDerXzkkcCIibp1gD24_gCubJ1DdAyUNubDo5YxBMn3yuF3-ejdznxv1_YoxZmjYL8s_qMb1_IYA1G7xW4aXPdz_iZyEXO8TXtyUMoesjoQOtvKI-eieNWJIXiNyuIf0j4xKf1JUM-MxosH-UaLcSVB0J-iJ9D0V4RAZ3rCQ9g3Yz4M9lFZgoxKmqd1SL9X9j0Nz-8AhEWQYqJVbTB_IO_lJulqXoQbNV8UCBtKsi70.YHaCzRNC8_lnsmHgDx0puLEM889h1AdhDCLMe4mJYrY&dib_tag=se&keywords=usb+c+cable&qid=1792846136&sr=8-11"
+   },
+   {
+    "idx": 249,
+    "role": "button",
+    "name": "Add to cart",
+    "section": "form > a-autoid-24"
+   },
+   {
+    "idx": 250,
+    "role": "link",
+    "name": "Sponsored Ad - USB C to USB C Charging Cable, Fast Charger 60W 2Pack 3.3 ft Type C Cord | High Speed…",
+    "section": "s-impression-counter > s-product-image",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo1ODU0NzMwMDAyMjAxODUxOjE3OTI4NDYxMzY6c3BfbXRmOjMwMTMzNDk4OTE5OTQwMjo6MDo6&url=%2FCharging-Cable-Charger-2Pack-iPhone%2Fdp%2FB0GY8B47YG%2Fref%3Dsr_1_12_sspa%3Fdib%3DeyJ2IjoiMSJ9.zDerXzkkcCIibp1gD24_gCubJ1DdAyUNubDo5YxBMn3yuF3-ejdznxv1_YoxZmjYL8s_qMb1_IYA1G7xW4aXPdz_iZyEXO8TXtyUMoesjoQOtvKI-eieNWJIXiNyuIf0j4xKf1JUM-MxosH-UaLcSVB0J-iJ9D0V4RAZ3rCQ9g3Yz4M9lFZgoxKmqd1SL9X9j0Nz-8AhEWQYqJVbTB_IO_lJulqXoQbNV8UCBtKsi70.YHaCzRNC8_lnsmHgDx0puLEM889h1AdhDCLMe4mJYrY%26dib_tag%3Dse%26keywords%3Dusb%2Bc%2Bcable%26qid%3D1792846136%26sr%3D8-12-spons%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9tdGY%26psc%3D1"
+   },
+   {
+    "idx": 251,
+    "role": "button",
+    "name": "Sponsored",
+    "section": "s-impression-logger > s-impression-counter",
+    "href": "javascript:void(0)"
+   },
+   {
+    "idx": 252,
+    "role": "link",
+    "name": "USB C to USB C Charging Cable, Fast Charger 60W 2Pack 3.3 ft Type C Cord",
+    "section": "s-impression-logger > s-impression-counter",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo1ODU0NzMwMDAyMjAxODUxOjE3OTI4NDYxMzY6c3BfbXRmOjMwMTMzNDk4OTE5OTQwMjo6MDo6&url=%2FCharging-Cable-Charger-2Pack-iPhone%2Fdp%2FB0GY8B47YG%2Fref%3Dsr_1_12_sspa%3Fdib%3DeyJ2IjoiMSJ9.zDerXzkkcCIibp1gD24_gCubJ1DdAyUNubDo5YxBMn3yuF3-ejdznxv1_YoxZmjYL8s_qMb1_IYA1G7xW4aXPdz_iZyEXO8TXtyUMoesjoQOtvKI-eieNWJIXiNyuIf0j4xKf1JUM-MxosH-UaLcSVB0J-iJ9D0V4RAZ3rCQ9g3Yz4M9lFZgoxKmqd1SL9X9j0Nz-8AhEWQYqJVbTB_IO_lJulqXoQbNV8UCBtKsi70.YHaCzRNC8_lnsmHgDx0puLEM889h1AdhDCLMe4mJYrY%26dib_tag%3Dse%26keywords%3Dusb%2Bc%2Bcable%26qid%3D1792846136%26sr%3D8-12-spons%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9tdGY%26psc%3D1"
+   },
+   {
+    "idx": 253,
+    "role": "button",
+    "name": "4.5 out of 5 stars, rating details",
+    "section": "s-impression-logger > s-impression-counter",
+    "href": "javascript:void(0)"
+   },
+   {
+    "idx": 254,
+    "role": "link",
+    "name": "1,854 ratings",
+    "section": "s-impression-counter > s-client-side-analytics",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo1ODU0NzMwMDAyMjAxODUxOjE3OTI4NDYxMzY6c3BfbXRmOjMwMTMzNDk4OTE5OTQwMjo6MDo6&url=%2FCharging-Cable-Charger-2Pack-iPhone%2Fdp%2FB0GY8B47YG%2Fref%3Dsr_1_12_sspa%3Fdib%3DeyJ2IjoiMSJ9.zDerXzkkcCIibp1gD24_gCubJ1DdAyUNubDo5YxBMn3yuF3-ejdznxv1_YoxZmjYL8s_qMb1_IYA1G7xW4aXPdz_iZyEXO8TXtyUMoesjoQOtvKI-eieNWJIXiNyuIf0j4xKf1JUM-MxosH-UaLcSVB0J-iJ9D0V4RAZ3rCQ9g3Yz4M9lFZgoxKmqd1SL9X9j0Nz-8AhEWQYqJVbTB_IO_lJulqXoQbNV8UCBtKsi70.YHaCzRNC8_lnsmHgDx0puLEM889h1AdhDCLMe4mJYrY%26dib_tag%3Dse%26keywords%3Dusb%2Bc%2Bcable%26qid%3D1792846136%26sr%3D8-12-spons%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9tdGY%26psc%3D1#customerReviews"
+   },
+   {
+    "idx": 255,
+    "role": "link",
+    "name": "$3.99 $3 . 99",
+    "section": "s-impression-logger > s-impression-counter",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo1ODU0NzMwMDAyMjAxODUxOjE3OTI4NDYxMzY6c3BfbXRmOjMwMTMzNDk4OTE5OTQwMjo6MDo6&url=%2FCharging-Cable-Charger-2Pack-iPhone%2Fdp%2FB0GY8B47YG%2Fref%3Dsr_1_12_sspa%3Fdib%3DeyJ2IjoiMSJ9.zDerXzkkcCIibp1gD24_gCubJ1DdAyUNubDo5YxBMn3yuF3-ejdznxv1_YoxZmjYL8s_qMb1_IYA1G7xW4aXPdz_iZyEXO8TXtyUMoesjoQOtvKI-eieNWJIXiNyuIf0j4xKf1JUM-MxosH-UaLcSVB0J-iJ9D0V4RAZ3rCQ9g3Yz4M9lFZgoxKmqd1SL9X9j0Nz-8AhEWQYqJVbTB_IO_lJulqXoQbNV8UCBtKsi70.YHaCzRNC8_lnsmHgDx0puLEM889h1AdhDCLMe4mJYrY%26dib_tag%3Dse%26keywords%3Dusb%2Bc%2Bcable%26qid%3D1792846136%26sr%3D8-12-spons%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9tdGY%26psc%3D1"
+   },
+   {
+    "idx": 256,
+    "role": "button",
+    "name": "Add to cart",
+    "section": "form > a-autoid-25"
+   },
+   {
+    "idx": 257,
+    "role": "link",
+    "name": "Sponsored ad from Durcord. \"Durable C Cable.\" Shop Durcord.",
+    "section": "s-search-results > CardInstanceZWAbooOYlu2jVoIj3ai68w",
+    "href": "https://sponsored-ads.amazon.com/clk/?_encoding=UTF8&p=eAFVUMtu00AUVVsBJSoPZVGksKmCyKLqJONHYqfIQh7bad1YzsN5djOa2BPbimu7Hoe0LPID_AUSG7bd8B0s-AE27JD4AtSmCPWsru495557T4Hsfvv-58fj4jN1MOrqbbM9gbrRL29xh_tzGodX2GiH1sK0Amtx1puMJPF4P6r7jOstz-aLbjBBgXvWD2zP7z_leLkqVLkqPN920GxXNQanRt90iq8KTzzKFnmSFveGdt_QOie2eW7opZutwpv7CWaUZG6AU5q5SURyisM4CmOKZ_m8WCAX5GMSV93kovSazYAbEcZCF2w0YMMEKVd-RGM8dA7rbAbygF5QD7hJFFE3D5MYfODBvRlwSeYxkJIwzmkG3CTOaZzzb1FftXWsdSzL0AZmx3awaVumbWDLHBlYN5z2oNMtNwpb8OXXn59-_b7RS8__rdwcUX4hQAgbkiDyXEPiYIPfGTr68Y7W1Q7bxXc6UrW0ZQJJXaPLDXx1jXosTlcr9SHWyF-j3hqpd4Vf2tN84-pENXzBMin_ZbvweTvI85Qd12qr1ar6P6Iay5OMslpKfFqDHC-iJtJBSxJbQGzVm0CWtAZQm7IqyJBHooTe3wlwRueKg7AKZYHnJVEQxOGoxTWtnnQKVNhs1nlZ5p3xCHWGp2MNTgaV1MOZh9Mo8DIlrwSMYDfDoafASpRiwsKYKQhqljjuSqh7hKDWPpdGPDc9QlDW9BPecbq3zMslza6VJZsduAcumUX0tsmiJFcehlthXoqJh_0sWaaKACEHBZGTuSYnQrESKiRlFXL7BXGndHptr8bZXwR96mw&v=c1&r=https%3A%2F%2Fwww.amazon.com%2Fstores%2Fpage%2F0124B9BD-F74F-4F59-87C6-A98A3802B47B%3Fstore_ref%3DSB_A0832274334UVF19LQ7H-A09952882SWVBOUHWC0XT%26pd_rd_plhdr%3Dt%26hsa_cr_id%3D0%26lp_asins%3DB0CL4WP7BP%2CB0CKZ7V21Y%2CB08CDG2SSP%26lp_query%3Dusb%20c%20cable%26lp_slot%3Ddesktop-inline%26sdp_ad_group%3D300103418191404%26i%3Daps%26aref%3DacYeYyNwWr&ref_=sbx__sbtcd2_bkgd&pd_rd_w=qfyAx&content-id=amzn1.sym.90f77631-9599-4fe0-95f8-a40adfe1c762%3Aamzn1.sym.90f77631-9599-4fe0-95f8-a40adfe1c762&pf_rd_p=90f77631-9599-4fe0-95f8-a40adfe1c762&pf_rd_r=CC1K9CMHB5M6WRTSZBBZ&pd_rd_wg=AzVIl&pd_rd_r=01527afe-9f0f-414d-b90d-75cad30e6618"
+   },
+   {
+    "idx": 258,
+    "role": "link",
+    "name": "Durcord",
+    "section": "s-search-results > CardInstanceZWAbooOYlu2jVoIj3ai68w",
+    "href": "https://sponsored-ads.amazon.com/clk/?_encoding=UTF8&p=eAFVUMtu00AUVVsBJSoPZVGksKmCyKLqJONHYqfIQh7bad1YzsN5djOa2BPbimu7Hoe0LPID_AUSG7bd8B0s-AE27JD4AtSmCPWsru495557T4Hsfvv-58fj4jN1MOrqbbM9gbrRL29xh_tzGodX2GiH1sK0Amtx1puMJPF4P6r7jOstz-aLbjBBgXvWD2zP7z_leLkqVLkqPN920GxXNQanRt90iq8KTzzKFnmSFveGdt_QOie2eW7opZutwpv7CWaUZG6AU5q5SURyisM4CmOKZ_m8WCAX5GMSV93kovSazYAbEcZCF2w0YMMEKVd-RGM8dA7rbAbygF5QD7hJFFE3D5MYfODBvRlwSeYxkJIwzmkG3CTOaZzzb1FftXWsdSzL0AZmx3awaVumbWDLHBlYN5z2oNMtNwpb8OXXn59-_b7RS8__rdwcUX4hQAgbkiDyXEPiYIPfGTr68Y7W1Q7bxXc6UrW0ZQJJXaPLDXx1jXosTlcr9SHWyF-j3hqpd4Vf2tN84-pENXzBMin_ZbvweTvI85Qd12qr1ar6P6Iay5OMslpKfFqDHC-iJtJBSxJbQGzVm0CWtAZQm7IqyJBHooTe3wlwRueKg7AKZYHnJVEQxOGoxTWtnnQKVNhs1nlZ5p3xCHWGp2MNTgaV1MOZh9Mo8DIlrwSMYDfDoafASpRiwsKYKQhqljjuSqh7hKDWPpdGPDc9QlDW9BPecbq3zMslza6VJZsduAcumUX0tsmiJFcehlthXoqJh_0sWaaKACEHBZGTuSYnQrESKiRlFXL7BXGndHptr8bZXwR96mw&v=c1&r=https%3A%2F%2Fwww.amazon.com%2Fstores%2Fpage%2F0124B9BD-F74F-4F59-87C6-A98A3802B47B%3Fstore_ref%3DSB_A0832274334UVF19LQ7H-A09952882SWVBOUHWC0XT%26pd_rd_plhdr%3Dt%26hsa_cr_id%3D0%26lp_asins%3DB0CL4WP7BP%2CB0CKZ7V21Y%2CB08CDG2SSP%26lp_query%3Dusb%20c%20cable%26lp_slot%3Ddesktop-inline%26sdp_ad_group%3D300103418191404%26i%3Daps%26aref%3DacYeYyNwWr&ref_=sbx__sbtcd2_logo&pd_rd_w=qfyAx&content-id=amzn1.sym.90f77631-9599-4fe0-95f8-a40adfe1c762%3Aamzn1.sym.90f77631-9599-4fe0-95f8-a40adfe1c762&pf_rd_p=90f77631-9599-4fe0-95f8-a40adfe1c762&pf_rd_r=CC1K9CMHB5M6WRTSZBBZ&pd_rd_wg=AzVIl&pd_rd_r=01527afe-9f0f-414d-b90d-75cad30e6618"
+   },
+   {
+    "idx": 259,
+    "role": "link",
+    "name": "Durable C Cable",
+    "section": "s-search-results > CardInstanceZWAbooOYlu2jVoIj3ai68w",
+    "href": "https://sponsored-ads.amazon.com/clk/?_encoding=UTF8&p=eAFVUMtu00AUVVsBJSoPZVGksKmCyKLqJONHYqfIQh7bad1YzsN5djOa2BPbimu7Hoe0LPID_AUSG7bd8B0s-AE27JD4AtSmCPWsru495557T4Hsfvv-58fj4jN1MOrqbbM9gbrRL29xh_tzGodX2GiH1sK0Amtx1puMJPF4P6r7jOstz-aLbjBBgXvWD2zP7z_leLkqVLkqPN920GxXNQanRt90iq8KTzzKFnmSFveGdt_QOie2eW7opZutwpv7CWaUZG6AU5q5SURyisM4CmOKZ_m8WCAX5GMSV93kovSazYAbEcZCF2w0YMMEKVd-RGM8dA7rbAbygF5QD7hJFFE3D5MYfODBvRlwSeYxkJIwzmkG3CTOaZzzb1FftXWsdSzL0AZmx3awaVumbWDLHBlYN5z2oNMtNwpb8OXXn59-_b7RS8__rdwcUX4hQAgbkiDyXEPiYIPfGTr68Y7W1Q7bxXc6UrW0ZQJJXaPLDXx1jXosTlcr9SHWyF-j3hqpd4Vf2tN84-pENXzBMin_ZbvweTvI85Qd12qr1ar6P6Iay5OMslpKfFqDHC-iJtJBSxJbQGzVm0CWtAZQm7IqyJBHooTe3wlwRueKg7AKZYHnJVEQxOGoxTWtnnQKVNhs1nlZ5p3xCHWGp2MNTgaV1MOZh9Mo8DIlrwSMYDfDoafASpRiwsKYKQhqljjuSqh7hKDWPpdGPDc9QlDW9BPecbq3zMslza6VJZsduAcumUX0tsmiJFcehlthXoqJh_0sWaaKACEHBZGTuSYnQrESKiRlFXL7BXGndHptr8bZXwR96mw&v=c1&r=https%3A%2F%2Fwww.amazon.com%2Fstores%2Fpage%2F0124B9BD-F74F-4F59-87C6-A98A3802B47B%3Fstore_ref%3DSB_A0832274334UVF19LQ7H-A09952882SWVBOUHWC0XT%26pd_rd_plhdr%3Dt%26hsa_cr_id%3D0%26lp_asins%3DB0CL4WP7BP%2CB0CKZ7V21Y%2CB08CDG2SSP%26lp_query%3Dusb%20c%20cable%26lp_slot%3Ddesktop-inline%26sdp_ad_group%3D300103418191404%26i%3Daps%26aref%3DacYeYyNwWr&ref_=sbx__sbtcd2_hl&pd_rd_w=qfyAx&content-id=amzn1.sym.90f77631-9599-4fe0-95f8-a40adfe1c762%3Aamzn1.sym.90f77631-9599-4fe0-95f8-a40adfe1c762&pf_rd_p=90f77631-9599-4fe0-95f8-a40adfe1c762&pf_rd_r=CC1K9CMHB5M6WRTSZBBZ&pd_rd_wg=AzVIl&pd_rd_r=01527afe-9f0f-414d-b90d-75cad30e6618"
+   },
+   {
+    "idx": 260,
+    "role": "button",
+    "name": "Leave feedback on Sponsored ad",
+    "section": "s-search-results > CardInstanceZWAbooOYlu2jVoIj3ai68w"
+   },
+   {
+    "idx": 261,
+    "role": "link",
+    "name": "Shop Durcord",
+    "section": "s-search-results > CardInstanceZWAbooOYlu2jVoIj3ai68w",
+    "href": "https://sponsored-ads.amazon.com/clk/?_encoding=UTF8&p=eAFVUMtu00AUVVsBJSoPZVGksKmCyKLqJONHYqfIQh7bad1YzsN5djOa2BPbimu7Hoe0LPID_AUSG7bd8B0s-AE27JD4AtSmCPWsru495557T4Hsfvv-58fj4jN1MOrqbbM9gbrRL29xh_tzGodX2GiH1sK0Amtx1puMJPF4P6r7jOstz-aLbjBBgXvWD2zP7z_leLkqVLkqPN920GxXNQanRt90iq8KTzzKFnmSFveGdt_QOie2eW7opZutwpv7CWaUZG6AU5q5SURyisM4CmOKZ_m8WCAX5GMSV93kovSazYAbEcZCF2w0YMMEKVd-RGM8dA7rbAbygF5QD7hJFFE3D5MYfODBvRlwSeYxkJIwzmkG3CTOaZzzb1FftXWsdSzL0AZmx3awaVumbWDLHBlYN5z2oNMtNwpb8OXXn59-_b7RS8__rdwcUX4hQAgbkiDyXEPiYIPfGTr68Y7W1Q7bxXc6UrW0ZQJJXaPLDXx1jXosTlcr9SHWyF-j3hqpd4Vf2tN84-pENXzBMin_ZbvweTvI85Qd12qr1ar6P6Iay5OMslpKfFqDHC-iJtJBSxJbQGzVm0CWtAZQm7IqyJBHooTe3wlwRueKg7AKZYHnJVEQxOGoxTWtnnQKVNhs1nlZ5p3xCHWGp2MNTgaV1MOZh9Mo8DIlrwSMYDfDoafASpRiwsKYKQhqljjuSqh7hKDWPpdGPDc9QlDW9BPecbq3zMslza6VJZsduAcumUX0tsmiJFcehlthXoqJh_0sWaaKACEHBZGTuSYnQrESKiRlFXL7BXGndHptr8bZXwR96mw&v=c1&r=https%3A%2F%2Fwww.amazon.com%2Fstores%2Fpage%2F0124B9BD-F74F-4F59-87C6-A98A3802B47B%3Fstore_ref%3DSB_A0832274334UVF19LQ7H-A09952882SWVBOUHWC0XT%26pd_rd_plhdr%3Dt%26hsa_cr_id%3D0%26lp_asins%3DB0CL4WP7BP%2CB0CKZ7V21Y%2CB08CDG2SSP%26lp_query%3Dusb%20c%20cable%26lp_slot%3Ddesktop-inline%26sdp_ad_group%3D300103418191404%26i%3Daps%26aref%3DacYeYyNwWr&ref_=sbx__sbtcd2_cta&pd_rd_w=qfyAx&content-id=amzn1.sym.90f77631-9599-4fe0-95f8-a40adfe1c762%3Aamzn1.sym.90f77631-9599-4fe0-95f8-a40adfe1c762&pf_rd_p=90f77631-9599-4fe0-95f8-a40adfe1c762&pf_rd_r=CC1K9CMHB5M6WRTSZBBZ&pd_rd_wg=AzVIl&pd_rd_r=01527afe-9f0f-414d-b90d-75cad30e6618"
+   },
+   {
+    "idx": 262,
+    "role": "link",
+    "name": "Durcord USB C Cable, Upgraded 2Pack 10ft Fast USB Type C Charging Cable for Android/Phone/Pad/Laptop…",
+    "section": "s-search-results > CardInstanceZWAbooOYlu2jVoIj3ai68w",
+    "href": "https://sponsored-ads.amazon.com/clk/?_encoding=UTF8&p=eAFVUMtu00AUVaiAYpWHsmilsAsii0gTexzHjoMs5BfFieW827Sb0cQzfiiO7XoMLizyA2yR-Ae23fAdLPgBNuyQ-AIkUoQ4qyOdx706HD788vXXt3v1h_ribGKNnNFKsOxZswbbxwFN42tkj2J347iRuxlOV2eKNDhOeiGD0zfDYDOJVkbkD2eRR8LZAyj2O90O7AiXd-bG-lC3F6_tmTOvn3D3CWWbMsvrR0tvZpvjU8-5tK3GTY17dqsgRnHhRyinhZ8luKQoTpM4pWhdBnUOb_H7LO342bbxlK2Bn2DGYh_sM2DvBDls3qUpWs7bPbYGZUS3lAA_SxLql3GWgrciuD0GfFwQBnIcpyUtgJ-lJU1L8bkx0z0LmWPXtc2FM_bmyPFcx7OR65zZyLLno8V40pS5mvDk8_cPP37eWI1Hfyv3TzQfdwVBkJWuJEJZgYIsHizn1uDAnJjtUf2FZehm_soBir4zrvYI9Z0xZWleVfr_2BnhzpjuDP0PCRtHZmhfn-p22HUdKn6qcR9rUVnmbMDzVVV1_k3EhzmPK57whmC60vlEMSYvc4IKgvIkIoVWtiKGkV-gmGhC6yomGlRUsS_JsCu3WKFBAEEP93qyGKggIAEBEhQgUAOVAKLIGKuq2pe6YivWcM5auKCBhv0LevHOq86L3796vXY&v=c1&r=https%3A%2F%2Fwww.amazon.com%2Fgp%2Faw%2Fd%2FB0CL4WP7BP%3Fpd_rd_plhdr%3Dt%26hsa_cr_id%3D0%26qid%3D1792846136%26sr%3D1-1-5a5562f9-fdfd-4101-9f9d-d76aa9998432%26i%3Daps%26aref%3DacYeYyNwWr&ref_=sbx__sbtcd2_asin_0_img&pd_rd_w=qfyAx&content-id=amzn1.sym.90f77631-9599-4fe0-95f8-a40adfe1c762%3Aamzn1.sym.90f77631-9599-4fe0-95f8-a40adfe1c762&pf_rd_p=90f77631-9599-4fe0-95f8-a40adfe1c762&pf_rd_r=CC1K9CMHB5M6WRTSZBBZ&pd_rd_wg=AzVIl&pd_rd_r=01527afe-9f0f-414d-b90d-75cad30e6618"
+   },
+   {
+    "idx": 263,
+    "role": "link",
+    "name": "Durcord USB C Cable, Upgraded 2Pack 10ft Fast USB Type C Charging Cable for Android/Phone/Pad/Laptop…",
+    "section": "s-search-results > CardInstanceZWAbooOYlu2jVoIj3ai68w",
+    "href": "https://sponsored-ads.amazon.com/clk/?_encoding=UTF8&p=eAFVUMtu00AUVaiAYpWHsmilsAsii0gTexzHjoMs5BfFieW827Sb0cQzfiiO7XoMLizyA2yR-Ae23fAdLPgBNuyQ-AIkUoQ4qyOdx706HD788vXXt3v1h_ribGKNnNFKsOxZswbbxwFN42tkj2J347iRuxlOV2eKNDhOeiGD0zfDYDOJVkbkD2eRR8LZAyj2O90O7AiXd-bG-lC3F6_tmTOvn3D3CWWbMsvrR0tvZpvjU8-5tK3GTY17dqsgRnHhRyinhZ8luKQoTpM4pWhdBnUOb_H7LO342bbxlK2Bn2DGYh_sM2DvBDls3qUpWs7bPbYGZUS3lAA_SxLql3GWgrciuD0GfFwQBnIcpyUtgJ-lJU1L8bkx0z0LmWPXtc2FM_bmyPFcx7OR65zZyLLno8V40pS5mvDk8_cPP37eWI1Hfyv3TzQfdwVBkJWuJEJZgYIsHizn1uDAnJjtUf2FZehm_soBir4zrvYI9Z0xZWleVfr_2BnhzpjuDP0PCRtHZmhfn-p22HUdKn6qcR9rUVnmbMDzVVV1_k3EhzmPK57whmC60vlEMSYvc4IKgvIkIoVWtiKGkV-gmGhC6yomGlRUsS_JsCu3WKFBAEEP93qyGKggIAEBEhQgUAOVAKLIGKuq2pe6YivWcM5auKCBhv0LevHOq86L3796vXY&v=c1&r=https%3A%2F%2Fwww.amazon.com%2Fgp%2Faw%2Fd%2FB0CL4WP7BP%3Fpd_rd_plhdr%3Dt%26hsa_cr_id%3D0%26qid%3D1792846136%26sr%3D1-1-5a5562f9-fdfd-4101-9f9d-d76aa9998432%26i%3Daps%26aref%3DacYeYyNwWr&ref_=sbx__sbtcd2_asin_0_title&pd_rd_w=qfyAx&content-id=amzn1.sym.90f77631-9599-4fe0-95f8-a40adfe1c762%3Aamzn1.sym.90f77631-9599-4fe0-95f8-a40adfe1c762&pf_rd_p=90f77631-9599-4fe0-95f8-a40adfe1c762&pf_rd_r=CC1K9CMHB5M6WRTSZBBZ&pd_rd_wg=AzVIl&pd_rd_r=01527afe-9f0f-414d-b90d-75cad30e6618"
+   },
+   {
+    "idx": 264,
+    "role": "link",
+    "name": "Rated 4.5 out of 5 stars by 7054 reviews. Go to review section.",
+    "section": "s-search-results > CardInstanceZWAbooOYlu2jVoIj3ai68w",
+    "href": "https://sponsored-ads.amazon.com/clk/?_encoding=UTF8&p=eAFVUMtu00AUVaiAYpWHsmilsAsii0gTexzHjoMs5BfFieW827Sb0cQzfiiO7XoMLizyA2yR-Ae23fAdLPgBNuyQ-AIkUoQ4qyOdx706HD788vXXt3v1h_ribGKNnNFKsOxZswbbxwFN42tkj2J347iRuxlOV2eKNDhOeiGD0zfDYDOJVkbkD2eRR8LZAyj2O90O7AiXd-bG-lC3F6_tmTOvn3D3CWWbMsvrR0tvZpvjU8-5tK3GTY17dqsgRnHhRyinhZ8luKQoTpM4pWhdBnUOb_H7LO342bbxlK2Bn2DGYh_sM2DvBDls3qUpWs7bPbYGZUS3lAA_SxLql3GWgrciuD0GfFwQBnIcpyUtgJ-lJU1L8bkx0z0LmWPXtc2FM_bmyPFcx7OR65zZyLLno8V40pS5mvDk8_cPP37eWI1Hfyv3TzQfdwVBkJWuJEJZgYIsHizn1uDAnJjtUf2FZehm_soBir4zrvYI9Z0xZWleVfr_2BnhzpjuDP0PCRtHZmhfn-p22HUdKn6qcR9rUVnmbMDzVVV1_k3EhzmPK57whmC60vlEMSYvc4IKgvIkIoVWtiKGkV-gmGhC6yomGlRUsS_JsCu3WKFBAEEP93qyGKggIAEBEhQgUAOVAKLIGKuq2pe6YivWcM5auKCBhv0LevHOq86L3796vXY&v=c1&r=https%3A%2F%2Fwww.amazon.com%2Fgp%2Faw%2Fd%2FB0CL4WP7BP%3Fpd_rd_plhdr%3Dt%26hsa_cr_id%3D0%26qid%3D1792846136%26sr%3D1-1-5a5562f9-fdfd-4101-9f9d-d76aa9998432%26i%3Daps%26aref%3DacYeYyNwWr&ref_=sbx__sbtcd2_asin_0_rating&pd_rd_w=qfyAx&content-id=amzn1.sym.90f77631-9599-4fe0-95f8-a40adfe1c762%3Aamzn1.sym.90f77631-9599-4fe0-95f8-a40adfe1c762&pf_rd_p=90f77631-9599-4fe0-95f8-a40adfe1c762&pf_rd_r=CC1K9CMHB5M6WRTSZBBZ&pd_rd_wg=AzVIl&pd_rd_r=01527afe-9f0f-414d-b90d-75cad30e6618#customerReviews"
+   },
+   {
+    "idx": 265,
+    "role": "link",
+    "name": "$12.99 $12 . 99",
+    "section": "s-search-results > CardInstanceZWAbooOYlu2jVoIj3ai68w",
+    "href": "https://sponsored-ads.amazon.com/clk/?_encoding=UTF8&p=eAFVUMtu00AUVaiAYpWHsmilsAsii0gTexzHjoMs5BfFieW827Sb0cQzfiiO7XoMLizyA2yR-Ae23fAdLPgBNuyQ-AIkUoQ4qyOdx706HD788vXXt3v1h_ribGKNnNFKsOxZswbbxwFN42tkj2J347iRuxlOV2eKNDhOeiGD0zfDYDOJVkbkD2eRR8LZAyj2O90O7AiXd-bG-lC3F6_tmTOvn3D3CWWbMsvrR0tvZpvjU8-5tK3GTY17dqsgRnHhRyinhZ8luKQoTpM4pWhdBnUOb_H7LO342bbxlK2Bn2DGYh_sM2DvBDls3qUpWs7bPbYGZUS3lAA_SxLql3GWgrciuD0GfFwQBnIcpyUtgJ-lJU1L8bkx0z0LmWPXtc2FM_bmyPFcx7OR65zZyLLno8V40pS5mvDk8_cPP37eWI1Hfyv3TzQfdwVBkJWuJEJZgYIsHizn1uDAnJjtUf2FZehm_soBir4zrvYI9Z0xZWleVfr_2BnhzpjuDP0PCRtHZmhfn-p22HUdKn6qcR9rUVnmbMDzVVV1_k3EhzmPK57whmC60vlEMSYvc4IKgvIkIoVWtiKGkV-gmGhC6yomGlRUsS_JsCu3WKFBAEEP93qyGKggIAEBEhQgUAOVAKLIGKuq2pe6YivWcM5auKCBhv0LevHOq86L3796vXY&v=c1&r=https%3A%2F%2Fwww.amazon.com%2Fgp%2Faw%2Fd%2FB0CL4WP7BP%3Fpd_rd_plhdr%3Dt%26hsa_cr_id%3D0%26qid%3D1792846136%26sr%3D1-1-5a5562f9-fdfd-4101-9f9d-d76aa9998432%26i%3Daps%26aref%3DacYeYyNwWr&ref_=sbx__sbtcd2_asin_0_price&pd_rd_w=qfyAx&content-id=amzn1.sym.90f77631-9599-4fe0-95f8-a40adfe1c762%3Aamzn1.sym.90f77631-9599-4fe0-95f8-a40adfe1c762&pf_rd_p=90f77631-9599-4fe0-95f8-a40adfe1c762&pf_rd_r=CC1K9CMHB5M6WRTSZBBZ&pd_rd_wg=AzVIl&pd_rd_r=01527afe-9f0f-414d-b90d-75cad30e6618"
+   },
+   {
+    "idx": 266,
+    "role": "link",
+    "name": "Durcord 2Pack 10ft USB C Charger Cable - 100W Fast Charging for Android/Phone/Pad, Type C to Type C …",
+    "section": "s-search-results > CardInstanceZWAbooOYlu2jVoIj3ai68w",
+    "href": "https://sponsored-ads.amazon.com/clk/?_encoding=UTF8&p=eAFVUMuK01AYpg7qGMYLXYxQdxW7KJwmJ2mTplIkN8e0Ib3XtpvDac7JhaZJJiea0UVfwK3gO7idjc_hwhdw407wCQQ7In6rD77L__Nx-PTL11_f7lTva_Pl2Bzaw5VgWtN6BTbPfZpEV8gaRs7OdkJnN5islkq7dx53AgYnbwb-bhyu9NAbTEOXBNN7UOy2pBZsCZtbM317qlnzV9bUnlUfc3cJZbsizapnC3dqGaML195YZu26wj29URCjOPdClNHcS2NcUBQlcZRQtC38Kof3-H2atLx0X3vCtsCLMWORB44ZcHSCDNZv0wQtZs0O24IipHtKgJfGMfWKKE3AWxHcHAMezgkDGY6SgubAS5OCJoX4TJ9qromMkeNYxtweuTNku47tWsixlxYyrdlwPhrXZa4iPPr8_cOPn9dm7cHfyuMT9YeSIAiyIrVFKCtQkMWTxczsnRhjozmsPjd1zche2kDRDvrlEYF20CcsycpS-x8HPTjok4Ou_SFB7cwIrKsLzQokx6bipwr3sRIWRcZ6PF-WZevfRHyQ8bjkCa8LxnCjLEW4fpERlBOUxSHJ-0UjZBh5OYpIX2hcRqQPFVXstmUoyQ2W9yEQQQd3OrLoq8AnPgFtKECg-ioBRJExVlW125bERtTHGWvgnPp97K3p-p1bvs5_A78NvXU&v=c1&r=https%3A%2F%2Fwww.amazon.com%2Fgp%2Faw%2Fd%2FB0CKZ7V21Y%3Fpd_rd_plhdr%3Dt%26hsa_cr_id%3D0%26qid%3D1792846136%26sr%3D1-2-5a5562f9-fdfd-4101-9f9d-d76aa9998432%26i%3Daps%26aref%3DacYeYyNwWr&ref_=sbx__sbtcd2_asin_1_img&pd_rd_w=qfyAx&content-id=amzn1.sym.90f77631-9599-4fe0-95f8-a40adfe1c762%3Aamzn1.sym.90f77631-9599-4fe0-95f8-a40adfe1c762&pf_rd_p=90f77631-9599-4fe0-95f8-a40adfe1c762&pf_rd_r=CC1K9CMHB5M6WRTSZBBZ&pd_rd_wg=AzVIl&pd_rd_r=01527afe-9f0f-414d-b90d-75cad30e6618"
+   },
+   {
+    "idx": 267,
+    "role": "link",
+    "name": "Durcord 2Pack 10ft USB C Charger Cable - 100W Fast Charging for Android/Phone/Pad, Type C to Type C …",
+    "section": "s-search-results > CardInstanceZWAbooOYlu2jVoIj3ai68w",
+    "href": "https://sponsored-ads.amazon.com/clk/?_encoding=UTF8&p=eAFVUMuK01AYpg7qGMYLXYxQdxW7KJwmJ2mTplIkN8e0Ib3XtpvDac7JhaZJJiea0UVfwK3gO7idjc_hwhdw407wCQQ7In6rD77L__Nx-PTL11_f7lTva_Pl2Bzaw5VgWtN6BTbPfZpEV8gaRs7OdkJnN5islkq7dx53AgYnbwb-bhyu9NAbTEOXBNN7UOy2pBZsCZtbM317qlnzV9bUnlUfc3cJZbsizapnC3dqGaML195YZu26wj29URCjOPdClNHcS2NcUBQlcZRQtC38Kof3-H2atLx0X3vCtsCLMWORB44ZcHSCDNZv0wQtZs0O24IipHtKgJfGMfWKKE3AWxHcHAMezgkDGY6SgubAS5OCJoX4TJ9qromMkeNYxtweuTNku47tWsixlxYyrdlwPhrXZa4iPPr8_cOPn9dm7cHfyuMT9YeSIAiyIrVFKCtQkMWTxczsnRhjozmsPjd1zche2kDRDvrlEYF20CcsycpS-x8HPTjok4Ou_SFB7cwIrKsLzQokx6bipwr3sRIWRcZ6PF-WZevfRHyQ8bjkCa8LxnCjLEW4fpERlBOUxSHJ-0UjZBh5OYpIX2hcRqQPFVXstmUoyQ2W9yEQQQd3OrLoq8AnPgFtKECg-ioBRJExVlW125bERtTHGWvgnPp97K3p-p1bvs5_A78NvXU&v=c1&r=https%3A%2F%2Fwww.amazon.com%2Fgp%2Faw%2Fd%2FB0CKZ7V21Y%3Fpd_rd_plhdr%3Dt%26hsa_cr_id%3D0%26qid%3D1792846136%26sr%3D1-2-5a5562f9-fdfd-4101-9f9d-d76aa9998432%26i%3Daps%26aref%3DacYeYyNwWr&ref_=sbx__sbtcd2_asin_1_title&pd_rd_w=qfyAx&content-id=amzn1.sym.90f77631-9599-4fe0-95f8-a40adfe1c762%3Aamzn1.sym.90f77631-9599-4fe0-95f8-a40adfe1c762&pf_rd_p=90f77631-9599-4fe0-95f8-a40adfe1c762&pf_rd_r=CC1K9CMHB5M6WRTSZBBZ&pd_rd_wg=AzVIl&pd_rd_r=01527afe-9f0f-414d-b90d-75cad30e6618"
+   },
+   {
+    "idx": 268,
+    "role": "link",
+    "name": "Rated 4.5 out of 5 stars by 3677 reviews. Go to review section.",
+    "section": "s-search-results > CardInstanceZWAbooOYlu2jVoIj3ai68w",
+    "href": "https://sponsored-ads.amazon.com/clk/?_encoding=UTF8&p=eAFVUMuK01AYpg7qGMYLXYxQdxW7KJwmJ2mTplIkN8e0Ib3XtpvDac7JhaZJJiea0UVfwK3gO7idjc_hwhdw407wCQQ7In6rD77L__Nx-PTL11_f7lTva_Pl2Bzaw5VgWtN6BTbPfZpEV8gaRs7OdkJnN5islkq7dx53AgYnbwb-bhyu9NAbTEOXBNN7UOy2pBZsCZtbM317qlnzV9bUnlUfc3cJZbsizapnC3dqGaML195YZu26wj29URCjOPdClNHcS2NcUBQlcZRQtC38Kof3-H2atLx0X3vCtsCLMWORB44ZcHSCDNZv0wQtZs0O24IipHtKgJfGMfWKKE3AWxHcHAMezgkDGY6SgubAS5OCJoX4TJ9qromMkeNYxtweuTNku47tWsixlxYyrdlwPhrXZa4iPPr8_cOPn9dm7cHfyuMT9YeSIAiyIrVFKCtQkMWTxczsnRhjozmsPjd1zche2kDRDvrlEYF20CcsycpS-x8HPTjok4Ou_SFB7cwIrKsLzQokx6bipwr3sRIWRcZ6PF-WZevfRHyQ8bjkCa8LxnCjLEW4fpERlBOUxSHJ-0UjZBh5OYpIX2hcRqQPFVXstmUoyQ2W9yEQQQd3OrLoq8AnPgFtKECg-ioBRJExVlW125bERtTHGWvgnPp97K3p-p1bvs5_A78NvXU&v=c1&r=https%3A%2F%2Fwww.amazon.com%2Fgp%2Faw%2Fd%2FB0CKZ7V21Y%3Fpd_rd_plhdr%3Dt%26hsa_cr_id%3D0%26qid%3D1792846136%26sr%3D1-2-5a5562f9-fdfd-4101-9f9d-d76aa9998432%26i%3Daps%26aref%3DacYeYyNwWr&ref_=sbx__sbtcd2_asin_1_rating&pd_rd_w=qfyAx&content-id=amzn1.sym.90f77631-9599-4fe0-95f8-a40adfe1c762%3Aamzn1.sym.90f77631-9599-4fe0-95f8-a40adfe1c762&pf_rd_p=90f77631-9599-4fe0-95f8-a40adfe1c762&pf_rd_r=CC1K9CMHB5M6WRTSZBBZ&pd_rd_wg=AzVIl&pd_rd_r=01527afe-9f0f-414d-b90d-75cad30e6618#customerReviews"
+   },
+   {
+    "idx": 269,
+    "role": "link",
+    "name": "$13.99 $13 . 99 ($7.00 / count)",
+    "section": "s-search-results > CardInstanceZWAbooOYlu2jVoIj3ai68w",
+    "href": "https://sponsored-ads.amazon.com/clk/?_encoding=UTF8&p=eAFVUMuK01AYpg7qGMYLXYxQdxW7KJwmJ2mTplIkN8e0Ib3XtpvDac7JhaZJJiea0UVfwK3gO7idjc_hwhdw407wCQQ7In6rD77L__Nx-PTL11_f7lTva_Pl2Bzaw5VgWtN6BTbPfZpEV8gaRs7OdkJnN5islkq7dx53AgYnbwb-bhyu9NAbTEOXBNN7UOy2pBZsCZtbM317qlnzV9bUnlUfc3cJZbsizapnC3dqGaML195YZu26wj29URCjOPdClNHcS2NcUBQlcZRQtC38Kof3-H2atLx0X3vCtsCLMWORB44ZcHSCDNZv0wQtZs0O24IipHtKgJfGMfWKKE3AWxHcHAMezgkDGY6SgubAS5OCJoX4TJ9qromMkeNYxtweuTNku47tWsixlxYyrdlwPhrXZa4iPPr8_cOPn9dm7cHfyuMT9YeSIAiyIrVFKCtQkMWTxczsnRhjozmsPjd1zche2kDRDvrlEYF20CcsycpS-x8HPTjok4Ou_SFB7cwIrKsLzQokx6bipwr3sRIWRcZ6PF-WZevfRHyQ8bjkCa8LxnCjLEW4fpERlBOUxSHJ-0UjZBh5OYpIX2hcRqQPFVXstmUoyQ2W9yEQQQd3OrLoq8AnPgFtKECg-ioBRJExVlW125bERtTHGWvgnPp97K3p-p1bvs5_A78NvXU&v=c1&r=https%3A%2F%2Fwww.amazon.com%2Fgp%2Faw%2Fd%2FB0CKZ7V21Y%3Fpd_rd_plhdr%3Dt%26hsa_cr_id%3D0%26qid%3D1792846136%26sr%3D1-2-5a5562f9-fdfd-4101-9f9d-d76aa9998432%26i%3Daps%26aref%3DacYeYyNwWr&ref_=sbx__sbtcd2_asin_1_price&pd_rd_w=qfyAx&content-id=amzn1.sym.90f77631-9599-4fe0-95f8-a40adfe1c762%3Aamzn1.sym.90f77631-9599-4fe0-95f8-a40adfe1c762&pf_rd_p=90f77631-9599-4fe0-95f8-a40adfe1c762&pf_rd_r=CC1K9CMHB5M6WRTSZBBZ&pd_rd_wg=AzVIl&pd_rd_r=01527afe-9f0f-414d-b90d-75cad30e6618"
+   },
+   {
+    "idx": 270,
+    "role": "link",
+    "name": "Durcord iPhone Charger, [MFi Certified] 3Pack 10FT USB A Cable for Long Lightning Charger Cable, Fas…",
+    "section": "s-search-results > CardInstanceZWAbooOYlu2jVoIj3ai68w",
+    "href": "https://sponsored-ads.amazon.com/clk/?_encoding=UTF8&p=eAFVUMuK01AYpg7qGMYLXYxQdxW7KJzm1iZNJUhu1rQhbZN27MzmcJpzcqFpksmJZnTRF3Ar-A5uZ-NzuPAF3LgTfALBjojf6oPv8v98DDr-8vXXtzvN-9rybG5O7emaMy2v3eC7pyHJkitoTRNnazuxs50s1mdyf3SaDiLKL95Mwu08XutxMPFiF0fePV4Y9sQe3-Mubvn65lizlq8sz_abj5m7mNBtlRfNk5XrWcZs7NoXltm6bjBPbxRICSqDGBakDPIUVQQmWZpkBG6qsMmgHXqfZ70g37We0A0IUkRpEoBDBhycoODbt0kGV353QDegismOYBDkaUqCKskz8FYAN8dAgEpMQYGSrCIlCPKsIlklPNM9zTWhMXMcy1jaM9eHtuvYrgUd-8yCpuVPl7N5W2Ia3KPP3z_8-Hltth78rTw80X4ochwnyWJf4CWZ5yThaOWboyNjbnSnzeemrhnFSxvI2l6_PCDS9vqCZkVda_9jr0d7fbHXtT8kap0YkXU11qxIdGwifGowHxtxVRV0xLJ1Xff-TcRGBYtqFrM6NzTMseD78xcFhiWGRRrjUq06MUUwKGGCVa5zmWCVlxVh2Jd4UerQUuWBCAZoMJCEUAEhDjHo8xwPlFDBAMsSQoqiDPui0ElUVNAOKkmoouCcnL9z69flb71SvXM&v=c1&r=https%3A%2F%2Fwww.amazon.com%2Fgp%2Faw%2Fd%2FB08CDG2SSP%3Fpd_rd_plhdr%3Dt%26hsa_cr_id%3D0%26qid%3D1792846136%26sr%3D1-3-5a5562f9-fdfd-4101-9f9d-d76aa9998432%26i%3Daps%26aref%3DacYeYyNwWr&ref_=sbx__sbtcd2_asin_2_img&pd_rd_w=qfyAx&content-id=amzn1.sym.90f77631-9599-4fe0-95f8-a40adfe1c762%3Aamzn1.sym.90f77631-9599-4fe0-95f8-a40adfe1c762&pf_rd_p=90f77631-9599-4fe0-95f8-a40adfe1c762&pf_rd_r=CC1K9CMHB5M6WRTSZBBZ&pd_rd_wg=AzVIl&pd_rd_r=01527afe-9f0f-414d-b90d-75cad30e6618"
+   },
+   {
+    "idx": 271,
+    "role": "link",
+    "name": "Durcord iPhone Charger, [MFi Certified] 3Pack 10FT USB A Cable for Long Lightning Charger Cable, Fas…",
+    "section": "s-search-results > CardInstanceZWAbooOYlu2jVoIj3ai68w",
+    "href": "https://sponsored-ads.amazon.com/clk/?_encoding=UTF8&p=eAFVUMuK01AYpg7qGMYLXYxQdxW7KJzm1iZNJUhu1rQhbZN27MzmcJpzcqFpksmJZnTRF3Ar-A5uZ-NzuPAF3LgTfALBjojf6oPv8v98DDr-8vXXtzvN-9rybG5O7emaMy2v3eC7pyHJkitoTRNnazuxs50s1mdyf3SaDiLKL95Mwu08XutxMPFiF0fePV4Y9sQe3-Mubvn65lizlq8sz_abj5m7mNBtlRfNk5XrWcZs7NoXltm6bjBPbxRICSqDGBakDPIUVQQmWZpkBG6qsMmgHXqfZ70g37We0A0IUkRpEoBDBhycoODbt0kGV353QDegismOYBDkaUqCKskz8FYAN8dAgEpMQYGSrCIlCPKsIlklPNM9zTWhMXMcy1jaM9eHtuvYrgUd-8yCpuVPl7N5W2Ia3KPP3z_8-Hltth78rTw80X4ochwnyWJf4CWZ5yThaOWboyNjbnSnzeemrhnFSxvI2l6_PCDS9vqCZkVda_9jr0d7fbHXtT8kap0YkXU11qxIdGwifGowHxtxVRV0xLJ1Xff-TcRGBYtqFrM6NzTMseD78xcFhiWGRRrjUq06MUUwKGGCVa5zmWCVlxVh2Jd4UerQUuWBCAZoMJCEUAEhDjHo8xwPlFDBAMsSQoqiDPui0ElUVNAOKkmoouCcnL9z69flb71SvXM&v=c1&r=https%3A%2F%2Fwww.amazon.com%2Fgp%2Faw%2Fd%2FB08CDG2SSP%3Fpd_rd_plhdr%3Dt%26hsa_cr_id%3D0%26qid%3D1792846136%26sr%3D1-3-5a5562f9-fdfd-4101-9f9d-d76aa9998432%26i%3Daps%26aref%3DacYeYyNwWr&ref_=sbx__sbtcd2_asin_2_title&pd_rd_w=qfyAx&content-id=amzn1.sym.90f77631-9599-4fe0-95f8-a40adfe1c762%3Aamzn1.sym.90f77631-9599-4fe0-95f8-a40adfe1c762&pf_rd_p=90f77631-9599-4fe0-95f8-a40adfe1c762&pf_rd_r=CC1K9CMHB5M6WRTSZBBZ&pd_rd_wg=AzVIl&pd_rd_r=01527afe-9f0f-414d-b90d-75cad30e6618"
+   },
+   {
+    "idx": 272,
+    "role": "link",
+    "name": "Rated 4.4 out of 5 stars by 3844 reviews. Go to review section.",
+    "section": "s-search-results > CardInstanceZWAbooOYlu2jVoIj3ai68w",
+    "href": "https://sponsored-ads.amazon.com/clk/?_encoding=UTF8&p=eAFVUMuK01AYpg7qGMYLXYxQdxW7KJzm1iZNJUhu1rQhbZN27MzmcJpzcqFpksmJZnTRF3Ar-A5uZ-NzuPAF3LgTfALBjojf6oPv8v98DDr-8vXXtzvN-9rybG5O7emaMy2v3eC7pyHJkitoTRNnazuxs50s1mdyf3SaDiLKL95Mwu08XutxMPFiF0fePV4Y9sQe3-Mubvn65lizlq8sz_abj5m7mNBtlRfNk5XrWcZs7NoXltm6bjBPbxRICSqDGBakDPIUVQQmWZpkBG6qsMmgHXqfZ70g37We0A0IUkRpEoBDBhycoODbt0kGV353QDegismOYBDkaUqCKskz8FYAN8dAgEpMQYGSrCIlCPKsIlklPNM9zTWhMXMcy1jaM9eHtuvYrgUd-8yCpuVPl7N5W2Ia3KPP3z_8-Hltth78rTw80X4ochwnyWJf4CWZ5yThaOWboyNjbnSnzeemrhnFSxvI2l6_PCDS9vqCZkVda_9jr0d7fbHXtT8kap0YkXU11qxIdGwifGowHxtxVRV0xLJ1Xff-TcRGBYtqFrM6NzTMseD78xcFhiWGRRrjUq06MUUwKGGCVa5zmWCVlxVh2Jd4UerQUuWBCAZoMJCEUAEhDjHo8xwPlFDBAMsSQoqiDPui0ElUVNAOKkmoouCcnL9z69flb71SvXM&v=c1&r=https%3A%2F%2Fwww.amazon.com%2Fgp%2Faw%2Fd%2FB08CDG2SSP%3Fpd_rd_plhdr%3Dt%26hsa_cr_id%3D0%26qid%3D1792846136%26sr%3D1-3-5a5562f9-fdfd-4101-9f9d-d76aa9998432%26i%3Daps%26aref%3DacYeYyNwWr&ref_=sbx__sbtcd2_asin_2_rating&pd_rd_w=qfyAx&content-id=amzn1.sym.90f77631-9599-4fe0-95f8-a40adfe1c762%3Aamzn1.sym.90f77631-9599-4fe0-95f8-a40adfe1c762&pf_rd_p=90f77631-9599-4fe0-95f8-a40adfe1c762&pf_rd_r=CC1K9CMHB5M6WRTSZBBZ&pd_rd_wg=AzVIl&pd_rd_r=01527afe-9f0f-414d-b90d-75cad30e6618#customerReviews"
+   },
+   {
+    "idx": 273,
+    "role": "link",
+    "name": "$14.99 $14 . 99 ($0.50 / feet)",
+    "section": "s-search-results > CardInstanceZWAbooOYlu2jVoIj3ai68w",
+    "href": "https://sponsored-ads.amazon.com/clk/?_encoding=UTF8&p=eAFVUMuK01AYpg7qGMYLXYxQdxW7KJzm1iZNJUhu1rQhbZN27MzmcJpzcqFpksmJZnTRF3Ar-A5uZ-NzuPAF3LgTfALBjojf6oPv8v98DDr-8vXXtzvN-9rybG5O7emaMy2v3eC7pyHJkitoTRNnazuxs50s1mdyf3SaDiLKL95Mwu08XutxMPFiF0fePV4Y9sQe3-Mubvn65lizlq8sz_abj5m7mNBtlRfNk5XrWcZs7NoXltm6bjBPbxRICSqDGBakDPIUVQQmWZpkBG6qsMmgHXqfZ70g37We0A0IUkRpEoBDBhycoODbt0kGV353QDegismOYBDkaUqCKskz8FYAN8dAgEpMQYGSrCIlCPKsIlklPNM9zTWhMXMcy1jaM9eHtuvYrgUd-8yCpuVPl7N5W2Ia3KPP3z_8-Hltth78rTw80X4ochwnyWJf4CWZ5yThaOWboyNjbnSnzeemrhnFSxvI2l6_PCDS9vqCZkVda_9jr0d7fbHXtT8kap0YkXU11qxIdGwifGowHxtxVRV0xLJ1Xff-TcRGBYtqFrM6NzTMseD78xcFhiWGRRrjUq06MUUwKGGCVa5zmWCVlxVh2Jd4UerQUuWBCAZoMJCEUAEhDjHo8xwPlFDBAMsSQoqiDPui0ElUVNAOKkmoouCcnL9z69flb71SvXM&v=c1&r=https%3A%2F%2Fwww.amazon.com%2Fgp%2Faw%2Fd%2FB08CDG2SSP%3Fpd_rd_plhdr%3Dt%26hsa_cr_id%3D0%26qid%3D1792846136%26sr%3D1-3-5a5562f9-fdfd-4101-9f9d-d76aa9998432%26i%3Daps%26aref%3DacYeYyNwWr&ref_=sbx__sbtcd2_asin_2_price&pd_rd_w=qfyAx&content-id=amzn1.sym.90f77631-9599-4fe0-95f8-a40adfe1c762%3Aamzn1.sym.90f77631-9599-4fe0-95f8-a40adfe1c762&pf_rd_p=90f77631-9599-4fe0-95f8-a40adfe1c762&pf_rd_r=CC1K9CMHB5M6WRTSZBBZ&pd_rd_wg=AzVIl&pd_rd_r=01527afe-9f0f-414d-b90d-75cad30e6618"
+   },
+   {
+    "idx": 274,
+    "role": "link",
+    "name": "MRGLAS USB C Cable 3.2A, USB to USB C Cable [2-Pack,6.6FT], Type C Charger | Fast Charging Cable for…",
+    "section": "sbv-video-single-product > s-product-image",
+    "href": "https://aax-us-east-retail-direct.amazon.com/x/c/JFvMO9jFPIeNvy1W1LftgRAAAAGhbfUFPAEAAAH2AQBvbm9fdHhuX2JpZDMgICBvbm9fdHhuX2ltcDEgICB3h0tN/clv1c_ek-wBPfXfcbU3t4Shi0hD8MK4PpIt-DHGbutkNEL8amQgkR9TNOzlkifWQQooS-Pv6CV1A_G9W4h44vltogqrhxPiYDassxNal_SHExIMRmnqZ367KBIj-FA2EMqhvA419hYrx3Hc26ASReBCfLrzdDRS0QkZ7QCEsLgx_er3P4ZdVsNH0Kl0HpIJea8LEuBYoTGICyJQ8xbD6teZ4nE9EifbbafBUUgvcfMpDO9wRpNbLST63JvRTjppiQsGH_VJN9fHOr0-qSmc1ywMXuva6MTBCEUE9QYjzyaJMp8g7htNWvYfR8lsfDy6afXwG3f76BdXUzKzv4bffk_nAtII_1xgLEf482mgrCCR1Tz9hF8O6OFDrJ0kAj1n9BTZx2yjU7eyiRZVrPWAly4fB682RsFxojGnSi-1MBujslSMMjkAjRChfHjnL9DKpKYmptQUsJ9bdV_yIcdDsGL27TBvbUAUUjMoo9LZDJm64vPqKY7WTVW7I05GjXqniN4dmI_SqZJcVGnQELxmUH3GWIZ3EcMHsVxIw_BRAktttUt39MnPsGxNdZVBK7TNzA12HW70p1Xwp4Cj-vhIKsb9gehZncVS-kHaC4bvLjEgA0RqATkuQagi0VfAONWi_lSlPVc4n3SUvWV8L9vexd2j-K-Rr3en4YupkcwQ4v6UGZblIN8ddhG26DemmXTMUDQWNUgdl8dbbADpehWlIh6wo52NGEAdIFs3_1mLwmMBHoTEmnggroBL9PdyioMEyauc3dNSCgMyLB3ezDBFVsC7RrQk3RXD0j2sJr9Scb55-rZyl-M1wYFgUy38BLK6A91sBWyO6eHCKXNxYeqHVXwA2C0LRKCu0TrxWR9C9muGShgCCwOV4Nn_LNrO8ZSx9I68b14ZyDXMGvlE6tkOpzsP-E20mva3OVqJxA6zgcT-1zznBGFlQKAeGa_4vT4Evz9vnoo1A3kehFuAm-X7fAN6QOfaNbi4Ta-jLUX1UuA1PKBHjdAgy1qVG39i0ybK587vbKIJdkpVta1b79d6hn3MgWiaIOSBNB9Uee-tK2I3k62I8IrJZyeumaCuLmjMPleaeoriWE7XnnLIPs6XmY9OyA4iHEAqiPTffseWyLJ-rHyOud5UcITeCzYTZtFo4bRtVc-cMAfs0hF1EUDFKgVN2HDtrMub9sMobqPm18V9oTepZtLdOz03LAeoCwo3FYeOlfHOL8jWYLH7Iu_lACrchCTYqYkPvp1HrROhSZ4TYnRrhjQo6y5F31uJx8_USPokaaGdcp4FQit9orZH-0eLMLnP_hvOh8Ebhf-jAOPPPgQaJzfrqK6kIPpvKt9_qbrL_7uoZZyQbevmXMluQ_iZ7ZK1jFiT4hHffOFumWiW9fW5_emqQA4X9B5b3SAvF61S0Wy5tvCjH8QCrtBJ8ORn1OvDF9zRRwr2vbq5jMqie2lgFAra7g0B_SaS9dSIB4LxaJrPEZSJxudPkLAhjlwhrnpksbmyWGsRK9eDamgg3BHbFLtKj5I2Zfi6p7YLJtoeSnqD4bwbtsSQjzSurAiEnwVypcNwXKbssuHq_jX6uk1Tm9faQ2yc6CoymZejEM-_X_6SjwzMOwjYQOxOjckDtwlxwe5W49SZ6G7EpyCf_EQiqIP6SX0sk1jJQOCiBJDVAA6wcQgmvXB0iqT1t1aBTmyUJest2YMMag6ODxqOGJYSnb7v1xbbsfQ10H_Wc7qcc8kJl6CDmmwjrs/https://www.amazon.com/MRGLAS-Gold-Plated-Charger-Charging-Premium/dp/B09XTMP1DP/ref=sxin_27_sbv_search_btf?content-id=amzn1.sym.a120b15e-b9f5-458c-b2ab-4fe23ec1befc%3Aamzn1.sym.a120b15e-b9f5-458c-b2ab-4fe23ec1befc&cv_ct_cx=usb+c+cable&keywords=usb+c+cable&pd_rd_i=B09XTMP1DP&pd_rd_r=01527afe-9f0f-414d-b90d-75cad30e6618&pd_rd_w=lSTsh&pd_rd_wg=AzVIl&pf_rd_p=a120b15e-b9f5-458c-b2ab-4fe23ec1befc&pf_rd_r=CC1K9CMHB5M6WRTSZBBZ&qid=1792846136&sbo=RZvfv%2F%2FHxDF%2BO5021pAnSA%3D%3D&sr=1-1-b8f34313-536f-475f-9207-a7c427a641c1"
+   },
+   {
+    "idx": 275,
+    "role": "link",
+    "name": "USB C Cable 3.2A, USB to USB C Cable [2-Pack,6.6FT], Type C Charger | Fast Charging Cable for iPhone…",
+    "section": "s-search-results > sbv-video-single-product",
+    "href": "https://aax-us-east-retail-direct.amazon.com/x/c/JFvMO9jFPIeNvy1W1LftgRAAAAGhbfUFPAEAAAH2AQBvbm9fdHhuX2JpZDMgICBvbm9fdHhuX2ltcDEgICB3h0tN/clv1c_ek-wBPfXfcbU3t4Shi0hD8MK4PpIt-DHGbutkNEL8amQgkR9TNOzlkifWQQooS-Pv6CV1A_G9W4h44vltogqrhxPiYDassxNal_SHExIMRmnqZ367KBIj-FA2EMqhvA419hYrx3Hc26ASReBCfLrzdDRS0QkZ7QCEsLgx_er3P4ZdVsNH0Kl0HpIJea8LEuBYoTGICyJQ8xbD6teZ4nE9EifbbafBUUgvcfMpDO9wRpNbLST63JvRTjppiQsGH_VJN9fHOr0-qSmc1ywMXuva6MTBCEUE9QYjzyaJMp8g7htNWvYfR8lsfDy6afXwG3f76BdXUzKzv4bffk_nAtII_1xgLEf482mgrCCR1Tz9hF8O6OFDrJ0kAj1n9BTZx2yjU7eyiRZVrPWAly4fB682RsFxojGnSi-1MBujslSMMjkAjRChfHjnL9DKpKYmptQUsJ9bdV_yIcdDsGL27TBvbUAUUjMoo9LZDJm64vPqKY7WTVW7I05GjXqniN4dmI_SqZJcVGnQELxmUH3GWIZ3EcMHsVxIw_BRAktttUt39MnPsGxNdZVBK7TNzA12HW70p1Xwp4Cj-vhIKsb9gehZncVS-kHaC4bvLjEgA0RqATkuQagi0VfAONWi_lSlPVc4n3SUvWV8L9vexd2j-K-Rr3en4YupkcwQ4v6UGZblIN8ddhG26DemmXTMUDQWNUgdl8dbbADpehWlIh6wo52NGEAdIFs3_1mLwmMBHoTEmnggroBL9PdyioMEyauc3dNSCgMyLB3ezDBFVsC7RrQk3RXD0j2sJr9Scb55-rZyl-M1wYFgUy38BLK6A91sBWyO6eHCKXNxYeqHVXwA2C0LRKCu0TrxWR9C9muGShgCCwOV4Nn_LNrO8ZSx9I68b14ZyDXMGvlE6tkOpzsP-E20mva3OVqJxA6zgcT-1zznBGFlQKAeGa_4vT4Evz9vnoo1A3kehFuAm-X7fAN6QOfaNbi4Ta-jLUX1UuA1PKBHjdAgy1qVG39i0ybK587vbKIJdkpVta1b79d6hn3MgWiaIOSBNB9Uee-tK2I3k62I8IrJZyeumaCuLmjMPleaeoriWE7XnnLIPs6XmY9OyA4iHEAqiPTffseWyLJ-rHyOud5UcITeCzYTZtFo4bRtVc-cMAfs0hF1EUDFKgVN2HDtrMub9sMobqPm18V9oTepZtLdOz03LAeoCwo3FYeOlfHOL8jWYLH7Iu_lACrchCTYqYkPvp1HrROhSZ4TYnRrhjQo6y5F31uJx8_USPokaaGdcp4FQit9orZH-0eLMLnP_hvOh8Ebhf-jAOPPPgQaJzfrqK6kIPpvKt9_qbrL_7uoZZyQbevmXMluQ_iZ7ZK1jFiT4hHffOFumWiW9fW5_emqQA4X9B5b3SAvF61S0Wy5tvCjH8QCrtBJ8ORn1OvDF9zRRwr2vbq5jMqie2lgFAra7g0B_SaS9dSIB4LxaJrPEZSJxudPkLAhjlwhrnpksbmyWGsRK9eDamgg3BHbFLtKj5I2Zfi6p7YLJtoeSnqD4bwbtsSQjzSurAiEnwVypcNwXKbssuHq_jX6uk1Tm9faQ2yc6CoymZejEM-_X_6SjwzMOwjYQOxOjckDtwlxwe5W49SZ6G7EpyCf_EQiqIP6SX0sk1jJQOCiBJDVAA6wcQgmvXB0iqT1t1aBTmyUJest2YMMag6ODxqOGJYSnb7v1xbbsfQ10H_Wc7qcc8kJl6CDmmwjrs/https://www.amazon.com/MRGLAS-Gold-Plated-Charger-Charging-Premium/dp/B09XTMP1DP/ref=sxin_27_sbv_search_btf?content-id=amzn1.sym.a120b15e-b9f5-458c-b2ab-4fe23ec1befc%3Aamzn1.sym.a120b15e-b9f5-458c-b2ab-4fe23ec1befc&cv_ct_cx=usb+c+cable&keywords=usb+c+cable&pd_rd_i=B09XTMP1DP&pd_rd_r=01527afe-9f0f-414d-b90d-75cad30e6618&pd_rd_w=lSTsh&pd_rd_wg=AzVIl&pf_rd_p=a120b15e-b9f5-458c-b2ab-4fe23ec1befc&pf_rd_r=CC1K9CMHB5M6WRTSZBBZ&qid=1792846136&sbo=RZvfv%2F%2FHxDF%2BO5021pAnSA%3D%3D&sr=1-1-b8f34313-536f-475f-9207-a7c427a641c1"
+   },
+   {
+    "idx": 276,
+    "role": "button",
+    "name": "4.5 out of 5 stars, rating details",
+    "section": "s-search-results > sbv-video-single-product",
+    "href": "javascript:void(0)"
+   },
+   {
+    "idx": 277,
+    "role": "link",
+    "name": "16,956 ratings",
+    "section": "sbv-video-single-product > s-client-side-analytics",
+    "href": "https://aax-us-east-retail-direct.amazon.com/x/c/JFvMO9jFPIeNvy1W1LftgRAAAAGhbfUFPAEAAAH2AQBvbm9fdHhuX2JpZDMgICBvbm9fdHhuX2ltcDEgICB3h0tN/clv1c_ek-wBPfXfcbU3t4Shi0hD8MK4PpIt-DHGbutkNEL8amQgkR9TNOzlkifWQQooS-Pv6CV1A_G9W4h44vltogqrhxPiYDassxNal_SHExIMRmnqZ367KBIj-FA2EMqhvA419hYrx3Hc26ASReBCfLrzdDRS0QkZ7QCEsLgx_er3P4ZdVsNH0Kl0HpIJea8LEuBYoTGICyJQ8xbD6teZ4nE9EifbbafBUUgvcfMpDO9wRpNbLST63JvRTjppiQsGH_VJN9fHOr0-qSmc1ywMXuva6MTBCEUE9QYjzyaJMp8g7htNWvYfR8lsfDy6afXwG3f76BdXUzKzv4bffk_nAtII_1xgLEf482mgrCCR1Tz9hF8O6OFDrJ0kAj1n9BTZx2yjU7eyiRZVrPWAly4fB682RsFxojGnSi-1MBujslSMMjkAjRChfHjnL9DKpKYmptQUsJ9bdV_yIcdDsGL27TBvbUAUUjMoo9LZDJm64vPqKY7WTVW7I05GjXqniN4dmI_SqZJcVGnQELxmUH3GWIZ3EcMHsVxIw_BRAktttUt39MnPsGxNdZVBK7TNzA12HW70p1Xwp4Cj-vhIKsb9gehZncVS-kHaC4bvLjEgA0RqATkuQagi0VfAONWi_lSlPVc4n3SUvWV8L9vexd2j-K-Rr3en4YupkcwQ4v6UGZblIN8ddhG26DemmXTMUDQWNUgdl8dbbADpehWlIh6wo52NGEAdIFs3_1mLwmMBHoTEmnggroBL9PdyioMEyauc3dNSCgMyLB3ezDBFVsC7RrQk3RXD0j2sJr9Scb55-rZyl-M1wYFgUy38BLK6A91sBWyO6eHCKXNxYeqHVXwA2C0LRKCu0TrxWR9C9muGShgCCwOV4Nn_LNrO8ZSx9I68b14ZyDXMGvlE6tkOpzsP-E20mva3OVqJxA6zgcT-1zznBGFlQKAeGa_4vT4Evz9vnoo1A3kehFuAm-X7fAN6QOfaNbi4Ta-jLUX1UuA1PKBHjdAgy1qVG39i0ybK587vbKIJdkpVta1b79d6hn3MgWiaIOSBNB9Uee-tK2I3k62I8IrJZyeumaCuLmjMPleaeoriWE7XnnLIPs6XmY9OyA4iHEAqiPTffseWyLJ-rHyOud5UcITeCzYTZtFo4bRtVc-cMAfs0hF1EUDFKgVN2HDtrMub9sMobqPm18V9oTepZtLdOz03LAeoCwo3FYeOlfHOL8jWYLH7Iu_lACrchCTYqYkPvp1HrROhSZ4TYnRrhjQo6y5F31uJx8_USPokaaGdcp4FQit9orZH-0eLMLnP_hvOh8Ebhf-jAOPPPgQaJzfrqK6kIPpvKt9_qbrL_7uoZZyQbevmXMluQ_iZ7ZK1jFiT4hHffOFumWiW9fW5_emqQA4X9B5b3SAvF61S0Wy5tvCjH8QCrtBJ8ORn1OvDF9zRRwr2vbq5jMqie2lgFAra7g0B_SaS9dSIB4LxaJrPEZSJxudPkLAhjlwhrnpksbmyWGsRK9eDamgg3BHbFLtKj5I2Zfi6p7YLJtoeSnqD4bwbtsSQjzSurAiEnwVypcNwXKbssuHq_jX6uk1Tm9faQ2yc6CoymZejEM-_X_6SjwzMOwjYQOxOjckDtwlxwe5W49SZ6G7EpyCf_EQiqIP6SX0sk1jJQOCiBJDVAA6wcQgmvXB0iqT1t1aBTmyUJest2YMMag6ODxqOGJYSnb7v1xbbsfQ10H_Wc7qcc8kJl6CDmmwjrs/https://www.amazon.com/MRGLAS-Gold-Plated-Charger-Charging-Premium/dp/B09XTMP1DP/ref=sxin_27_sbv_search_btf?content-id=amzn1.sym.a120b15e-b9f5-458c-b2ab-4fe23ec1befc%3Aamzn1.sym.a120b15e-b9f5-458c-b2ab-4fe23ec1befc&cv_ct_cx=usb+c+cable&keywords=usb+c+cable&pd_rd_i=B09XTMP1DP&pd_rd_r=01527afe-9f0f-414d-b90d-75cad30e6618&pd_rd_w=lSTsh&pd_rd_wg=AzVIl&pf_rd_p=a120b15e-b9f5-458c-b2ab-4fe23ec1befc&pf_rd_r=CC1K9CMHB5M6WRTSZBBZ&qid=1792846136&sbo=RZvfv%2F%2FHxDF%2BO5021pAnSA%3D%3D&sr=1-1-b8f34313-536f-475f-9207-a7c427a641c1#customerReviews"
+   },
+   {
+    "idx": 278,
+    "role": "link",
+    "name": "$8.99 $8 . 99 ( $4.50 $4.50/count)",
+    "section": "s-search-results > sbv-video-single-product",
+    "href": "https://aax-us-east-retail-direct.amazon.com/x/c/JFvMO9jFPIeNvy1W1LftgRAAAAGhbfUFPAEAAAH2AQBvbm9fdHhuX2JpZDMgICBvbm9fdHhuX2ltcDEgICB3h0tN/clv1c_ek-wBPfXfcbU3t4Shi0hD8MK4PpIt-DHGbutkNEL8amQgkR9TNOzlkifWQQooS-Pv6CV1A_G9W4h44vltogqrhxPiYDassxNal_SHExIMRmnqZ367KBIj-FA2EMqhvA419hYrx3Hc26ASReBCfLrzdDRS0QkZ7QCEsLgx_er3P4ZdVsNH0Kl0HpIJea8LEuBYoTGICyJQ8xbD6teZ4nE9EifbbafBUUgvcfMpDO9wRpNbLST63JvRTjppiQsGH_VJN9fHOr0-qSmc1ywMXuva6MTBCEUE9QYjzyaJMp8g7htNWvYfR8lsfDy6afXwG3f76BdXUzKzv4bffk_nAtII_1xgLEf482mgrCCR1Tz9hF8O6OFDrJ0kAj1n9BTZx2yjU7eyiRZVrPWAly4fB682RsFxojGnSi-1MBujslSMMjkAjRChfHjnL9DKpKYmptQUsJ9bdV_yIcdDsGL27TBvbUAUUjMoo9LZDJm64vPqKY7WTVW7I05GjXqniN4dmI_SqZJcVGnQELxmUH3GWIZ3EcMHsVxIw_BRAktttUt39MnPsGxNdZVBK7TNzA12HW70p1Xwp4Cj-vhIKsb9gehZncVS-kHaC4bvLjEgA0RqATkuQagi0VfAONWi_lSlPVc4n3SUvWV8L9vexd2j-K-Rr3en4YupkcwQ4v6UGZblIN8ddhG26DemmXTMUDQWNUgdl8dbbADpehWlIh6wo52NGEAdIFs3_1mLwmMBHoTEmnggroBL9PdyioMEyauc3dNSCgMyLB3ezDBFVsC7RrQk3RXD0j2sJr9Scb55-rZyl-M1wYFgUy38BLK6A91sBWyO6eHCKXNxYeqHVXwA2C0LRKCu0TrxWR9C9muGShgCCwOV4Nn_LNrO8ZSx9I68b14ZyDXMGvlE6tkOpzsP-E20mva3OVqJxA6zgcT-1zznBGFlQKAeGa_4vT4Evz9vnoo1A3kehFuAm-X7fAN6QOfaNbi4Ta-jLUX1UuA1PKBHjdAgy1qVG39i0ybK587vbKIJdkpVta1b79d6hn3MgWiaIOSBNB9Uee-tK2I3k62I8IrJZyeumaCuLmjMPleaeoriWE7XnnLIPs6XmY9OyA4iHEAqiPTffseWyLJ-rHyOud5UcITeCzYTZtFo4bRtVc-cMAfs0hF1EUDFKgVN2HDtrMub9sMobqPm18V9oTepZtLdOz03LAeoCwo3FYeOlfHOL8jWYLH7Iu_lACrchCTYqYkPvp1HrROhSZ4TYnRrhjQo6y5F31uJx8_USPokaaGdcp4FQit9orZH-0eLMLnP_hvOh8Ebhf-jAOPPPgQaJzfrqK6kIPpvKt9_qbrL_7uoZZyQbevmXMluQ_iZ7ZK1jFiT4hHffOFumWiW9fW5_emqQA4X9B5b3SAvF61S0Wy5tvCjH8QCrtBJ8ORn1OvDF9zRRwr2vbq5jMqie2lgFAra7g0B_SaS9dSIB4LxaJrPEZSJxudPkLAhjlwhrnpksbmyWGsRK9eDamgg3BHbFLtKj5I2Zfi6p7YLJtoeSnqD4bwbtsSQjzSurAiEnwVypcNwXKbssuHq_jX6uk1Tm9faQ2yc6CoymZejEM-_X_6SjwzMOwjYQOxOjckDtwlxwe5W49SZ6G7EpyCf_EQiqIP6SX0sk1jJQOCiBJDVAA6wcQgmvXB0iqT1t1aBTmyUJest2YMMag6ODxqOGJYSnb7v1xbbsfQ10H_Wc7qcc8kJl6CDmmwjrs/https://www.amazon.com/MRGLAS-Gold-Plated-Charger-Charging-Premium/dp/B09XTMP1DP/ref=sxin_27_sbv_search_btf?content-id=amzn1.sym.a120b15e-b9f5-458c-b2ab-4fe23ec1befc%3Aamzn1.sym.a120b15e-b9f5-458c-b2ab-4fe23ec1befc&cv_ct_cx=usb+c+cable&keywords=usb+c+cable&pd_rd_i=B09XTMP1DP&pd_rd_r=01527afe-9f0f-414d-b90d-75cad30e6618&pd_rd_w=lSTsh&pd_rd_wg=AzVIl&pf_rd_p=a120b15e-b9f5-458c-b2ab-4fe23ec1befc&pf_rd_r=CC1K9CMHB5M6WRTSZBBZ&qid=1792846136&sbo=RZvfv%2F%2FHxDF%2BO5021pAnSA%3D%3D&sr=1-1-b8f34313-536f-475f-9207-a7c427a641c1"
+   },
+   {
+    "idx": 279,
+    "role": "link",
+    "name": "Anker USB A to USB C Cable, USB to USB C Cable(2Pack,3ft,Black) | For iPhone 17 Series, Samsung Gala…",
+    "section": "s-search-result > s-product-image",
+    "href": "https://www.amazon.com/Anker-USB-Cable/dp/B07DD5YHMH/ref=sr_1_13?dib=eyJ2IjoiMSJ9.zDerXzkkcCIibp1gD24_gCubJ1DdAyUNubDo5YxBMn3yuF3-ejdznxv1_YoxZmjYL8s_qMb1_IYA1G7xW4aXPdz_iZyEXO8TXtyUMoesjoQOtvKI-eieNWJIXiNyuIf0j4xKf1JUM-MxosH-UaLcSVB0J-iJ9D0V4RAZ3rCQ9g3Yz4M9lFZgoxKmqd1SL9X9j0Nz-8AhEWQYqJVbTB_IO_lJulqXoQbNV8UCBtKsi70.YHaCzRNC8_lnsmHgDx0puLEM889h1AdhDCLMe4mJYrY&dib_tag=se&keywords=usb+c+cable&qid=1792846136&sr=8-13"
+   },
+   {
+    "idx": 280,
+    "role": "link",
+    "name": "Anker USB A to USB C Cable, USB to USB C Cable(2Pack,3ft,Black)",
+    "section": "s-search-results > s-search-result",
+    "href": "https://www.amazon.com/Anker-USB-Cable/dp/B07DD5YHMH/ref=sr_1_13?dib=eyJ2IjoiMSJ9.zDerXzkkcCIibp1gD24_gCubJ1DdAyUNubDo5YxBMn3yuF3-ejdznxv1_YoxZmjYL8s_qMb1_IYA1G7xW4aXPdz_iZyEXO8TXtyUMoesjoQOtvKI-eieNWJIXiNyuIf0j4xKf1JUM-MxosH-UaLcSVB0J-iJ9D0V4RAZ3rCQ9g3Yz4M9lFZgoxKmqd1SL9X9j0Nz-8AhEWQYqJVbTB_IO_lJulqXoQbNV8UCBtKsi70.YHaCzRNC8_lnsmHgDx0puLEM889h1AdhDCLMe4mJYrY&dib_tag=se&keywords=usb+c+cable&qid=1792846136&sr=8-13"
+   },
+   {
+    "idx": 281,
+    "role": "button",
+    "name": "4.7 out of 5 stars, rating details",
+    "section": "s-search-results > s-search-result",
+    "href": "javascript:void(0)"
+   },
+   {
+    "idx": 282,
+    "role": "link",
+    "name": "149,247 ratings",
+    "section": "s-search-result > s-client-side-analytics",
+    "href": "https://www.amazon.com/Anker-USB-Cable/dp/B07DD5YHMH/ref=sr_1_13?dib=eyJ2IjoiMSJ9.zDerXzkkcCIibp1gD24_gCubJ1DdAyUNubDo5YxBMn3yuF3-ejdznxv1_YoxZmjYL8s_qMb1_IYA1G7xW4aXPdz_iZyEXO8TXtyUMoesjoQOtvKI-eieNWJIXiNyuIf0j4xKf1JUM-MxosH-UaLcSVB0J-iJ9D0V4RAZ3rCQ9g3Yz4M9lFZgoxKmqd1SL9X9j0Nz-8AhEWQYqJVbTB_IO_lJulqXoQbNV8UCBtKsi70.YHaCzRNC8_lnsmHgDx0puLEM889h1AdhDCLMe4mJYrY&dib_tag=se&keywords=usb+c+cable&qid=1792846136&sr=8-13#customerReviews"
+   },
+   {
+    "idx": 283,
+    "role": "link",
+    "name": "$8.99 $8 . 99 ( $1.50 $1.50/feet)",
+    "section": "s-search-results > s-search-result",
+    "href": "https://www.amazon.com/Anker-USB-Cable/dp/B07DD5YHMH/ref=sr_1_13?dib=eyJ2IjoiMSJ9.zDerXzkkcCIibp1gD24_gCubJ1DdAyUNubDo5YxBMn3yuF3-ejdznxv1_YoxZmjYL8s_qMb1_IYA1G7xW4aXPdz_iZyEXO8TXtyUMoesjoQOtvKI-eieNWJIXiNyuIf0j4xKf1JUM-MxosH-UaLcSVB0J-iJ9D0V4RAZ3rCQ9g3Yz4M9lFZgoxKmqd1SL9X9j0Nz-8AhEWQYqJVbTB_IO_lJulqXoQbNV8UCBtKsi70.YHaCzRNC8_lnsmHgDx0puLEM889h1AdhDCLMe4mJYrY&dib_tag=se&keywords=usb+c+cable&qid=1792846136&sr=8-13"
+   },
+   {
+    "idx": 284,
+    "role": "button",
+    "name": "Carbon impact",
+    "section": "s-search-results > s-search-result",
+    "href": "javascript:void(0)"
+   },
+   {
+    "idx": 285,
+    "role": "button",
+    "name": "Add to cart",
+    "section": "form > a-autoid-28"
+   },
+   {
+    "idx": 286,
+    "role": "link",
+    "name": "(2 used & new offers)",
+    "section": "s-search-results > s-search-result",
+    "href": "https://www.amazon.com/gp/offer-listing/B07DD5YHMH/ref=sr_1_13_olp?keywords=usb+c+cable&dib_tag=se&dib=eyJ2IjoiMSJ9.zDerXzkkcCIibp1gD24_gCubJ1DdAyUNubDo5YxBMn3yuF3-ejdznxv1_YoxZmjYL8s_qMb1_IYA1G7xW4aXPdz_iZyEXO8TXtyUMoesjoQOtvKI-eieNWJIXiNyuIf0j4xKf1JUM-MxosH-UaLcSVB0J-iJ9D0V4RAZ3rCQ9g3Yz4M9lFZgoxKmqd1SL9X9j0Nz-8AhEWQYqJVbTB_IO_lJulqXoQbNV8UCBtKsi70.YHaCzRNC8_lnsmHgDx0puLEM889h1AdhDCLMe4mJYrY&qid=1792846136&sr=8-13"
+   },
+   {
+    "idx": 287,
+    "role": "link",
+    "name": "USB C Cable 5 Pack 6FT, USB A to Type C Fast Charger Cord | 3A braided USB A to C charging cords for…",
+    "section": "s-search-result > s-product-image",
+    "href": "https://www.amazon.com/Charging-Charger-Compatible-Samsung-Braided/dp/B082Z1YYRK/ref=sr_1_14?dib=eyJ2IjoiMSJ9.zDerXzkkcCIibp1gD24_gCubJ1DdAyUNubDo5YxBMn3yuF3-ejdznxv1_YoxZmjYL8s_qMb1_IYA1G7xW4aXPdz_iZyEXO8TXtyUMoesjoQOtvKI-eieNWJIXiNyuIf0j4xKf1JUM-MxosH-UaLcSVB0J-iJ9D0V4RAZ3rCQ9g3Yz4M9lFZgoxKmqd1SL9X9j0Nz-8AhEWQYqJVbTB_IO_lJulqXoQbNV8UCBtKsi70.YHaCzRNC8_lnsmHgDx0puLEM889h1AdhDCLMe4mJYrY&dib_tag=se&keywords=usb+c+cable&qid=1792846136&sr=8-14"
+   },
+   {
+    "idx": 288,
+    "role": "link",
+    "name": "USB C Cable 5 Pack 6FT, USB A to Type C Fast Charger Cord",
+    "section": "s-search-results > s-search-result",
+    "href": "https://www.amazon.com/Charging-Charger-Compatible-Samsung-Braided/dp/B082Z1YYRK/ref=sr_1_14?dib=eyJ2IjoiMSJ9.zDerXzkkcCIibp1gD24_gCubJ1DdAyUNubDo5YxBMn3yuF3-ejdznxv1_YoxZmjYL8s_qMb1_IYA1G7xW4aXPdz_iZyEXO8TXtyUMoesjoQOtvKI-eieNWJIXiNyuIf0j4xKf1JUM-MxosH-UaLcSVB0J-iJ9D0V4RAZ3rCQ9g3Yz4M9lFZgoxKmqd1SL9X9j0Nz-8AhEWQYqJVbTB_IO_lJulqXoQbNV8UCBtKsi70.YHaCzRNC8_lnsmHgDx0puLEM889h1AdhDCLMe4mJYrY&dib_tag=se&keywords=usb+c+cable&qid=1792846136&sr=8-14"
+   },
+   {
+    "idx": 289,
+    "role": "button",
+    "name": "4.6 out of 5 stars, rating details",
+    "section": "s-search-results > s-search-result",
+    "href": "javascript:void(0)"
+   },
+   {
+    "idx": 290,
+    "role": "link",
+    "name": "60,074 ratings",
+    "section": "s-search-result > s-client-side-analytics",
+    "href": "https://www.amazon.com/Charging-Charger-Compatible-Samsung-Braided/dp/B082Z1YYRK/ref=sr_1_14?dib=eyJ2IjoiMSJ9.zDerXzkkcCIibp1gD24_gCubJ1DdAyUNubDo5YxBMn3yuF3-ejdznxv1_YoxZmjYL8s_qMb1_IYA1G7xW4aXPdz_iZyEXO8TXtyUMoesjoQOtvKI-eieNWJIXiNyuIf0j4xKf1JUM-MxosH-UaLcSVB0J-iJ9D0V4RAZ3rCQ9g3Yz4M9lFZgoxKmqd1SL9X9j0Nz-8AhEWQYqJVbTB_IO_lJulqXoQbNV8UCBtKsi70.YHaCzRNC8_lnsmHgDx0puLEM889h1AdhDCLMe4mJYrY&dib_tag=se&keywords=usb+c+cable&qid=1792846136&sr=8-14#customerReviews"
+   },
+   {
+    "idx": 291,
+    "role": "link",
+    "name": "$9.99 $9 . 99 ( $0.33 $0.33/feet)",
+    "section": "s-search-results > s-search-result",
+    "href": "https://www.amazon.com/Charging-Charger-Compatible-Samsung-Braided/dp/B082Z1YYRK/ref=sr_1_14?dib=eyJ2IjoiMSJ9.zDerXzkkcCIibp1gD24_gCubJ1DdAyUNubDo5YxBMn3yuF3-ejdznxv1_YoxZmjYL8s_qMb1_IYA1G7xW4aXPdz_iZyEXO8TXtyUMoesjoQOtvKI-eieNWJIXiNyuIf0j4xKf1JUM-MxosH-UaLcSVB0J-iJ9D0V4RAZ3rCQ9g3Yz4M9lFZgoxKmqd1SL9X9j0Nz-8AhEWQYqJVbTB_IO_lJulqXoQbNV8UCBtKsi70.YHaCzRNC8_lnsmHgDx0puLEM889h1AdhDCLMe4mJYrY&dib_tag=se&keywords=usb+c+cable&qid=1792846136&sr=8-14"
+   },
+   {
+    "idx": 292,
+    "role": "button",
+    "name": "Add to cart",
+    "section": "form > a-autoid-29"
+   },
+   {
+    "idx": 293,
+    "role": "link",
+    "name": "USB C to USB C Cable 3FT Certified 2Pack 60W usbc Woven Fast Charging | Type C Charger Cord Compatib…",
+    "section": "s-search-result > s-product-image",
+    "href": "https://www.amazon.com/orseoose-Certified-Charging-Charger-Compatible/dp/B0CV34JBNM/ref=sr_1_15?dib=eyJ2IjoiMSJ9.zDerXzkkcCIibp1gD24_gCubJ1DdAyUNubDo5YxBMn3yuF3-ejdznxv1_YoxZmjYL8s_qMb1_IYA1G7xW4aXPdz_iZyEXO8TXtyUMoesjoQOtvKI-eieNWJIXiNyuIf0j4xKf1JUM-MxosH-UaLcSVB0J-iJ9D0V4RAZ3rCQ9g3Yz4M9lFZgoxKmqd1SL9X9j0Nz-8AhEWQYqJVbTB_IO_lJulqXoQbNV8UCBtKsi70.YHaCzRNC8_lnsmHgDx0puLEM889h1AdhDCLMe4mJYrY&dib_tag=se&keywords=usb+c+cable&qid=1792846136&sr=8-15"
+   },
+   {
+    "idx": 294,
+    "role": "link",
+    "name": "USB C to USB C Cable 3FT Certified 2Pack 60W usbc Woven Fast Charging",
+    "section": "s-search-results > s-search-result",
+    "href": "https://www.amazon.com/orseoose-Certified-Charging-Charger-Compatible/dp/B0CV34JBNM/ref=sr_1_15?dib=eyJ2IjoiMSJ9.zDerXzkkcCIibp1gD24_gCubJ1DdAyUNubDo5YxBMn3yuF3-ejdznxv1_YoxZmjYL8s_qMb1_IYA1G7xW4aXPdz_iZyEXO8TXtyUMoesjoQOtvKI-eieNWJIXiNyuIf0j4xKf1JUM-MxosH-UaLcSVB0J-iJ9D0V4RAZ3rCQ9g3Yz4M9lFZgoxKmqd1SL9X9j0Nz-8AhEWQYqJVbTB_IO_lJulqXoQbNV8UCBtKsi70.YHaCzRNC8_lnsmHgDx0puLEM889h1AdhDCLMe4mJYrY&dib_tag=se&keywords=usb+c+cable&qid=1792846136&sr=8-15"
+   },
+   {
+    "idx": 295,
+    "role": "button",
+    "name": "4.6 out of 5 stars, rating details",
+    "section": "s-search-results > s-search-result",
+    "href": "javascript:void(0)"
+   },
+   {
+    "idx": 296,
+    "role": "link",
+    "name": "1,612 ratings",
+    "section": "s-search-result > s-client-side-analytics",
+    "href": "https://www.amazon.com/orseoose-Certified-Charging-Charger-Compatible/dp/B0CV34JBNM/ref=sr_1_15?dib=eyJ2IjoiMSJ9.zDerXzkkcCIibp1gD24_gCubJ1DdAyUNubDo5YxBMn3yuF3-ejdznxv1_YoxZmjYL8s_qMb1_IYA1G7xW4aXPdz_iZyEXO8TXtyUMoesjoQOtvKI-eieNWJIXiNyuIf0j4xKf1JUM-MxosH-UaLcSVB0J-iJ9D0V4RAZ3rCQ9g3Yz4M9lFZgoxKmqd1SL9X9j0Nz-8AhEWQYqJVbTB_IO_lJulqXoQbNV8UCBtKsi70.YHaCzRNC8_lnsmHgDx0puLEM889h1AdhDCLMe4mJYrY&dib_tag=se&keywords=usb+c+cable&qid=1792846136&sr=8-15#customerReviews"
+   },
+   {
+    "idx": 297,
+    "role": "link",
+    "name": "$6.99 $6 . 99 ( $3.50 $3.50/count) List: $9.99 List: $9.99 $9.99",
+    "section": "s-search-results > s-search-result",
+    "href": "https://www.amazon.com/orseoose-Certified-Charging-Charger-Compatible/dp/B0CV34JBNM/ref=sr_1_15?dib=eyJ2IjoiMSJ9.zDerXzkkcCIibp1gD24_gCubJ1DdAyUNubDo5YxBMn3yuF3-ejdznxv1_YoxZmjYL8s_qMb1_IYA1G7xW4aXPdz_iZyEXO8TXtyUMoesjoQOtvKI-eieNWJIXiNyuIf0j4xKf1JUM-MxosH-UaLcSVB0J-iJ9D0V4RAZ3rCQ9g3Yz4M9lFZgoxKmqd1SL9X9j0Nz-8AhEWQYqJVbTB_IO_lJulqXoQbNV8UCBtKsi70.YHaCzRNC8_lnsmHgDx0puLEM889h1AdhDCLMe4mJYrY&dib_tag=se&keywords=usb+c+cable&qid=1792846136&sr=8-15"
+   },
+   {
+    "idx": 298,
+    "role": "button",
+    "name": "Carbon impact",
+    "section": "s-search-results > s-search-result",
+    "href": "javascript:void(0)"
+   },
+   {
+    "idx": 299,
+    "role": "button",
+    "name": "Add to cart",
+    "section": "form > a-autoid-30"
+   }
+  ],
+  "textBlocks": [
+   "Skip to",
+   "Main content",
+   "Results",
+   "Filters",
+   "Keyboard shortcuts",
+   "Search",
+   "opt",
+   "Cart",
+   "shift",
+   "Home",
+   "Orders",
+   "Show/Hide shortcuts",
+   "To move between items, use your keyboard's up or down arrows.",
+   "Delivering to Berkeley 94720",
+   "Update location",
+   "All",
+   "All Departments",
+   "Alexa Skills",
+   "Amazon Autos",
+   "Amazon Devices",
+   "Amazon Fresh",
+   "Amazon Global Store",
+   "Amazon Haul",
+   "Amazon One Medical",
+   "Amazon Pharmacy",
+   "Amazon Resale",
+   "Appliances",
+   "Apps & Games",
+   "Arts, Crafts & Sewing",
+   "Audible Books & Originals",
+   "Automotive Parts & Accessories",
+   "Baby",
+   "Beauty & Personal Care",
+   "Books",
+   "CDs & Vinyl",
+   "Cell Phones & Accessories",
+   "Clothing, Shoes & Jewelry",
+   "Women's Clothing, Shoes & Jewelry",
+   "Men's Clothing, Shoes & Jewelry",
+   "Girl's Clothing, Shoes & Jewelry",
+   "Boy's Clothing, Shoes & Jewelry",
+   "Baby Clothing, Shoes & Jewelry",
+   "Collectibles & Fine Art",
+   "Computers",
+   "Credit and Payment Cards",
+   "Digital Music",
+   "Electronics",
+   "Garden & Outdoor",
+   "Gift Cards",
+   "Grocery & Gourmet Food",
+   "Handmade",
+   "Health, Household & Baby Care",
+   "Home & Business Services",
+   "Home & Kitchen",
+   "Industrial & Scientific",
+   "Just for Prime",
+   "Kindle Store",
+   "Lucky",
+   "Luggage & Travel Gear",
+   "Luxury Stores",
+   "Magazine Subscriptions",
+   "Movies & TV",
+   "Musical Instruments",
+   "Office Products",
+   "Pet Food Express",
+   "Pet Supplies",
+   "Premium Beauty",
+   "Prime Video",
+   "Same-Day Store",
+   "Smart Home",
+   "Software",
+   "Sports & Outdoors",
+   "Subscribe & Save",
+   "Subscription Boxes",
+   "Tools & Home Improvement",
+   "Toys & Games",
+   "Under $10",
+   "Video Games",
+   "Whole Foods Market",
+   "EN",
+   "Hello, sign in",
+   "Account & Lists",
+   "Returns",
+   "& Orders",
+   "Sign in",
+   "New customer? Start here.",
+   "Prime",
+   "Groceries",
+   "Today's Deals",
+   "Coupons",
+   "Pharmacy",
+   "Audible",
+   "Whole Foods",
+   "Music",
+   "Registry",
+   "Amazon Home",
+   "Automotive",
+   "New Releases",
+   "Fashion",
+   "Gift Shop",
+   "Custom Products",
+   "Works with Alexa",
+   "Best Sellers",
+   "Luxury",
+   "Kindle Books",
+   "1-16 of over 70,000 results for \"usb c cable\"",
+   "Sort by:",
+   "Featured",
+   "Price: Low to High",
+   "Price: High to Low",
+   "Avg. Customer Review",
+   "Newest Arrivals",
+   "Sort by:Featured",
+   "Upgraded Extra Durable Braided USB to USB C Cable",
+   "Sponsored",
+   "10K+ bought from this brand in past month",
+   "Shop Dasku",
+   "USB C Cable 3A Fast Charging [2 Pack 6FT], USB A to USB C Cable, Upgraded Extra Durable Braided USB to USB C Charger Cord Compatible with iPhone 18 17 16 15 Pro Max, Samsung Galaxy, and More-Black",
+   "USB C Cable 3A Fast Charging [2 Pack 6FT], USB A to USB C…",
+   "4.5",
+   "4.5 out of 5 stars.",
+   "(766)",
+   "$15.49",
+   "$15",
+   "49",
+   "$1.29",
+   "$1.29 / feet)",
+   "USB to USB C Cable 3A Fast Charging [2 Pack 10FT], USB A to USB C Cable, Upgraded Extra Durable Braided USBC Charger Cord Compatible with iPhone 18 17 16 15 Pro Max,Samsung Galaxy,and More-Black",
+   "USB to USB C Cable 3A Fast Charging [2 Pack 10FT], USB…",
+   "$15.99",
+   "99",
+   "$0.80",
+   "$0.80 / feet)",
+   "USB C Cable Fast Charging 6FT, 2Pack USB A o USB C Cable, Upgraded Extra | Durable Braided USB A to USB C Charger Cord USB Type C Cable for iPhone 18 17 16 15 Pro Max,Samsung Galaxy S10, and More-Blue",
+   "USB C Cable Fast Charging 6FT, 2Pack USB A o USB C Cable,…",
+   "$8.00",
+   "$8.00 / count)",
+   "Next page",
+   "Check each product page for other buying options.",
+   "iPhone 18 17 16 15 Charger Fast Charging 3 Pack USB C Charger Block",
+   "Type C Charger 6FT USB C Charger for iPhone 18/18 Pro‌/18 Pro Max/iPhone Duo/17/17 Plus/17 Pro Max/16/16 Max/15",
+   "4.6",
+   "4.6 out of 5 stars",
+   "(3.8K)",
+   "9K+ bought in past month",
+   "Price, product page",
+   "$24.90",
+   "$24",
+   "90",
+   "Save 15% on 2 select item(s)"
+  ],
+  "fingerprint": "pxsunc",
+  "tabId": 1,
+  "capturedAt": "2026-10-24T12:48:59.986Z"
+ }
+}

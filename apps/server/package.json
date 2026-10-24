@@ -1,0 +1,26 @@
+{
+  "name": "@visy/server",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "tsx --test test/*.test.ts",
+    "spike": "tsx --env-file-if-exists=.env bench/moss-spike.ts",
+    "snap": "tsx --env-file-if-exists=.env bench/snap.ts",
+    "bench": "tsx --env-file-if-exists=.env bench/run.ts",
+    "demo": "tsx --env-file-if-exists=.env src/demo.ts"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^1.3.0",
+    "@moss-js/moss": "^1.21.0",
+    "@visy/contracts": "*",
+    "playwright": "^1.64.1",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "tsx": "^4.20.0",
+    "typescript": "^5.9.0"
+  }
+}

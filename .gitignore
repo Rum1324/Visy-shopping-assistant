@@ -5,3 +5,7 @@ dist/
 *.log
 .DS_Store
 apps/extension/build/
+apps/server/.visy-profile/
+apps/server/logs/
+apps/server/data/
+apps/server/bench/results.json
