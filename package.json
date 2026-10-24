@@ -1,0 +1,17 @@
+{
+  "name": "visy",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "mock-server": "npm run mock-server -w @visy/contracts"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}
