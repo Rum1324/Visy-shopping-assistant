@@ -23,7 +23,9 @@ export function start(
 ) {
   const port = opts.port ?? Number(process.env.PORT ?? 8787);
   const latencyMs = opts.latencyMs ?? Number(process.env.MOCK_LATENCY_MS ?? 400);
-  const base = process.env.NAV === "amazon" ? liveServices() : mockServices({ latencyMs });
+  // NAV=amazon drives the most recently connected extension's Chrome (Playwright when none is connected).
+  const extensions: ExtensionDriver[] = [];
+  const base = process.env.NAV === "amazon" ? liveServices({ driver: () => extensions.at(-1) }) : mockServices({ latencyMs });
   const services = process.env.PREFS === "convex" ? { ...base, prefs: convexPreferenceStore() } : base;
   const cartesia = opts.disableVoice ? new Cartesia("") : new Cartesia();
   const wss = new WebSocketServer({ port });
@@ -43,7 +45,11 @@ export function start(
 
     const driver = new ExtensionDriver(send);
     const capturePage = pageCapture(driver);
-    ws.on("close", () => driver.dispose());
+    ws.on("close", () => {
+      driver.dispose();
+      const i = extensions.indexOf(driver);
+      if (i >= 0) extensions.splice(i, 1);
+    });
     opts.onConnection?.({ driver, capturePage });
 
     const agent = createAgent(services, {
@@ -121,6 +127,7 @@ export function start(
       }
       const msg = parsed.data;
       if (msg.type === "hello") {
+        if (msg.client === "extension" && !extensions.includes(driver)) extensions.push(driver);
         enqueue(() => agent.hello(msg.userId));
         return;
       }

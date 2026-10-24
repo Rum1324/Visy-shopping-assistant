@@ -4,14 +4,15 @@ import {
   BUDGETS_MS,
   DriverResponseData,
   type Action,
-  type BrowserDriver,
   type ClientMsg,
   type DriverRequest,
   type PageState,
   type Result,
   type ServerMsg,
 } from "@visy/contracts";
-import { looksBlocked } from "./blocked.ts";
+import type { ScriptName } from "../scripts.ts";
+import { CAPTCHA, looksBlocked } from "./blocked.ts";
+import type { FlowDriver } from "./flow.ts";
 
 type DriverResponse = Extract<ClientMsg, { type: "driver.response" }>;
 type Pending = { op: DriverRequest["op"]; resolve: (r: Result<any>) => void; timer: ReturnType<typeof setTimeout> };
@@ -26,7 +27,7 @@ type Pending = { op: DriverRequest["op"]; resolve: (r: Result<any>) => void; tim
  *
  * Same safety as PlaywrightDriver: purchase buttons are refused here, bot checks come back as err("blocked").
  */
-export class ExtensionDriver implements BrowserDriver {
+export class ExtensionDriver implements FlowDriver {
   private pending = new Map<string, Pending>();
   private last = new Map<number, PageState>();
   private seq = 0;
@@ -74,12 +75,35 @@ export class ExtensionDriver implements BrowserDriver {
     });
   }
 
-  openTab(url: string) {
-    return this.call<{ tabId: number }>({ op: "openTab", url }, BUDGETS_MS.marketplaceSearch);
+  /** Tabs open in the user's Chrome, in the "Visy" tab group. */
+  openTab(url: string, opts: { background?: boolean } = {}) {
+    return this.call<{ tabId: number }>({ op: "openTab", url, ...(opts.background ? { background: true } : {}) }, BUDGETS_MS.marketplaceSearch);
   }
 
-  navigate(tabId: number, url: string) {
-    return this.call<{ url: string }>({ op: "navigate", tabId, url }, BUDGETS_MS.marketplaceSearch);
+  navigate(tabId: number, url: string, waitUntil?: "commit" | "domcontentloaded") {
+    return this.call<{ url: string }>({ op: "navigate", tabId, url, ...(waitUntil ? { waitUntil } : {}) }, BUDGETS_MS.marketplaceSearch);
+  }
+
+  async focus(tabId: number) {
+    await this.call<{}>({ op: "focus", tabId });
+  }
+
+  /** The extension runs the named script with chrome.scripting.executeScript. Throws on failure, like page.evaluate. */
+  async extract<T>(tabId: number, name: ScriptName, arg?: unknown): Promise<T> {
+    const r = await this.call<{ value?: unknown }>({ op: "extract", tabId, name, ...(arg !== undefined ? { arg } : {}) });
+    if (!r.ok) throw new Error(`extract ${name}: ${r.error.message}`);
+    return r.data.value as T;
+  }
+
+  /** The extension polls (every 100 ms) so the wait survives navigations. */
+  async waitFor(tabId: number, name: ScriptName, timeoutMs: number, arg?: unknown): Promise<boolean> {
+    const r = await this.call<{ met: boolean }>({ op: "waitFor", tabId, name, timeoutMs, ...(arg !== undefined ? { arg } : {}) }, timeoutMs + 2000);
+    return r.ok && r.data.met;
+  }
+
+  async isBlocked(tabId: number): Promise<boolean> {
+    const probe = await this.extract<string>(tabId, "blockProbe").catch(() => "");
+    return CAPTCHA.test(probe);
   }
 
   async snapshot(tabId: number, maxElements?: number): Promise<Result<PageState>> {

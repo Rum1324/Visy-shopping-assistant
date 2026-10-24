@@ -70,3 +70,46 @@ test("dispose fails in-flight calls", async () => {
   const r = await p;
   assert.ok(!r.ok && r.error.code === "internal");
 });
+
+test("extract sends a script name and argument, never JS, and returns the value", async () => {
+  const { driver, sent } = wire((req) => (req.op === "extract" ? { ok: true, data: { value: [{ asin: "B0X" }] } } : undefined));
+  const v = await driver.extract<{ asin: string }[]>(7, "amazon.reviewsGrew", 10);
+  assert.deepEqual(v, [{ asin: "B0X" }]);
+  assert.deepEqual(sent[0], { op: "extract", tabId: 7, name: "amazon.reviewsGrew", arg: 10 });
+});
+
+test("extract throws when the extension can't run the script, like page.evaluate", async () => {
+  const { driver } = wire(() => ({ ok: false }));
+  await assert.rejects(driver.extract(7, "href"), /extract href/);
+});
+
+test("waitFor passes its timeout to the extension and reads met", async () => {
+  const { driver, sent } = wire((req) => (req.op === "waitFor" ? { ok: true, data: { met: req.name === "loaded" } } : undefined));
+  assert.equal(await driver.waitFor(7, "loaded", 5000), true);
+  assert.equal(await driver.waitFor(7, "amazon.added", 5000, "https://www.amazon.com/dp/B0X"), false);
+  assert.deepEqual(sent[1], { op: "waitFor", tabId: 7, name: "amazon.added", timeoutMs: 5000, arg: "https://www.amazon.com/dp/B0X" });
+});
+
+test("waitFor that never answers is false, not a throw", async () => {
+  const { driver } = wire(() => undefined);
+  assert.equal(await driver.waitFor(7, "loaded", 1), false);
+});
+
+test("openTab in the background, focus, and the bot-check probe", async () => {
+  const { driver, sent } = wire((req) =>
+    req.op === "openTab"
+      ? { ok: true, data: { tabId: 9 } }
+      : req.op === "extract"
+        ? { ok: true, data: { value: "https://www.amazon.com/errors/validateCaptcha Robot Check" } }
+        : { ok: true, data: {} },
+  );
+  assert.deepEqual(await driver.openTab("about:blank", { background: true }), { ok: true, data: { tabId: 9 } });
+  await driver.focus(9);
+  assert.equal(await driver.isBlocked(9), true);
+  assert.deepEqual(
+    sent.map((q) => q.op),
+    ["openTab", "focus", "extract"],
+  );
+  assert.equal((sent[0] as { background?: boolean }).background, true);
+  assert.equal((sent[2] as { name: string }).name, "blockProbe");
+});
