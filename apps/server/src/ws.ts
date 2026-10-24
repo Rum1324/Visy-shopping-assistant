@@ -11,11 +11,11 @@ import { Cartesia } from "./voice.ts";
 
 const TTS_RATE = 24000;
 
-export function start(opts: { port?: number; latencyMs?: number } = {}) {
+export function start(opts: { port?: number; latencyMs?: number; disableVoice?: boolean } = {}) {
   const port = opts.port ?? Number(process.env.PORT ?? 8787);
   const latencyMs = opts.latencyMs ?? Number(process.env.MOCK_LATENCY_MS ?? 400);
   const services = mockServices({ latencyMs });
-  const cartesia = new Cartesia();
+  const cartesia = opts.disableVoice ? new Cartesia("") : new Cartesia();
   const wss = new WebSocketServer({ port });
 
   wss.on("connection", (ws) => {
@@ -26,6 +26,10 @@ export function start(opts: { port?: number; latencyMs?: number } = {}) {
     let capturing = false;
     let sampleRate = 16000;
     let pcm: Buffer[] = [];
+    let turn: Promise<void> = Promise.resolve();
+    const enqueue = (fn: () => Promise<void>) => {
+      turn = turn.then(fn, fn);
+    };
 
     const agent = createAgent(services, {
       send,
@@ -56,7 +60,7 @@ export function start(opts: { port?: number; latencyMs?: number } = {}) {
       if (gen !== generation) return;
       const id = `say-${++sayId}`;
       send({ type: "agent.say", id, text });
-      if (!cartesia.enabled || gen !== generation) return;
+      if (_kind === "progress" || !cartesia.enabled || gen !== generation) return;
       const ac = new AbortController();
       aborters.add(ac);
       try {
@@ -101,11 +105,11 @@ export function start(opts: { port?: number; latencyMs?: number } = {}) {
       }
       const msg = parsed.data;
       if (msg.type === "hello") {
-        void agent.hello(msg.userId);
+        enqueue(() => agent.hello(msg.userId));
         return;
       }
       if (msg.type === "user.text") {
-        void agent.handleText(msg.text);
+        enqueue(() => agent.handleText(msg.text));
         return;
       }
       if (msg.type === "user.interrupt") {
@@ -124,7 +128,7 @@ export function start(opts: { port?: number; latencyMs?: number } = {}) {
         capturing = false;
         const audio = Buffer.concat(pcm);
         pcm = [];
-        void hear(audio, sampleRate);
+        enqueue(() => hear(audio, sampleRate));
         return;
       }
       if (msg.type === "settings.update") {
@@ -132,7 +136,7 @@ export function start(opts: { port?: number; latencyMs?: number } = {}) {
         return;
       }
       if (msg.type === "checkout.confirm") {
-        void agent.confirm(msg.total);
+        enqueue(() => agent.confirm(msg.total));
         return;
       }
       if (msg.type === "driver.response") {

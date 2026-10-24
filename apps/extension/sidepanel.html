@@ -13,11 +13,16 @@
     <div id="captions" aria-live="assertive" aria-atomic="true"></div>
     <ol id="options"></ol>
     <div id="log" aria-label="Conversation"></div>
+    <section id="checkout" hidden>
+      <p id="checkout-text"></p>
+      <button type="button" id="confirm">The total matches. I will press Place order myself.</button>
+    </section>
     <form id="composer">
       <label class="sr" for="text">Type to Visy</label>
       <input id="text" name="text" autocomplete="off" placeholder="picnic blanket" />
       <button type="submit">Send</button>
       <button type="button" id="mic" aria-pressed="false">Hold to talk</button>
+      <button type="button" id="stop">Stop</button>
     </form>
     <script src="sidepanel.js"></script>
   </body>

@@ -30,7 +30,6 @@ export function createAgent(services: Services, sink: AgentSink) {
 
   const emit: Emit = (event) => {
     sink.send({ type: "progress", event });
-    void sink.say(event.message, "progress");
   };
 
   function publish(next: SessionState) {
@@ -69,8 +68,20 @@ export function createAgent(services: Services, sink: AgentSink) {
       return;
     }
     sink.send({ type: "transcript", text: said, final: true });
-    if (state.shortlist.length && /\b(add to cart|add it|add this|add the|option\s*[123]|number\s*[123])\b/i.test(said)) {
+    if (state.phase === "checkout_review" && state.checkout && /^(yes|confirm|that matches)\b/i.test(said)) {
+      await confirm(state.checkout.total);
+      return;
+    }
+    if (state.shortlist.length && /\badd\b/i.test(said)) {
       await addToCart(optionIndex(said), id);
+      return;
+    }
+    if (state.candidates.length && /\bunder\s+\$?\s*\d+/i.test(said)) {
+      await refine(said, id);
+      return;
+    }
+    if (state.shortlist.length && /\?/ .test(said)) {
+      await answerQuestion(said, id);
       return;
     }
     if (/\b(usual|seaweed)\b/i.test(said)) {
@@ -82,6 +93,46 @@ export function createAgent(services: Services, sink: AgentSink) {
       }
     }
     await shop(said, id);
+  }
+
+  async function refine(text: string, id: number) {
+    if (!state) return;
+    const match = text.match(/under\s+\$?\s*(\d+(?:\.\d+)?)/i);
+    if (!match) return;
+    const cents = Math.round(Number(match[1]) * 100);
+    const kept = state.shortlist.filter((item) => item.product.price.cents <= cents);
+    if (!kept.length) {
+      await sink.say(`Nothing on the shortlist is under $${(cents / 100).toFixed(2)}.`);
+      return;
+    }
+    const shortlist = kept.map((item, i) => ({ ...item, rank: i + 1 }));
+    publish({ ...state, phase: "presenting", shortlist, focusedProductId: shortlist[0]!.product.id });
+    if (id !== run) return;
+    const spoken = shortlist.map((item) => `Option ${item.rank}: ${item.product.title}, $${(item.product.price.cents / 100).toFixed(2)}.`).join(" ");
+    await sink.say(spoken);
+  }
+
+  async function answerQuestion(text: string, id: number) {
+    if (!state) return;
+    publish({ ...state, phase: "qa" });
+    const words = text.toLowerCase().split(/\W+/).filter((w) => w.length > 3);
+    let quote = "";
+    let best = 0;
+    for (const item of state.shortlist) {
+      const found = await services.reviewIndex.search(item.product.id, text, 3);
+      if (!found.ok) continue;
+      for (const review of found.data) {
+        const score = words.filter((w) => review.body.toLowerCase().includes(w)).length;
+        if (score > best) {
+          best = score;
+          quote = review.body;
+        }
+      }
+    }
+    if (id !== run || !state) return;
+    await sink.say(quote ? `Reviewers say: ${quote.slice(0, 180)}` : "I don't have a review that answers that.");
+    if (id !== run || !state) return;
+    publish({ ...state, phase: "presenting" });
   }
 
   async function confirm(total: Money) {
@@ -136,7 +187,8 @@ export function createAgent(services: Services, sink: AgentSink) {
         focusedProductId: product.id,
       });
       const price = `$${(product.price.cents / 100).toFixed(2)}`;
-      await sink.say(`Option ${item.rank}: ${product.title}, ${price}. ${visual?.short ?? ""} ${reviews?.summary ?? ""}`);
+      const access = reviews?.accessibility?.find((a) => a.sentiment !== "unknown");
+      await sink.say(`Option ${item.rank}: ${product.title}, ${price}. ${visual?.short ?? ""} ${reviews?.summary ?? ""}${access ? ` ${access.answer}` : ""}`);
     }
   }
 

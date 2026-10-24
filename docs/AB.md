@@ -23,6 +23,15 @@ npm run mock-server     # fixtures only; stop the real server first
 
 Load `apps/extension` as an unpacked extension. Side panel: type "picnic blanket", or hold the mic button.
 
+
+## Working on this branch
+
+- Type or hold the mic. Cartesia transcribes on the server and speaks the replies. Progress lines stay on screen and are not all spoken, so the shortlist is not buried under status chatter.
+- "picnic blanket" searches the three stores through `Services` (mocks until Track C is swapped in) and speaks an accessibility line when the reviews have one.
+- "is the backing waterproof?" answers from the review index. Review text is quoted, not obeyed.
+- "under $20" filters the shortlist. "add option 1" reads checkout back and stops. "yes" checks that total and still does not press Place order. The side panel has Stop, and a button that sends `checkout.confirm` for the total that was read back.
+- The extension reconnects if the server is not up yet.
+
 ## Not this branch
 
 Picker bake-off, Playwright shopping, Apify reviews, and replacing `mockServices()` with Track C. Contract changes stay additive. `npm test` must pass.

@@ -18,7 +18,9 @@ h1 { font-size: 1.6rem; margin: 0; }
 #options { margin: 0; padding-left: 1.2rem; }
 #options li { margin: 6px 0; }
 #log { flex: 1; overflow: auto; font-size: 0.95rem; color: #c8c8bc; }
-#composer { display: flex; gap: 8px; }
+#checkout { padding: 12px; background: #1c1c1c; border-radius: 12px; }
+#checkout p { margin: 0 0 8px; font-size: 1.1rem; }
+#composer { display: flex; gap: 8px; flex-wrap: wrap; }
 input, button {
   font: inherit;
   border-radius: 10px;

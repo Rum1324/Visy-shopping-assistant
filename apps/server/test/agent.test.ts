@@ -61,3 +61,43 @@ test("checkout confirm checks the total and still refuses to press Place order",
   assert.equal(agent.state?.phase, "done");
   assert.match(said.at(-1) ?? "", /will not press Place order/i);
 });
+
+test("a follow-up question is answered from reviews and does not check out", async () => {
+  const { agent, said } = harness();
+  await agent.hello("demo-user");
+  await agent.handleText("picnic blanket");
+  await agent.handleText("is the backing waterproof?");
+  assert.equal(agent.state?.phase, "presenting");
+  assert.match(said.at(-1) ?? "", /waterproof/i);
+  assert.equal(agent.state?.cart.length, 0);
+});
+
+test("under a dollar keeps the shortlist and does not shop again", async () => {
+  const { agent, said } = harness();
+  await agent.hello("demo-user");
+  await agent.handleText("picnic blanket");
+  await agent.handleText("under $1");
+  assert.match(said.at(-1) ?? "", /Nothing on the shortlist/i);
+  assert.equal(agent.state?.shortlist.length, 3);
+});
+
+test("saying yes confirms the read-back total and still does not place the order", async () => {
+  const { agent, said } = harness();
+  await agent.hello("demo-user");
+  await agent.handleText("picnic blanket");
+  await agent.handleText("add option 1");
+  await agent.handleText("yes");
+  assert.equal(agent.state?.phase, "done");
+  assert.match(said.at(-1) ?? "", /will not press Place order/i);
+  assert.equal(agent.state?.cart[0]?.quantity, 1);
+});
+
+test("an instruction buried in a later utterance still adds only one", async () => {
+  const { agent } = harness();
+  await agent.hello("demo-user");
+  await agent.handleText("picnic blanket");
+  await agent.handleText("add 10 to cart");
+  assert.equal(agent.state?.cart.length, 1);
+  assert.equal(agent.state?.cart[0]?.quantity, 1);
+  assert.notEqual(agent.state?.phase, "done");
+});

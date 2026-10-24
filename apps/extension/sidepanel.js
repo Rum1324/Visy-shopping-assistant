@@ -5,9 +5,31 @@ const log = document.querySelector("#log");
 const form = document.querySelector("#composer");
 const text = document.querySelector("#text");
 const mic = document.querySelector("#mic");
+const stop = document.querySelector("#stop");
+const checkout = document.querySelector("#checkout");
+const checkoutText = document.querySelector("#checkout-text");
+const confirmBtn = document.querySelector("#confirm");
 
-const ws = new WebSocket("ws://localhost:8787");
-ws.binaryType = "arraybuffer";
+let ws = null;
+let checkoutTotal = null;
+connect();
+
+function connect() {
+  ws = new WebSocket("ws://localhost:8787");
+  ws.binaryType = "arraybuffer";
+  ws.onopen = () => {
+    statusEl.textContent = "Connected";
+    send({ type: "hello", protocol: 1, userId: "demo-user", client: "extension" });
+  };
+  ws.onclose = () => {
+    statusEl.textContent = "Reconnecting…";
+    setTimeout(connect, 1000);
+  };
+  ws.onerror = () => {
+    statusEl.textContent = "Can't reach ws://localhost:8787";
+  };
+  ws.onmessage = onMessage;
+}
 
 let ttsChunks = [];
 let ttsRate = 24000;
@@ -29,18 +51,7 @@ function send(msg) {
   if (ws.readyState === WebSocket.OPEN) ws.send(JSON.stringify(msg));
 }
 
-ws.onopen = () => {
-  statusEl.textContent = "Connected";
-  send({ type: "hello", protocol: 1, userId: "demo-user", client: "extension" });
-};
-ws.onclose = () => {
-  statusEl.textContent = "Disconnected. Is npm run server up?";
-};
-ws.onerror = () => {
-  statusEl.textContent = "Can't reach ws://localhost:8787";
-};
-
-ws.onmessage = async (ev) => {
+async function onMessage(ev) {
   if (typeof ev.data !== "string") {
     if (ttsOn) ttsChunks.push(new Uint8Array(ev.data));
     return;
@@ -85,10 +96,23 @@ ws.onmessage = async (ev) => {
       data: res?.data,
       error: res?.ok ? undefined : res?.error ?? { code: "internal", message: "Driver failed", retryable: true },
     });
+  } else if (msg.type === "checkout.confirmRequired") {
+    checkout.hidden = false;
+    checkoutTotal = msg.review.total;
+    checkoutText.textContent = msg.review.readBack;
   } else if (msg.type === "error") {
     line("Error", msg.error.message);
   }
-};
+  if (msg.type === "session.snapshot" && msg.state.phase !== "checkout_review") {
+    checkout.hidden = true;
+  }
+}
+
+stop.addEventListener("click", () => send({ type: "user.interrupt" }));
+confirmBtn.addEventListener("click", () => {
+  if (!checkoutTotal) return;
+  send({ type: "checkout.confirm", total: checkoutTotal });
+});
 
 form.addEventListener("submit", (ev) => {
   ev.preventDefault();
