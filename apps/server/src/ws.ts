@@ -8,6 +8,7 @@ import { ClientMsg, ServerMsg, type ServerMsg as ServerMsgT } from "@visy/contra
 import { mockServices } from "@visy/contracts/mocks";
 import { createAgent, type SayKind } from "./agent.ts";
 import { liveServices } from "./live.ts";
+import { convexPreferenceStore } from "./prefs-convex.ts";
 import { Cartesia } from "./voice.ts";
 
 const TTS_RATE = 24000;
@@ -15,7 +16,8 @@ const TTS_RATE = 24000;
 export function start(opts: { port?: number; latencyMs?: number; disableVoice?: boolean } = {}) {
   const port = opts.port ?? Number(process.env.PORT ?? 8787);
   const latencyMs = opts.latencyMs ?? Number(process.env.MOCK_LATENCY_MS ?? 400);
-  const services = process.env.NAV === "amazon" ? liveServices() : mockServices({ latencyMs });
+  const base = process.env.NAV === "amazon" ? liveServices() : mockServices({ latencyMs });
+  const services = process.env.PREFS === "convex" ? { ...base, prefs: convexPreferenceStore() } : base;
   const cartesia = opts.disableVoice ? new Cartesia("") : new Cartesia();
   const wss = new WebSocketServer({ port });
 
@@ -178,6 +180,7 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
     const port = typeof addr === "object" && addr ? addr.port : "?";
     const voice = process.env.CARTESIA_API_KEY?.trim() ? "on" : "off";
     const nav = process.env.NAV === "amazon" ? "amazon live, target and walmart fixtures" : "fixtures";
-    console.log(`visy server on ws://localhost:${port} (cartesia ${voice}, ${nav})`);
+    const prefs = process.env.PREFS === "convex" ? "convex" : "fixtures";
+    console.log(`visy server on ws://localhost:${port} (cartesia ${voice}, ${nav}, prefs ${prefs})`);
   });
 }

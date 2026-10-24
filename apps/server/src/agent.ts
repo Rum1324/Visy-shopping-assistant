@@ -5,6 +5,7 @@
 import {
   CONTRACT_VERSION,
   Need,
+  PreferenceFact,
   SessionState as SessionStateSchema,
   type Emit,
   type Money,
@@ -84,11 +85,20 @@ export function createAgent(services: Services, sink: AgentSink) {
       await answerQuestion(said, id);
       return;
     }
-    if (/\b(usual|seaweed)\b/i.test(said)) {
+    if (/\bremember this\b/i.test(said)) {
+      await remember(said);
+      return;
+    }
+    if (/\busual\b/i.test(said)) {
       const recalled = await services.prefs.recall(state.userId, said);
       const purchase = recalled.ok ? recalled.data.purchases[0] : undefined;
       if (purchase) {
         await sink.say(`Your usual is ${purchase.title}, $${(purchase.price.cents / 100).toFixed(2)} on ${purchase.marketplace}.`);
+        return;
+      }
+      const fact = recalled.ok ? recalled.data.facts.find((item) => item.kind === "usual_item") : undefined;
+      if (fact) {
+        await sink.say(`Your usual is ${fact.detail ?? fact.value}.`);
         return;
       }
     }
@@ -141,8 +151,11 @@ export function createAgent(services: Services, sink: AgentSink) {
       await sink.say(`That does not match the $${(state.checkout.total.cents / 100).toFixed(2)} I read back. I will not continue.`);
       return;
     }
+    for (const line of state.checkout.lines) {
+      await saveUsual(line.productId, line.title, "You confirmed this cart. Visy did not place the order.");
+    }
     publish({ ...state, phase: "done" });
-    await sink.say("That matches the total I read back. I will not press Place order. That button is yours.");
+    await sink.say("That matches the total I read back. I will not press Place order. That button is yours. I saved it as your usual.");
   }
 
   async function shop(text: string, id: number) {
@@ -223,6 +236,36 @@ export function createAgent(services: Services, sink: AgentSink) {
     sink.send({ type: "checkout.confirmRequired", review: checkout });
     await sink.say(readBack, "question");
   }
+
+async function remember(evidence: string) {
+  const session = state;
+  if (!session) return;
+  const product =
+    session.shortlist.find((item) => item.product.id === session.focusedProductId)?.product ?? session.shortlist[0]?.product;
+  if (!product) {
+    await sink.say("Tell me which option to remember.");
+    return;
+  }
+  const saved = await saveUsual(product.id, product.title, evidence);
+  await sink.say(saved ? `${product.title}. I saved that as your usual. I did not place an order.` : "I couldn't save that.");
+}
+
+async function saveUsual(productId: string, title: string, evidence: string) {
+  if (!state) return false;
+  const saved = await services.prefs.upsertFact(
+    state.userId,
+    PreferenceFact.parse({
+      id: `usual-${productId}`,
+      kind: "usual_item",
+      value: productId,
+      detail: title,
+      evidence,
+      confidence: 0.9,
+      updatedAt: new Date().toISOString(),
+    }),
+  );
+  return saved.ok;
+}
 
   return {
     hello,
