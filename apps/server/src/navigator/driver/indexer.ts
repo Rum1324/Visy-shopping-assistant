@@ -8,6 +8,10 @@ export const INDEXER_JS = String.raw`(maxElements) => {
   const SEL = 'a[href], button, input:not([type=hidden]), select, textarea, [role=button], [role=link], [role=checkbox], [role=radio], [role=combobox], [role=tab], [role=menuitem], [role=option], [role=searchbox], [contenteditable=true]';
   const RISK = /place (your )?order|buy now|submit (order|payment)|pay now|complete (purchase|order)|confirm (order|purchase)|^place order/i;
   const RISK_IDS = /submitOrderButtonId|buy-now-button|placeYourOrder/i;
+  // Never copy what the user typed into secret fields (passwords, card numbers, one-time codes) off the page.
+  const SECRET = /password|passwd|card|cc-?(num|csc|exp)|cvv|cvc|csc|security.?code|ssn|social.?security|one-time-code|otp|pin\b|routing|account.?num|iban/i;
+  const secretField = (el) => (el.getAttribute('type') || '').toLowerCase() === 'password' ||
+    SECRET.test([el.getAttribute('autocomplete'), el.getAttribute('name'), el.id, el.getAttribute('aria-label'), el.getAttribute('placeholder')].join(' '));
   const clean = (s) => (s || '').replace(/\s+/g, ' ').trim();
   const cut = (s, n) => (s.length > n ? s.slice(0, n) + '…' : s);
 
@@ -95,7 +99,7 @@ export const INDEXER_JS = String.raw`(maxElements) => {
     const section = sectionOf(el);
     if (section) e.section = section;
     if (el.href) e.href = el.href;
-    if (el.value && role !== 'button' && typeof el.value === 'string') e.value = cut(el.value, 60);
+    if (el.value && role !== 'button' && typeof el.value === 'string' && !secretField(el)) e.value = cut(el.value, 60);
     if (el.disabled || el.getAttribute('aria-disabled') === 'true') e.disabled = true;
     if (role === 'checkbox' || role === 'radio') e.checked = !!el.checked;
     if (RISK.test(name) || RISK_IDS.test(el.id || '') || RISK_IDS.test(el.getAttribute('name') || '')) e.purchaseRisk = true;
