@@ -4,6 +4,8 @@
 
 Goal: **nobody waits on anybody.** Every track builds against `packages/contracts` (types, fixtures, mocks, mock server) from minute one and swaps in real neighbors as they land.
 
+This project moves very fast. The tracks and rules below are the skeleton. Improvise when they block the demo, and record every departure in [IMPROVISATIONS.md](IMPROVISATIONS.md) in the same change so the next agent can catch up. See [AGENTS.md](../AGENTS.md).
+
 ## Tracks
 
 | Track | Owns | Implements (contracts) | Builds against (until real) |
