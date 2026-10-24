@@ -68,6 +68,17 @@ Measured 2026-10-24, signed-in profile, browser warm:
 
 First page ~0.3–0.5 s, then ~0.5 s per "show more". Review text is untrusted data for D; nothing here acts on it.
 
+**Product details (C3): `RecipeCache`.** `getDetail` now fills price, list price, deal, Prime, rating, review count, brand, stock, delivery, bullets, description, banners, specs, variants and image URLs. On the first visit to a page type (`amazon:product`), Claude (`CLAUDE_RECIPE_MODEL`, default Haiku 5.5) gets a pruned HTML outline of the page (~75–80k chars) and writes CSS selectors for each field. That recipe is saved to `data/recipes.json`. Later visits replay it in the page with no AI. A recipe "hits" when it finds the price and at least 60% of the fields it found when it was written. A miss (new layout, a different template like books) costs one Claude call for a new recipe, kept next to the old ones (up to 5 per page type). If Claude can't write one (no key, API error or usage limit), a hand-checked seed recipe (`AMAZON_PRODUCT_SEED`) takes its place. Selectors only go to `querySelector`; a recipe can read a page, never click.
+
+`npm run detail -- "<query>"` visits A, A again, then B, and prints `via` and the Claude call count for each. Measured 2026-10-24, fresh signed-out profile, empty `data/`:
+
+| Run | Visit 1 (writes the recipe) | Visit 2, same product | Visit 3, another product |
+|---|---|---|---|
+| "picnic blanket", Haiku 5.5 | 1 Claude call, 5.4 s | **0 calls**, 47 ms | **0 calls**, 80 ms |
+| "usb c cable", Sonnet 5.5 | 1 Claude call, 13 s | **0 calls**, 25 ms | **0 calls**, 137 ms |
+
+Fields read on replay: price, rating, review count, Prime, delivery, stock, 27–35 specs, 5–7 images, color variants (5 and 22 options), list price and "Limited time deal" when shown, "Only 8 left in stock" as a banner. `RECIPE_FROM=recipe.json` stands in for the Claude call; `OUTLINE_OUT=file.html` saves what Claude sees.
+
 ## Setup
 
 1. Copy the root `.env.example` to `apps/server/.env`, then fill in `ANTHROPIC_API_KEY`, `MOSS_PROJECT_ID` and `MOSS_PROJECT_KEY`. Get the Moss values from the moss.dev portal; redeem `CALHACKS` on its billing page.
@@ -84,6 +95,7 @@ First page ~0.3–0.5 s, then ~0.5 s per "show more". Review text is untrusted d
 | `npm run bench [-- --no-claude]` | Moss (+ Anthropic) keys | Per-picker accuracy and latency, a `MOSS_GAP` sweep with zero wrong clicks, and chain vs Claude-only |
 | `npm run demo -- "picnic blanket"` | keys + headed Chrome | Live run: search, top 3, open #1, Add to Cart, cart subtotal. Stops before checkout |
 | `npm run reviews -- "picnic blanket"` | headed Chrome, signed-in profile | C2: getDetail review count, a sample, timings. No cart actions |
+| `npm run detail -- "picnic blanket"` | headed Chrome (+ Anthropic key for the first visit) | C3: detail fields and Claude calls per visit; the second visit should say `0 Claude call(s)` |
 
 Speed claim for the demo:
 
