@@ -2,6 +2,7 @@
  * End-to-end Amazon run: search → top results → open #1 → Add to Cart → read cart subtotal. Stops there.
  *   npm run demo -w @visy/server -- "picnic blanket" [--ui-search]
  *   PICKER_CHAIN=claude npm run demo ...      # slow baseline
+ *   npm run demo -- "picnic blanket" --preload   # C1b: preload the top 3 while "narrating" (NARRATE_MS, default 8000)
  */
 import { createInterface } from "node:readline/promises";
 import { PlaywrightDriver } from "./navigator/driver/playwright.ts";
@@ -11,6 +12,7 @@ import { AmazonFlow } from "./navigator/sites/amazon.ts";
 const args = process.argv.slice(2);
 const query = args.find((a) => !a.startsWith("--")) ?? "picnic blanket";
 const viaUi = args.includes("--ui-search");
+const preload = args.includes("--preload");
 
 const chain = buildChain();
 const driver = new PlaywrightDriver();
@@ -46,6 +48,15 @@ try {
   for (const r of organic.slice(0, 3)) console.log(`  ${r.asin}  ${r.price ?? "?"}  ${r.rating ?? ""}  ${r.title.slice(0, 80)}`);
   const pick = organic[0] ?? results.data[0]!;
 
+  if (preload) {
+    // Stand-in for B reading the shortlist aloud. Not counted in the open/add timings below.
+    const shortlist = (organic.length >= 3 ? organic : results.data).slice(0, 3).map((r) => r.asin);
+    const t0 = performance.now();
+    await flow.preload(shortlist);
+    timings["preload (hidden)"] = Math.round(performance.now() - t0);
+    await new Promise((r) => setTimeout(r, Math.max(0, Number(process.env.NARRATE_MS ?? 8000) - timings["preload (hidden)"]!)));
+  }
+
   const opened = await time("open product", () => flow.open(pick.asin));
   if (!opened.ok) throw new Error(opened.error.message);
 
@@ -60,7 +71,8 @@ try {
   process.exitCode = 1;
 } finally {
   const total = Math.round(performance.now() - tStart);
-  console.log("\nTimings (ms):", JSON.stringify({ ...timings, total }));
+  const openAdd = (timings["open product"] ?? 0) + (timings["add to cart"] ?? 0);
+  console.log("\nTimings (ms):", JSON.stringify({ ...timings, "open+add": openAdd, total }));
   console.log(`Claude calls: ${chain.claude?.calls ?? 0}`);
   await chain.close();
   if (!process.env.KEEP_OPEN) await driver.close();

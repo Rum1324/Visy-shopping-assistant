@@ -33,6 +33,9 @@ const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 export class AmazonFlow {
   tabId?: number;
+  /** C1b: asin → background tab that has the product page loaded and its elements embedded (undefined if preload failed). */
+  private preloaded = new Map<string, Promise<number | undefined>>();
+  private indexing: Promise<unknown> = Promise.resolve();
   /** Sub-step timings for the last call, for the demo's breakdown. */
   marks: Record<string, number> = {};
 
@@ -119,6 +122,7 @@ export class AmazonFlow {
   /** viaUi=false uses the shortcut URL (fastest). viaUi=true types into the search box through the picker chain. */
   async search(query: string, viaUi = false): Promise<Result<AmazonResult[]>> {
     this.marks = {};
+    await this.dropPreloads();
     if (viaUi) {
       const g = await this.goto("https://www.amazon.com/");
       if (!g.ok) return g;
@@ -145,8 +149,59 @@ export class AmazonFlow {
     return results.length ? ok(results) : err("parse_failed", "no result cards found");
   }
 
-  async open(asin: string) {
+  /**
+   * C1b: call when the shortlist is final, while it's being read aloud. Opens each product page in a background
+   * tab and runs Moss over it, so a later open(asin) is a tab switch and Add to Cart picks from already-embedded
+   * text. Page loads run in parallel; embedding runs one page at a time (CPU-bound, and pages share most text).
+   * Resolves when every page is ready; callers don't need to await it.
+   */
+  preload(asins: string[]) {
+    for (const asin of asins) {
+      if (!this.preloaded.has(asin)) this.preloaded.set(asin, this.preloadOne(asin).catch(() => undefined));
+    }
+    return Promise.all(asins.map((a) => this.preloaded.get(a)));
+  }
+
+  private async preloadOne(asin: string): Promise<number | undefined> {
+    const t = await this.driver.openTab("about:blank");
+    if (!t.ok) return undefined;
+    const tabId = t.data.tabId;
+    if (this.tabId !== undefined) await this.driver.focus(this.tabId); // keep the user's tab in front
+    const r = await this.driver.navigate(tabId, `https://www.amazon.com/dp/${asin}`, "commit");
+    if (!r.ok) return tabId;
+    await this.driver.waitFor(tabId, `document.readyState !== 'loading' || ${CHALLENGE_JS}`, 10_000);
+    const s = await this.driver.snapshot(tabId);
+    const moss = this.pickers.find((p) => p.name === "moss");
+    // A bot check is left for open() + step() to surface to the user, in the foreground.
+    if (s.ok && moss) {
+      const run = this.indexing.then(() => moss.pick(s.data, STEPS.addToCart));
+      this.indexing = run.catch(() => {});
+      await run;
+    }
+    return tabId;
+  }
+
+  /** Closes preloaded tabs that weren't opened. */
+  async dropPreloads() {
+    const tabs = await Promise.all(this.preloaded.values());
+    this.preloaded.clear();
+    for (const tabId of tabs) if (tabId !== undefined && tabId !== this.tabId) await this.driver.closeTab(tabId);
+  }
+
+  async open(asin: string): Promise<Result<{ url: string }>> {
     this.marks = {};
+    const pre = this.preloaded.get(asin);
+    if (pre) {
+      const t0 = performance.now();
+      const tabId = await pre;
+      this.preloaded.delete(asin);
+      this.mark("preload wait", t0);
+      if (tabId !== undefined) {
+        this.tabId = tabId;
+        await this.driver.focus(tabId);
+        return ok({ url: `https://www.amazon.com/dp/${asin}` });
+      }
+    }
     return this.goto(`https://www.amazon.com/dp/${asin}`);
   }
 

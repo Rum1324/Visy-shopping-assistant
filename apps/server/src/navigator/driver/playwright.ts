@@ -134,6 +134,11 @@ export class PlaywrightDriver implements BrowserDriver {
     return ok({});
   }
 
+  /** Brings the tab to the front. Preload tabs are opened in the background (the extension: tabs.create({ active: false })). */
+  async focus(tabId: number) {
+    await this.pages.get(tabId)?.bringToFront().catch(() => {});
+  }
+
   /** Polls a JS predicate in the page (every 100 ms). Returns false on timeout instead of throwing. */
   async waitFor(tabId: number, js: string, timeoutMs: number): Promise<boolean> {
     try {

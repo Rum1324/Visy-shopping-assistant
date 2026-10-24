@@ -44,6 +44,15 @@ What made it fast (`PROFILE=1 npm run demo` prints the breakdown):
 
 The rest is Amazon: about 0.9 s for the search results to arrive, about 0.5 s for each page's first byte.
 
+**Preload (C1b).** `flow.preload(asins)` opens the 3 shortlisted product pages in background tabs and runs Moss over them while the shortlist is read aloud. `open(asin)` then just switches tabs. Call it, without awaiting, when the shortlist is final. Measured with `npm run demo -- "<query>" [--preload]` on products the profile had never opened (signed-out profile, memory warm):
+
+| Run | open + Add to Cart |
+|---|---|
+| No preload (2 runs) | 1.95–2.4 s |
+| **Preload** (3 runs) | **0.81–0.92 s** |
+
+Preloading 3 pages took 5.0–6.0 s, which is less than the narration, so `open` never waited. Most of what's left is Playwright's click (~0.7 s).
+
 ## Setup
 
 1. Copy the root `.env.example` to `apps/server/.env`, then fill in `ANTHROPIC_API_KEY`, `MOSS_PROJECT_ID` and `MOSS_PROJECT_KEY`. Get the Moss values from the moss.dev portal; redeem `CALHACKS` on its billing page.
