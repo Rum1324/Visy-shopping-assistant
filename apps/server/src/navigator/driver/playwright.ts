@@ -2,8 +2,7 @@ import { chromium, type BrowserContext, type Page } from "playwright";
 import { err, ok, BUDGETS_MS, type Action, type BrowserDriver, type PageState, type Result } from "@visy/contracts";
 import { INDEXER_JS } from "./indexer.ts";
 
-const CAPTCHA = /validateCaptcha|captcha|press (&|and) hold|robot or human|enter the characters you see|amazon\.com\/checkpoint\//i;
-const CHALLENGE_SECTION = /tmms-challenge|checkpointForm/i;
+import { CAPTCHA, looksBlocked } from "./blocked.ts";
 
 /**
  * Local Chromium driver. Headed + persistent profile by default: Amazon blocks headless datacenter traffic,
@@ -74,12 +73,7 @@ export class PlaywrightDriver implements BrowserDriver {
     try {
       const raw = (await page.evaluate(`(${INDEXER_JS})(${maxElements})`)) as Omit<PageState, "tabId" | "capturedAt">;
       const state: PageState = { ...raw, tabId, capturedAt: new Date().toISOString() };
-      if (
-        CAPTCHA.test(state.url) ||
-        CAPTCHA.test(state.title) ||
-        state.textBlocks.slice(0, 15).some((t) => CAPTCHA.test(t)) ||
-        state.elements.some((e) => CHALLENGE_SECTION.test(e.section ?? ""))
-      ) {
+      if (looksBlocked(state)) {
         return err("blocked", "Bot check on the page. The user needs to solve it in the browser window.", true);
       }
       this.last.set(tabId, state);

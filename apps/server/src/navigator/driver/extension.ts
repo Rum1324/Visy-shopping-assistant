@@ -1,0 +1,109 @@
+import {
+  err,
+  ok,
+  BUDGETS_MS,
+  DriverResponseData,
+  type Action,
+  type BrowserDriver,
+  type ClientMsg,
+  type DriverRequest,
+  type PageState,
+  type Result,
+  type ServerMsg,
+} from "@visy/contracts";
+import { looksBlocked } from "./blocked.ts";
+
+type DriverResponse = Extract<ClientMsg, { type: "driver.response" }>;
+type Pending = { op: DriverRequest["op"]; resolve: (r: Result<any>) => void; timer: ReturnType<typeof setTimeout> };
+
+/**
+ * Server-side driver for the user's real Chrome: each call becomes a `driver.request` over the WebSocket,
+ * and the extension answers with `driver.response` (wire.ts). Wiring, in the WebSocket server:
+ *
+ *   const driver = new ExtensionDriver((msg) => socket.send(JSON.stringify(msg)));
+ *   // on each parsed ClientMsg:  if (msg.type === "driver.response") driver.handle(msg);
+ *   // on socket close:           driver.dispose();
+ *
+ * Same safety as PlaywrightDriver: purchase buttons are refused here, bot checks come back as err("blocked").
+ */
+export class ExtensionDriver implements BrowserDriver {
+  private pending = new Map<string, Pending>();
+  private last = new Map<number, PageState>();
+  private seq = 0;
+
+  constructor(
+    private send: (msg: ServerMsg) => void,
+    private timeoutMs: number = BUDGETS_MS.driverOp,
+  ) {}
+
+  /** Feed every `driver.response` from the socket here. Unknown or late ids are ignored. */
+  handle(msg: DriverResponse) {
+    const p = this.pending.get(msg.id);
+    if (!p) return;
+    this.pending.delete(msg.id);
+    clearTimeout(p.timer);
+    if (!msg.ok) return p.resolve({ ok: false, error: msg.error ?? { code: "internal", message: `${p.op} failed in the extension`, retryable: true } });
+    const parsed = DriverResponseData[p.op].safeParse(msg.data);
+    p.resolve(parsed.success ? ok(parsed.data) : err("parse_failed", `bad ${p.op} payload from extension: ${parsed.error.message}`));
+  }
+
+  /** Fails every in-flight call, e.g. when the socket closes. */
+  dispose(reason = "extension disconnected") {
+    for (const [id, p] of this.pending) {
+      clearTimeout(p.timer);
+      p.resolve(err("internal", reason, true));
+      this.pending.delete(id);
+    }
+  }
+
+  private call<T>(req: DriverRequest, timeoutMs = this.timeoutMs): Promise<Result<T>> {
+    const id = `drv-${++this.seq}`;
+    return new Promise((resolve) => {
+      const timer = setTimeout(() => {
+        this.pending.delete(id);
+        resolve(err("timeout", `${req.op} timed out after ${timeoutMs} ms`, true));
+      }, timeoutMs);
+      this.pending.set(id, { op: req.op, resolve, timer });
+      try {
+        this.send({ type: "driver.request", id, req });
+      } catch (e) {
+        clearTimeout(timer);
+        this.pending.delete(id);
+        resolve(err("internal", `send failed: ${(e as Error).message}`, true));
+      }
+    });
+  }
+
+  openTab(url: string) {
+    return this.call<{ tabId: number }>({ op: "openTab", url }, BUDGETS_MS.marketplaceSearch);
+  }
+
+  navigate(tabId: number, url: string) {
+    return this.call<{ url: string }>({ op: "navigate", tabId, url }, BUDGETS_MS.marketplaceSearch);
+  }
+
+  async snapshot(tabId: number, maxElements?: number): Promise<Result<PageState>> {
+    const r = await this.call<PageState>({ op: "snapshot", tabId, ...(maxElements ? { maxElements } : {}) });
+    if (!r.ok) return r;
+    if (looksBlocked(r.data)) return err("blocked", "Bot check on the page. The user needs to solve it in their browser.", true);
+    this.last.set(tabId, r.data);
+    return r;
+  }
+
+  async act(tabId: number, action: Action): Promise<Result<{ navigated: boolean }>> {
+    if ("idx" in action) {
+      const el = this.last.get(tabId)?.elements.find((e) => e.idx === action.idx);
+      if (el?.purchaseRisk) return err("forbidden_action", `refusing to touch purchase button "${el.name}"`);
+    }
+    return this.call<{ navigated: boolean }>({ op: "act", tabId, action });
+  }
+
+  screenshot(tabId: number) {
+    return this.call<{ dataUrl: string }>({ op: "screenshot", tabId });
+  }
+
+  async closeTab(tabId: number) {
+    this.last.delete(tabId);
+    return this.call<{}>({ op: "closeTab", tabId });
+  }
+}

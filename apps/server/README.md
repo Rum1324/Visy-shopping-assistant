@@ -69,3 +69,19 @@ npm run demo -w @visy/server -- "picnic blanket"   # warm: memory hits, Claude c
 ```
 
 Every pick is appended to `logs/picks.jsonl`, which is the bake-off data.
+
+## Extension integration (for Track A)
+
+`src/navigator/driver/extension.ts` (`ExtensionDriver`) runs the six `DriverRequest` ops over the WebSocket. It needs no contract change:
+
+```ts
+const driver = new ExtensionDriver((msg) => socket.send(JSON.stringify(msg)));
+// for each parsed ClientMsg:   if (msg.type === "driver.response") driver.handle(msg);
+// on socket close:             driver.dispose();
+```
+
+It validates every payload with `DriverResponseData[op]`, times out after `BUDGETS_MS`, refuses `purchaseRisk` clicks, and turns bot checks into `err("blocked")`. It is covered by `test/extension-driver.test.ts`.
+
+Open items, to agree with Track A before changing contracts:
+- **Indexing:** the content script should run `INDEXER_JS` from `src/navigator/driver/indexer.ts`, which is plain JS with no imports. Then extension `PageState`s match what the pickers were tuned on, including `section` names, viewport-first order and `purchaseRisk`.
+- **Speed tricks:** `AmazonFlow` also uses three Playwright-only helpers: `evaluate` (result cards, subtotal), `waitFor` (poll a condition) and `isBlocked`. The extension equivalent would be additive ops, for example `{ op: "extract", recipe: "amazon.results" | "amazon.subtotal" }` and `{ op: "waitFor", condition: … }`. MV3 can't `eval` strings, so these must be named recipes built into the content script, not arbitrary JS.
