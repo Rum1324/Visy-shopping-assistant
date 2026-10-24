@@ -14,6 +14,8 @@ chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
 
 async function runDriver(req) {
   try {
+    // tabId -1 (ACTIVE_TAB in contracts) means the tab the user is looking at.
+    if (req.tabId === -1) req = { ...req, tabId: await activeTabId() };
     if (req.op === "openTab") return ok(await openTab(req.url));
     if (req.op === "navigate") {
       await chrome.tabs.update(req.tabId, { url: req.url });
@@ -28,7 +30,10 @@ async function runDriver(req) {
       return ok({ dataUrl });
     }
     if (req.op === "snapshot" || req.op === "act") {
-      const page = await askPage(req.tabId, req.op === "snapshot" ? { type: "visy.snapshot" } : { type: "visy.act", action: req.action });
+      const page = await askPage(
+        req.tabId,
+        req.op === "snapshot" ? { type: "visy.snapshot", maxElements: req.maxElements } : { type: "visy.act", action: req.action },
+      );
       if (!page?.ok) return page ?? fail("internal", "No reply from the page", true);
       if (req.op === "snapshot") page.data.tabId = req.tabId;
       return page;
@@ -50,11 +55,17 @@ async function openTab(url) {
   return { tabId: tab.id };
 }
 
+async function activeTabId() {
+  const [tab] = await chrome.tabs.query({ active: true, lastFocusedWindow: true });
+  if (tab?.id == null) throw new Error("No active tab");
+  return tab.id;
+}
+
 async function askPage(tabId, message) {
   try {
     return await chrome.tabs.sendMessage(tabId, message);
   } catch {
-    await chrome.scripting.executeScript({ target: { tabId }, files: ["content.js"] });
+    await chrome.scripting.executeScript({ target: { tabId }, files: ["indexer.js", "content.js"] });
     return chrome.tabs.sendMessage(tabId, message);
   }
 }
