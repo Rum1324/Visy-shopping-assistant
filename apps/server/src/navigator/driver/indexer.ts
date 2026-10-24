@@ -69,7 +69,7 @@ export const INDEXER_JS = String.raw`(maxElements) => {
       let p = '';
       if (label) p = clean(label);
       else if (comp) p = comp;
-      else if (n.id && !/^[a-f0-9-]{16,}$/i.test(n.id) && !/\d{4,}/.test(n.id)) p = n.id;
+      else if (n.id && !/^[a-f0-9-]{16,}$/i.test(n.id) && !/\d{4,}/.test(n.id) && !(n.id.length >= 12 && (n.id.match(/\d/g) || []).length >= 2)) p = n.id;
       else if (LANDMARK[tag]) p = LANDMARK[tag];
       if (p && !parts.includes(p)) parts.unshift(cut(p, 40));
       n = n.parentElement;

@@ -1,0 +1,603 @@
+{
+ "pageType": "target-search",
+ "state": {
+  "url": "https://www.target.com/s?searchTerm=picnic%20blanket",
+  "title": "\"picnic blanket\" : Target",
+  "elements": [
+   {
+    "idx": 0,
+    "role": "button",
+    "name": "Ship to location: 94705"
+   },
+   {
+    "idx": 1,
+    "role": "button",
+    "name": "Store: Berkeley Central"
+   },
+   {
+    "idx": 2,
+    "role": "link",
+    "name": "Target Circle™",
+    "section": "Utility",
+    "href": "https://www.target.com/l/target-circle/-/N-pzno9"
+   },
+   {
+    "idx": 3,
+    "role": "link",
+    "name": "Target Circle™ Card",
+    "section": "Utility",
+    "href": "https://www.target.com/circlecard"
+   },
+   {
+    "idx": 4,
+    "role": "link",
+    "name": "Target Circle 360™",
+    "section": "Utility",
+    "href": "https://www.target.com/l/target-circle-360/-/N-2rguk"
+   },
+   {
+    "idx": 5,
+    "role": "link",
+    "name": "Registry & Wish List",
+    "section": "Utility",
+    "href": "https://www.target.com/gift-registry"
+   },
+   {
+    "idx": 6,
+    "role": "link",
+    "name": "Weekly Ad",
+    "section": "Utility",
+    "href": "https://www.target.com/weekly-ad"
+   },
+   {
+    "idx": 7,
+    "role": "link",
+    "name": "Find Stores",
+    "section": "Utility",
+    "href": "https://www.target.com/store-locator/find-stores"
+   },
+   {
+    "idx": 8,
+    "role": "link",
+    "name": "Target home",
+    "section": "Primary > headerPrimary",
+    "href": "https://www.target.com/"
+   },
+   {
+    "idx": 9,
+    "role": "link",
+    "name": "Categories",
+    "section": "Primary > headerPrimary",
+    "href": "https://www.target.com/c/shop-all-categories/-/N-5xsxf?prehydrateClick=true"
+   },
+   {
+    "idx": 10,
+    "role": "link",
+    "name": "Deals",
+    "section": "Primary > headerPrimary",
+    "href": "https://www.target.com/c/top-deals/-/N-4xw74?prehydrateClick=true"
+   },
+   {
+    "idx": 11,
+    "role": "link",
+    "name": "pickup and delivery",
+    "section": "Primary > headerPrimary",
+    "href": "https://www.target.com/c/order-pickup/-/N-ng0a0?l1_nid=5xt1a&prehydrateClick=true"
+   },
+   {
+    "idx": 12,
+    "role": "searchbox",
+    "name": "What can we help you find? suggestions appear below",
+    "section": "headerPrimary > form",
+    "value": "picnic blanket"
+   },
+   {
+    "idx": 13,
+    "role": "button",
+    "name": "search by voice",
+    "section": "headerPrimary > form"
+   },
+   {
+    "idx": 14,
+    "role": "button",
+    "name": "reset",
+    "section": "headerPrimary > form"
+   },
+   {
+    "idx": 15,
+    "role": "button",
+    "name": "search",
+    "section": "headerPrimary > form"
+   },
+   {
+    "idx": 16,
+    "role": "button",
+    "name": "Ask Target",
+    "section": "headerPrimary > form"
+   },
+   {
+    "idx": 17,
+    "role": "link",
+    "name": "Account, sign in",
+    "section": "Primary > headerPrimary",
+    "href": "https://www.target.com/account?prehydrateClick=true"
+   },
+   {
+    "idx": 18,
+    "role": "link",
+    "name": "cart 0 items",
+    "section": "Primary > headerPrimary",
+    "href": "https://www.target.com/cart?prehydrateClick=true"
+   },
+   {
+    "idx": 19,
+    "role": "textbox",
+    "name": "Email address",
+    "section": "form"
+   },
+   {
+    "idx": 20,
+    "role": "button",
+    "name": "Sign up",
+    "section": "form"
+   },
+   {
+    "idx": 21,
+    "role": "link",
+    "name": "privacy policy - opens in a new tab",
+    "href": "https://www.target.com/c/target-privacy-policy/-/N-4sr7p"
+   },
+   {
+    "idx": 22,
+    "role": "link",
+    "name": "terms and conditions - opens in a new tab",
+    "href": "https://www.target.com/c/terms-conditions/-/N-4sr7l"
+   },
+   {
+    "idx": 23,
+    "role": "link",
+    "name": "*See details. Restrictions and terms apply. Pricing, promotions, and availability may vary by locati…",
+    "section": "footer",
+    "href": "https://www.target.com/help/articles/promotions-coupons/current-promotions"
+   },
+   {
+    "idx": 24,
+    "role": "link",
+    "name": "About Target",
+    "section": "footer > Footer",
+    "href": "https://corporate.target.com/about"
+   },
+   {
+    "idx": 25,
+    "role": "link",
+    "name": "Careers",
+    "section": "footer > Footer",
+    "href": "https://corporate.target.com/careers/"
+   },
+   {
+    "idx": 26,
+    "role": "link",
+    "name": "News & Blog",
+    "section": "footer > Footer",
+    "href": "https://corporate.target.com/news-features"
+   },
+   {
+    "idx": 27,
+    "role": "link",
+    "name": "Target Brands",
+    "section": "footer > Footer",
+    "href": "https://corporate.target.com/about/products-services/Target-Brands"
+   },
+   {
+    "idx": 28,
+    "role": "link",
+    "name": "Bullseye Shop",
+    "section": "footer > Footer",
+    "href": "https://www.bullseyeshop.com/"
+   },
+   {
+    "idx": 29,
+    "role": "link",
+    "name": "Sustainability & Governance",
+    "section": "footer > Footer",
+    "href": "https://corporate.target.com/sustainability-governance"
+   },
+   {
+    "idx": 30,
+    "role": "link",
+    "name": "Press Center",
+    "section": "footer > Footer",
+    "href": "https://corporate.target.com/press"
+   },
+   {
+    "idx": 31,
+    "role": "link",
+    "name": "Advertise with Us",
+    "section": "footer > Footer",
+    "href": "https://roundel.com/?utm_source=Referral&utm_medium=Targetwebsite&utm_campaign=advertisewithus"
+   },
+   {
+    "idx": 32,
+    "role": "link",
+    "name": "Investors",
+    "section": "footer > Footer",
+    "href": "https://corporate.target.com/investors"
+   },
+   {
+    "idx": 33,
+    "role": "link",
+    "name": "Affiliates & Partners",
+    "section": "footer > Footer",
+    "href": "https://partners.target.com/"
+   },
+   {
+    "idx": 34,
+    "role": "link",
+    "name": "Club Target",
+    "section": "footer > Footer",
+    "href": "https://www.target.com/c/club-target/-/N-q6m3b"
+   },
+   {
+    "idx": 35,
+    "role": "link",
+    "name": "Suppliers",
+    "section": "footer > Footer",
+    "href": "https://corporate.target.com/about/products-services/suppliers#?lnk=fnav_t_spc_1_16"
+   },
+   {
+    "idx": 36,
+    "role": "link",
+    "name": "TargetPlus",
+    "section": "footer > Footer",
+    "href": "https://plus.target.com/"
+   },
+   {
+    "idx": 37,
+    "role": "link",
+    "name": "Target Help",
+    "section": "footer > Footer",
+    "href": "https://www.target.com/help"
+   },
+   {
+    "idx": 38,
+    "role": "link",
+    "name": "Returns",
+    "section": "footer > Footer",
+    "href": "https://www.target.com/returns"
+   },
+   {
+    "idx": 39,
+    "role": "link",
+    "name": "Track Orders",
+    "section": "footer > Footer",
+    "href": "https://www.target.com/orders"
+   },
+   {
+    "idx": 40,
+    "role": "link",
+    "name": "Recalls",
+    "section": "footer > Footer",
+    "href": "https://www.target.com/help/articles/news-safety/product-recalls"
+   },
+   {
+    "idx": 41,
+    "role": "link",
+    "name": "Contact Us",
+    "section": "footer > Footer",
+    "href": "https://www.target.com/help/contact-us"
+   },
+   {
+    "idx": 42,
+    "role": "button",
+    "name": "Feedback",
+    "section": "footer > Footer"
+   },
+   {
+    "idx": 43,
+    "role": "link",
+    "name": "Accessibility",
+    "section": "footer > Footer",
+    "href": "https://www.target.com/help/articles/compliances/accessibility"
+   },
+   {
+    "idx": 44,
+    "role": "link",
+    "name": "Security & Fraud",
+    "section": "footer > Footer",
+    "href": "https://security.target.com/"
+   },
+   {
+    "idx": 45,
+    "role": "link",
+    "name": "Team Member Services",
+    "section": "footer > Footer",
+    "href": "https://www.target.com/c/team-member-services/-/N-4srq9"
+   },
+   {
+    "idx": 46,
+    "role": "link",
+    "name": "Legal & Privacy",
+    "section": "footer > Footer",
+    "href": "https://www.target.com/guest-privacy/legal-privacy"
+   },
+   {
+    "idx": 47,
+    "role": "link",
+    "name": "Find a Store",
+    "section": "footer > Footer",
+    "href": "https://www.target.com/store-locator/find-stores"
+   },
+   {
+    "idx": 48,
+    "role": "link",
+    "name": "Clinic",
+    "section": "footer > Footer",
+    "href": "https://www.target.com/c/clinic/-/N-54x94"
+   },
+   {
+    "idx": 49,
+    "role": "link",
+    "name": "Pharmacy",
+    "section": "footer > Footer",
+    "href": "https://www.target.com/c/pharmacy-health/-/N-54y52"
+   },
+   {
+    "idx": 50,
+    "role": "link",
+    "name": "Target Optical",
+    "section": "footer > Footer",
+    "href": "https://www.target.com/c/optical/-/N-4y8o9"
+   },
+   {
+    "idx": 51,
+    "role": "link",
+    "name": "More In-Store Services",
+    "section": "footer > Footer",
+    "href": "https://www.target.com/c/services/-/N-oq1wk"
+   },
+   {
+    "idx": 52,
+    "role": "link",
+    "name": "Target Circle™",
+    "section": "footer > Footer",
+    "href": "https://www.target.com/l/target-circle/-/N-pzno9"
+   },
+   {
+    "idx": 53,
+    "role": "link",
+    "name": "Target Circle™ Card",
+    "section": "footer > Footer",
+    "href": "https://www.target.com/circlecard"
+   },
+   {
+    "idx": 54,
+    "role": "link",
+    "name": "Target Circle 360™",
+    "section": "footer > Footer",
+    "href": "https://www.target.com/l/target-circle-360/-/N-2rguk"
+   },
+   {
+    "idx": 55,
+    "role": "link",
+    "name": "Target App",
+    "section": "footer > Footer",
+    "href": "https://www.target.com/c/target-app/-/N-4th2r"
+   },
+   {
+    "idx": 56,
+    "role": "link",
+    "name": "Registry",
+    "section": "footer > Footer",
+    "href": "https://www.target.com/gift-registry"
+   },
+   {
+    "idx": 57,
+    "role": "link",
+    "name": "Same Day Delivery",
+    "section": "footer > Footer",
+    "href": "https://www.target.com/c/same-day-delivery/-/N-bswkz"
+   },
+   {
+    "idx": 58,
+    "role": "link",
+    "name": "Order Pickup",
+    "section": "footer > Footer",
+    "href": "https://www.target.com/c/order-pickup/-/N-ng0a0"
+   },
+   {
+    "idx": 59,
+    "role": "link",
+    "name": "Drive Up",
+    "section": "footer > Footer",
+    "href": "https://www.target.com/c/drive-up/-/N-9d42z"
+   },
+   {
+    "idx": 60,
+    "role": "link",
+    "name": "Free 2-Day Shipping",
+    "section": "footer > Footer",
+    "href": "https://www.target.com/c/free-2-day-shipping/-/N-49cz6"
+   },
+   {
+    "idx": 61,
+    "role": "link",
+    "name": "Shipping & Delivery",
+    "section": "footer > Footer",
+    "href": "https://www.target.com/c/shipping-order-services/-/N-551st"
+   },
+   {
+    "idx": 62,
+    "role": "link",
+    "name": "More Services",
+    "section": "footer > Footer",
+    "href": "https://www.target.com/c/services/-/N-oq1wk"
+   },
+   {
+    "idx": 63,
+    "role": "link",
+    "name": "Pinterest",
+    "section": "footer",
+    "href": "https://www.pinterest.com/target"
+   },
+   {
+    "idx": 64,
+    "role": "link",
+    "name": "Facebook",
+    "section": "footer",
+    "href": "https://www.facebook.com/target"
+   },
+   {
+    "idx": 65,
+    "role": "link",
+    "name": "Instagram",
+    "section": "footer",
+    "href": "https://www.instagram.com/target"
+   },
+   {
+    "idx": 66,
+    "role": "link",
+    "name": "X",
+    "section": "footer",
+    "href": "https://www.x.com/Target"
+   },
+   {
+    "idx": 67,
+    "role": "link",
+    "name": "Youtube",
+    "section": "footer",
+    "href": "https://www.youtube.com/target"
+   },
+   {
+    "idx": 68,
+    "role": "link",
+    "name": "Tiktok",
+    "section": "footer",
+    "href": "https://www.tiktok.com/@target"
+   },
+   {
+    "idx": 69,
+    "role": "link",
+    "name": "Terms",
+    "section": "footer > Legal",
+    "href": "https://www.target.com/c/terms-conditions/-/N-4sr7l"
+   },
+   {
+    "idx": 70,
+    "role": "link",
+    "name": "CA Supply Chain",
+    "section": "footer > Legal",
+    "href": "https://www.target.com/help/articles/compliances/ca-transparency-in-supply-chains-act"
+   },
+   {
+    "idx": 71,
+    "role": "link",
+    "name": "Privacy Policy",
+    "section": "footer > Legal",
+    "href": "https://www.target.com/c/target-privacy-policy/-/N-4sr7p"
+   },
+   {
+    "idx": 72,
+    "role": "link",
+    "name": "Your CA Privacy Rights",
+    "section": "footer > Legal",
+    "href": "https://www.target.com/c/your-ca-privacy-rights-/N-m2wjt"
+   },
+   {
+    "idx": 73,
+    "role": "link",
+    "name": "Your Privacy Choices",
+    "section": "footer > Legal",
+    "href": "https://www.target.com/guest-privacy"
+   },
+   {
+    "idx": 74,
+    "role": "link",
+    "name": "Interest Based Ads",
+    "section": "footer > Legal",
+    "href": "https://www.target.com/c/interest-based-advertising-privacy-policy/-/N-ztavm"
+   },
+   {
+    "idx": 75,
+    "role": "link",
+    "name": "Health Privacy Policy",
+    "section": "footer > Legal",
+    "href": "https://www.target.com/c/health-policy/-/N-4gc0k"
+   }
+  ],
+  "textBlocks": [
+   "skip to main content",
+   "skip to footer",
+   "Ship to 94705",
+   "Berkeley Central",
+   "Target Circle™",
+   "Target Circle™ Card",
+   "Target Circle 360™",
+   "Registry & Wish List",
+   "Weekly Ad",
+   "Find Stores",
+   "Categories",
+   "Deals",
+   "Pickup & delivery",
+   "search",
+   "Ask Target",
+   "Account",
+   "Get top deals, latest trends, and more.",
+   "Email address",
+   "Sign up",
+   "Privacy policy",
+   "Terms",
+   "Footer",
+   "*See details. Restrictions and terms apply. Pricing, promotions, and availability may vary by location and at Target.com",
+   "About Us",
+   "About Target",
+   "Careers",
+   "News & Blog",
+   "Target Brands",
+   "Bullseye Shop",
+   "Sustainability & Governance",
+   "Press Center",
+   "Advertise with Us",
+   "Investors",
+   "Affiliates & Partners",
+   "Club Target",
+   "Suppliers",
+   "TargetPlus",
+   "Help",
+   "Target Help",
+   "Returns",
+   "Track Orders",
+   "Recalls",
+   "Contact Us",
+   "Feedback",
+   "Accessibility",
+   "Security & Fraud",
+   "Team Member Services",
+   "Legal & Privacy",
+   "Stores",
+   "Find a Store",
+   "Clinic",
+   "Pharmacy",
+   "Target Optical",
+   "More In-Store Services",
+   "Services",
+   "Target App",
+   "Registry",
+   "Same Day Delivery",
+   "Order Pickup",
+   "Drive Up",
+   "Free 2-Day Shipping",
+   "Shipping & Delivery",
+   "More Services",
+   "CA Supply Chain",
+   "Privacy Policy",
+   "Your CA Privacy Rights",
+   "Your Privacy Choices",
+   "Interest Based Ads",
+   "Health Privacy Policy",
+   "TM & © 2026 Target Brands, Inc."
+  ],
+  "fingerprint": "wnz4az",
+  "tabId": 1,
+  "capturedAt": "2026-10-24T13:03:03.434Z"
+ }
+}

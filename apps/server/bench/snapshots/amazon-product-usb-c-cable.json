@@ -1,0 +1,2222 @@
+{
+ "pageType": "amazon-product",
+ "state": {
+  "url": "https://www.amazon.com/dp/B0CPF3HJ62?ref_=apb_fb_ac_d_apb_fb_asin_pc_accessories&pd_rd_w=FjULz&content-id=amzn1.sym.15ea6109-b709-482f-aa95-a96a33d11246%3Aamzn1.sym.15ea6109-b709-482f-aa95-a96a33d11246&pf_rd_p=15ea6109-b709-482f-aa95-a96a33d11246&pf_rd_r=63QGH554CQS0XHE87G3E&pd_rd_wg=KCBCR&pd_rd_r=b9e94a3a-fbb6-43cc-85cc-504a8a9635a8&pd_rd_i=B0CPF3HJ62&sr=1-1-1c7c554e-c3b9-43b0-8060-ddc1e436c844&qid=1792847363",
+  "title": "Amazon.com: Amazon Basics USB-C to A 2.0 Fast Charger Cable, 480Mbps Speed, USB-IF Certified, for Apple iPhone 15, iPad, Samsung Galaxy, Tablets, Laptops, 6 Foot, Black (Pack of 2) : Electronics",
+  "elements": [
+   {
+    "idx": 0,
+    "role": "link",
+    "name": "main content",
+    "section": "a-page > Shortcuts menu",
+    "href": "https://www.amazon.com/dp/B0CPF3HJ62?ref_=apb_fb_ac_d_apb_fb_asin_pc_accessories&pd_rd_w=FjULz&content-id=amzn1.sym.15ea6109-b709-482f-aa95-a96a33d11246%3Aamzn1.sym.15ea6109-b709-482f-aa95-a96a33d11246&pf_rd_p=15ea6109-b709-482f-aa95-a96a33d11246&pf_rd_r=63QGH554CQS0XHE87G3E&pd_rd_wg=KCBCR&pd_rd_r=b9e94a3a-fbb6-43cc-85cc-504a8a9635a8&pd_rd_i=B0CPF3HJ62&sr=1-1-1c7c554e-c3b9-43b0-8060-ddc1e436c844&qid=1792847363#skippedLink"
+   },
+   {
+    "idx": 1,
+    "role": "link",
+    "name": "About this item",
+    "section": "a-page > Shortcuts menu",
+    "href": "https://www.amazon.com/dp/B0CPF3HJ62?ref_=apb_fb_ac_d_apb_fb_asin_pc_accessories&pd_rd_w=FjULz&content-id=amzn1.sym.15ea6109-b709-482f-aa95-a96a33d11246%3Aamzn1.sym.15ea6109-b709-482f-aa95-a96a33d11246&pf_rd_p=15ea6109-b709-482f-aa95-a96a33d11246&pf_rd_r=63QGH554CQS0XHE87G3E&pd_rd_wg=KCBCR&pd_rd_r=b9e94a3a-fbb6-43cc-85cc-504a8a9635a8&pd_rd_i=B0CPF3HJ62&sr=1-1-1c7c554e-c3b9-43b0-8060-ddc1e436c844&qid=1792847363#featurebullets_feature_div"
+   },
+   {
+    "idx": 2,
+    "role": "link",
+    "name": "Buying options",
+    "section": "a-page > Shortcuts menu",
+    "href": "https://www.amazon.com/dp/B0CPF3HJ62?ref_=apb_fb_ac_d_apb_fb_asin_pc_accessories&pd_rd_w=FjULz&content-id=amzn1.sym.15ea6109-b709-482f-aa95-a96a33d11246%3Aamzn1.sym.15ea6109-b709-482f-aa95-a96a33d11246&pf_rd_p=15ea6109-b709-482f-aa95-a96a33d11246&pf_rd_r=63QGH554CQS0XHE87G3E&pd_rd_wg=KCBCR&pd_rd_r=b9e94a3a-fbb6-43cc-85cc-504a8a9635a8&pd_rd_i=B0CPF3HJ62&sr=1-1-1c7c554e-c3b9-43b0-8060-ddc1e436c844&qid=1792847363#buybox"
+   },
+   {
+    "idx": 3,
+    "role": "link",
+    "name": "Videos",
+    "section": "a-page > Shortcuts menu",
+    "href": "https://www.amazon.com/dp/B0CPF3HJ62?ref_=apb_fb_ac_d_apb_fb_asin_pc_accessories&pd_rd_w=FjULz&content-id=amzn1.sym.15ea6109-b709-482f-aa95-a96a33d11246%3Aamzn1.sym.15ea6109-b709-482f-aa95-a96a33d11246&pf_rd_p=15ea6109-b709-482f-aa95-a96a33d11246&pf_rd_r=63QGH554CQS0XHE87G3E&pd_rd_wg=KCBCR&pd_rd_r=b9e94a3a-fbb6-43cc-85cc-504a8a9635a8&pd_rd_i=B0CPF3HJ62&sr=1-1-1c7c554e-c3b9-43b0-8060-ddc1e436c844&qid=1792847363#va-related-videos-widget_feature_div"
+   },
+   {
+    "idx": 4,
+    "role": "link",
+    "name": "Search, option, forward slash",
+    "section": "Shortcuts menu > nav-assist-shortcuts-container",
+    "href": "javascript:void(0)"
+   },
+   {
+    "idx": 5,
+    "role": "link",
+    "name": "Cart, shift, option, c",
+    "section": "Shortcuts menu > nav-assist-shortcuts-container",
+    "href": "javascript:void(0)"
+   },
+   {
+    "idx": 6,
+    "role": "link",
+    "name": "Home, shift, option, h",
+    "section": "Shortcuts menu > nav-assist-shortcuts-container",
+    "href": "javascript:void(0)"
+   },
+   {
+    "idx": 7,
+    "role": "link",
+    "name": "Your orders, shift, option, o",
+    "section": "Shortcuts menu > nav-assist-shortcuts-container",
+    "href": "javascript:void(0)"
+   },
+   {
+    "idx": 8,
+    "role": "button",
+    "name": "Add to cart, shift, option, K",
+    "section": "Shortcuts menu > nav-assist-shortcuts-container"
+   },
+   {
+    "idx": 9,
+    "role": "button",
+    "name": "Product summary, shift, option, d",
+    "section": "Shortcuts menu > nav-assist-shortcuts-container"
+   },
+   {
+    "idx": 10,
+    "role": "button",
+    "name": "Show/hide shortcuts, shift, option, z",
+    "section": "Shortcuts menu > nav-assist-shortcuts-container"
+   },
+   {
+    "idx": 11,
+    "role": "link",
+    "name": "Amazon Prime",
+    "section": "nav-belt > nav-logo",
+    "href": "https://www.amazon.com/ref=nav_logo"
+   },
+   {
+    "idx": 12,
+    "role": "button",
+    "name": "Deliver to SOTA Berkeley 94720‌",
+    "section": "nav-global-location-slot > nav-global-location-data-modal-action",
+    "href": "https://www.amazon.com/dp/B0CPF3HJ62?ref_=apb_fb_ac_d_apb_fb_asin_pc_accessories&pd_rd_w=FjULz&content-id=amzn1.sym.15ea6109-b709-482f-aa95-a96a33d11246%3Aamzn1.sym.15ea6109-b709-482f-aa95-a96a33d11246&pf_rd_p=15ea6109-b709-482f-aa95-a96a33d11246&pf_rd_r=63QGH554CQS0XHE87G3E&pd_rd_wg=KCBCR&pd_rd_r=b9e94a3a-fbb6-43cc-85cc-504a8a9635a8&pd_rd_i=B0CPF3HJ62&sr=1-1-1c7c554e-c3b9-43b0-8060-ddc1e436c844&qid=1792847363"
+   },
+   {
+    "idx": 13,
+    "role": "searchbox",
+    "name": "Search Amazon",
+    "section": "nav-search > nav-search-bar-form"
+   },
+   {
+    "idx": 14,
+    "role": "button",
+    "name": "Go",
+    "section": "nav-search-bar-form > Go"
+   },
+   {
+    "idx": 15,
+    "role": "link",
+    "name": "Choose a language for shopping in Amazon United States. The current selection is English (EN).",
+    "section": "nav-tools > icp-nav-flyout",
+    "href": "https://www.amazon.com/customer-preferences/edit?ie=UTF8&preferencesReturnUrl=%2F&ref_=topnav_lang"
+   },
+   {
+    "idx": 16,
+    "role": "link",
+    "name": "Hello, Sota Account & Lists",
+    "section": "nav-tools > nav-link-accountList",
+    "href": "https://www.amazon.com/gp/css/homepage.html?ref_=nav_youraccount_btn"
+   },
+   {
+    "idx": 17,
+    "role": "button",
+    "name": "Expand Account and Lists",
+    "section": "nav-tools > nav-link-accountList"
+   },
+   {
+    "idx": 18,
+    "role": "link",
+    "name": "Returns & Orders",
+    "section": "nav-belt > nav-tools",
+    "href": "https://www.amazon.com/gp/css/order-history?ref_=nav_orders_first"
+   },
+   {
+    "idx": 19,
+    "role": "link",
+    "name": "0 items in cart",
+    "section": "nav-belt > nav-tools",
+    "href": "https://www.amazon.com/gp/cart/view.html?ref_=nav_cart"
+   },
+   {
+    "idx": 20,
+    "role": "button",
+    "name": "Open All Categories Menu",
+    "section": "Primary > nav-main",
+    "href": "javascript: void(0)"
+   },
+   {
+    "idx": 21,
+    "role": "button",
+    "name": "Open Alexa panel",
+    "section": "Primary > nav-main"
+   },
+   {
+    "idx": 22,
+    "role": "link",
+    "name": "Today's Deals",
+    "section": "nav-xshop-container > nav-xshop",
+    "href": "https://www.amazon.com/deals?ref_=nav_cs_gb"
+   },
+   {
+    "idx": 23,
+    "role": "link",
+    "name": "Coupons",
+    "section": "nav-xshop-container > nav-xshop",
+    "href": "https://www.amazon.com/coupons?ref_=nav_cs_coupons"
+   },
+   {
+    "idx": 24,
+    "role": "link",
+    "name": "Everyday",
+    "section": "nav-xshop-container > nav-xshop",
+    "href": "https://www.amazon.com/everyday-essentials?ref_=nav_cs_ee"
+   },
+   {
+    "idx": 25,
+    "role": "link",
+    "name": "Household, Health & Baby Care",
+    "section": "nav-xshop-container > nav-xshop",
+    "href": "https://www.amazon.com/health-personal-care-nutrition-fitness/b/?ie=UTF8&node=3760901&ref_=nav_cs_hpc"
+   },
+   {
+    "idx": 26,
+    "role": "link",
+    "name": "Prime Video",
+    "section": "nav-xshop-container > nav-xshop",
+    "href": "https://www.amazon.com/gp/video/storefront?ref_=nav_cs_prime_video"
+   },
+   {
+    "idx": 27,
+    "role": "link",
+    "name": "Customer Service",
+    "section": "nav-xshop-container > nav-xshop",
+    "href": "https://www.amazon.com/hz/contact-us/foresight/hubgateway?ref_=nav_cs_fs_hybridhub_navbar_c"
+   },
+   {
+    "idx": 28,
+    "role": "link",
+    "name": "Best Sellers",
+    "section": "nav-xshop-container > nav-xshop",
+    "href": "https://www.amazon.com/gp/bestsellers/?ref_=nav_cs_bestsellers"
+   },
+   {
+    "idx": 29,
+    "role": "link",
+    "name": "Kindle Books",
+    "section": "nav-xshop-container > nav-xshop",
+    "href": "https://www.amazon.com/Kindle-eBooks/b/?ie=UTF8&node=154606011&ref_=nav_cs_kindle_books"
+   },
+   {
+    "idx": 30,
+    "role": "link",
+    "name": "Books",
+    "section": "nav-xshop-container > nav-xshop",
+    "href": "https://www.amazon.com/books-used-books-textbooks/b/?ie=UTF8&node=283155&ref_=nav_cs_books"
+   },
+   {
+    "idx": 31,
+    "role": "link",
+    "name": "Browsing History",
+    "section": "nav-xshop > nav-recently-viewed",
+    "href": "https://www.amazon.com/gp/history?ref_=nav_cs_timeline"
+   },
+   {
+    "idx": 32,
+    "role": "button",
+    "name": "Browsing History Details",
+    "section": "nav-xshop > nav-recently-viewed"
+   },
+   {
+    "idx": 33,
+    "role": "link",
+    "name": "Buy Again",
+    "section": "nav-xshop-container > nav-xshop",
+    "href": "https://www.amazon.com/gp/buyagain?ie=UTF8&ref_=nav_cs_buy_again"
+   },
+   {
+    "idx": 34,
+    "role": "link",
+    "name": "Subscribe & Save",
+    "section": "nav-xshop-container > nav-xshop",
+    "href": "https://www.amazon.com/auto-deliveries/landing?ref_=nav_cs_sns"
+   },
+   {
+    "idx": 35,
+    "role": "link",
+    "name": "Groceries",
+    "section": "nav-xshop-container > nav-xshop",
+    "href": "https://www.amazon.com/fmc/grocery-gateway?gsc=fe16aGPfFs46S&ref_=nav_cs_groceries"
+   },
+   {
+    "idx": 36,
+    "role": "link",
+    "name": "TV & Video",
+    "section": "nav-xshop-container > nav-xshop",
+    "href": "https://www.amazon.com/tvs/b/?ie=UTF8&node=172659&ref_=nav_cs_tv"
+   },
+   {
+    "idx": 37,
+    "role": "link",
+    "name": "Gift Cards",
+    "section": "nav-xshop > nav_link_gift_cards",
+    "href": "https://www.amazon.com/gift-cards/b/?ie=UTF8&node=2238192011&ref_=nav_cs_gc"
+   },
+   {
+    "idx": 38,
+    "role": "button",
+    "name": "Gift Cards Details",
+    "section": "nav-xshop > nav_link_gift_cards"
+   },
+   {
+    "idx": 39,
+    "role": "link",
+    "name": "Registry",
+    "section": "nav-xshop-container > nav-xshop",
+    "href": "https://www.amazon.com/gp/browse.html?node=16115931011&ref_=nav_cs_registry"
+   },
+   {
+    "idx": 40,
+    "role": "link",
+    "name": "Whole Foods",
+    "section": "nav-xshop-container > nav-xshop",
+    "href": "https://www.amazon.com/alm/storefront?almBrandId=VUZHIFdob2xlIEZvb2Rz&ref_=nav_cs_whole_foods"
+   },
+   {
+    "idx": 41,
+    "role": "link",
+    "name": "New Releases",
+    "section": "nav-xshop-container > nav-xshop",
+    "href": "https://www.amazon.com/gp/new-releases/?ref_=nav_cs_newreleases"
+   },
+   {
+    "idx": 42,
+    "role": "link",
+    "name": "Pharmacy",
+    "section": "nav-xshop-container > nav-xshop",
+    "href": "https://pharmacy.amazon.com/?nodl=0&ref_=nav_cs_pharmacy"
+   },
+   {
+    "idx": 43,
+    "role": "link",
+    "name": "Automotive",
+    "section": "nav-xshop-container > nav-xshop",
+    "href": "https://www.amazon.com/automotive-auto-truck-replacements-parts/b/?ie=UTF8&node=15684181&ref_=nav_cs_automotive"
+   },
+   {
+    "idx": 44,
+    "role": "link",
+    "name": "Amazon Basics",
+    "section": "nav-xshop-container > nav-xshop",
+    "href": "https://www.amazon.com/Amazon_Basics?channel=discovbar&field-lbr_brands_browse-bin=AmazonBasics&ref_=nav_cs_amazonbasics"
+   },
+   {
+    "idx": 45,
+    "role": "link",
+    "name": "Amazon Haul",
+    "section": "nav-xshop-container > nav-xshop",
+    "href": "https://www.amazon.com/haul/store?ref_=nav_cs_hul_disb"
+   },
+   {
+    "idx": 46,
+    "role": "link",
+    "name": "Home Improvement",
+    "section": "nav-xshop > nav_flyout_homeImprovement",
+    "href": "https://www.amazon.com/Tools-and-Home-Improvement/b/?ie=UTF8&node=228013&ref_=nav_cs_hi"
+   },
+   {
+    "idx": 47,
+    "role": "button",
+    "name": "Home Improvement Details",
+    "section": "nav-xshop > nav_flyout_homeImprovement"
+   },
+   {
+    "idx": 48,
+    "role": "link",
+    "name": "Music",
+    "section": "nav-xshop-container > nav-xshop",
+    "href": "https://www.amazon.com/music/player?ref_=nav_cs_music"
+   },
+   {
+    "idx": 49,
+    "role": "link",
+    "name": "Video Games",
+    "section": "nav-xshop-container > nav-xshop",
+    "href": "https://www.amazon.com/computer-video-games-hardware-accessories/b/?ie=UTF8&node=468642&ref_=nav_cs_video_games"
+   },
+   {
+    "idx": 50,
+    "role": "link",
+    "name": "Audible",
+    "section": "nav-xshop-container > nav-xshop",
+    "href": "https://www.amazon.com/Audible-Books-and-Originals/b/?ie=UTF8&node=18145289011&ref_=nav_cs_audible"
+   },
+   {
+    "idx": 51,
+    "role": "link",
+    "name": "Home Audio & Theater",
+    "section": "nav-xshop-container > nav-xshop",
+    "href": "https://www.amazon.com/Home-Audio-Electronics/b/?ie=UTF8&node=667846011&ref_=nav_cs_home_audio"
+   },
+   {
+    "idx": 52,
+    "role": "link",
+    "name": "Pet Supplies",
+    "section": "nav-xshop > nav_link_pet_supplies",
+    "href": "https://www.amazon.com/pet-shops-dogs-cats-hamsters-kittens/b/?ie=UTF8&node=2619533011&ref_=nav_cs_pets"
+   },
+   {
+    "idx": 53,
+    "role": "button",
+    "name": "Pet Supplies Details",
+    "section": "nav-xshop > nav_link_pet_supplies"
+   },
+   {
+    "idx": 54,
+    "role": "link",
+    "name": "Beauty & Personal Care",
+    "section": "nav-xshop-container > nav-xshop",
+    "href": "https://www.amazon.com/Beauty-Makeup-Skin-Hair-Products/b/?ie=UTF8&node=3760911&ref_=nav_cs_beauty"
+   },
+   {
+    "idx": 55,
+    "role": "link",
+    "name": "Fashion",
+    "section": "nav-xshop-container > nav-xshop",
+    "href": "https://www.amazon.com/amazon-fashion/b/?ie=UTF8&node=7141123011&ref_=nav_cs_fashion"
+   },
+   {
+    "idx": 56,
+    "role": "link",
+    "name": "Computers",
+    "section": "nav-progressive-subnav > nav-subnav",
+    "href": "https://www.amazon.com/computer-pc-hardware-accessories-add-ons/b/?ie=UTF8&node=541966&ref_=topnav_storetab_pc"
+   },
+   {
+    "idx": 57,
+    "role": "link",
+    "name": "Laptops, You are currently on a drop-down. To open this drop-down, Press Enter.",
+    "section": "nav-progressive-subnav > nav-subnav",
+    "href": "https://www.amazon.com/Notebooks-Laptop-Computers/b/?ie=UTF8&node=565108&ref_=sv_pc_1"
+   },
+   {
+    "idx": 58,
+    "role": "link",
+    "name": "Desktops, You are currently on a drop-down. To open this drop-down, Press Enter.",
+    "section": "nav-progressive-subnav > nav-subnav",
+    "href": "https://www.amazon.com/Desktops-Computers-Add-Ons/b/?ie=UTF8&node=565098&ref_=sv_pc_2"
+   },
+   {
+    "idx": 59,
+    "role": "link",
+    "name": "Monitors, You are currently on a drop-down. To open this drop-down, Press Enter.",
+    "section": "nav-progressive-subnav > nav-subnav",
+    "href": "https://www.amazon.com/Monitors-Computers-Accessories/b/?ie=UTF8&node=1292115011&ref_=sv_pc_3"
+   },
+   {
+    "idx": 60,
+    "role": "link",
+    "name": "Tablets, You are currently on a drop-down. To open this drop-down, Press Enter.",
+    "section": "nav-progressive-subnav > nav-subnav",
+    "href": "https://www.amazon.com/Tablets/b/?ie=UTF8&node=1232597011&ref_=sv_pc_4"
+   },
+   {
+    "idx": 61,
+    "role": "link",
+    "name": "Computer Accessories, You are currently on a drop-down. To open this drop-down, Press Enter.",
+    "section": "nav-progressive-subnav > nav-subnav",
+    "href": "https://www.amazon.com/Computer-Accessories-Supplies/b/?ie=UTF8&node=172456&ref_=sv_pc_5"
+   },
+   {
+    "idx": 62,
+    "role": "link",
+    "name": "PC Components, You are currently on a drop-down. To open this drop-down, Press Enter.",
+    "section": "nav-progressive-subnav > nav-subnav",
+    "href": "https://www.amazon.com/PC-Parts-Components/b/?ie=UTF8&node=193870011&ref_=sv_pc_6"
+   },
+   {
+    "idx": 63,
+    "role": "link",
+    "name": "PC Gaming, You are currently on a drop-down. To open this drop-down, Press Enter.",
+    "section": "nav-progressive-subnav > nav-subnav",
+    "href": "https://www.amazon.com/PC-Gaming/b/?ie=UTF8&node=8588809011&ref_=sv_pc_7"
+   },
+   {
+    "idx": 64,
+    "role": "link",
+    "name": "Deals",
+    "section": "nav-progressive-subnav > nav-subnav",
+    "href": "https://www.amazon.com/b/?ie=UTF8&node=14777268011&ref_=sv_pc_8"
+   },
+   {
+    "idx": 65,
+    "role": "button",
+    "name": "Product summary presents key product information",
+    "section": "pqv-hidden-ingress > pqv-ingress",
+    "href": "https://www.amazon.com/dp/B0CPF3HJ62?ref_=apb_fb_ac_d_apb_fb_asin_pc_accessories&pd_rd_w=FjULz&content-id=amzn1.sym.15ea6109-b709-482f-aa95-a96a33d11246%3Aamzn1.sym.15ea6109-b709-482f-aa95-a96a33d11246&pf_rd_p=15ea6109-b709-482f-aa95-a96a33d11246&pf_rd_r=63QGH554CQS0XHE87G3E&pd_rd_wg=KCBCR&pd_rd_r=b9e94a3a-fbb6-43cc-85cc-504a8a9635a8&pd_rd_i=B0CPF3HJ62&sr=1-1-1c7c554e-c3b9-43b0-8060-ddc1e436c844&qid=1792847363#"
+   },
+   {
+    "idx": 66,
+    "role": "button",
+    "name": "Leave feedback on Sponsored ad",
+    "section": "above-dp-container > desktop-dp-ilm_feature_div_0"
+   },
+   {
+    "idx": 67,
+    "role": "link",
+    "name": "Electronics",
+    "section": "desktop-breadcrumbs_feature_div > wayfinding-breadcrumbs_feature_div",
+    "href": "https://www.amazon.com/electronics-store/b/ref=dp_bc_1?ie=UTF8&node=172282"
+   },
+   {
+    "idx": 68,
+    "role": "link",
+    "name": "Computers & Accessories",
+    "section": "desktop-breadcrumbs_feature_div > wayfinding-breadcrumbs_feature_div",
+    "href": "https://www.amazon.com/computer-pc-hardware-accessories-add-ons/b/ref=dp_bc_2?ie=UTF8&node=541966"
+   },
+   {
+    "idx": 69,
+    "role": "link",
+    "name": "Computer Accessories & Peripherals",
+    "section": "desktop-breadcrumbs_feature_div > wayfinding-breadcrumbs_feature_div",
+    "href": "https://www.amazon.com/Computer-Accessories-Supplies/b/ref=dp_bc_3?ie=UTF8&node=172456"
+   },
+   {
+    "idx": 70,
+    "role": "link",
+    "name": "Cables & Accessories",
+    "section": "desktop-breadcrumbs_feature_div > wayfinding-breadcrumbs_feature_div",
+    "href": "https://www.amazon.com/Cables-Accessories/b/ref=dp_bc_4?ie=UTF8&node=23666438011"
+   },
+   {
+    "idx": 71,
+    "role": "link",
+    "name": "Cables & Interconnects",
+    "section": "desktop-breadcrumbs_feature_div > wayfinding-breadcrumbs_feature_div",
+    "href": "https://www.amazon.com/Cables-Interconnects-Computer-Accessories-Supplies/b/ref=dp_bc_5?ie=UTF8&node=172463"
+   },
+   {
+    "idx": 72,
+    "role": "link",
+    "name": "USB Cables",
+    "section": "desktop-breadcrumbs_feature_div > wayfinding-breadcrumbs_feature_div",
+    "href": "https://www.amazon.com/USB-Cables/b/ref=dp_bc_6?ie=UTF8&node=464394"
+   },
+   {
+    "idx": 73,
+    "role": "button",
+    "name": "Load more",
+    "section": "rufus-price-ingress-bb > a-autoid-0"
+   },
+   {
+    "idx": 74,
+    "role": "button",
+    "name": "FREE Returns",
+    "section": "creturns-return-policy-message > free-returns-policy-celWidget",
+    "href": "javascript:void(0)"
+   },
+   {
+    "idx": 75,
+    "role": "button",
+    "name": "Deliver to SOTA - Berkeley 94720‌",
+    "section": "deliveryBlockContainer > cipInsideDeliveryBlock_feature_div",
+    "href": "https://www.amazon.com/dp/B0CPF3HJ62?ref_=apb_fb_ac_d_apb_fb_asin_pc_accessories&pd_rd_w=FjULz&content-id=amzn1.sym.15ea6109-b709-482f-aa95-a96a33d11246%3Aamzn1.sym.15ea6109-b709-482f-aa95-a96a33d11246&pf_rd_p=15ea6109-b709-482f-aa95-a96a33d11246&pf_rd_r=63QGH554CQS0XHE87G3E&pd_rd_wg=KCBCR&pd_rd_r=b9e94a3a-fbb6-43cc-85cc-504a8a9635a8&pd_rd_i=B0CPF3HJ62&sr=1-1-1c7c554e-c3b9-43b0-8060-ddc1e436c844&qid=1792847363#"
+   },
+   {
+    "idx": 76,
+    "role": "combobox",
+    "name": "Quantity:",
+    "section": "quantityRelocate_feature_div > selectQuantity",
+    "value": "1"
+   },
+   {
+    "idx": 77,
+    "role": "button",
+    "name": "Add to cart",
+    "section": "atc-declarative > submit.add-to-cart"
+   },
+   {
+    "idx": 78,
+    "role": "button",
+    "name": "Buy Now",
+    "section": "buyNow > submit.buy-now",
+    "purchaseRisk": true
+   },
+   {
+    "idx": 79,
+    "role": "button",
+    "name": "FREE 30-day refund/replacement",
+    "section": "Seller, shipping, and buying option deta… > returnsInfoFeature_feature_div",
+    "href": "javascript:void(0)"
+   },
+   {
+    "idx": 80,
+    "role": "button",
+    "name": "Secure transaction",
+    "section": "Seller, shipping, and buying option deta… > secureTransactionReorderT1_feature_div",
+    "href": "javascript:void(0)"
+   },
+   {
+    "idx": 81,
+    "role": "button",
+    "name": "See more",
+    "section": "offerDisplayFeatures_desktop > offer-display-features",
+    "href": "javascript:void(0)"
+   },
+   {
+    "idx": 82,
+    "role": "button",
+    "name": "Add to List",
+    "section": "add-to-wishlist-button-group > wishListMainButton"
+   },
+   {
+    "idx": 83,
+    "role": "button",
+    "name": "Select a list from the dropdown",
+    "section": "add-to-wishlist-button-group > wishListDropDown"
+   },
+   {
+    "idx": 84,
+    "role": "button",
+    "name": "Share",
+    "section": "list-and-share-box-container > ssf-primary-widget-desktop",
+    "href": "javascript:void(0)"
+   },
+   {
+    "idx": 85,
+    "role": "radio",
+    "name": "Two black Amazon Basics USB-A to USB-C cables coiled side by side on a white background. Each cable …",
+    "section": "Image thumbnails > a-autoid-2",
+    "checked": false
+   },
+   {
+    "idx": 86,
+    "role": "radio",
+    "name": "Close-up of both ends of a black USB cable: a standard USB-A connector on the left showing gold cont…",
+    "section": "Image thumbnails > a-autoid-3",
+    "checked": false
+   },
+   {
+    "idx": 87,
+    "role": "radio",
+    "name": "AmazonBasics USB-C to USB-A cable compatibility infographic. Both connectors shown close-up in black…",
+    "section": "Image thumbnails > a-autoid-4",
+    "checked": false
+   },
+   {
+    "idx": 88,
+    "role": "radio",
+    "name": "Black USB-C to USB-A cable coiled loosely on a white background. The USB-A connector is visible at o…",
+    "section": "Image thumbnails > a-autoid-5",
+    "checked": false
+   },
+   {
+    "idx": 89,
+    "role": "radio",
+    "name": "Black USB-C to USB-A cable connecting an LG smartphone to a silver laptop. One end plugs into the la…",
+    "section": "Image thumbnails > a-autoid-6",
+    "checked": false
+   },
+   {
+    "idx": 90,
+    "role": "radio",
+    "name": "3+",
+    "section": "Image thumbnails > a-autoid-7",
+    "checked": false
+   },
+   {
+    "idx": 91,
+    "role": "radio",
+    "name": "Product Video",
+    "section": "Image thumbnails > a-autoid-8",
+    "checked": false
+   },
+   {
+    "idx": 92,
+    "role": "button",
+    "name": "Two black Amazon Basics USB-A to USB-C cables coiled side by side on a white background. Each cable …",
+    "section": "imageBlock > main-image-container"
+   },
+   {
+    "idx": 93,
+    "role": "link",
+    "name": "Click to see full view",
+    "section": "image-canvas-caption > canvasCaption",
+    "href": "https://www.amazon.com/dp/B0CPF3HJ62?ref_=apb_fb_ac_d_apb_fb_asin_pc_accessories&pd_rd_w=FjULz&content-id=amzn1.sym.15ea6109-b709-482f-aa95-a96a33d11246%3Aamzn1.sym.15ea6109-b709-482f-aa95-a96a33d11246&pf_rd_p=15ea6109-b709-482f-aa95-a96a33d11246&pf_rd_r=63QGH554CQS0XHE87G3E&pd_rd_wg=KCBCR&pd_rd_r=b9e94a3a-fbb6-43cc-85cc-504a8a9635a8&pd_rd_i=B0CPF3HJ62&sr=1-1-1c7c554e-c3b9-43b0-8060-ddc1e436c844&qid=1792847363#"
+   },
+   {
+    "idx": 94,
+    "role": "button",
+    "name": "Can it charge a tablet?",
+    "section": "nile-inline_feature_div > dpx-nice-widget-container"
+   },
+   {
+    "idx": 95,
+    "role": "button",
+    "name": "Does it support data transfer?",
+    "section": "nile-inline_feature_div > dpx-nice-widget-container"
+   },
+   {
+    "idx": 96,
+    "role": "button",
+    "name": "Is this cable durable?",
+    "section": "nile-inline_feature_div > dpx-nice-widget-container"
+   },
+   {
+    "idx": 97,
+    "role": "button",
+    "name": "Why you might like this",
+    "section": "nile-inline_feature_div > dpx-nice-widget-container"
+   },
+   {
+    "idx": 98,
+    "role": "button",
+    "name": "Compare with similar",
+    "section": "nile-inline_feature_div > dpx-nice-widget-container"
+   },
+   {
+    "idx": 99,
+    "role": "button",
+    "name": "Ask something else",
+    "section": "nile-inline_feature_div > dpx-nice-widget-container"
+   },
+   {
+    "idx": 100,
+    "role": "link",
+    "name": "Visit the Amazon Basics Store",
+    "section": "title_elements_default > bylineInfo_feature_div",
+    "href": "https://www.amazon.com/stores/AmazonBasics/page/947C6949-CF8E-4BD3-914A-B411DD3E4433?lp_asin=B0CPF3HJ62&ref_=ast_bln&store_ref=bl_ast_dp_brandlogo_sto&bl_grd_status=override"
+   },
+   {
+    "idx": 101,
+    "role": "button",
+    "name": "4.6 4.6 out of 5 stars",
+    "section": "averageCustomerReviews > acrPopover",
+    "href": "javascript:void(0)"
+   },
+   {
+    "idx": 102,
+    "role": "link",
+    "name": "(107,591)",
+    "section": "averageCustomerReviews_feature_div > averageCustomerReviews",
+    "href": "https://www.amazon.com/dp/B0CPF3HJ62?ref_=apb_fb_ac_d_apb_fb_asin_pc_accessories&pd_rd_w=FjULz&content-id=amzn1.sym.15ea6109-b709-482f-aa95-a96a33d11246%3Aamzn1.sym.15ea6109-b709-482f-aa95-a96a33d11246&pf_rd_p=15ea6109-b709-482f-aa95-a96a33d11246&pf_rd_r=63QGH554CQS0XHE87G3E&pd_rd_wg=KCBCR&pd_rd_r=b9e94a3a-fbb6-43cc-85cc-504a8a9635a8&pd_rd_i=B0CPF3HJ62&sr=1-1-1c7c554e-c3b9-43b0-8060-ddc1e436c844&qid=1792847363#averageCustomerReviewsAnchor"
+   },
+   {
+    "idx": 103,
+    "role": "link",
+    "name": "Search this page",
+    "section": "title_elements_default > ask_feature_div",
+    "href": "https://www.amazon.com/dp/B0CPF3HJ62?ref_=apb_fb_ac_d_apb_fb_asin_pc_accessories&pd_rd_w=FjULz&content-id=amzn1.sym.15ea6109-b709-482f-aa95-a96a33d11246%3Aamzn1.sym.15ea6109-b709-482f-aa95-a96a33d11246&pf_rd_p=15ea6109-b709-482f-aa95-a96a33d11246&pf_rd_r=63QGH554CQS0XHE87G3E&pd_rd_wg=KCBCR&pd_rd_r=b9e94a3a-fbb6-43cc-85cc-504a8a9635a8&pd_rd_i=B0CPF3HJ62&sr=1-1-1c7c554e-c3b9-43b0-8060-ddc1e436c844&qid=1792847363#"
+   },
+   {
+    "idx": 104,
+    "role": "button",
+    "name": "Price history",
+    "section": "rufus-price-ingress-cc > a-autoid-9"
+   },
+   {
+    "idx": 105,
+    "role": "link",
+    "name": "You're invited to apply for Prime Visa. Get a $150 Amazon Gift Card instantly upon approval. Find ou…",
+    "section": "apex_desktop > mapleAdvertisement_feature_div",
+    "href": "https://www.amazon.com/dp/product/BT00LN946S?pr=521prime&inc=0355d35b-30fb-4d77-bbd5-d3a91cc22f5d&ts=8goo1wuef1wjq7qm5evqqf9gwxxqogg&place=priceblock&plattr=CO_CBCC_PRIME_DESK_1191015_T1&imp=aca1a23c-40db-4f54-b166-578ed16fd8e7&dasin=B0CPF3HJ62&mru=%2Fdp%2Fproduct%2FB0CPF3HJ62"
+   },
+   {
+    "idx": 106,
+    "role": "button",
+    "name": "FREE Returns",
+    "section": "creturns-return-policy-message > free-returns-policy-celWidget",
+    "href": "javascript:void(0)"
+   },
+   {
+    "idx": 107,
+    "role": "link",
+    "name": "Terms",
+    "section": "apex_desktop > promoPriceBlockMessage_feature_div",
+    "href": "https://www.amazon.com/dp/B0CPF3HJ62?ref_=apb_fb_ac_d_apb_fb_asin_pc_accessories&pd_rd_w=FjULz&content-id=amzn1.sym.15ea6109-b709-482f-aa95-a96a33d11246%3Aamzn1.sym.15ea6109-b709-482f-aa95-a96a33d11246&pf_rd_p=15ea6109-b709-482f-aa95-a96a33d11246&pf_rd_r=63QGH554CQS0XHE87G3E&pd_rd_wg=KCBCR&pd_rd_r=b9e94a3a-fbb6-43cc-85cc-504a8a9635a8&pd_rd_i=B0CPF3HJ62&sr=1-1-1c7c554e-c3b9-43b0-8060-ddc1e436c844&qid=1792847363#"
+   },
+   {
+    "idx": 108,
+    "role": "radio",
+    "name": "$17.98 $17.98 $8.99 per count ( $8.99 $8.99 / count) Mon, Oct 26",
+    "section": "tp-inline-twister-dim-values-container > color_name_1",
+    "checked": false
+   },
+   {
+    "idx": 109,
+    "role": "radio",
+    "name": "$11.76 $11.76 $5.88 per count ( $5.88 $5.88 / count) Today 1 PM - 4 PM",
+    "section": "tp-inline-twister-dim-values-container > color_name_2",
+    "checked": false
+   },
+   {
+    "idx": 110,
+    "role": "button",
+    "name": "See 1 options with no featured offers",
+    "section": "There are 3 options. > tp-inline-twister-dim-values-container"
+   },
+   {
+    "idx": 111,
+    "role": "button",
+    "name": "Leave feedback on Sponsored ad",
+    "section": "rightCol > amsDetailRight-dramabot_feature_div"
+   },
+   {
+    "idx": 112,
+    "role": "radio",
+    "name": "3 Feet",
+    "section": "tp-inline-twister-dim-values-container > size_name_0",
+    "checked": false
+   },
+   {
+    "idx": 113,
+    "role": "radio",
+    "name": "3 Foot",
+    "section": "tp-inline-twister-dim-values-container > size_name_1",
+    "checked": false
+   },
+   {
+    "idx": 114,
+    "role": "radio",
+    "name": "3 Feet (Pack of 3)",
+    "section": "tp-inline-twister-dim-values-container > size_name_2",
+    "checked": false
+   },
+   {
+    "idx": 115,
+    "role": "radio",
+    "name": "6 Feet",
+    "section": "tp-inline-twister-dim-values-container > size_name_3",
+    "checked": false
+   },
+   {
+    "idx": 116,
+    "role": "radio",
+    "name": "6 Feet (Pack of 2)",
+    "section": "tp-inline-twister-dim-values-container > size_name_4",
+    "checked": false
+   },
+   {
+    "idx": 117,
+    "role": "radio",
+    "name": "6 Feet (Pack of 3)",
+    "section": "tp-inline-twister-dim-values-container > size_name_5",
+    "checked": false
+   },
+   {
+    "idx": 118,
+    "role": "radio",
+    "name": "1-Pack",
+    "section": "tp-inline-twister-dim-values-container > style_name_0",
+    "checked": false
+   },
+   {
+    "idx": 119,
+    "role": "radio",
+    "name": "5-Pack",
+    "section": "tp-inline-twister-dim-values-container > style_name_1",
+    "checked": false
+   },
+   {
+    "idx": 120,
+    "role": "radio",
+    "name": "24 Count (Pack of 5)",
+    "section": "tp-inline-twister-dim-values-container > style_name_2",
+    "checked": false
+   },
+   {
+    "idx": 121,
+    "role": "button",
+    "name": "See more",
+    "section": "productOverview_feature_div > po-attribute-see-more-id-3",
+    "href": "javascript:void(0)"
+   },
+   {
+    "idx": 122,
+    "role": "link",
+    "name": "See more product details",
+    "section": "featurebullets_feature_div > feature-bullets",
+    "href": "https://www.amazon.com/dp/B0CPF3HJ62?ref_=apb_fb_ac_d_apb_fb_asin_pc_accessories&pd_rd_w=FjULz&content-id=amzn1.sym.15ea6109-b709-482f-aa95-a96a33d11246%3Aamzn1.sym.15ea6109-b709-482f-aa95-a96a33d11246&pf_rd_p=15ea6109-b709-482f-aa95-a96a33d11246&pf_rd_r=63QGH554CQS0XHE87G3E&pd_rd_wg=KCBCR&pd_rd_r=b9e94a3a-fbb6-43cc-85cc-504a8a9635a8&pd_rd_i=B0CPF3HJ62&sr=1-1-1c7c554e-c3b9-43b0-8060-ddc1e436c844&qid=1792847363#productDetails"
+   },
+   {
+    "idx": 123,
+    "role": "link",
+    "name": "Report an issue with this product or seller",
+    "section": "centerCol > tellAmazon_feature_div",
+    "href": "javascript:void(0)"
+   },
+   {
+    "idx": 124,
+    "role": "button",
+    "name": "Leave feedback on Sponsored ad",
+    "section": "heroQuickPromoContainer > heroQuickPromo_feature_div"
+   },
+   {
+    "idx": 125,
+    "role": "link",
+    "name": "Sponsored",
+    "section": "Products related to this item > sp_detail_heading",
+    "href": "https://www.amazon.com/dp/B0CPF3HJ62?ref_=apb_fb_ac_d_apb_fb_asin_pc_accessories&pd_rd_w=FjULz&content-id=amzn1.sym.15ea6109-b709-482f-aa95-a96a33d11246%3Aamzn1.sym.15ea6109-b709-482f-aa95-a96a33d11246&pf_rd_p=15ea6109-b709-482f-aa95-a96a33d11246&pf_rd_r=63QGH554CQS0XHE87G3E&pd_rd_wg=KCBCR&pd_rd_r=b9e94a3a-fbb6-43cc-85cc-504a8a9635a8&pd_rd_i=B0CPF3HJ62&sr=1-1-1c7c554e-c3b9-43b0-8060-ddc1e436c844&qid=1792847363#sp_detail_feedbackForm"
+   },
+   {
+    "idx": 126,
+    "role": "link",
+    "name": "USB to USB C Cable 60W Fast Charging [2 Pack 6FT], USB A to USB C Cable for | CarPl...",
+    "section": "sims-sponsoredProducts_feature_div_0 > Products related to this item",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo3NTgzNzExOTM3MDA5NDkxOjE3OTI4NDczNjg6c3BfZGV0YWlsOjMwMDkwMjY4NDg3NjUwMjo6Ojo&url=%2Fdp%2FB0FH4MX7RT%2Fref%3Dsspa_dk_detail_0%3Fpsc%3D1%26pd_rd_i%3DB0FH4MX7RT%26pd_rd_w%3Dfm8r9%26content-id%3Damzn1.sym.17345c9b-ef8c-4a79-bcd9-8894b1e1e0ea%26pf_rd_p%3D17345c9b-ef8c-4a79-bcd9-8894b1e1e0ea%26pf_rd_r%3DJDZQZNQQWAQ0TEKP7TNM%26pd_rd_wg%3Dohdz0%26pd_rd_r%3Df3b45206-2fb9-4f78-bc10-62b83f6f3b2c%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9kZXRhaWw"
+   },
+   {
+    "idx": 127,
+    "role": "link",
+    "name": "4.5 out of 5 stars 1,094 ratings",
+    "section": "sims-sponsoredProducts_feature_div_0 > Products related to this item",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo3NTgzNzExOTM3MDA5NDkxOjE3OTI4NDczNjg6c3BfZGV0YWlsOjMwMDkwMjY4NDg3NjUwMjo6Ojo&url=%2Fdp%2FB0FH4MX7RT%2Fref%3Dsspa_dk_detail_0%3Fpsc%3D1%26pd_rd_i%3DB0FH4MX7RT%26pd_rd_w%3Dfm8r9%26content-id%3Damzn1.sym.17345c9b-ef8c-4a79-bcd9-8894b1e1e0ea%26pf_rd_p%3D17345c9b-ef8c-4a79-bcd9-8894b1e1e0ea%26pf_rd_r%3DJDZQZNQQWAQ0TEKP7TNM%26pd_rd_wg%3Dohdz0%26pd_rd_r%3Df3b45206-2fb9-4f78-bc10-62b83f6f3b2c%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9kZXRhaWw#customerReviews"
+   },
+   {
+    "idx": 128,
+    "role": "link",
+    "name": "$15.49 $15 . 49( $7.75 $7.75 / count)",
+    "section": "sims-sponsoredProducts_feature_div_0 > Products related to this item",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo3NTgzNzExOTM3MDA5NDkxOjE3OTI4NDczNjg6c3BfZGV0YWlsOjMwMDkwMjY4NDg3NjUwMjo6Ojo&url=%2Fdp%2FB0FH4MX7RT%2Fref%3Dsspa_dk_detail_0%3Fpsc%3D1%26pd_rd_i%3DB0FH4MX7RT%26pd_rd_w%3Dfm8r9%26content-id%3Damzn1.sym.17345c9b-ef8c-4a79-bcd9-8894b1e1e0ea%26pf_rd_p%3D17345c9b-ef8c-4a79-bcd9-8894b1e1e0ea%26pf_rd_r%3DJDZQZNQQWAQ0TEKP7TNM%26pd_rd_wg%3Dohdz0%26pd_rd_r%3Df3b45206-2fb9-4f78-bc10-62b83f6f3b2c%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9kZXRhaWw"
+   },
+   {
+    "idx": 129,
+    "role": "link",
+    "name": "FREE delivery Today 5 PM - 8 PM on $25 of qualifying items",
+    "section": "sims-sponsoredProducts_feature_div_0 > Products related to this item",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo3NTgzNzExOTM3MDA5NDkxOjE3OTI4NDczNjg6c3BfZGV0YWlsOjMwMDkwMjY4NDg3NjUwMjo6Ojo&url=%2Fdp%2FB0FH4MX7RT%2Fref%3Dsspa_dk_detail_0%3Fpsc%3D1%26pd_rd_i%3DB0FH4MX7RT%26pd_rd_w%3Dfm8r9%26content-id%3Damzn1.sym.17345c9b-ef8c-4a79-bcd9-8894b1e1e0ea%26pf_rd_p%3D17345c9b-ef8c-4a79-bcd9-8894b1e1e0ea%26pf_rd_r%3DJDZQZNQQWAQ0TEKP7TNM%26pd_rd_wg%3Dohdz0%26pd_rd_r%3Df3b45206-2fb9-4f78-bc10-62b83f6f3b2c%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9kZXRhaWw"
+   },
+   {
+    "idx": 130,
+    "role": "link",
+    "name": "Belkin USB A to USB C 15W Braided Cable 2 Pack, 6.6ft iPhone Charger Cord | iPhone ...",
+    "section": "sims-sponsoredProducts_feature_div_0 > Products related to this item",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo3NTgzNzExOTM3MDA5NDkxOjE3OTI4NDczNjg6c3BfZGV0YWlsOjMwMDc1NjE0MDM4MTEwMjo6Ojo&url=%2Fdp%2FB0F63XNWN3%2Fref%3Dsspa_dk_detail_1%3Fpsc%3D1%26pd_rd_i%3DB0F63XNWN3%26pd_rd_w%3Dfm8r9%26content-id%3Damzn1.sym.17345c9b-ef8c-4a79-bcd9-8894b1e1e0ea%26pf_rd_p%3D17345c9b-ef8c-4a79-bcd9-8894b1e1e0ea%26pf_rd_r%3DJDZQZNQQWAQ0TEKP7TNM%26pd_rd_wg%3Dohdz0%26pd_rd_r%3Df3b45206-2fb9-4f78-bc10-62b83f6f3b2c%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9kZXRhaWw"
+   },
+   {
+    "idx": 131,
+    "role": "link",
+    "name": "4.7 out of 5 stars 537 ratings",
+    "section": "sims-sponsoredProducts_feature_div_0 > Products related to this item",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo3NTgzNzExOTM3MDA5NDkxOjE3OTI4NDczNjg6c3BfZGV0YWlsOjMwMDc1NjE0MDM4MTEwMjo6Ojo&url=%2Fdp%2FB0F63XNWN3%2Fref%3Dsspa_dk_detail_1%3Fpsc%3D1%26pd_rd_i%3DB0F63XNWN3%26pd_rd_w%3Dfm8r9%26content-id%3Damzn1.sym.17345c9b-ef8c-4a79-bcd9-8894b1e1e0ea%26pf_rd_p%3D17345c9b-ef8c-4a79-bcd9-8894b1e1e0ea%26pf_rd_r%3DJDZQZNQQWAQ0TEKP7TNM%26pd_rd_wg%3Dohdz0%26pd_rd_r%3Df3b45206-2fb9-4f78-bc10-62b83f6f3b2c%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9kZXRhaWw#customerReviews"
+   },
+   {
+    "idx": 132,
+    "role": "link",
+    "name": "$14.99 $14 . 99( $1.14 $1.14 / feet)",
+    "section": "sims-sponsoredProducts_feature_div_0 > Products related to this item",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo3NTgzNzExOTM3MDA5NDkxOjE3OTI4NDczNjg6c3BfZGV0YWlsOjMwMDc1NjE0MDM4MTEwMjo6Ojo&url=%2Fdp%2FB0F63XNWN3%2Fref%3Dsspa_dk_detail_1%3Fpsc%3D1%26pd_rd_i%3DB0F63XNWN3%26pd_rd_w%3Dfm8r9%26content-id%3Damzn1.sym.17345c9b-ef8c-4a79-bcd9-8894b1e1e0ea%26pf_rd_p%3D17345c9b-ef8c-4a79-bcd9-8894b1e1e0ea%26pf_rd_r%3DJDZQZNQQWAQ0TEKP7TNM%26pd_rd_wg%3Dohdz0%26pd_rd_r%3Df3b45206-2fb9-4f78-bc10-62b83f6f3b2c%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9kZXRhaWw"
+   },
+   {
+    "idx": 133,
+    "role": "link",
+    "name": "FREE delivery Mon, Oct 26",
+    "section": "sims-sponsoredProducts_feature_div_0 > Products related to this item",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo3NTgzNzExOTM3MDA5NDkxOjE3OTI4NDczNjg6c3BfZGV0YWlsOjMwMDc1NjE0MDM4MTEwMjo6Ojo&url=%2Fdp%2FB0F63XNWN3%2Fref%3Dsspa_dk_detail_1%3Fpsc%3D1%26pd_rd_i%3DB0F63XNWN3%26pd_rd_w%3Dfm8r9%26content-id%3Damzn1.sym.17345c9b-ef8c-4a79-bcd9-8894b1e1e0ea%26pf_rd_p%3D17345c9b-ef8c-4a79-bcd9-8894b1e1e0ea%26pf_rd_r%3DJDZQZNQQWAQ0TEKP7TNM%26pd_rd_wg%3Dohdz0%26pd_rd_r%3Df3b45206-2fb9-4f78-bc10-62b83f6f3b2c%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9kZXRhaWw"
+   },
+   {
+    "idx": 134,
+    "role": "button",
+    "name": "1 sustainability feature",
+    "section": "sims-sponsoredProducts_feature_div_0 > Products related to this item",
+    "href": "javascript:void(0)"
+   },
+   {
+    "idx": 135,
+    "role": "link",
+    "name": "Belkin USB C to USB C 240W Cable 2 Pack, 6.6ft Fast iPhone Charger Cord | iPhone 15...",
+    "section": "sims-sponsoredProducts_feature_div_0 > Products related to this item",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo3NTgzNzExOTM3MDA5NDkxOjE3OTI4NDczNjg6c3BfZGV0YWlsOjMwMDc1NjE0MDM4MTAwMjo6Ojo&url=%2Fdp%2FB0F63YPTL5%2Fref%3Dsspa_dk_detail_2%3Fpsc%3D1%26pd_rd_i%3DB0F63YPTL5%26pd_rd_w%3Dfm8r9%26content-id%3Damzn1.sym.17345c9b-ef8c-4a79-bcd9-8894b1e1e0ea%26pf_rd_p%3D17345c9b-ef8c-4a79-bcd9-8894b1e1e0ea%26pf_rd_r%3DJDZQZNQQWAQ0TEKP7TNM%26pd_rd_wg%3Dohdz0%26pd_rd_r%3Df3b45206-2fb9-4f78-bc10-62b83f6f3b2c%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9kZXRhaWw"
+   },
+   {
+    "idx": 136,
+    "role": "link",
+    "name": "4.6 out of 5 stars 1,170 ratings",
+    "section": "sims-sponsoredProducts_feature_div_0 > Products related to this item",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo3NTgzNzExOTM3MDA5NDkxOjE3OTI4NDczNjg6c3BfZGV0YWlsOjMwMDc1NjE0MDM4MTAwMjo6Ojo&url=%2Fdp%2FB0F63YPTL5%2Fref%3Dsspa_dk_detail_2%3Fpsc%3D1%26pd_rd_i%3DB0F63YPTL5%26pd_rd_w%3Dfm8r9%26content-id%3Damzn1.sym.17345c9b-ef8c-4a79-bcd9-8894b1e1e0ea%26pf_rd_p%3D17345c9b-ef8c-4a79-bcd9-8894b1e1e0ea%26pf_rd_r%3DJDZQZNQQWAQ0TEKP7TNM%26pd_rd_wg%3Dohdz0%26pd_rd_r%3Df3b45206-2fb9-4f78-bc10-62b83f6f3b2c%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9kZXRhaWw#customerReviews"
+   },
+   {
+    "idx": 137,
+    "role": "link",
+    "name": "$22.99 $22 . 99",
+    "section": "sims-sponsoredProducts_feature_div_0 > Products related to this item",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo3NTgzNzExOTM3MDA5NDkxOjE3OTI4NDczNjg6c3BfZGV0YWlsOjMwMDc1NjE0MDM4MTAwMjo6Ojo&url=%2Fdp%2FB0F63YPTL5%2Fref%3Dsspa_dk_detail_2%3Fpsc%3D1%26pd_rd_i%3DB0F63YPTL5%26pd_rd_w%3Dfm8r9%26content-id%3Damzn1.sym.17345c9b-ef8c-4a79-bcd9-8894b1e1e0ea%26pf_rd_p%3D17345c9b-ef8c-4a79-bcd9-8894b1e1e0ea%26pf_rd_r%3DJDZQZNQQWAQ0TEKP7TNM%26pd_rd_wg%3Dohdz0%26pd_rd_r%3Df3b45206-2fb9-4f78-bc10-62b83f6f3b2c%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9kZXRhaWw"
+   },
+   {
+    "idx": 138,
+    "role": "link",
+    "name": "FREE delivery Today 5 PM - 8 PM on $25 of qualifying items",
+    "section": "sims-sponsoredProducts_feature_div_0 > Products related to this item",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo3NTgzNzExOTM3MDA5NDkxOjE3OTI4NDczNjg6c3BfZGV0YWlsOjMwMDc1NjE0MDM4MTAwMjo6Ojo&url=%2Fdp%2FB0F63YPTL5%2Fref%3Dsspa_dk_detail_2%3Fpsc%3D1%26pd_rd_i%3DB0F63YPTL5%26pd_rd_w%3Dfm8r9%26content-id%3Damzn1.sym.17345c9b-ef8c-4a79-bcd9-8894b1e1e0ea%26pf_rd_p%3D17345c9b-ef8c-4a79-bcd9-8894b1e1e0ea%26pf_rd_r%3DJDZQZNQQWAQ0TEKP7TNM%26pd_rd_wg%3Dohdz0%26pd_rd_r%3Df3b45206-2fb9-4f78-bc10-62b83f6f3b2c%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9kZXRhaWw"
+   },
+   {
+    "idx": 139,
+    "role": "button",
+    "name": "1 sustainability feature",
+    "section": "sims-sponsoredProducts_feature_div_0 > Products related to this item",
+    "href": "javascript:void(0)"
+   },
+   {
+    "idx": 140,
+    "role": "link",
+    "name": "Single-Pull Retractable USB C to USB C Cable, 240W Fast Charging Cord | Portable La...",
+    "section": "sims-sponsoredProducts_feature_div_0 > Products related to this item",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo3NTgzNzExOTM3MDA5NDkxOjE3OTI4NDczNjg6c3BfZGV0YWlsOjMwMTU4NTQ2ODMzODkwMjo6Ojo&url=%2Fdp%2FB0HHF28LB7%2Fref%3Dsspa_dk_detail_3%3Fpsc%3D1%26pd_rd_i%3DB0HHF28LB7%26pd_rd_w%3Dfm8r9%26content-id%3Damzn1.sym.17345c9b-ef8c-4a79-bcd9-8894b1e1e0ea%26pf_rd_p%3D17345c9b-ef8c-4a79-bcd9-8894b1e1e0ea%26pf_rd_r%3DJDZQZNQQWAQ0TEKP7TNM%26pd_rd_wg%3Dohdz0%26pd_rd_r%3Df3b45206-2fb9-4f78-bc10-62b83f6f3b2c%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9kZXRhaWw"
+   },
+   {
+    "idx": 141,
+    "role": "link",
+    "name": "4.4 out of 5 stars 22 ratings",
+    "section": "sims-sponsoredProducts_feature_div_0 > Products related to this item",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo3NTgzNzExOTM3MDA5NDkxOjE3OTI4NDczNjg6c3BfZGV0YWlsOjMwMTU4NTQ2ODMzODkwMjo6Ojo&url=%2Fdp%2FB0HHF28LB7%2Fref%3Dsspa_dk_detail_3%3Fpsc%3D1%26pd_rd_i%3DB0HHF28LB7%26pd_rd_w%3Dfm8r9%26content-id%3Damzn1.sym.17345c9b-ef8c-4a79-bcd9-8894b1e1e0ea%26pf_rd_p%3D17345c9b-ef8c-4a79-bcd9-8894b1e1e0ea%26pf_rd_r%3DJDZQZNQQWAQ0TEKP7TNM%26pd_rd_wg%3Dohdz0%26pd_rd_r%3Df3b45206-2fb9-4f78-bc10-62b83f6f3b2c%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9kZXRhaWw#customerReviews"
+   },
+   {
+    "idx": 142,
+    "role": "link",
+    "name": "Ends in 17:50:26",
+    "section": "sims-sponsoredProducts_feature_div_0 > Products related to this item",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo3NTgzNzExOTM3MDA5NDkxOjE3OTI4NDczNjg6c3BfZGV0YWlsOjMwMTU4NTQ2ODMzODkwMjo6Ojo&url=%2Fdp%2FB0HHF28LB7%2Fref%3Dsspa_dk_detail_3%3Fpsc%3D1%26pd_rd_i%3DB0HHF28LB7%26pd_rd_w%3Dfm8r9%26content-id%3Damzn1.sym.17345c9b-ef8c-4a79-bcd9-8894b1e1e0ea%26pf_rd_p%3D17345c9b-ef8c-4a79-bcd9-8894b1e1e0ea%26pf_rd_r%3DJDZQZNQQWAQ0TEKP7TNM%26pd_rd_wg%3Dohdz0%26pd_rd_r%3Df3b45206-2fb9-4f78-bc10-62b83f6f3b2c%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9kZXRhaWw"
+   },
+   {
+    "idx": 143,
+    "role": "link",
+    "name": "-10% $14.39 $14 . 39 Typical: $15.99 Typical: null $15.99",
+    "section": "sims-sponsoredProducts_feature_div_0 > Products related to this item",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo3NTgzNzExOTM3MDA5NDkxOjE3OTI4NDczNjg6c3BfZGV0YWlsOjMwMTU4NTQ2ODMzODkwMjo6Ojo&url=%2Fdp%2FB0HHF28LB7%2Fref%3Dsspa_dk_detail_3%3Fpsc%3D1%26pd_rd_i%3DB0HHF28LB7%26pd_rd_w%3Dfm8r9%26content-id%3Damzn1.sym.17345c9b-ef8c-4a79-bcd9-8894b1e1e0ea%26pf_rd_p%3D17345c9b-ef8c-4a79-bcd9-8894b1e1e0ea%26pf_rd_r%3DJDZQZNQQWAQ0TEKP7TNM%26pd_rd_wg%3Dohdz0%26pd_rd_r%3Df3b45206-2fb9-4f78-bc10-62b83f6f3b2c%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9kZXRhaWw"
+   },
+   {
+    "idx": 144,
+    "role": "link",
+    "name": "FREE delivery Mon, Oct 26",
+    "section": "sims-sponsoredProducts_feature_div_0 > Products related to this item",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo3NTgzNzExOTM3MDA5NDkxOjE3OTI4NDczNjg6c3BfZGV0YWlsOjMwMTU4NTQ2ODMzODkwMjo6Ojo&url=%2Fdp%2FB0HHF28LB7%2Fref%3Dsspa_dk_detail_3%3Fpsc%3D1%26pd_rd_i%3DB0HHF28LB7%26pd_rd_w%3Dfm8r9%26content-id%3Damzn1.sym.17345c9b-ef8c-4a79-bcd9-8894b1e1e0ea%26pf_rd_p%3D17345c9b-ef8c-4a79-bcd9-8894b1e1e0ea%26pf_rd_r%3DJDZQZNQQWAQ0TEKP7TNM%26pd_rd_wg%3Dohdz0%26pd_rd_r%3Df3b45206-2fb9-4f78-bc10-62b83f6f3b2c%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9kZXRhaWw"
+   },
+   {
+    "idx": 145,
+    "role": "link",
+    "name": "You pay $12.95 with coupon",
+    "section": "sims-sponsoredProducts_feature_div_0 > Products related to this item",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo3NTgzNzExOTM3MDA5NDkxOjE3OTI4NDczNjg6c3BfZGV0YWlsOjMwMTU4NTQ2ODMzODkwMjo6Ojo&url=%2Fdp%2FB0HHF28LB7%2Fref%3Dsspa_dk_detail_3%3Fpsc%3D1%26pd_rd_i%3DB0HHF28LB7%26pd_rd_w%3Dfm8r9%26content-id%3Damzn1.sym.17345c9b-ef8c-4a79-bcd9-8894b1e1e0ea%26pf_rd_p%3D17345c9b-ef8c-4a79-bcd9-8894b1e1e0ea%26pf_rd_r%3DJDZQZNQQWAQ0TEKP7TNM%26pd_rd_wg%3Dohdz0%26pd_rd_r%3Df3b45206-2fb9-4f78-bc10-62b83f6f3b2c%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9kZXRhaWw"
+   },
+   {
+    "idx": 146,
+    "role": "link",
+    "name": "USB C Cable for Thunderbolt 3/4 Cable, USB-C to USB-C Cable",
+    "section": "sims-sponsoredProducts_feature_div_0 > Products related to this item",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo3NTgzNzExOTM3MDA5NDkxOjE3OTI4NDczNjg6c3BfZGV0YWlsOjIwMDEyNzc5ODU1MDU5ODo6Ojo&url=%2Fdp%2FB0BL6YK77G%2Fref%3Dsspa_dk_detail_4%3Fpsc%3D1%26pd_rd_i%3DB0BL6YK77G%26pd_rd_w%3Dfm8r9%26content-id%3Damzn1.sym.17345c9b-ef8c-4a79-bcd9-8894b1e1e0ea%26pf_rd_p%3D17345c9b-ef8c-4a79-bcd9-8894b1e1e0ea%26pf_rd_r%3DJDZQZNQQWAQ0TEKP7TNM%26pd_rd_wg%3Dohdz0%26pd_rd_r%3Df3b45206-2fb9-4f78-bc10-62b83f6f3b2c%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9kZXRhaWw"
+   },
+   {
+    "idx": 147,
+    "role": "link",
+    "name": "4.7 out of 5 stars 30 ratings",
+    "section": "sims-sponsoredProducts_feature_div_0 > Products related to this item",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo3NTgzNzExOTM3MDA5NDkxOjE3OTI4NDczNjg6c3BfZGV0YWlsOjIwMDEyNzc5ODU1MDU5ODo6Ojo&url=%2Fdp%2FB0BL6YK77G%2Fref%3Dsspa_dk_detail_4%3Fpsc%3D1%26pd_rd_i%3DB0BL6YK77G%26pd_rd_w%3Dfm8r9%26content-id%3Damzn1.sym.17345c9b-ef8c-4a79-bcd9-8894b1e1e0ea%26pf_rd_p%3D17345c9b-ef8c-4a79-bcd9-8894b1e1e0ea%26pf_rd_r%3DJDZQZNQQWAQ0TEKP7TNM%26pd_rd_wg%3Dohdz0%26pd_rd_r%3Df3b45206-2fb9-4f78-bc10-62b83f6f3b2c%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9kZXRhaWw#customerReviews"
+   },
+   {
+    "idx": 148,
+    "role": "link",
+    "name": "-30% $6.99 $6 . 99 Typical: $9.99 Typical: null $9.99",
+    "section": "sims-sponsoredProducts_feature_div_0 > Products related to this item",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo3NTgzNzExOTM3MDA5NDkxOjE3OTI4NDczNjg6c3BfZGV0YWlsOjIwMDEyNzc5ODU1MDU5ODo6Ojo&url=%2Fdp%2FB0BL6YK77G%2Fref%3Dsspa_dk_detail_4%3Fpsc%3D1%26pd_rd_i%3DB0BL6YK77G%26pd_rd_w%3Dfm8r9%26content-id%3Damzn1.sym.17345c9b-ef8c-4a79-bcd9-8894b1e1e0ea%26pf_rd_p%3D17345c9b-ef8c-4a79-bcd9-8894b1e1e0ea%26pf_rd_r%3DJDZQZNQQWAQ0TEKP7TNM%26pd_rd_wg%3Dohdz0%26pd_rd_r%3Df3b45206-2fb9-4f78-bc10-62b83f6f3b2c%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9kZXRhaWw"
+   },
+   {
+    "idx": 149,
+    "role": "link",
+    "name": "FREE delivery Mon, Oct 26",
+    "section": "sims-sponsoredProducts_feature_div_0 > Products related to this item",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo3NTgzNzExOTM3MDA5NDkxOjE3OTI4NDczNjg6c3BfZGV0YWlsOjIwMDEyNzc5ODU1MDU5ODo6Ojo&url=%2Fdp%2FB0BL6YK77G%2Fref%3Dsspa_dk_detail_4%3Fpsc%3D1%26pd_rd_i%3DB0BL6YK77G%26pd_rd_w%3Dfm8r9%26content-id%3Damzn1.sym.17345c9b-ef8c-4a79-bcd9-8894b1e1e0ea%26pf_rd_p%3D17345c9b-ef8c-4a79-bcd9-8894b1e1e0ea%26pf_rd_r%3DJDZQZNQQWAQ0TEKP7TNM%26pd_rd_wg%3Dohdz0%26pd_rd_r%3Df3b45206-2fb9-4f78-bc10-62b83f6f3b2c%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9kZXRhaWw"
+   },
+   {
+    "idx": 150,
+    "role": "link",
+    "name": "You pay $6.29 with coupon",
+    "section": "sims-sponsoredProducts_feature_div_0 > Products related to this item",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo3NTgzNzExOTM3MDA5NDkxOjE3OTI4NDczNjg6c3BfZGV0YWlsOjIwMDEyNzc5ODU1MDU5ODo6Ojo&url=%2Fdp%2FB0BL6YK77G%2Fref%3Dsspa_dk_detail_4%3Fpsc%3D1%26pd_rd_i%3DB0BL6YK77G%26pd_rd_w%3Dfm8r9%26content-id%3Damzn1.sym.17345c9b-ef8c-4a79-bcd9-8894b1e1e0ea%26pf_rd_p%3D17345c9b-ef8c-4a79-bcd9-8894b1e1e0ea%26pf_rd_r%3DJDZQZNQQWAQ0TEKP7TNM%26pd_rd_wg%3Dohdz0%26pd_rd_r%3Df3b45206-2fb9-4f78-bc10-62b83f6f3b2c%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9kZXRhaWw"
+   },
+   {
+    "idx": 151,
+    "role": "link",
+    "name": "USB C to USB C Cable, 3.2 USB-C Cable 5ft, 100W, 4K UHD, 20Gbps | 100W PD Fast Char...",
+    "section": "sims-sponsoredProducts_feature_div_0 > Products related to this item",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo3NTgzNzExOTM3MDA5NDkxOjE3OTI4NDczNjg6c3BfZGV0YWlsOjMwMTMzODk4NDI3MTEwMjo6Ojo&url=%2Fdp%2FB0DS8S1TF2%2Fref%3Dsspa_dk_detail_5%3Fpsc%3D1%26pd_rd_i%3DB0DS8S1TF2%26pd_rd_w%3Dfm8r9%26content-id%3Damzn1.sym.17345c9b-ef8c-4a79-bcd9-8894b1e1e0ea%26pf_rd_p%3D17345c9b-ef8c-4a79-bcd9-8894b1e1e0ea%26pf_rd_r%3DJDZQZNQQWAQ0TEKP7TNM%26pd_rd_wg%3Dohdz0%26pd_rd_r%3Df3b45206-2fb9-4f78-bc10-62b83f6f3b2c%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9kZXRhaWw"
+   },
+   {
+    "idx": 152,
+    "role": "link",
+    "name": "4.4 out of 5 stars 1,208 ratings",
+    "section": "sims-sponsoredProducts_feature_div_0 > Products related to this item",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo3NTgzNzExOTM3MDA5NDkxOjE3OTI4NDczNjg6c3BfZGV0YWlsOjMwMTMzODk4NDI3MTEwMjo6Ojo&url=%2Fdp%2FB0DS8S1TF2%2Fref%3Dsspa_dk_detail_5%3Fpsc%3D1%26pd_rd_i%3DB0DS8S1TF2%26pd_rd_w%3Dfm8r9%26content-id%3Damzn1.sym.17345c9b-ef8c-4a79-bcd9-8894b1e1e0ea%26pf_rd_p%3D17345c9b-ef8c-4a79-bcd9-8894b1e1e0ea%26pf_rd_r%3DJDZQZNQQWAQ0TEKP7TNM%26pd_rd_wg%3Dohdz0%26pd_rd_r%3Df3b45206-2fb9-4f78-bc10-62b83f6f3b2c%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9kZXRhaWw#customerReviews"
+   },
+   {
+    "idx": 153,
+    "role": "link",
+    "name": "-11% $15.49 $15 . 49 List: $17.49 List: null $17.49",
+    "section": "sims-sponsoredProducts_feature_div_0 > Products related to this item",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo3NTgzNzExOTM3MDA5NDkxOjE3OTI4NDczNjg6c3BfZGV0YWlsOjMwMTMzODk4NDI3MTEwMjo6Ojo&url=%2Fdp%2FB0DS8S1TF2%2Fref%3Dsspa_dk_detail_5%3Fpsc%3D1%26pd_rd_i%3DB0DS8S1TF2%26pd_rd_w%3Dfm8r9%26content-id%3Damzn1.sym.17345c9b-ef8c-4a79-bcd9-8894b1e1e0ea%26pf_rd_p%3D17345c9b-ef8c-4a79-bcd9-8894b1e1e0ea%26pf_rd_r%3DJDZQZNQQWAQ0TEKP7TNM%26pd_rd_wg%3Dohdz0%26pd_rd_r%3Df3b45206-2fb9-4f78-bc10-62b83f6f3b2c%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9kZXRhaWw"
+   },
+   {
+    "idx": 154,
+    "role": "link",
+    "name": "FREE delivery Mon, Oct 26",
+    "section": "sims-sponsoredProducts_feature_div_0 > Products related to this item",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo3NTgzNzExOTM3MDA5NDkxOjE3OTI4NDczNjg6c3BfZGV0YWlsOjMwMTMzODk4NDI3MTEwMjo6Ojo&url=%2Fdp%2FB0DS8S1TF2%2Fref%3Dsspa_dk_detail_5%3Fpsc%3D1%26pd_rd_i%3DB0DS8S1TF2%26pd_rd_w%3Dfm8r9%26content-id%3Damzn1.sym.17345c9b-ef8c-4a79-bcd9-8894b1e1e0ea%26pf_rd_p%3D17345c9b-ef8c-4a79-bcd9-8894b1e1e0ea%26pf_rd_r%3DJDZQZNQQWAQ0TEKP7TNM%26pd_rd_wg%3Dohdz0%26pd_rd_r%3Df3b45206-2fb9-4f78-bc10-62b83f6f3b2c%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9kZXRhaWw"
+   },
+   {
+    "idx": 155,
+    "role": "link",
+    "name": "etguuds USB to USB C Cable 3ft, 2-Pack USB A to USB C Charger Cord Type C | Fast Ch...",
+    "section": "sims-sponsoredProducts_feature_div_0 > Products related to this item",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo3NTgzNzExOTM3MDA5NDkxOjE3OTI4NDczNjg6c3BfZGV0YWlsOjMwMDQxMjIyNDgyODgwMjo6Ojo&url=%2Fdp%2FB089DM4KDW%2Fref%3Dsspa_dk_detail_6%3Fpsc%3D1%26pd_rd_i%3DB089DM4KDW%26pd_rd_w%3Dfm8r9%26content-id%3Damzn1.sym.17345c9b-ef8c-4a79-bcd9-8894b1e1e0ea%26pf_rd_p%3D17345c9b-ef8c-4a79-bcd9-8894b1e1e0ea%26pf_rd_r%3DJDZQZNQQWAQ0TEKP7TNM%26pd_rd_wg%3Dohdz0%26pd_rd_r%3Df3b45206-2fb9-4f78-bc10-62b83f6f3b2c%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9kZXRhaWw"
+   },
+   {
+    "idx": 156,
+    "role": "link",
+    "name": "4.6 out of 5 stars 62,158 ratings",
+    "section": "sims-sponsoredProducts_feature_div_0 > Products related to this item",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo3NTgzNzExOTM3MDA5NDkxOjE3OTI4NDczNjg6c3BfZGV0YWlsOjMwMDQxMjIyNDgyODgwMjo6Ojo&url=%2Fdp%2FB089DM4KDW%2Fref%3Dsspa_dk_detail_6%3Fpsc%3D1%26pd_rd_i%3DB089DM4KDW%26pd_rd_w%3Dfm8r9%26content-id%3Damzn1.sym.17345c9b-ef8c-4a79-bcd9-8894b1e1e0ea%26pf_rd_p%3D17345c9b-ef8c-4a79-bcd9-8894b1e1e0ea%26pf_rd_r%3DJDZQZNQQWAQ0TEKP7TNM%26pd_rd_wg%3Dohdz0%26pd_rd_r%3Df3b45206-2fb9-4f78-bc10-62b83f6f3b2c%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9kZXRhaWw#customerReviews"
+   },
+   {
+    "idx": 157,
+    "role": "link",
+    "name": "$6.99 $6 . 99( $3.50 $3.50 / count)",
+    "section": "sims-sponsoredProducts_feature_div_0 > Products related to this item",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo3NTgzNzExOTM3MDA5NDkxOjE3OTI4NDczNjg6c3BfZGV0YWlsOjMwMDQxMjIyNDgyODgwMjo6Ojo&url=%2Fdp%2FB089DM4KDW%2Fref%3Dsspa_dk_detail_6%3Fpsc%3D1%26pd_rd_i%3DB089DM4KDW%26pd_rd_w%3Dfm8r9%26content-id%3Damzn1.sym.17345c9b-ef8c-4a79-bcd9-8894b1e1e0ea%26pf_rd_p%3D17345c9b-ef8c-4a79-bcd9-8894b1e1e0ea%26pf_rd_r%3DJDZQZNQQWAQ0TEKP7TNM%26pd_rd_wg%3Dohdz0%26pd_rd_r%3Df3b45206-2fb9-4f78-bc10-62b83f6f3b2c%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9kZXRhaWw"
+   },
+   {
+    "idx": 158,
+    "role": "link",
+    "name": "FREE delivery Today 1 PM - 4 PM on $25 of qualifying items",
+    "section": "sims-sponsoredProducts_feature_div_0 > Products related to this item",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo3NTgzNzExOTM3MDA5NDkxOjE3OTI4NDczNjg6c3BfZGV0YWlsOjMwMDQxMjIyNDgyODgwMjo6Ojo&url=%2Fdp%2FB089DM4KDW%2Fref%3Dsspa_dk_detail_6%3Fpsc%3D1%26pd_rd_i%3DB089DM4KDW%26pd_rd_w%3Dfm8r9%26content-id%3Damzn1.sym.17345c9b-ef8c-4a79-bcd9-8894b1e1e0ea%26pf_rd_p%3D17345c9b-ef8c-4a79-bcd9-8894b1e1e0ea%26pf_rd_r%3DJDZQZNQQWAQ0TEKP7TNM%26pd_rd_wg%3Dohdz0%26pd_rd_r%3Df3b45206-2fb9-4f78-bc10-62b83f6f3b2c%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9kZXRhaWw"
+   },
+   {
+    "idx": 159,
+    "role": "link",
+    "name": "107,591",
+    "section": "dp-container > sims-productBundle_feature_div_0",
+    "href": "https://www.amazon.com/product-reviews/B0CPF3HJ62/ref=sspa_dk_detail_sbt_d_sccl_3_cr/137-9230432-4483612?pd_rd_w=bR3RJ&content-id=amzn1.sym.657ef1e8-aef1-4fea-8703-8be46e27259a&pf_rd_p=657ef1e8-aef1-4fea-8703-8be46e27259a&pf_rd_r=JDZQZNQQWAQ0TEKP7TNM&pd_rd_wg=ohdz0&pd_rd_r=f3b45206-2fb9-4f78-bc10-62b83f6f3b2c&pd_rd_i=B0CPF3HJ62"
+   },
+   {
+    "idx": 160,
+    "role": "link",
+    "name": "UGREEN USB to USB C Adapter 3Pack, 10Gbps Female to Male Converter | Slim Design, for iPhone 17 16 1…",
+    "section": "dp-container > sims-productBundle_feature_div_0",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo0MzIyMjI0OTUzNTExOTY3OjE3OTI4NDczNjg6c3BfZGV0YWlsX3RoZW1hdGljOjMwMTEyOTMyMTQxOTkwMjo6MDo6&url=%2FUGREEN-Adapter-10Gbps-Converter-Samsung%2Fdp%2FB0CY1Y3TSQ%3Fpsc%3D1%26pd_rd_w%3DbR3RJ%26content-id%3Damzn1.sym.657ef1e8-aef1-4fea-8703-8be46e27259a%26pf_rd_p%3D657ef1e8-aef1-4fea-8703-8be46e27259a%26pf_rd_r%3DJDZQZNQQWAQ0TEKP7TNM%26pd_rd_wg%3Dohdz0%26pd_rd_r%3Df3b45206-2fb9-4f78-bc10-62b83f6f3b2c%26ref_%3Dsspa_dk_detail_sbt_img_0%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9kZXRhaWxfdGhlbWF0aWM%3D"
+   },
+   {
+    "idx": 161,
+    "role": "button",
+    "name": "Leave feedback on Sponsored ad",
+    "section": "dp-container > sims-productBundle_feature_div_0"
+   },
+   {
+    "idx": 162,
+    "role": "link",
+    "name": "UGREEN USB to USB C Adapter 3Pack, 10Gbps Female to Male Converter | Slim Design, for iPhone 17 16 1…",
+    "section": "dp-container > sims-productBundle_feature_div_0",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo0MzIyMjI0OTUzNTExOTY3OjE3OTI4NDczNjg6c3BfZGV0YWlsX3RoZW1hdGljOjMwMTEyOTMyMTQxOTkwMjo6MDo6&url=%2FUGREEN-Adapter-10Gbps-Converter-Samsung%2Fdp%2FB0CY1Y3TSQ%3Fpsc%3D1%26pd_rd_w%3DbR3RJ%26content-id%3Damzn1.sym.657ef1e8-aef1-4fea-8703-8be46e27259a%26pf_rd_p%3D657ef1e8-aef1-4fea-8703-8be46e27259a%26pf_rd_r%3DJDZQZNQQWAQ0TEKP7TNM%26pd_rd_wg%3Dohdz0%26pd_rd_r%3Df3b45206-2fb9-4f78-bc10-62b83f6f3b2c%26ref_%3Dsspa_dk_detail_sbt_0%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9kZXRhaWxfdGhlbWF0aWM%3D"
+   },
+   {
+    "idx": 163,
+    "role": "link",
+    "name": "20,558",
+    "section": "dp-container > sims-productBundle_feature_div_0",
+    "href": "https://www.amazon.com/product-reviews/B0CY1Y3TSQ/ref=sspa_dk_detail_sbt_d_sccl_1_cr/137-9230432-4483612?pd_rd_w=bR3RJ&content-id=amzn1.sym.657ef1e8-aef1-4fea-8703-8be46e27259a&pf_rd_p=657ef1e8-aef1-4fea-8703-8be46e27259a&pf_rd_r=JDZQZNQQWAQ0TEKP7TNM&pd_rd_wg=ohdz0&pd_rd_r=f3b45206-2fb9-4f78-bc10-62b83f6f3b2c&pd_rd_i=B0CY1Y3TSQ"
+   },
+   {
+    "idx": 164,
+    "role": "link",
+    "name": "Silkland USB C Monitor Display Cable 3.3FT, 8K@30Hz, 4K@144Hz 5K 60Hz Video | 20Gbps Data Transfer, …",
+    "section": "dp-container > sims-productBundle_feature_div_0",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo0MzIyMjI0OTUzNTExOTY3OjE3OTI4NDczNjg6c3BfZGV0YWlsX3RoZW1hdGljOjMwMTA3MTc4MDYyMzUwMjo6MTo6&url=%2FSilkland-Monitor-Display-Transfer-Compatible%2Fdp%2FB0D44Q73JP%3Fpsc%3D1%26pd_rd_w%3DbR3RJ%26content-id%3Damzn1.sym.657ef1e8-aef1-4fea-8703-8be46e27259a%26pf_rd_p%3D657ef1e8-aef1-4fea-8703-8be46e27259a%26pf_rd_r%3DJDZQZNQQWAQ0TEKP7TNM%26pd_rd_wg%3Dohdz0%26pd_rd_r%3Df3b45206-2fb9-4f78-bc10-62b83f6f3b2c%26ref_%3Dsspa_dk_detail_sbt_img_1%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9kZXRhaWxfdGhlbWF0aWM%3D"
+   },
+   {
+    "idx": 165,
+    "role": "button",
+    "name": "Leave feedback on Sponsored ad",
+    "section": "dp-container > sims-productBundle_feature_div_0"
+   },
+   {
+    "idx": 166,
+    "role": "link",
+    "name": "Silkland USB C Monitor Display Cable 3.3FT, 8K@30Hz, 4K@144Hz 5K 60Hz Video | 20Gbps Data Transfer, …",
+    "section": "dp-container > sims-productBundle_feature_div_0",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo0MzIyMjI0OTUzNTExOTY3OjE3OTI4NDczNjg6c3BfZGV0YWlsX3RoZW1hdGljOjMwMTA3MTc4MDYyMzUwMjo6MTo6&url=%2FSilkland-Monitor-Display-Transfer-Compatible%2Fdp%2FB0D44Q73JP%3Fpsc%3D1%26pd_rd_w%3DbR3RJ%26content-id%3Damzn1.sym.657ef1e8-aef1-4fea-8703-8be46e27259a%26pf_rd_p%3D657ef1e8-aef1-4fea-8703-8be46e27259a%26pf_rd_r%3DJDZQZNQQWAQ0TEKP7TNM%26pd_rd_wg%3Dohdz0%26pd_rd_r%3Df3b45206-2fb9-4f78-bc10-62b83f6f3b2c%26ref_%3Dsspa_dk_detail_sbt_1%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9kZXRhaWxfdGhlbWF0aWM%3D"
+   },
+   {
+    "idx": 167,
+    "role": "link",
+    "name": "3,214",
+    "section": "dp-container > sims-productBundle_feature_div_0",
+    "href": "https://www.amazon.com/product-reviews/B0D44Q73JP/ref=sspa_dk_detail_sbt_d_sccl_2_cr/137-9230432-4483612?pd_rd_w=bR3RJ&content-id=amzn1.sym.657ef1e8-aef1-4fea-8703-8be46e27259a&pf_rd_p=657ef1e8-aef1-4fea-8703-8be46e27259a&pf_rd_r=JDZQZNQQWAQ0TEKP7TNM&pd_rd_wg=ohdz0&pd_rd_r=f3b45206-2fb9-4f78-bc10-62b83f6f3b2c&pd_rd_i=B0D44Q73JP"
+   },
+   {
+    "idx": 168,
+    "role": "button",
+    "name": "Add all 3 to Cart, Amazon Basics USB-C to A 2.0 Fast Charger Cable, 480Mbps Speed, USB-IF Certified,…",
+    "section": "AddToCartLibrary-AddToCartButton-DP_Them… > a-autoid-12"
+   },
+   {
+    "idx": 169,
+    "role": "link",
+    "name": "Show details",
+    "section": "dp-container > sims-productBundle_feature_div_0",
+    "href": "javascript:void(0)"
+   },
+   {
+    "idx": 170,
+    "role": "link",
+    "name": "Sponsored",
+    "section": "Customers frequently viewed > sp_detail_thematic-cfv_heading",
+    "href": "https://www.amazon.com/dp/B0CPF3HJ62?ref_=apb_fb_ac_d_apb_fb_asin_pc_accessories&pd_rd_w=FjULz&content-id=amzn1.sym.15ea6109-b709-482f-aa95-a96a33d11246%3Aamzn1.sym.15ea6109-b709-482f-aa95-a96a33d11246&pf_rd_p=15ea6109-b709-482f-aa95-a96a33d11246&pf_rd_r=63QGH554CQS0XHE87G3E&pd_rd_wg=KCBCR&pd_rd_r=b9e94a3a-fbb6-43cc-85cc-504a8a9635a8&pd_rd_i=B0CPF3HJ62&sr=1-1-1c7c554e-c3b9-43b0-8060-ddc1e436c844&qid=1792847363#sp_detail_thematic-cfv_feedbackForm"
+   },
+   {
+    "idx": 171,
+    "role": "link",
+    "name": "Belkin USB C to USB C 240W Cable 2 Pack, 6.6ft Fast iPhone Charger Cord | iPhone 15...",
+    "section": "sims-simsContainer_feature_div_0 > Customers frequently viewed",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo0MjYyNTI3NDg0OTUzMTE5OjE3OTI4NDczNjg6c3BfZGV0YWlsX3RoZW1hdGljOjMwMDc1NjE0MDM4MTAwMjo6Ojo&url=%2Fdp%2FB0F63YPTL5%2Fref%3Dsspa_dk_detail_0%3Fpsc%3D1%26pd_rd_i%3DB0F63YPTL5%26pd_rd_w%3D6AN2x%26content-id%3Damzn1.sym.9bd45040-31dd-4792-bd5a-341290ebe305%26pf_rd_p%3D9bd45040-31dd-4792-bd5a-341290ebe305%26pf_rd_r%3DJDZQZNQQWAQ0TEKP7TNM%26pd_rd_wg%3Dohdz0%26pd_rd_r%3Df3b45206-2fb9-4f78-bc10-62b83f6f3b2c%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9kZXRhaWxfdGhlbWF0aWM"
+   },
+   {
+    "idx": 172,
+    "role": "link",
+    "name": "4.6 out of 5 stars 1,170 ratings",
+    "section": "sims-simsContainer_feature_div_0 > Customers frequently viewed",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo0MjYyNTI3NDg0OTUzMTE5OjE3OTI4NDczNjg6c3BfZGV0YWlsX3RoZW1hdGljOjMwMDc1NjE0MDM4MTAwMjo6Ojo&url=%2Fdp%2FB0F63YPTL5%2Fref%3Dsspa_dk_detail_0%3Fpsc%3D1%26pd_rd_i%3DB0F63YPTL5%26pd_rd_w%3D6AN2x%26content-id%3Damzn1.sym.9bd45040-31dd-4792-bd5a-341290ebe305%26pf_rd_p%3D9bd45040-31dd-4792-bd5a-341290ebe305%26pf_rd_r%3DJDZQZNQQWAQ0TEKP7TNM%26pd_rd_wg%3Dohdz0%26pd_rd_r%3Df3b45206-2fb9-4f78-bc10-62b83f6f3b2c%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9kZXRhaWxfdGhlbWF0aWM#customerReviews"
+   },
+   {
+    "idx": 173,
+    "role": "link",
+    "name": "$22.99 $22 . 99",
+    "section": "sims-simsContainer_feature_div_0 > Customers frequently viewed",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo0MjYyNTI3NDg0OTUzMTE5OjE3OTI4NDczNjg6c3BfZGV0YWlsX3RoZW1hdGljOjMwMDc1NjE0MDM4MTAwMjo6Ojo&url=%2Fdp%2FB0F63YPTL5%2Fref%3Dsspa_dk_detail_0%3Fpsc%3D1%26pd_rd_i%3DB0F63YPTL5%26pd_rd_w%3D6AN2x%26content-id%3Damzn1.sym.9bd45040-31dd-4792-bd5a-341290ebe305%26pf_rd_p%3D9bd45040-31dd-4792-bd5a-341290ebe305%26pf_rd_r%3DJDZQZNQQWAQ0TEKP7TNM%26pd_rd_wg%3Dohdz0%26pd_rd_r%3Df3b45206-2fb9-4f78-bc10-62b83f6f3b2c%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9kZXRhaWxfdGhlbWF0aWM"
+   },
+   {
+    "idx": 174,
+    "role": "link",
+    "name": "FREE delivery Today 5 PM - 8 PM on $25 of qualifying items",
+    "section": "sims-simsContainer_feature_div_0 > Customers frequently viewed",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo0MjYyNTI3NDg0OTUzMTE5OjE3OTI4NDczNjg6c3BfZGV0YWlsX3RoZW1hdGljOjMwMDc1NjE0MDM4MTAwMjo6Ojo&url=%2Fdp%2FB0F63YPTL5%2Fref%3Dsspa_dk_detail_0%3Fpsc%3D1%26pd_rd_i%3DB0F63YPTL5%26pd_rd_w%3D6AN2x%26content-id%3Damzn1.sym.9bd45040-31dd-4792-bd5a-341290ebe305%26pf_rd_p%3D9bd45040-31dd-4792-bd5a-341290ebe305%26pf_rd_r%3DJDZQZNQQWAQ0TEKP7TNM%26pd_rd_wg%3Dohdz0%26pd_rd_r%3Df3b45206-2fb9-4f78-bc10-62b83f6f3b2c%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9kZXRhaWxfdGhlbWF0aWM"
+   },
+   {
+    "idx": 175,
+    "role": "button",
+    "name": "1 sustainability feature",
+    "section": "sims-simsContainer_feature_div_0 > Customers frequently viewed",
+    "href": "javascript:void(0)"
+   },
+   {
+    "idx": 176,
+    "role": "link",
+    "name": "QZIIW 4Pack Apple USB C Fast Charging Cable 3FT for iPhone 18 17 16 Pro max | USB A...",
+    "section": "sims-simsContainer_feature_div_0 > Customers frequently viewed",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo0MjYyNTI3NDg0OTUzMTE5OjE3OTI4NDczNjg6c3BfZGV0YWlsX3RoZW1hdGljOjMwMTI1OTgzNzgwODYwMjo6Ojo&url=%2Fdp%2FB0DDXMW3RQ%2Fref%3Dsspa_dk_detail_1%3Fpsc%3D1%26pd_rd_i%3DB0DDXMW3RQ%26pd_rd_w%3D6AN2x%26content-id%3Damzn1.sym.9bd45040-31dd-4792-bd5a-341290ebe305%26pf_rd_p%3D9bd45040-31dd-4792-bd5a-341290ebe305%26pf_rd_r%3DJDZQZNQQWAQ0TEKP7TNM%26pd_rd_wg%3Dohdz0%26pd_rd_r%3Df3b45206-2fb9-4f78-bc10-62b83f6f3b2c%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9kZXRhaWxfdGhlbWF0aWM"
+   },
+   {
+    "idx": 177,
+    "role": "link",
+    "name": "4.6 out of 5 stars 3,528 ratings",
+    "section": "sims-simsContainer_feature_div_0 > Customers frequently viewed",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo0MjYyNTI3NDg0OTUzMTE5OjE3OTI4NDczNjg6c3BfZGV0YWlsX3RoZW1hdGljOjMwMTI1OTgzNzgwODYwMjo6Ojo&url=%2Fdp%2FB0DDXMW3RQ%2Fref%3Dsspa_dk_detail_1%3Fpsc%3D1%26pd_rd_i%3DB0DDXMW3RQ%26pd_rd_w%3D6AN2x%26content-id%3Damzn1.sym.9bd45040-31dd-4792-bd5a-341290ebe305%26pf_rd_p%3D9bd45040-31dd-4792-bd5a-341290ebe305%26pf_rd_r%3DJDZQZNQQWAQ0TEKP7TNM%26pd_rd_wg%3Dohdz0%26pd_rd_r%3Df3b45206-2fb9-4f78-bc10-62b83f6f3b2c%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9kZXRhaWxfdGhlbWF0aWM#customerReviews"
+   },
+   {
+    "idx": 178,
+    "role": "link",
+    "name": "Limited time deal",
+    "section": "sims-simsContainer_feature_div_0 > Customers frequently viewed",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo0MjYyNTI3NDg0OTUzMTE5OjE3OTI4NDczNjg6c3BfZGV0YWlsX3RoZW1hdGljOjMwMTI1OTgzNzgwODYwMjo6Ojo&url=%2Fdp%2FB0DDXMW3RQ%2Fref%3Dsspa_dk_detail_1%3Fpsc%3D1%26pd_rd_i%3DB0DDXMW3RQ%26pd_rd_w%3D6AN2x%26content-id%3Damzn1.sym.9bd45040-31dd-4792-bd5a-341290ebe305%26pf_rd_p%3D9bd45040-31dd-4792-bd5a-341290ebe305%26pf_rd_r%3DJDZQZNQQWAQ0TEKP7TNM%26pd_rd_wg%3Dohdz0%26pd_rd_r%3Df3b45206-2fb9-4f78-bc10-62b83f6f3b2c%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9kZXRhaWxfdGhlbWF0aWM"
+   },
+   {
+    "idx": 179,
+    "role": "link",
+    "name": "-10% $14.39 $14 . 39( $3.60 $3.60 / count) List: $15.99 List: null $15.99",
+    "section": "sims-simsContainer_feature_div_0 > Customers frequently viewed",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo0MjYyNTI3NDg0OTUzMTE5OjE3OTI4NDczNjg6c3BfZGV0YWlsX3RoZW1hdGljOjMwMTI1OTgzNzgwODYwMjo6Ojo&url=%2Fdp%2FB0DDXMW3RQ%2Fref%3Dsspa_dk_detail_1%3Fpsc%3D1%26pd_rd_i%3DB0DDXMW3RQ%26pd_rd_w%3D6AN2x%26content-id%3Damzn1.sym.9bd45040-31dd-4792-bd5a-341290ebe305%26pf_rd_p%3D9bd45040-31dd-4792-bd5a-341290ebe305%26pf_rd_r%3DJDZQZNQQWAQ0TEKP7TNM%26pd_rd_wg%3Dohdz0%26pd_rd_r%3Df3b45206-2fb9-4f78-bc10-62b83f6f3b2c%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9kZXRhaWxfdGhlbWF0aWM"
+   },
+   {
+    "idx": 180,
+    "role": "link",
+    "name": "FREE delivery Today 5 PM - 8 PM on $25 of qualifying items",
+    "section": "sims-simsContainer_feature_div_0 > Customers frequently viewed",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo0MjYyNTI3NDg0OTUzMTE5OjE3OTI4NDczNjg6c3BfZGV0YWlsX3RoZW1hdGljOjMwMTI1OTgzNzgwODYwMjo6Ojo&url=%2Fdp%2FB0DDXMW3RQ%2Fref%3Dsspa_dk_detail_1%3Fpsc%3D1%26pd_rd_i%3DB0DDXMW3RQ%26pd_rd_w%3D6AN2x%26content-id%3Damzn1.sym.9bd45040-31dd-4792-bd5a-341290ebe305%26pf_rd_p%3D9bd45040-31dd-4792-bd5a-341290ebe305%26pf_rd_r%3DJDZQZNQQWAQ0TEKP7TNM%26pd_rd_wg%3Dohdz0%26pd_rd_r%3Df3b45206-2fb9-4f78-bc10-62b83f6f3b2c%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9kZXRhaWxfdGhlbWF0aWM"
+   },
+   {
+    "idx": 181,
+    "role": "link",
+    "name": "USB C Cable 5 Pack 6FT, USB A to Type C Fast Charger Cord | 3A braided USB A to C c...",
+    "section": "sims-simsContainer_feature_div_0 > Customers frequently viewed",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo0MjYyNTI3NDg0OTUzMTE5OjE3OTI4NDczNjg6c3BfZGV0YWlsX3RoZW1hdGljOjMwMTM1NzQ4NTYxMjkwMjo6Ojo&url=%2Fdp%2FB082Z1YYRK%2Fref%3Dsspa_dk_detail_2%3Fpsc%3D1%26pd_rd_i%3DB082Z1YYRK%26pd_rd_w%3D6AN2x%26content-id%3Damzn1.sym.9bd45040-31dd-4792-bd5a-341290ebe305%26pf_rd_p%3D9bd45040-31dd-4792-bd5a-341290ebe305%26pf_rd_r%3DJDZQZNQQWAQ0TEKP7TNM%26pd_rd_wg%3Dohdz0%26pd_rd_r%3Df3b45206-2fb9-4f78-bc10-62b83f6f3b2c%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9kZXRhaWxfdGhlbWF0aWM"
+   },
+   {
+    "idx": 182,
+    "role": "link",
+    "name": "4.6 out of 5 stars 60,074 ratings",
+    "section": "sims-simsContainer_feature_div_0 > Customers frequently viewed",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo0MjYyNTI3NDg0OTUzMTE5OjE3OTI4NDczNjg6c3BfZGV0YWlsX3RoZW1hdGljOjMwMTM1NzQ4NTYxMjkwMjo6Ojo&url=%2Fdp%2FB082Z1YYRK%2Fref%3Dsspa_dk_detail_2%3Fpsc%3D1%26pd_rd_i%3DB082Z1YYRK%26pd_rd_w%3D6AN2x%26content-id%3Damzn1.sym.9bd45040-31dd-4792-bd5a-341290ebe305%26pf_rd_p%3D9bd45040-31dd-4792-bd5a-341290ebe305%26pf_rd_r%3DJDZQZNQQWAQ0TEKP7TNM%26pd_rd_wg%3Dohdz0%26pd_rd_r%3Df3b45206-2fb9-4f78-bc10-62b83f6f3b2c%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9kZXRhaWxfdGhlbWF0aWM#customerReviews"
+   },
+   {
+    "idx": 183,
+    "role": "link",
+    "name": "$9.99 $9 . 99( $0.33 $0.33 / feet)",
+    "section": "sims-simsContainer_feature_div_0 > Customers frequently viewed",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo0MjYyNTI3NDg0OTUzMTE5OjE3OTI4NDczNjg6c3BfZGV0YWlsX3RoZW1hdGljOjMwMTM1NzQ4NTYxMjkwMjo6Ojo&url=%2Fdp%2FB082Z1YYRK%2Fref%3Dsspa_dk_detail_2%3Fpsc%3D1%26pd_rd_i%3DB082Z1YYRK%26pd_rd_w%3D6AN2x%26content-id%3Damzn1.sym.9bd45040-31dd-4792-bd5a-341290ebe305%26pf_rd_p%3D9bd45040-31dd-4792-bd5a-341290ebe305%26pf_rd_r%3DJDZQZNQQWAQ0TEKP7TNM%26pd_rd_wg%3Dohdz0%26pd_rd_r%3Df3b45206-2fb9-4f78-bc10-62b83f6f3b2c%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9kZXRhaWxfdGhlbWF0aWM"
+   },
+   {
+    "idx": 184,
+    "role": "link",
+    "name": "FREE delivery Today 1 PM - 4 PM on $25 of qualifying items",
+    "section": "sims-simsContainer_feature_div_0 > Customers frequently viewed",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo0MjYyNTI3NDg0OTUzMTE5OjE3OTI4NDczNjg6c3BfZGV0YWlsX3RoZW1hdGljOjMwMTM1NzQ4NTYxMjkwMjo6Ojo&url=%2Fdp%2FB082Z1YYRK%2Fref%3Dsspa_dk_detail_2%3Fpsc%3D1%26pd_rd_i%3DB082Z1YYRK%26pd_rd_w%3D6AN2x%26content-id%3Damzn1.sym.9bd45040-31dd-4792-bd5a-341290ebe305%26pf_rd_p%3D9bd45040-31dd-4792-bd5a-341290ebe305%26pf_rd_r%3DJDZQZNQQWAQ0TEKP7TNM%26pd_rd_wg%3Dohdz0%26pd_rd_r%3Df3b45206-2fb9-4f78-bc10-62b83f6f3b2c%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9kZXRhaWxfdGhlbWF0aWM"
+   },
+   {
+    "idx": 185,
+    "role": "link",
+    "name": "USB A to USB C Cable 60W Fast Charging [2 Pack 6FT],USB to USB C Cable | Compatible...",
+    "section": "sims-simsContainer_feature_div_0 > Customers frequently viewed",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo0MjYyNTI3NDg0OTUzMTE5OjE3OTI4NDczNjg6c3BfZGV0YWlsX3RoZW1hdGljOjMwMTU1NjQyMjIzNjMwMjo6Ojo&url=%2Fdp%2FB0GHRMK7HL%2Fref%3Dsspa_dk_detail_3%3Fpsc%3D1%26pd_rd_i%3DB0GHRMK7HL%26pd_rd_w%3D6AN2x%26content-id%3Damzn1.sym.9bd45040-31dd-4792-bd5a-341290ebe305%26pf_rd_p%3D9bd45040-31dd-4792-bd5a-341290ebe305%26pf_rd_r%3DJDZQZNQQWAQ0TEKP7TNM%26pd_rd_wg%3Dohdz0%26pd_rd_r%3Df3b45206-2fb9-4f78-bc10-62b83f6f3b2c%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9kZXRhaWxfdGhlbWF0aWM"
+   },
+   {
+    "idx": 186,
+    "role": "link",
+    "name": "4.4 out of 5 stars 192 ratings",
+    "section": "sims-simsContainer_feature_div_0 > Customers frequently viewed",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo0MjYyNTI3NDg0OTUzMTE5OjE3OTI4NDczNjg6c3BfZGV0YWlsX3RoZW1hdGljOjMwMTU1NjQyMjIzNjMwMjo6Ojo&url=%2Fdp%2FB0GHRMK7HL%2Fref%3Dsspa_dk_detail_3%3Fpsc%3D1%26pd_rd_i%3DB0GHRMK7HL%26pd_rd_w%3D6AN2x%26content-id%3Damzn1.sym.9bd45040-31dd-4792-bd5a-341290ebe305%26pf_rd_p%3D9bd45040-31dd-4792-bd5a-341290ebe305%26pf_rd_r%3DJDZQZNQQWAQ0TEKP7TNM%26pd_rd_wg%3Dohdz0%26pd_rd_r%3Df3b45206-2fb9-4f78-bc10-62b83f6f3b2c%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9kZXRhaWxfdGhlbWF0aWM#customerReviews"
+   },
+   {
+    "idx": 187,
+    "role": "link",
+    "name": "$15.99 $15 . 99( $8.00 $8.00 / count)",
+    "section": "sims-simsContainer_feature_div_0 > Customers frequently viewed",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo0MjYyNTI3NDg0OTUzMTE5OjE3OTI4NDczNjg6c3BfZGV0YWlsX3RoZW1hdGljOjMwMTU1NjQyMjIzNjMwMjo6Ojo&url=%2Fdp%2FB0GHRMK7HL%2Fref%3Dsspa_dk_detail_3%3Fpsc%3D1%26pd_rd_i%3DB0GHRMK7HL%26pd_rd_w%3D6AN2x%26content-id%3Damzn1.sym.9bd45040-31dd-4792-bd5a-341290ebe305%26pf_rd_p%3D9bd45040-31dd-4792-bd5a-341290ebe305%26pf_rd_r%3DJDZQZNQQWAQ0TEKP7TNM%26pd_rd_wg%3Dohdz0%26pd_rd_r%3Df3b45206-2fb9-4f78-bc10-62b83f6f3b2c%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9kZXRhaWxfdGhlbWF0aWM"
+   },
+   {
+    "idx": 188,
+    "role": "link",
+    "name": "FREE delivery Mon, Oct 26",
+    "section": "sims-simsContainer_feature_div_0 > Customers frequently viewed",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo0MjYyNTI3NDg0OTUzMTE5OjE3OTI4NDczNjg6c3BfZGV0YWlsX3RoZW1hdGljOjMwMTU1NjQyMjIzNjMwMjo6Ojo&url=%2Fdp%2FB0GHRMK7HL%2Fref%3Dsspa_dk_detail_3%3Fpsc%3D1%26pd_rd_i%3DB0GHRMK7HL%26pd_rd_w%3D6AN2x%26content-id%3Damzn1.sym.9bd45040-31dd-4792-bd5a-341290ebe305%26pf_rd_p%3D9bd45040-31dd-4792-bd5a-341290ebe305%26pf_rd_r%3DJDZQZNQQWAQ0TEKP7TNM%26pd_rd_wg%3Dohdz0%26pd_rd_r%3Df3b45206-2fb9-4f78-bc10-62b83f6f3b2c%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9kZXRhaWxfdGhlbWF0aWM"
+   },
+   {
+    "idx": 189,
+    "role": "link",
+    "name": "You pay $12.79 with coupon",
+    "section": "sims-simsContainer_feature_div_0 > Customers frequently viewed",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo0MjYyNTI3NDg0OTUzMTE5OjE3OTI4NDczNjg6c3BfZGV0YWlsX3RoZW1hdGljOjMwMTU1NjQyMjIzNjMwMjo6Ojo&url=%2Fdp%2FB0GHRMK7HL%2Fref%3Dsspa_dk_detail_3%3Fpsc%3D1%26pd_rd_i%3DB0GHRMK7HL%26pd_rd_w%3D6AN2x%26content-id%3Damzn1.sym.9bd45040-31dd-4792-bd5a-341290ebe305%26pf_rd_p%3D9bd45040-31dd-4792-bd5a-341290ebe305%26pf_rd_r%3DJDZQZNQQWAQ0TEKP7TNM%26pd_rd_wg%3Dohdz0%26pd_rd_r%3Df3b45206-2fb9-4f78-bc10-62b83f6f3b2c%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9kZXRhaWxfdGhlbWF0aWM"
+   },
+   {
+    "idx": 190,
+    "role": "link",
+    "name": "USB to USB C Cable 60W Fast Charging [2 Pack 6FT], USB A to USB C Cable for | CarPl...",
+    "section": "sims-simsContainer_feature_div_0 > Customers frequently viewed",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo0MjYyNTI3NDg0OTUzMTE5OjE3OTI4NDczNjg6c3BfZGV0YWlsX3RoZW1hdGljOjMwMDkwMjY4NDg3NjUwMjo6Ojo&url=%2Fdp%2FB0FH4MX7RT%2Fref%3Dsspa_dk_detail_4%3Fpsc%3D1%26pd_rd_i%3DB0FH4MX7RT%26pd_rd_w%3D6AN2x%26content-id%3Damzn1.sym.9bd45040-31dd-4792-bd5a-341290ebe305%26pf_rd_p%3D9bd45040-31dd-4792-bd5a-341290ebe305%26pf_rd_r%3DJDZQZNQQWAQ0TEKP7TNM%26pd_rd_wg%3Dohdz0%26pd_rd_r%3Df3b45206-2fb9-4f78-bc10-62b83f6f3b2c%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9kZXRhaWxfdGhlbWF0aWM"
+   },
+   {
+    "idx": 191,
+    "role": "link",
+    "name": "4.5 out of 5 stars 1,094 ratings",
+    "section": "sims-simsContainer_feature_div_0 > Customers frequently viewed",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo0MjYyNTI3NDg0OTUzMTE5OjE3OTI4NDczNjg6c3BfZGV0YWlsX3RoZW1hdGljOjMwMDkwMjY4NDg3NjUwMjo6Ojo&url=%2Fdp%2FB0FH4MX7RT%2Fref%3Dsspa_dk_detail_4%3Fpsc%3D1%26pd_rd_i%3DB0FH4MX7RT%26pd_rd_w%3D6AN2x%26content-id%3Damzn1.sym.9bd45040-31dd-4792-bd5a-341290ebe305%26pf_rd_p%3D9bd45040-31dd-4792-bd5a-341290ebe305%26pf_rd_r%3DJDZQZNQQWAQ0TEKP7TNM%26pd_rd_wg%3Dohdz0%26pd_rd_r%3Df3b45206-2fb9-4f78-bc10-62b83f6f3b2c%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9kZXRhaWxfdGhlbWF0aWM#customerReviews"
+   },
+   {
+    "idx": 192,
+    "role": "link",
+    "name": "$15.49 $15 . 49( $7.75 $7.75 / count)",
+    "section": "sims-simsContainer_feature_div_0 > Customers frequently viewed",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo0MjYyNTI3NDg0OTUzMTE5OjE3OTI4NDczNjg6c3BfZGV0YWlsX3RoZW1hdGljOjMwMDkwMjY4NDg3NjUwMjo6Ojo&url=%2Fdp%2FB0FH4MX7RT%2Fref%3Dsspa_dk_detail_4%3Fpsc%3D1%26pd_rd_i%3DB0FH4MX7RT%26pd_rd_w%3D6AN2x%26content-id%3Damzn1.sym.9bd45040-31dd-4792-bd5a-341290ebe305%26pf_rd_p%3D9bd45040-31dd-4792-bd5a-341290ebe305%26pf_rd_r%3DJDZQZNQQWAQ0TEKP7TNM%26pd_rd_wg%3Dohdz0%26pd_rd_r%3Df3b45206-2fb9-4f78-bc10-62b83f6f3b2c%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9kZXRhaWxfdGhlbWF0aWM"
+   },
+   {
+    "idx": 193,
+    "role": "link",
+    "name": "FREE delivery Today 5 PM - 8 PM on $25 of qualifying items",
+    "section": "sims-simsContainer_feature_div_0 > Customers frequently viewed",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo0MjYyNTI3NDg0OTUzMTE5OjE3OTI4NDczNjg6c3BfZGV0YWlsX3RoZW1hdGljOjMwMDkwMjY4NDg3NjUwMjo6Ojo&url=%2Fdp%2FB0FH4MX7RT%2Fref%3Dsspa_dk_detail_4%3Fpsc%3D1%26pd_rd_i%3DB0FH4MX7RT%26pd_rd_w%3D6AN2x%26content-id%3Damzn1.sym.9bd45040-31dd-4792-bd5a-341290ebe305%26pf_rd_p%3D9bd45040-31dd-4792-bd5a-341290ebe305%26pf_rd_r%3DJDZQZNQQWAQ0TEKP7TNM%26pd_rd_wg%3Dohdz0%26pd_rd_r%3Df3b45206-2fb9-4f78-bc10-62b83f6f3b2c%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9kZXRhaWxfdGhlbWF0aWM"
+   },
+   {
+    "idx": 194,
+    "role": "link",
+    "name": "Belkin USB A to USB C 15W Braided Cable 2 Pack, 6.6ft iPhone Charger Cord | iPhone ...",
+    "section": "sims-simsContainer_feature_div_0 > Customers frequently viewed",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo0MjYyNTI3NDg0OTUzMTE5OjE3OTI4NDczNjg6c3BfZGV0YWlsX3RoZW1hdGljOjMwMDc1NjE0MDM4MTEwMjo6Ojo&url=%2Fdp%2FB0F63XNWN3%2Fref%3Dsspa_dk_detail_5%3Fpsc%3D1%26pd_rd_i%3DB0F63XNWN3%26pd_rd_w%3D6AN2x%26content-id%3Damzn1.sym.9bd45040-31dd-4792-bd5a-341290ebe305%26pf_rd_p%3D9bd45040-31dd-4792-bd5a-341290ebe305%26pf_rd_r%3DJDZQZNQQWAQ0TEKP7TNM%26pd_rd_wg%3Dohdz0%26pd_rd_r%3Df3b45206-2fb9-4f78-bc10-62b83f6f3b2c%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9kZXRhaWxfdGhlbWF0aWM"
+   },
+   {
+    "idx": 195,
+    "role": "link",
+    "name": "4.7 out of 5 stars 537 ratings",
+    "section": "sims-simsContainer_feature_div_0 > Customers frequently viewed",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo0MjYyNTI3NDg0OTUzMTE5OjE3OTI4NDczNjg6c3BfZGV0YWlsX3RoZW1hdGljOjMwMDc1NjE0MDM4MTEwMjo6Ojo&url=%2Fdp%2FB0F63XNWN3%2Fref%3Dsspa_dk_detail_5%3Fpsc%3D1%26pd_rd_i%3DB0F63XNWN3%26pd_rd_w%3D6AN2x%26content-id%3Damzn1.sym.9bd45040-31dd-4792-bd5a-341290ebe305%26pf_rd_p%3D9bd45040-31dd-4792-bd5a-341290ebe305%26pf_rd_r%3DJDZQZNQQWAQ0TEKP7TNM%26pd_rd_wg%3Dohdz0%26pd_rd_r%3Df3b45206-2fb9-4f78-bc10-62b83f6f3b2c%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9kZXRhaWxfdGhlbWF0aWM#customerReviews"
+   },
+   {
+    "idx": 196,
+    "role": "link",
+    "name": "$14.99 $14 . 99( $1.14 $1.14 / feet)",
+    "section": "sims-simsContainer_feature_div_0 > Customers frequently viewed",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo0MjYyNTI3NDg0OTUzMTE5OjE3OTI4NDczNjg6c3BfZGV0YWlsX3RoZW1hdGljOjMwMDc1NjE0MDM4MTEwMjo6Ojo&url=%2Fdp%2FB0F63XNWN3%2Fref%3Dsspa_dk_detail_5%3Fpsc%3D1%26pd_rd_i%3DB0F63XNWN3%26pd_rd_w%3D6AN2x%26content-id%3Damzn1.sym.9bd45040-31dd-4792-bd5a-341290ebe305%26pf_rd_p%3D9bd45040-31dd-4792-bd5a-341290ebe305%26pf_rd_r%3DJDZQZNQQWAQ0TEKP7TNM%26pd_rd_wg%3Dohdz0%26pd_rd_r%3Df3b45206-2fb9-4f78-bc10-62b83f6f3b2c%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9kZXRhaWxfdGhlbWF0aWM"
+   },
+   {
+    "idx": 197,
+    "role": "link",
+    "name": "FREE delivery Mon, Oct 26",
+    "section": "sims-simsContainer_feature_div_0 > Customers frequently viewed",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo0MjYyNTI3NDg0OTUzMTE5OjE3OTI4NDczNjg6c3BfZGV0YWlsX3RoZW1hdGljOjMwMDc1NjE0MDM4MTEwMjo6Ojo&url=%2Fdp%2FB0F63XNWN3%2Fref%3Dsspa_dk_detail_5%3Fpsc%3D1%26pd_rd_i%3DB0F63XNWN3%26pd_rd_w%3D6AN2x%26content-id%3Damzn1.sym.9bd45040-31dd-4792-bd5a-341290ebe305%26pf_rd_p%3D9bd45040-31dd-4792-bd5a-341290ebe305%26pf_rd_r%3DJDZQZNQQWAQ0TEKP7TNM%26pd_rd_wg%3Dohdz0%26pd_rd_r%3Df3b45206-2fb9-4f78-bc10-62b83f6f3b2c%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9kZXRhaWxfdGhlbWF0aWM"
+   },
+   {
+    "idx": 198,
+    "role": "button",
+    "name": "1 sustainability feature",
+    "section": "sims-simsContainer_feature_div_0 > Customers frequently viewed",
+    "href": "javascript:void(0)"
+   },
+   {
+    "idx": 199,
+    "role": "link",
+    "name": "USB A to USB C Cable 6.6ft, 10Gbps Data Transfer 60W 3A Fast Charging Cable | USB C...",
+    "section": "sims-simsContainer_feature_div_0 > Customers frequently viewed",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo0MjYyNTI3NDg0OTUzMTE5OjE3OTI4NDczNjg6c3BfZGV0YWlsX3RoZW1hdGljOjMwMDA3OTgyNzg3MjAwMjo6Ojo&url=%2Fdp%2FB0B6BNVT7W%2Fref%3Dsspa_dk_detail_6%3Fpsc%3D1%26pd_rd_i%3DB0B6BNVT7W%26pd_rd_w%3D6AN2x%26content-id%3Damzn1.sym.9bd45040-31dd-4792-bd5a-341290ebe305%26pf_rd_p%3D9bd45040-31dd-4792-bd5a-341290ebe305%26pf_rd_r%3DJDZQZNQQWAQ0TEKP7TNM%26pd_rd_wg%3Dohdz0%26pd_rd_r%3Df3b45206-2fb9-4f78-bc10-62b83f6f3b2c%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9kZXRhaWxfdGhlbWF0aWM"
+   },
+   {
+    "idx": 200,
+    "role": "link",
+    "name": "4.5 out of 5 stars 1,357 ratings",
+    "section": "sims-simsContainer_feature_div_0 > Customers frequently viewed",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo0MjYyNTI3NDg0OTUzMTE5OjE3OTI4NDczNjg6c3BfZGV0YWlsX3RoZW1hdGljOjMwMDA3OTgyNzg3MjAwMjo6Ojo&url=%2Fdp%2FB0B6BNVT7W%2Fref%3Dsspa_dk_detail_6%3Fpsc%3D1%26pd_rd_i%3DB0B6BNVT7W%26pd_rd_w%3D6AN2x%26content-id%3Damzn1.sym.9bd45040-31dd-4792-bd5a-341290ebe305%26pf_rd_p%3D9bd45040-31dd-4792-bd5a-341290ebe305%26pf_rd_r%3DJDZQZNQQWAQ0TEKP7TNM%26pd_rd_wg%3Dohdz0%26pd_rd_r%3Df3b45206-2fb9-4f78-bc10-62b83f6f3b2c%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9kZXRhaWxfdGhlbWF0aWM#customerReviews"
+   },
+   {
+    "idx": 201,
+    "role": "link",
+    "name": "$9.99 $9 . 99",
+    "section": "sims-simsContainer_feature_div_0 > Customers frequently viewed",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo0MjYyNTI3NDg0OTUzMTE5OjE3OTI4NDczNjg6c3BfZGV0YWlsX3RoZW1hdGljOjMwMDA3OTgyNzg3MjAwMjo6Ojo&url=%2Fdp%2FB0B6BNVT7W%2Fref%3Dsspa_dk_detail_6%3Fpsc%3D1%26pd_rd_i%3DB0B6BNVT7W%26pd_rd_w%3D6AN2x%26content-id%3Damzn1.sym.9bd45040-31dd-4792-bd5a-341290ebe305%26pf_rd_p%3D9bd45040-31dd-4792-bd5a-341290ebe305%26pf_rd_r%3DJDZQZNQQWAQ0TEKP7TNM%26pd_rd_wg%3Dohdz0%26pd_rd_r%3Df3b45206-2fb9-4f78-bc10-62b83f6f3b2c%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9kZXRhaWxfdGhlbWF0aWM"
+   },
+   {
+    "idx": 202,
+    "role": "link",
+    "name": "FREE delivery Today 5 PM - 8 PM on $25 of qualifying items",
+    "section": "sims-simsContainer_feature_div_0 > Customers frequently viewed",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo0MjYyNTI3NDg0OTUzMTE5OjE3OTI4NDczNjg6c3BfZGV0YWlsX3RoZW1hdGljOjMwMDA3OTgyNzg3MjAwMjo6Ojo&url=%2Fdp%2FB0B6BNVT7W%2Fref%3Dsspa_dk_detail_6%3Fpsc%3D1%26pd_rd_i%3DB0B6BNVT7W%26pd_rd_w%3D6AN2x%26content-id%3Damzn1.sym.9bd45040-31dd-4792-bd5a-341290ebe305%26pf_rd_p%3D9bd45040-31dd-4792-bd5a-341290ebe305%26pf_rd_r%3DJDZQZNQQWAQ0TEKP7TNM%26pd_rd_wg%3Dohdz0%26pd_rd_r%3Df3b45206-2fb9-4f78-bc10-62b83f6f3b2c%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9kZXRhaWxfdGhlbWF0aWM"
+   },
+   {
+    "idx": 203,
+    "role": "link",
+    "name": "You pay $8.99 with coupon",
+    "section": "sims-simsContainer_feature_div_0 > Customers frequently viewed",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo0MjYyNTI3NDg0OTUzMTE5OjE3OTI4NDczNjg6c3BfZGV0YWlsX3RoZW1hdGljOjMwMDA3OTgyNzg3MjAwMjo6Ojo&url=%2Fdp%2FB0B6BNVT7W%2Fref%3Dsspa_dk_detail_6%3Fpsc%3D1%26pd_rd_i%3DB0B6BNVT7W%26pd_rd_w%3D6AN2x%26content-id%3Damzn1.sym.9bd45040-31dd-4792-bd5a-341290ebe305%26pf_rd_p%3D9bd45040-31dd-4792-bd5a-341290ebe305%26pf_rd_r%3DJDZQZNQQWAQ0TEKP7TNM%26pd_rd_wg%3Dohdz0%26pd_rd_r%3Df3b45206-2fb9-4f78-bc10-62b83f6f3b2c%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9kZXRhaWxfdGhlbWF0aWM"
+   },
+   {
+    "idx": 204,
+    "role": "textbox",
+    "name": "Looking for specific info?",
+    "section": "nile-inline-btf_feature_div > dpx-rex-nice-widget-container"
+   },
+   {
+    "idx": 205,
+    "role": "button",
+    "name": "Submit",
+    "section": "dpx-rex-nice-widget-container > dpx-rex-nile-submit-button"
+   },
+   {
+    "idx": 206,
+    "role": "button",
+    "name": "Can it charge a tablet?",
+    "section": "dpx-rex-nile-inline-default-pills-contai… > a-autoid-15"
+   },
+   {
+    "idx": 207,
+    "role": "button",
+    "name": "Does it support data transfer?",
+    "section": "dpx-rex-nile-inline-default-pills-contai… > a-autoid-16"
+   },
+   {
+    "idx": 208,
+    "role": "button",
+    "name": "Is this cable durable?",
+    "section": "dpx-rex-nile-inline-default-pills-contai… > a-autoid-17"
+   },
+   {
+    "idx": 209,
+    "role": "button",
+    "name": "Does it work with Android phones?",
+    "section": "dpx-rex-nile-inline-default-pills-contai… > a-autoid-18"
+   },
+   {
+    "idx": 210,
+    "role": "button",
+    "name": "Is it compatible with iPhones?",
+    "section": "dpx-rex-nile-inline-default-pills-contai… > a-autoid-19"
+   },
+   {
+    "idx": 211,
+    "role": "button",
+    "name": "Play",
+    "section": "ive-hero-video-player > vse-vw-dp-pidj-ive-video-player"
+   },
+   {
+    "idx": 212,
+    "role": "link",
+    "name": "The Math Sorcerer's Lair",
+    "section": "ive-hero-video-player > vse-vw-dp-pidj-ive-video-player",
+    "href": "https://www.amazon.com/shop/themathsorcerer"
+   },
+   {
+    "idx": 213,
+    "role": "link",
+    "name": "The Math Sorcerer's Lair",
+    "section": "ive-hero-video-player > vse-vw-dp-pidj-ive-video-player",
+    "href": "https://www.amazon.com/shop/themathsorcerer"
+   },
+   {
+    "idx": 214,
+    "role": "link",
+    "name": "Earns commissions",
+    "section": "ive-hero-video-player > vse-vw-dp-pidj-ive-video-player",
+    "href": "https://www.amazon.com/shop/info"
+   },
+   {
+    "idx": 215,
+    "role": "button",
+    "name": "More options",
+    "section": "ive-hero-video-player > vse-vw-dp-pidj-ive-video-player"
+   },
+   {
+    "idx": 216,
+    "role": "button",
+    "name": "Full screen",
+    "section": "ive-hero-video-player > vse-vw-dp-pidj-ive-video-player"
+   },
+   {
+    "idx": 217,
+    "role": "navigation",
+    "name": "Back to top jump link",
+    "section": "btfSubNavDesktopCopy > Navigate within the product detail page",
+    "href": "https://www.amazon.com/dp/B0CPF3HJ62?ref_=apb_fb_ac_d_apb_fb_asin_pc_accessories&pd_rd_w=FjULz&content-id=amzn1.sym.15ea6109-b709-482f-aa95-a96a33d11246%3Aamzn1.sym.15ea6109-b709-482f-aa95-a96a33d11246&pf_rd_p=15ea6109-b709-482f-aa95-a96a33d11246&pf_rd_r=63QGH554CQS0XHE87G3E&pd_rd_wg=KCBCR&pd_rd_r=b9e94a3a-fbb6-43cc-85cc-504a8a9635a8&pd_rd_i=B0CPF3HJ62&sr=1-1-1c7c554e-c3b9-43b0-8060-ddc1e436c844&qid=1792847363#"
+   },
+   {
+    "idx": 218,
+    "role": "navigation",
+    "name": "About this item widget jump link",
+    "section": "btfSubNavDesktopCopy > Navigate within the product detail page",
+    "href": "https://www.amazon.com/dp/B0CPF3HJ62?ref_=apb_fb_ac_d_apb_fb_asin_pc_accessories&pd_rd_w=FjULz&content-id=amzn1.sym.15ea6109-b709-482f-aa95-a96a33d11246%3Aamzn1.sym.15ea6109-b709-482f-aa95-a96a33d11246&pf_rd_p=15ea6109-b709-482f-aa95-a96a33d11246&pf_rd_r=63QGH554CQS0XHE87G3E&pd_rd_wg=KCBCR&pd_rd_r=b9e94a3a-fbb6-43cc-85cc-504a8a9635a8&pd_rd_i=B0CPF3HJ62&sr=1-1-1c7c554e-c3b9-43b0-8060-ddc1e436c844&qid=1792847363#featurebullets_feature_div"
+   },
+   {
+    "idx": 219,
+    "role": "navigation",
+    "name": "Similar widget jump link",
+    "section": "btfSubNavDesktopCopy > Navigate within the product detail page",
+    "href": "https://www.amazon.com/dp/B0CPF3HJ62?ref_=apb_fb_ac_d_apb_fb_asin_pc_accessories&pd_rd_w=FjULz&content-id=amzn1.sym.15ea6109-b709-482f-aa95-a96a33d11246%3Aamzn1.sym.15ea6109-b709-482f-aa95-a96a33d11246&pf_rd_p=15ea6109-b709-482f-aa95-a96a33d11246&pf_rd_r=63QGH554CQS0XHE87G3E&pd_rd_wg=KCBCR&pd_rd_r=b9e94a3a-fbb6-43cc-85cc-504a8a9635a8&pd_rd_i=B0CPF3HJ62&sr=1-1-1c7c554e-c3b9-43b0-8060-ddc1e436c844&qid=1792847363#DetailPage_sims-container_desktop-dp-sims_1_container"
+   },
+   {
+    "idx": 220,
+    "role": "navigation",
+    "name": "Questions widget jump link",
+    "section": "btfSubNavDesktopCopy > Navigate within the product detail page",
+    "href": "https://www.amazon.com/dp/B0CPF3HJ62?ref_=apb_fb_ac_d_apb_fb_asin_pc_accessories&pd_rd_w=FjULz&content-id=amzn1.sym.15ea6109-b709-482f-aa95-a96a33d11246%3Aamzn1.sym.15ea6109-b709-482f-aa95-a96a33d11246&pf_rd_p=15ea6109-b709-482f-aa95-a96a33d11246&pf_rd_r=63QGH554CQS0XHE87G3E&pd_rd_wg=KCBCR&pd_rd_r=b9e94a3a-fbb6-43cc-85cc-504a8a9635a8&pd_rd_i=B0CPF3HJ62&sr=1-1-1c7c554e-c3b9-43b0-8060-ddc1e436c844&qid=1792847363#nile-inline-btf_feature_div"
+   },
+   {
+    "idx": 221,
+    "role": "navigation",
+    "name": "Product information widget jump link",
+    "section": "btfSubNavDesktopCopy > Navigate within the product detail page",
+    "href": "https://www.amazon.com/dp/B0CPF3HJ62?ref_=apb_fb_ac_d_apb_fb_asin_pc_accessories&pd_rd_w=FjULz&content-id=amzn1.sym.15ea6109-b709-482f-aa95-a96a33d11246%3Aamzn1.sym.15ea6109-b709-482f-aa95-a96a33d11246&pf_rd_p=15ea6109-b709-482f-aa95-a96a33d11246&pf_rd_r=63QGH554CQS0XHE87G3E&pd_rd_wg=KCBCR&pd_rd_r=b9e94a3a-fbb6-43cc-85cc-504a8a9635a8&pd_rd_i=B0CPF3HJ62&sr=1-1-1c7c554e-c3b9-43b0-8060-ddc1e436c844&qid=1792847363#productDetails_feature_div"
+   },
+   {
+    "idx": 222,
+    "role": "navigation",
+    "name": "From the brand widget jump link",
+    "section": "btfSubNavDesktopCopy > Navigate within the product detail page",
+    "href": "https://www.amazon.com/dp/B0CPF3HJ62?ref_=apb_fb_ac_d_apb_fb_asin_pc_accessories&pd_rd_w=FjULz&content-id=amzn1.sym.15ea6109-b709-482f-aa95-a96a33d11246%3Aamzn1.sym.15ea6109-b709-482f-aa95-a96a33d11246&pf_rd_p=15ea6109-b709-482f-aa95-a96a33d11246&pf_rd_r=63QGH554CQS0XHE87G3E&pd_rd_wg=KCBCR&pd_rd_r=b9e94a3a-fbb6-43cc-85cc-504a8a9635a8&pd_rd_i=B0CPF3HJ62&sr=1-1-1c7c554e-c3b9-43b0-8060-ddc1e436c844&qid=1792847363#productDescription_feature_div"
+   },
+   {
+    "idx": 223,
+    "role": "navigation",
+    "name": "Customer reviews widget jump link",
+    "section": "btfSubNavDesktopCopy > Navigate within the product detail page",
+    "href": "https://www.amazon.com/dp/B0CPF3HJ62?ref_=apb_fb_ac_d_apb_fb_asin_pc_accessories&pd_rd_w=FjULz&content-id=amzn1.sym.15ea6109-b709-482f-aa95-a96a33d11246%3Aamzn1.sym.15ea6109-b709-482f-aa95-a96a33d11246&pf_rd_p=15ea6109-b709-482f-aa95-a96a33d11246&pf_rd_r=63QGH554CQS0XHE87G3E&pd_rd_wg=KCBCR&pd_rd_r=b9e94a3a-fbb6-43cc-85cc-504a8a9635a8&pd_rd_i=B0CPF3HJ62&sr=1-1-1c7c554e-c3b9-43b0-8060-ddc1e436c844&qid=1792847363#customer-reviews_feature_div"
+   },
+   {
+    "idx": 224,
+    "role": "navigation",
+    "name": "Back to top Image jump link",
+    "section": "Desktop-Detailed-Evaluation-Zone > btfSubNavDesktopCopy",
+    "href": "https://www.amazon.com/dp/B0CPF3HJ62?ref_=apb_fb_ac_d_apb_fb_asin_pc_accessories&pd_rd_w=FjULz&content-id=amzn1.sym.15ea6109-b709-482f-aa95-a96a33d11246%3Aamzn1.sym.15ea6109-b709-482f-aa95-a96a33d11246&pf_rd_p=15ea6109-b709-482f-aa95-a96a33d11246&pf_rd_r=63QGH554CQS0XHE87G3E&pd_rd_wg=KCBCR&pd_rd_r=b9e94a3a-fbb6-43cc-85cc-504a8a9635a8&pd_rd_i=B0CPF3HJ62&sr=1-1-1c7c554e-c3b9-43b0-8060-ddc1e436c844&qid=1792847363#"
+   },
+   {
+    "idx": 225,
+    "role": "navigation",
+    "name": "Back to top title jump link",
+    "section": "Desktop-Detailed-Evaluation-Zone > btfSubNavDesktopCopy",
+    "href": "https://www.amazon.com/dp/B0CPF3HJ62?ref_=apb_fb_ac_d_apb_fb_asin_pc_accessories&pd_rd_w=FjULz&content-id=amzn1.sym.15ea6109-b709-482f-aa95-a96a33d11246%3Aamzn1.sym.15ea6109-b709-482f-aa95-a96a33d11246&pf_rd_p=15ea6109-b709-482f-aa95-a96a33d11246&pf_rd_r=63QGH554CQS0XHE87G3E&pd_rd_wg=KCBCR&pd_rd_r=b9e94a3a-fbb6-43cc-85cc-504a8a9635a8&pd_rd_i=B0CPF3HJ62&sr=1-1-1c7c554e-c3b9-43b0-8060-ddc1e436c844&qid=1792847363#"
+   },
+   {
+    "idx": 226,
+    "role": "link",
+    "name": "Amazon Basics 8-Pack AAAA Reliable Alkaline Batteries, 1.5 Volt, 3-Year Shelf Life",
+    "section": "aplus > Featured content carousel",
+    "href": "https://www.amazon.com/dp/B00LH3DTYS/ref=emc_bcc_2_i"
+   },
+   {
+    "idx": 227,
+    "role": "link",
+    "name": "Amazon Basics Disinfecting Wipes, Lemon &amp; Fresh Scent, Sanitizes, Cleans, Disinfects &amp; Deodo…",
+    "section": "aplus > Featured content carousel",
+    "href": "https://www.amazon.com/dp/B07F246YG1/ref=emc_bcc_2_i"
+   },
+   {
+    "idx": 228,
+    "role": "link",
+    "name": "Amazon Basics Extra Strong &amp; Flex Tall Kitchen Drawstring Trash Bags, Citrus Scent, 13 Gallon, 4…",
+    "section": "aplus > Featured content carousel",
+    "href": "https://www.amazon.com/dp/B0DKMFBGK1/ref=emc_bcc_2_i"
+   },
+   {
+    "idx": 229,
+    "role": "link",
+    "name": "Amazon Basics Laundry Detergent Pacs, Free &amp; Clear, Powerful Triple Action, Hypoallergenic, Unsc…",
+    "section": "aplus > Featured content carousel",
+    "href": "https://www.amazon.com/dp/B0DJCHT68B/ref=emc_bcc_2_i"
+   },
+   {
+    "idx": 230,
+    "role": "link",
+    "name": "Visit this Brand's Amazon store",
+    "section": "aplus > Featured content carousel",
+    "href": "https://www.amazon.com/stores/page/9BEB45BF-40E9-4F00-B9CE-0CF425F0A935?store_ref=storeRecs_dp_aplus"
+   },
+   {
+    "idx": 231,
+    "role": "link",
+    "name": "Amazon Basics Stovetop Whistling Tea Kettle, Fast Boiling, Stainless Steel, Food Grade, Ergonomic...",
+    "section": "aplus > Featured content carousel",
+    "href": "https://www.amazon.com/dp/B08B9DGQ8Q/ref=emc_bcc_2_i"
+   },
+   {
+    "idx": 232,
+    "role": "link",
+    "name": "Amazon Basics Wooden Serving Tray, 17&#34; x 12&#34; Acacia Wood Decorative Tray Platter With Built-…",
+    "section": "aplus > Featured content carousel",
+    "href": "https://www.amazon.com/dp/B0DYRZXWHR/ref=emc_bcc_2_i"
+   },
+   {
+    "idx": 233,
+    "role": "link",
+    "name": "Amazon Basics Rice Cooker Small 3-Cup Uncooked 6-Cup Cooked, Micom With Fuzzy Logic, Ceramic Non-...",
+    "section": "aplus > Featured content carousel",
+    "href": "https://www.amazon.com/dp/B0FJ1H45HV/ref=emc_bcc_2_i"
+   },
+   {
+    "idx": 234,
+    "role": "link",
+    "name": "Amazon Basics Enameled Cast Iron Dutch Oven Pot With Lid, 4.3-Quart, Round, Dual Handles, Heavy-D...",
+    "section": "aplus > Featured content carousel",
+    "href": "https://www.amazon.com/dp/B0G1LPQPD9/ref=emc_bcc_2_i"
+   },
+   {
+    "idx": 235,
+    "role": "link",
+    "name": "Visit this Brand's Amazon store",
+    "section": "aplus > Featured content carousel",
+    "href": "https://www.amazon.com/stores/page/387D523C-A74A-4F3E-8298-05A0D49C91EC?store_ref=storeRecs_dp_aplus"
+   },
+   {
+    "idx": 236,
+    "role": "link",
+    "name": "Amazon Basics Comforter Set, 3-Piece Jacquard Comforter and 2 Pillow Shams, All-Season Bedding, Q...",
+    "section": "aplus > Featured content carousel",
+    "href": "https://www.amazon.com/dp/B0DSFJJZ21/ref=emc_bcc_2_i"
+   },
+   {
+    "idx": 237,
+    "role": "link",
+    "name": "Amazon Basics Bathtub Tray Caddy, Spa Bath Organizer, Extendable Bamboo Bath Board with Book Rest...",
+    "section": "aplus > Featured content carousel",
+    "href": "https://www.amazon.com/dp/B0F1D1P1D1/ref=emc_bcc_2_i"
+   },
+   {
+    "idx": 238,
+    "role": "link",
+    "name": "Amazon Basics Geometric Jacquard Fabric Shower Curtain for Bathroom, Lightweight, Water Repellent...",
+    "section": "aplus > Featured content carousel",
+    "href": "https://www.amazon.com/dp/B0DXF8Y4JZ/ref=emc_bcc_2_i"
+   },
+   {
+    "idx": 239,
+    "role": "link",
+    "name": "Amazon Basics Bathroom Set, 6-Piece with Toothbrush Holder, Soap Dispenser, Soap Dish, Toothbrush...",
+    "section": "aplus > Featured content carousel",
+    "href": "https://www.amazon.com/dp/B0DLFMJXJV/ref=emc_bcc_2_i"
+   },
+   {
+    "idx": 240,
+    "role": "link",
+    "name": "Visit this Brand's Amazon store",
+    "section": "aplus > Featured content carousel",
+    "href": "https://www.amazon.com/stores/page/A90C76D5-BBE2-4840-BB44-3DB4E40E9ACB?store_ref=storeRecs_dp_aplus"
+   },
+   {
+    "idx": 241,
+    "role": "link",
+    "name": "Amazon Basics Adjustable Workout Weight Bench Press, Foldable for Home Gym, Supports up to 660 Po...",
+    "section": "aplus > Featured content carousel",
+    "href": "https://www.amazon.com/dp/B0DPHXXW29/ref=emc_bcc_2_i"
+   },
+   {
+    "idx": 242,
+    "role": "link",
+    "name": "Amazon Basics Adjustable Dumbbell, 25 lb",
+    "section": "aplus > Featured content carousel",
+    "href": "https://www.amazon.com/dp/B0FDHB6K3J/ref=emc_bcc_2_i"
+   },
+   {
+    "idx": 243,
+    "role": "link",
+    "name": "Amazon Basics Pickleball Paddles Set of 2, USAPA Approved Carbon Fiber Paddle with 4 Balls, Light...",
+    "section": "aplus > Featured content carousel",
+    "href": "https://www.amazon.com/dp/B0F6CJRQ1V/ref=emc_bcc_2_i"
+   },
+   {
+    "idx": 244,
+    "role": "link",
+    "name": "Amazon Basics Extra Thick Exercise Yoga Mat with Carrying Strap",
+    "section": "aplus > Featured content carousel",
+    "href": "https://www.amazon.com/dp/B01LP0UX9G/ref=emc_bcc_2_i"
+   },
+   {
+    "idx": 245,
+    "role": "link",
+    "name": "Visit this Brand's Amazon store",
+    "section": "aplus > Featured content carousel",
+    "href": "https://www.amazon.com/stores/page/C73E99C1-0D8C-42A7-A97D-39311C9EC69C?store_ref=storeRecs_dp_aplus"
+   },
+   {
+    "idx": 246,
+    "role": "link",
+    "name": "Amazon Basics Shark Shape Cat House for Indoor Cats, Enclosed Design Helps Reduce Anxiety in Nerv...",
+    "section": "aplus > Featured content carousel",
+    "href": "https://www.amazon.com/dp/B0DQ7WKHGX/ref=emc_bcc_2_i"
+   },
+   {
+    "idx": 247,
+    "role": "link",
+    "name": "Amazon Basics Peanut Butter &amp; Banana Flavor Training Treats for Dogs, 1 lb. Bag (16 oz) (Previou…",
+    "section": "aplus > Featured content carousel",
+    "href": "https://www.amazon.com/dp/B07QMN1RZ9/ref=emc_bcc_2_i"
+   },
+   {
+    "idx": 248,
+    "role": "link",
+    "name": "Amazon Basics Wet Dog Food Variety Pack, Country Stew Flavor and Cuts in Gravy with Beef, Made wi...",
+    "section": "aplus > Featured content carousel",
+    "href": "https://www.amazon.com/dp/B0C2H8L94B/ref=emc_bcc_2_i"
+   },
+   {
+    "idx": 249,
+    "role": "link",
+    "name": "Amazon Basics Crunchy Dog Biscuits Multi Flavor Dog Treats 5 lb. Box",
+    "section": "aplus > Featured content carousel",
+    "href": "https://www.amazon.com/dp/B0DCWPL25H/ref=emc_bcc_2_i"
+   },
+   {
+    "idx": 250,
+    "role": "link",
+    "name": "Visit this Brand's Amazon store",
+    "section": "aplus > Featured content carousel",
+    "href": "https://www.amazon.com/stores/page/A7D93D90-DE04-42B3-85F7-1B11B6F343FD?store_ref=storeRecs_dp_aplus"
+   },
+   {
+    "idx": 251,
+    "role": "link",
+    "name": "Amazon Basics 3-Tier Metal Rolling Utility Cart, Storage Organizer, Multi-Functional Kitchen Isla...",
+    "section": "aplus > Featured content carousel",
+    "href": "https://www.amazon.com/dp/B07TY1VV3V/ref=emc_bcc_2_i"
+   },
+   {
+    "idx": 252,
+    "role": "link",
+    "name": "Amazon Basics Foldable Portable Metal Clothes Drying Rack for Indoor Air Drying, Energy Saving, 1...",
+    "section": "aplus > Featured content carousel",
+    "href": "https://www.amazon.com/dp/B00H7P1G7C/ref=emc_bcc_2_i"
+   },
+   {
+    "idx": 253,
+    "role": "link",
+    "name": "Amazon Basics Foldable Storage Bins with Rope Handles, Closet Organizers, Storage Baskets for Org...",
+    "section": "aplus > Featured content carousel",
+    "href": "https://www.amazon.com/dp/B0DJ143XYV/ref=emc_bcc_2_i"
+   },
+   {
+    "idx": 254,
+    "role": "link",
+    "name": "Amazon Basics 20 Jars Spice Rack Organizer, Space-Saving Kitchen Organizer with Glass Spice Jars,...",
+    "section": "aplus > Featured content carousel",
+    "href": "https://www.amazon.com/dp/B07YX8NSTD/ref=emc_bcc_2_i"
+   },
+   {
+    "idx": 255,
+    "role": "link",
+    "name": "Visit this Brand's Amazon store",
+    "section": "aplus > Featured content carousel",
+    "href": "https://www.amazon.com/stores/page/431E2126-5483-4748-B5CF-B18C8A62C48A?store_ref=storeRecs_dp_aplus"
+   },
+   {
+    "idx": 256,
+    "role": "button",
+    "name": "Features & Specs",
+    "section": "productDetails_expanderSectionTables > productDetails_expanderTables_depthLeftS…",
+    "href": "javascript:void(0)"
+   },
+   {
+    "idx": 257,
+    "role": "button",
+    "name": "Measurements",
+    "section": "productDetails_expanderSectionTables > productDetails_expanderTables_depthLeftS…",
+    "href": "javascript:void(0)"
+   },
+   {
+    "idx": 258,
+    "role": "button",
+    "name": "tell us about a lower price?",
+    "section": "productDetails_expanderSectionTables > pricingFeedbackDiv",
+    "href": "javascript:void(0)"
+   },
+   {
+    "idx": 259,
+    "role": "button",
+    "name": "Item details",
+    "section": "productDetails_expanderSectionTables > productDetails_expanderTables_depthRight…",
+    "href": "javascript:void(0)"
+   },
+   {
+    "idx": 260,
+    "role": "button",
+    "name": "User guide",
+    "section": "productDetails_expanderSectionTables > productDetails_expanderTables_depthRight…",
+    "href": "javascript:void(0)"
+   },
+   {
+    "idx": 261,
+    "role": "button",
+    "name": "Style",
+    "section": "productDetails_expanderSectionTables > productDetails_expanderTables_depthRight…",
+    "href": "javascript:void(0)"
+   },
+   {
+    "idx": 262,
+    "role": "link",
+    "name": "Sponsored",
+    "section": "Related products with free delivery > sp_detail2-prime_heading",
+    "href": "https://www.amazon.com/dp/B0CPF3HJ62?ref_=apb_fb_ac_d_apb_fb_asin_pc_accessories&pd_rd_w=FjULz&content-id=amzn1.sym.15ea6109-b709-482f-aa95-a96a33d11246%3Aamzn1.sym.15ea6109-b709-482f-aa95-a96a33d11246&pf_rd_p=15ea6109-b709-482f-aa95-a96a33d11246&pf_rd_r=63QGH554CQS0XHE87G3E&pd_rd_wg=KCBCR&pd_rd_r=b9e94a3a-fbb6-43cc-85cc-504a8a9635a8&pd_rd_i=B0CPF3HJ62&sr=1-1-1c7c554e-c3b9-43b0-8060-ddc1e436c844&qid=1792847363#sp_detail2-prime_feedbackForm"
+   },
+   {
+    "idx": 263,
+    "role": "link",
+    "name": "Bufunto iPhone 17 16 15 Charger Fast Charging, 40W USB-C Charger Block with 6 FT Ty...",
+    "section": "dp-container > Related products with free delivery",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo2MDI5NDgyMDc2MjMxMjk6MTc5Mjg0NzM2ODpzcF9kZXRhaWwyOjMwMTEyMDk2ODg0NzMwMjo6Ojo&url=%2Fdp%2FB0CW2Z5VVC%2Fref%3Dsspa_dk_detail_0%3Fpsc%3D1%26pd_rd_i%3DB0CW2Z5VVC%26pd_rd_w%3D7I1rE%26content-id%3Damzn1.sym.4a7f44df-467c-45a1-af5f-91661a6df2f9%26pf_rd_p%3D4a7f44df-467c-45a1-af5f-91661a6df2f9%26pf_rd_r%3DJDZQZNQQWAQ0TEKP7TNM%26pd_rd_wg%3Dohdz0%26pd_rd_r%3Df3b45206-2fb9-4f78-bc10-62b83f6f3b2c%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9kZXRhaWwy"
+   },
+   {
+    "idx": 264,
+    "role": "link",
+    "name": "4.5 out of 5 stars 237 ratings",
+    "section": "dp-container > Related products with free delivery",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo2MDI5NDgyMDc2MjMxMjk6MTc5Mjg0NzM2ODpzcF9kZXRhaWwyOjMwMTEyMDk2ODg0NzMwMjo6Ojo&url=%2Fdp%2FB0CW2Z5VVC%2Fref%3Dsspa_dk_detail_0%3Fpsc%3D1%26pd_rd_i%3DB0CW2Z5VVC%26pd_rd_w%3D7I1rE%26content-id%3Damzn1.sym.4a7f44df-467c-45a1-af5f-91661a6df2f9%26pf_rd_p%3D4a7f44df-467c-45a1-af5f-91661a6df2f9%26pf_rd_r%3DJDZQZNQQWAQ0TEKP7TNM%26pd_rd_wg%3Dohdz0%26pd_rd_r%3Df3b45206-2fb9-4f78-bc10-62b83f6f3b2c%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9kZXRhaWwy#customerReviews"
+   },
+   {
+    "idx": 265,
+    "role": "link",
+    "name": "$25.98 $25 . 98",
+    "section": "dp-container > Related products with free delivery",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo2MDI5NDgyMDc2MjMxMjk6MTc5Mjg0NzM2ODpzcF9kZXRhaWwyOjMwMTEyMDk2ODg0NzMwMjo6Ojo&url=%2Fdp%2FB0CW2Z5VVC%2Fref%3Dsspa_dk_detail_0%3Fpsc%3D1%26pd_rd_i%3DB0CW2Z5VVC%26pd_rd_w%3D7I1rE%26content-id%3Damzn1.sym.4a7f44df-467c-45a1-af5f-91661a6df2f9%26pf_rd_p%3D4a7f44df-467c-45a1-af5f-91661a6df2f9%26pf_rd_r%3DJDZQZNQQWAQ0TEKP7TNM%26pd_rd_wg%3Dohdz0%26pd_rd_r%3Df3b45206-2fb9-4f78-bc10-62b83f6f3b2c%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9kZXRhaWwy"
+   },
+   {
+    "idx": 266,
+    "role": "link",
+    "name": "FREE delivery Mon, Oct 26",
+    "section": "dp-container > Related products with free delivery",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo2MDI5NDgyMDc2MjMxMjk6MTc5Mjg0NzM2ODpzcF9kZXRhaWwyOjMwMTEyMDk2ODg0NzMwMjo6Ojo&url=%2Fdp%2FB0CW2Z5VVC%2Fref%3Dsspa_dk_detail_0%3Fpsc%3D1%26pd_rd_i%3DB0CW2Z5VVC%26pd_rd_w%3D7I1rE%26content-id%3Damzn1.sym.4a7f44df-467c-45a1-af5f-91661a6df2f9%26pf_rd_p%3D4a7f44df-467c-45a1-af5f-91661a6df2f9%26pf_rd_r%3DJDZQZNQQWAQ0TEKP7TNM%26pd_rd_wg%3Dohdz0%26pd_rd_r%3Df3b45206-2fb9-4f78-bc10-62b83f6f3b2c%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9kZXRhaWwy"
+   },
+   {
+    "idx": 267,
+    "role": "link",
+    "name": "iPhone 17/18 Fast Charger Block,2 Pack 60W USB Charging Block 5-Port Charge Adapter...",
+    "section": "dp-container > Related products with free delivery",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo2MDI5NDgyMDc2MjMxMjk6MTc5Mjg0NzM2ODpzcF9kZXRhaWwyOjMwMTMxNTMzNzc1NzgwMjo6Ojo&url=%2Fdp%2FB0F42XY515%2Fref%3Dsspa_dk_detail_1%3Fpsc%3D1%26pd_rd_i%3DB0F42XY515%26pd_rd_w%3D7I1rE%26content-id%3Damzn1.sym.4a7f44df-467c-45a1-af5f-91661a6df2f9%26pf_rd_p%3D4a7f44df-467c-45a1-af5f-91661a6df2f9%26pf_rd_r%3DJDZQZNQQWAQ0TEKP7TNM%26pd_rd_wg%3Dohdz0%26pd_rd_r%3Df3b45206-2fb9-4f78-bc10-62b83f6f3b2c%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9kZXRhaWwy"
+   },
+   {
+    "idx": 268,
+    "role": "link",
+    "name": "4.6 out of 5 stars 306 ratings",
+    "section": "dp-container > Related products with free delivery",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo2MDI5NDgyMDc2MjMxMjk6MTc5Mjg0NzM2ODpzcF9kZXRhaWwyOjMwMTMxNTMzNzc1NzgwMjo6Ojo&url=%2Fdp%2FB0F42XY515%2Fref%3Dsspa_dk_detail_1%3Fpsc%3D1%26pd_rd_i%3DB0F42XY515%26pd_rd_w%3D7I1rE%26content-id%3Damzn1.sym.4a7f44df-467c-45a1-af5f-91661a6df2f9%26pf_rd_p%3D4a7f44df-467c-45a1-af5f-91661a6df2f9%26pf_rd_r%3DJDZQZNQQWAQ0TEKP7TNM%26pd_rd_wg%3Dohdz0%26pd_rd_r%3Df3b45206-2fb9-4f78-bc10-62b83f6f3b2c%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9kZXRhaWwy#customerReviews"
+   },
+   {
+    "idx": 269,
+    "role": "link",
+    "name": "Limited time deal",
+    "section": "dp-container > Related products with free delivery",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo2MDI5NDgyMDc2MjMxMjk6MTc5Mjg0NzM2ODpzcF9kZXRhaWwyOjMwMTMxNTMzNzc1NzgwMjo6Ojo&url=%2Fdp%2FB0F42XY515%2Fref%3Dsspa_dk_detail_1%3Fpsc%3D1%26pd_rd_i%3DB0F42XY515%26pd_rd_w%3D7I1rE%26content-id%3Damzn1.sym.4a7f44df-467c-45a1-af5f-91661a6df2f9%26pf_rd_p%3D4a7f44df-467c-45a1-af5f-91661a6df2f9%26pf_rd_r%3DJDZQZNQQWAQ0TEKP7TNM%26pd_rd_wg%3Dohdz0%26pd_rd_r%3Df3b45206-2fb9-4f78-bc10-62b83f6f3b2c%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9kZXRhaWwy"
+   },
+   {
+    "idx": 270,
+    "role": "link",
+    "name": "-24% $28.98 $28 . 98( $14.49 $14.49 / count) List: $37.99 List: null $37.99",
+    "section": "dp-container > Related products with free delivery",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo2MDI5NDgyMDc2MjMxMjk6MTc5Mjg0NzM2ODpzcF9kZXRhaWwyOjMwMTMxNTMzNzc1NzgwMjo6Ojo&url=%2Fdp%2FB0F42XY515%2Fref%3Dsspa_dk_detail_1%3Fpsc%3D1%26pd_rd_i%3DB0F42XY515%26pd_rd_w%3D7I1rE%26content-id%3Damzn1.sym.4a7f44df-467c-45a1-af5f-91661a6df2f9%26pf_rd_p%3D4a7f44df-467c-45a1-af5f-91661a6df2f9%26pf_rd_r%3DJDZQZNQQWAQ0TEKP7TNM%26pd_rd_wg%3Dohdz0%26pd_rd_r%3Df3b45206-2fb9-4f78-bc10-62b83f6f3b2c%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9kZXRhaWwy"
+   },
+   {
+    "idx": 271,
+    "role": "link",
+    "name": "FREE delivery Mon, Oct 26",
+    "section": "dp-container > Related products with free delivery",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo2MDI5NDgyMDc2MjMxMjk6MTc5Mjg0NzM2ODpzcF9kZXRhaWwyOjMwMTMxNTMzNzc1NzgwMjo6Ojo&url=%2Fdp%2FB0F42XY515%2Fref%3Dsspa_dk_detail_1%3Fpsc%3D1%26pd_rd_i%3DB0F42XY515%26pd_rd_w%3D7I1rE%26content-id%3Damzn1.sym.4a7f44df-467c-45a1-af5f-91661a6df2f9%26pf_rd_p%3D4a7f44df-467c-45a1-af5f-91661a6df2f9%26pf_rd_r%3DJDZQZNQQWAQ0TEKP7TNM%26pd_rd_wg%3Dohdz0%26pd_rd_r%3Df3b45206-2fb9-4f78-bc10-62b83f6f3b2c%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9kZXRhaWwy"
+   },
+   {
+    "idx": 272,
+    "role": "link",
+    "name": "2 Packs 30W iPhone 17 16 15 Charger : USB-C Fast Charging Power Adapter Compatible ...",
+    "section": "dp-container > Related products with free delivery",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo2MDI5NDgyMDc2MjMxMjk6MTc5Mjg0NzM2ODpzcF9kZXRhaWwyOjMwMTU5NTkwNTAyMTcwMjo6Ojo&url=%2Fdp%2FB0DK39WM1C%2Fref%3Dsspa_dk_detail_2%3Fpsc%3D1%26pd_rd_i%3DB0DK39WM1C%26pd_rd_w%3D7I1rE%26content-id%3Damzn1.sym.4a7f44df-467c-45a1-af5f-91661a6df2f9%26pf_rd_p%3D4a7f44df-467c-45a1-af5f-91661a6df2f9%26pf_rd_r%3DJDZQZNQQWAQ0TEKP7TNM%26pd_rd_wg%3Dohdz0%26pd_rd_r%3Df3b45206-2fb9-4f78-bc10-62b83f6f3b2c%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9kZXRhaWwy"
+   },
+   {
+    "idx": 273,
+    "role": "link",
+    "name": "4.5 out of 5 stars 59 ratings",
+    "section": "dp-container > Related products with free delivery",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo2MDI5NDgyMDc2MjMxMjk6MTc5Mjg0NzM2ODpzcF9kZXRhaWwyOjMwMTU5NTkwNTAyMTcwMjo6Ojo&url=%2Fdp%2FB0DK39WM1C%2Fref%3Dsspa_dk_detail_2%3Fpsc%3D1%26pd_rd_i%3DB0DK39WM1C%26pd_rd_w%3D7I1rE%26content-id%3Damzn1.sym.4a7f44df-467c-45a1-af5f-91661a6df2f9%26pf_rd_p%3D4a7f44df-467c-45a1-af5f-91661a6df2f9%26pf_rd_r%3DJDZQZNQQWAQ0TEKP7TNM%26pd_rd_wg%3Dohdz0%26pd_rd_r%3Df3b45206-2fb9-4f78-bc10-62b83f6f3b2c%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9kZXRhaWwy#customerReviews"
+   },
+   {
+    "idx": 274,
+    "role": "link",
+    "name": "$9.99 $9 . 99( $5.00 $5.00 / count)",
+    "section": "dp-container > Related products with free delivery",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo2MDI5NDgyMDc2MjMxMjk6MTc5Mjg0NzM2ODpzcF9kZXRhaWwyOjMwMTU5NTkwNTAyMTcwMjo6Ojo&url=%2Fdp%2FB0DK39WM1C%2Fref%3Dsspa_dk_detail_2%3Fpsc%3D1%26pd_rd_i%3DB0DK39WM1C%26pd_rd_w%3D7I1rE%26content-id%3Damzn1.sym.4a7f44df-467c-45a1-af5f-91661a6df2f9%26pf_rd_p%3D4a7f44df-467c-45a1-af5f-91661a6df2f9%26pf_rd_r%3DJDZQZNQQWAQ0TEKP7TNM%26pd_rd_wg%3Dohdz0%26pd_rd_r%3Df3b45206-2fb9-4f78-bc10-62b83f6f3b2c%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9kZXRhaWwy"
+   },
+   {
+    "idx": 275,
+    "role": "link",
+    "name": "FREE delivery Mon, Oct 26",
+    "section": "dp-container > Related products with free delivery",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo2MDI5NDgyMDc2MjMxMjk6MTc5Mjg0NzM2ODpzcF9kZXRhaWwyOjMwMTU5NTkwNTAyMTcwMjo6Ojo&url=%2Fdp%2FB0DK39WM1C%2Fref%3Dsspa_dk_detail_2%3Fpsc%3D1%26pd_rd_i%3DB0DK39WM1C%26pd_rd_w%3D7I1rE%26content-id%3Damzn1.sym.4a7f44df-467c-45a1-af5f-91661a6df2f9%26pf_rd_p%3D4a7f44df-467c-45a1-af5f-91661a6df2f9%26pf_rd_r%3DJDZQZNQQWAQ0TEKP7TNM%26pd_rd_wg%3Dohdz0%26pd_rd_r%3Df3b45206-2fb9-4f78-bc10-62b83f6f3b2c%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9kZXRhaWwy"
+   },
+   {
+    "idx": 276,
+    "role": "link",
+    "name": "iPhone 17 Pro Charger Fast Charging,3Pack 10FT USB C Cable Type C Woven Cord with 2...",
+    "section": "dp-container > Related products with free delivery",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo2MDI5NDgyMDc2MjMxMjk6MTc5Mjg0NzM2ODpzcF9kZXRhaWwyOjMwMTUzNDIwNzk1OTEwMjo6Ojo&url=%2Fdp%2FB0HFG6YCHX%2Fref%3Dsspa_dk_detail_3%3Fpsc%3D1%26pd_rd_i%3DB0HFG6YCHX%26pd_rd_w%3D7I1rE%26content-id%3Damzn1.sym.4a7f44df-467c-45a1-af5f-91661a6df2f9%26pf_rd_p%3D4a7f44df-467c-45a1-af5f-91661a6df2f9%26pf_rd_r%3DJDZQZNQQWAQ0TEKP7TNM%26pd_rd_wg%3Dohdz0%26pd_rd_r%3Df3b45206-2fb9-4f78-bc10-62b83f6f3b2c%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9kZXRhaWwy"
+   },
+   {
+    "idx": 277,
+    "role": "link",
+    "name": "5.0 out of 5 stars 3 ratings",
+    "section": "dp-container > Related products with free delivery",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo2MDI5NDgyMDc2MjMxMjk6MTc5Mjg0NzM2ODpzcF9kZXRhaWwyOjMwMTUzNDIwNzk1OTEwMjo6Ojo&url=%2Fdp%2FB0HFG6YCHX%2Fref%3Dsspa_dk_detail_3%3Fpsc%3D1%26pd_rd_i%3DB0HFG6YCHX%26pd_rd_w%3D7I1rE%26content-id%3Damzn1.sym.4a7f44df-467c-45a1-af5f-91661a6df2f9%26pf_rd_p%3D4a7f44df-467c-45a1-af5f-91661a6df2f9%26pf_rd_r%3DJDZQZNQQWAQ0TEKP7TNM%26pd_rd_wg%3Dohdz0%26pd_rd_r%3Df3b45206-2fb9-4f78-bc10-62b83f6f3b2c%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9kZXRhaWwy#customerReviews"
+   },
+   {
+    "idx": 278,
+    "role": "link",
+    "name": "-28% $25.99 $25 . 99( $8.66 $8.66 / count) List: $35.99 List: null $35.99",
+    "section": "dp-container > Related products with free delivery",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo2MDI5NDgyMDc2MjMxMjk6MTc5Mjg0NzM2ODpzcF9kZXRhaWwyOjMwMTUzNDIwNzk1OTEwMjo6Ojo&url=%2Fdp%2FB0HFG6YCHX%2Fref%3Dsspa_dk_detail_3%3Fpsc%3D1%26pd_rd_i%3DB0HFG6YCHX%26pd_rd_w%3D7I1rE%26content-id%3Damzn1.sym.4a7f44df-467c-45a1-af5f-91661a6df2f9%26pf_rd_p%3D4a7f44df-467c-45a1-af5f-91661a6df2f9%26pf_rd_r%3DJDZQZNQQWAQ0TEKP7TNM%26pd_rd_wg%3Dohdz0%26pd_rd_r%3Df3b45206-2fb9-4f78-bc10-62b83f6f3b2c%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9kZXRhaWwy"
+   },
+   {
+    "idx": 279,
+    "role": "link",
+    "name": "FREE delivery Today 5 PM - 8 PM",
+    "section": "dp-container > Related products with free delivery",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo2MDI5NDgyMDc2MjMxMjk6MTc5Mjg0NzM2ODpzcF9kZXRhaWwyOjMwMTUzNDIwNzk1OTEwMjo6Ojo&url=%2Fdp%2FB0HFG6YCHX%2Fref%3Dsspa_dk_detail_3%3Fpsc%3D1%26pd_rd_i%3DB0HFG6YCHX%26pd_rd_w%3D7I1rE%26content-id%3Damzn1.sym.4a7f44df-467c-45a1-af5f-91661a6df2f9%26pf_rd_p%3D4a7f44df-467c-45a1-af5f-91661a6df2f9%26pf_rd_r%3DJDZQZNQQWAQ0TEKP7TNM%26pd_rd_wg%3Dohdz0%26pd_rd_r%3Df3b45206-2fb9-4f78-bc10-62b83f6f3b2c%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9kZXRhaWwy"
+   },
+   {
+    "idx": 280,
+    "role": "link",
+    "name": "10FT Fast Charging Cord for iPhone 18 17 16e 15, 3Pack Extra Long 10Foot USB C to T...",
+    "section": "dp-container > Related products with free delivery",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo2MDI5NDgyMDc2MjMxMjk6MTc5Mjg0NzM2ODpzcF9kZXRhaWwyOjMwMTMxNTM5MDc3NTUwMjo6Ojo&url=%2Fdp%2FB0B6W4ZSW7%2Fref%3Dsspa_dk_detail_4%3Fpsc%3D1%26pd_rd_i%3DB0B6W4ZSW7%26pd_rd_w%3D7I1rE%26content-id%3Damzn1.sym.4a7f44df-467c-45a1-af5f-91661a6df2f9%26pf_rd_p%3D4a7f44df-467c-45a1-af5f-91661a6df2f9%26pf_rd_r%3DJDZQZNQQWAQ0TEKP7TNM%26pd_rd_wg%3Dohdz0%26pd_rd_r%3Df3b45206-2fb9-4f78-bc10-62b83f6f3b2c%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9kZXRhaWwy"
+   },
+   {
+    "idx": 281,
+    "role": "link",
+    "name": "4.7 out of 5 stars 1,364 ratings",
+    "section": "dp-container > Related products with free delivery",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo2MDI5NDgyMDc2MjMxMjk6MTc5Mjg0NzM2ODpzcF9kZXRhaWwyOjMwMTMxNTM5MDc3NTUwMjo6Ojo&url=%2Fdp%2FB0B6W4ZSW7%2Fref%3Dsspa_dk_detail_4%3Fpsc%3D1%26pd_rd_i%3DB0B6W4ZSW7%26pd_rd_w%3D7I1rE%26content-id%3Damzn1.sym.4a7f44df-467c-45a1-af5f-91661a6df2f9%26pf_rd_p%3D4a7f44df-467c-45a1-af5f-91661a6df2f9%26pf_rd_r%3DJDZQZNQQWAQ0TEKP7TNM%26pd_rd_wg%3Dohdz0%26pd_rd_r%3Df3b45206-2fb9-4f78-bc10-62b83f6f3b2c%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9kZXRhaWwy#customerReviews"
+   },
+   {
+    "idx": 282,
+    "role": "link",
+    "name": "Limited time deal",
+    "section": "dp-container > Related products with free delivery",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo2MDI5NDgyMDc2MjMxMjk6MTc5Mjg0NzM2ODpzcF9kZXRhaWwyOjMwMTMxNTM5MDc3NTUwMjo6Ojo&url=%2Fdp%2FB0B6W4ZSW7%2Fref%3Dsspa_dk_detail_4%3Fpsc%3D1%26pd_rd_i%3DB0B6W4ZSW7%26pd_rd_w%3D7I1rE%26content-id%3Damzn1.sym.4a7f44df-467c-45a1-af5f-91661a6df2f9%26pf_rd_p%3D4a7f44df-467c-45a1-af5f-91661a6df2f9%26pf_rd_r%3DJDZQZNQQWAQ0TEKP7TNM%26pd_rd_wg%3Dohdz0%26pd_rd_r%3Df3b45206-2fb9-4f78-bc10-62b83f6f3b2c%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9kZXRhaWwy"
+   },
+   {
+    "idx": 283,
+    "role": "link",
+    "name": "-24% $25.98 $25 . 98( $8.66 $8.66 / count) List: $33.99 List: null $33.99",
+    "section": "dp-container > Related products with free delivery",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo2MDI5NDgyMDc2MjMxMjk6MTc5Mjg0NzM2ODpzcF9kZXRhaWwyOjMwMTMxNTM5MDc3NTUwMjo6Ojo&url=%2Fdp%2FB0B6W4ZSW7%2Fref%3Dsspa_dk_detail_4%3Fpsc%3D1%26pd_rd_i%3DB0B6W4ZSW7%26pd_rd_w%3D7I1rE%26content-id%3Damzn1.sym.4a7f44df-467c-45a1-af5f-91661a6df2f9%26pf_rd_p%3D4a7f44df-467c-45a1-af5f-91661a6df2f9%26pf_rd_r%3DJDZQZNQQWAQ0TEKP7TNM%26pd_rd_wg%3Dohdz0%26pd_rd_r%3Df3b45206-2fb9-4f78-bc10-62b83f6f3b2c%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9kZXRhaWwy"
+   },
+   {
+    "idx": 284,
+    "role": "link",
+    "name": "FREE delivery Mon, Oct 26",
+    "section": "dp-container > Related products with free delivery",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo2MDI5NDgyMDc2MjMxMjk6MTc5Mjg0NzM2ODpzcF9kZXRhaWwyOjMwMTMxNTM5MDc3NTUwMjo6Ojo&url=%2Fdp%2FB0B6W4ZSW7%2Fref%3Dsspa_dk_detail_4%3Fpsc%3D1%26pd_rd_i%3DB0B6W4ZSW7%26pd_rd_w%3D7I1rE%26content-id%3Damzn1.sym.4a7f44df-467c-45a1-af5f-91661a6df2f9%26pf_rd_p%3D4a7f44df-467c-45a1-af5f-91661a6df2f9%26pf_rd_r%3DJDZQZNQQWAQ0TEKP7TNM%26pd_rd_wg%3Dohdz0%26pd_rd_r%3Df3b45206-2fb9-4f78-bc10-62b83f6f3b2c%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9kZXRhaWwy"
+   },
+   {
+    "idx": 285,
+    "role": "link",
+    "name": "USB to USB C Cable 60W Fast Charging [2 Pack 6FT], USB A to USB C Cable for | CarPl...",
+    "section": "dp-container > Related products with free delivery",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo2MDI5NDgyMDc2MjMxMjk6MTc5Mjg0NzM2ODpzcF9kZXRhaWwyOjMwMDkwMjY4NDg3NjUwMjo6Ojo&url=%2Fdp%2FB0FH4MX7RT%2Fref%3Dsspa_dk_detail_5%3Fpsc%3D1%26pd_rd_i%3DB0FH4MX7RT%26pd_rd_w%3D7I1rE%26content-id%3Damzn1.sym.4a7f44df-467c-45a1-af5f-91661a6df2f9%26pf_rd_p%3D4a7f44df-467c-45a1-af5f-91661a6df2f9%26pf_rd_r%3DJDZQZNQQWAQ0TEKP7TNM%26pd_rd_wg%3Dohdz0%26pd_rd_r%3Df3b45206-2fb9-4f78-bc10-62b83f6f3b2c%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9kZXRhaWwy"
+   },
+   {
+    "idx": 286,
+    "role": "link",
+    "name": "4.5 out of 5 stars 1,094 ratings",
+    "section": "dp-container > Related products with free delivery",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo2MDI5NDgyMDc2MjMxMjk6MTc5Mjg0NzM2ODpzcF9kZXRhaWwyOjMwMDkwMjY4NDg3NjUwMjo6Ojo&url=%2Fdp%2FB0FH4MX7RT%2Fref%3Dsspa_dk_detail_5%3Fpsc%3D1%26pd_rd_i%3DB0FH4MX7RT%26pd_rd_w%3D7I1rE%26content-id%3Damzn1.sym.4a7f44df-467c-45a1-af5f-91661a6df2f9%26pf_rd_p%3D4a7f44df-467c-45a1-af5f-91661a6df2f9%26pf_rd_r%3DJDZQZNQQWAQ0TEKP7TNM%26pd_rd_wg%3Dohdz0%26pd_rd_r%3Df3b45206-2fb9-4f78-bc10-62b83f6f3b2c%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9kZXRhaWwy#customerReviews"
+   },
+   {
+    "idx": 287,
+    "role": "link",
+    "name": "$15.49 $15 . 49( $7.75 $7.75 / count)",
+    "section": "dp-container > Related products with free delivery",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo2MDI5NDgyMDc2MjMxMjk6MTc5Mjg0NzM2ODpzcF9kZXRhaWwyOjMwMDkwMjY4NDg3NjUwMjo6Ojo&url=%2Fdp%2FB0FH4MX7RT%2Fref%3Dsspa_dk_detail_5%3Fpsc%3D1%26pd_rd_i%3DB0FH4MX7RT%26pd_rd_w%3D7I1rE%26content-id%3Damzn1.sym.4a7f44df-467c-45a1-af5f-91661a6df2f9%26pf_rd_p%3D4a7f44df-467c-45a1-af5f-91661a6df2f9%26pf_rd_r%3DJDZQZNQQWAQ0TEKP7TNM%26pd_rd_wg%3Dohdz0%26pd_rd_r%3Df3b45206-2fb9-4f78-bc10-62b83f6f3b2c%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9kZXRhaWwy"
+   },
+   {
+    "idx": 288,
+    "role": "link",
+    "name": "FREE delivery Today 5 PM - 8 PM on $25 of qualifying items",
+    "section": "dp-container > Related products with free delivery",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo2MDI5NDgyMDc2MjMxMjk6MTc5Mjg0NzM2ODpzcF9kZXRhaWwyOjMwMDkwMjY4NDg3NjUwMjo6Ojo&url=%2Fdp%2FB0FH4MX7RT%2Fref%3Dsspa_dk_detail_5%3Fpsc%3D1%26pd_rd_i%3DB0FH4MX7RT%26pd_rd_w%3D7I1rE%26content-id%3Damzn1.sym.4a7f44df-467c-45a1-af5f-91661a6df2f9%26pf_rd_p%3D4a7f44df-467c-45a1-af5f-91661a6df2f9%26pf_rd_r%3DJDZQZNQQWAQ0TEKP7TNM%26pd_rd_wg%3Dohdz0%26pd_rd_r%3Df3b45206-2fb9-4f78-bc10-62b83f6f3b2c%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9kZXRhaWwy"
+   },
+   {
+    "idx": 289,
+    "role": "link",
+    "name": "USB A to USB C Cable for iPhone 18/17/16/15 (3FT),USB C Car CarPlay Cable | 2Pack U...",
+    "section": "dp-container > Related products with free delivery",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo2MDI5NDgyMDc2MjMxMjk6MTc5Mjg0NzM2ODpzcF9kZXRhaWwyOjMwMTMxNzMzMTkxMjkwMjo6Ojo&url=%2Fdp%2FB0DNFHM4TW%2Fref%3Dsspa_dk_detail_6%3Fpsc%3D1%26pd_rd_i%3DB0DNFHM4TW%26pd_rd_w%3D7I1rE%26content-id%3Damzn1.sym.4a7f44df-467c-45a1-af5f-91661a6df2f9%26pf_rd_p%3D4a7f44df-467c-45a1-af5f-91661a6df2f9%26pf_rd_r%3DJDZQZNQQWAQ0TEKP7TNM%26pd_rd_wg%3Dohdz0%26pd_rd_r%3Df3b45206-2fb9-4f78-bc10-62b83f6f3b2c%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9kZXRhaWwy"
+   },
+   {
+    "idx": 290,
+    "role": "link",
+    "name": "4.6 out of 5 stars 1,771 ratings",
+    "section": "dp-container > Related products with free delivery",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo2MDI5NDgyMDc2MjMxMjk6MTc5Mjg0NzM2ODpzcF9kZXRhaWwyOjMwMTMxNzMzMTkxMjkwMjo6Ojo&url=%2Fdp%2FB0DNFHM4TW%2Fref%3Dsspa_dk_detail_6%3Fpsc%3D1%26pd_rd_i%3DB0DNFHM4TW%26pd_rd_w%3D7I1rE%26content-id%3Damzn1.sym.4a7f44df-467c-45a1-af5f-91661a6df2f9%26pf_rd_p%3D4a7f44df-467c-45a1-af5f-91661a6df2f9%26pf_rd_r%3DJDZQZNQQWAQ0TEKP7TNM%26pd_rd_wg%3Dohdz0%26pd_rd_r%3Df3b45206-2fb9-4f78-bc10-62b83f6f3b2c%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9kZXRhaWwy#customerReviews"
+   },
+   {
+    "idx": 291,
+    "role": "link",
+    "name": "$9.69 $9 . 69( $4.85 $4.85 / count)",
+    "section": "dp-container > Related products with free delivery",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo2MDI5NDgyMDc2MjMxMjk6MTc5Mjg0NzM2ODpzcF9kZXRhaWwyOjMwMTMxNzMzMTkxMjkwMjo6Ojo&url=%2Fdp%2FB0DNFHM4TW%2Fref%3Dsspa_dk_detail_6%3Fpsc%3D1%26pd_rd_i%3DB0DNFHM4TW%26pd_rd_w%3D7I1rE%26content-id%3Damzn1.sym.4a7f44df-467c-45a1-af5f-91661a6df2f9%26pf_rd_p%3D4a7f44df-467c-45a1-af5f-91661a6df2f9%26pf_rd_r%3DJDZQZNQQWAQ0TEKP7TNM%26pd_rd_wg%3Dohdz0%26pd_rd_r%3Df3b45206-2fb9-4f78-bc10-62b83f6f3b2c%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9kZXRhaWwy"
+   },
+   {
+    "idx": 292,
+    "role": "link",
+    "name": "FREE delivery Today 1 PM - 4 PM on $25 of qualifying items",
+    "section": "dp-container > Related products with free delivery",
+    "href": "https://www.amazon.com/sspa/click?ie=UTF8&spc=MTo2MDI5NDgyMDc2MjMxMjk6MTc5Mjg0NzM2ODpzcF9kZXRhaWwyOjMwMTMxNzMzMTkxMjkwMjo6Ojo&url=%2Fdp%2FB0DNFHM4TW%2Fref%3Dsspa_dk_detail_6%3Fpsc%3D1%26pd_rd_i%3DB0DNFHM4TW%26pd_rd_w%3D7I1rE%26content-id%3Damzn1.sym.4a7f44df-467c-45a1-af5f-91661a6df2f9%26pf_rd_p%3D4a7f44df-467c-45a1-af5f-91661a6df2f9%26pf_rd_r%3DJDZQZNQQWAQ0TEKP7TNM%26pd_rd_wg%3Dohdz0%26pd_rd_r%3Df3b45206-2fb9-4f78-bc10-62b83f6f3b2c%26sp_csd%3Dd2lkZ2V0TmFtZT1zcF9kZXRhaWwy"
+   },
+   {
+    "idx": 293,
+    "role": "button",
+    "name": "Leave feedback on Sponsored ad",
+    "section": "dp-container > dp-ads-center-promo-dramabot_feature_div"
+   },
+   {
+    "idx": 294,
+    "role": "button",
+    "name": "Leave feedback on Sponsored ad",
+    "section": "dp-container > sims-discoveryAndInspiration_feature_div…"
+   },
+   {
+    "idx": 295,
+    "role": "link",
+    "name": "LISEN USB C to USB C Cable, 240W Fast Charging Type C Charger Cord (6.6FT) | 2-Pack | iPhone 18 Pro …",
+    "section": "dp-container > sims-discoveryAndInspiration_feature_div…",
+    "href": "https://aax-us-east-retail-direct.amazon.com/x/c/JMZ2JQqpSe5MIF3-WFLIk9kAAAGhbgfQPAEAAAH2AQBvbm9fdHhuX2JpZDMgICBvbm9fdHhuX2ltcDIgICDk5IL8/clv1c_ek-wwnHSLcbWDvnNUU0pmS6Joz6YCvPc0DfBD7iMtLsZ-fBQpg2L8SVMKX1-YTXhpVIwfWqZD5jM2PnVu6cJ9Qz5XPszRBaodwg5ALXS3tMJ9RV2kY8XYFSQYnn9pMeVK0LsJsecaycFog_Sn4v589q7sPyenGFhk9rl5xk6kG5PXJ7RGBg07yMKdy9P6R8lcAXJ5cTBHbRN19zx_NrIwJr3K16QKMBaBNoRPNzuNdCu_2Sz9k99SRLHSMH8IoOk4zrdx2BFXG7AGApVvJp1FOromzXfyU7ajM60yZpziJ2F5UQoxhWOzDM4e6zx8-Zm9nyE1PCK5mW7QjNvHRs1iWviAbUTUF6KiZymKez2_rpEzkOWY7AtlpWozf0aU1o3OY40qWQaTSSJn-E1o5ROFBl3IUWgzk6W49baKnTGZPKyhyzcODh5JzJpKA3NI-_U4Z6QLJMk0PSDdktVJK-aWvre0lWZ2SiHofykDofy0NOcwT37dDf1PU9QnxYFd1LPniHsxGghtdeU3ufcMmX-6BNY8zE0nlDBWtEI6f3SUrXkh0w721iBniUzoSqiDqT5lqoPivzsa3CHT13dgoIYtT12IVVtXaKItuTVscSHRjyG-dJcJMG0LiBtiOQkt-V3OViKJ_GJd7dcVDDNsJtdCSOa0kulWrGVoHPurfWxAIbA_rOJ5oAShwIi1QwK42LfNQjfEmvoWIAIUAjcgClORUw1VJorvisgBpETYpM0NBroe-9IqqxaZRWyO_CBEebgeRoC-THJG4RZDuDgLnjc_MhA9SrKXAoSbfk6gU6iNl7bLHPv536nb9dQq_YP_BwT_iys9ZrLr-GGTdWzeLCrsPWW382LKCmK1dZbV2nd9JJDMvsiPjqDSkneFgr8k0hdwStZnSw-zlfqGNIDX6POcxlVPimi5VD6WkaYmL5vnz0hCWAUXfvbGFsOuM3_w_S8puofvTl0eNGOErhDa8jPilaOZB_nFqhNeClAXIQyC34u24ugsDSdDwJ6M5lflUnfGpyhAV6xhZC2fMfEGpeEew4ZqloXABKRPJXzKg36fq_deX1JABPHHDfGIfVOHuJgo0m8pk_BAHRbKAU/https://www.amazon.com/dp/B0CG1LGWR6/?_encoding=UTF8&pd_rd_i=B0CG1LGWR6&pd_rd_i=B0CG1LGWR6&ref_=sbx_be_s_sparkle_ssd_img&pd_rd_w=KyMWr&content-id=amzn1.sym.fa4d7e30-5733-44d5-9cba-72415812908c&pf_rd_p=fa4d7e30-5733-44d5-9cba-72415812908c&pf_rd_r=JDZQZNQQWAQ0TEKP7TNM&pd_rd_wg=ohdz0&pd_rd_r=f3b45206-2fb9-4f78-bc10-62b83f6f3b2c&pf_rd_p=fa4d7e30-5733-44d5-9cba-72415812908c&pf_rd_r=JDZQZNQQWAQ0TEKP7TNM&pd_rd_wg=ohdz0&pd_rd_w=KyMWr&pd_rd_r=f3b45206-2fb9-4f78-bc10-62b83f6f3b2c"
+   },
+   {
+    "idx": 296,
+    "role": "link",
+    "name": "LISEN USB C to USB C Cable, 240W Fast Charging Type C Charger Cord (6.6FT) | 2-Pack | iPhone 18 Pro …",
+    "section": "dp-container > sims-discoveryAndInspiration_feature_div…",
+    "href": "https://aax-us-east-retail-direct.amazon.com/x/c/JMZ2JQqpSe5MIF3-WFLIk9kAAAGhbgfQPAEAAAH2AQBvbm9fdHhuX2JpZDMgICBvbm9fdHhuX2ltcDIgICDk5IL8/clv1c_ek-wwnHSLcbWDvnNUU0pmS6Joz6YCvPc0DfBD7iMtLsZ-fBQpg2L8SVMKX1-YTXhpVIwfWqZD5jM2PnVu6cJ9Qz5XPszRBaodwg5ALXS3tMJ9RV2kY8XYFSQYnn9pMeVK0LsJsecaycFog_Sn4v589q7sPyenGFhk9rl5xk6kG5PXJ7RGBg07yMKdy9P6R8lcAXJ5cTBHbRN19zx_NrIwJr3K16QKMBaBNoRPNzuNdCu_2Sz9k99SRLHSMH8IoOk4zrdx2BFXG7AGApVvJp1FOromzXfyU7ajM60yZpziJ2F5UQoxhWOzDM4e6zx8-Zm9nyE1PCK5mW7QjNvHRs1iWviAbUTUF6KiZymKez2_rpEzkOWY7AtlpWozf0aU1o3OY40qWQaTSSJn-E1o5ROFBl3IUWgzk6W49baKnTGZPKyhyzcODh5JzJpKA3NI-_U4Z6QLJMk0PSDdktVJK-aWvre0lWZ2SiHofykDofy0NOcwT37dDf1PU9QnxYFd1LPniHsxGghtdeU3ufcMmX-6BNY8zE0nlDBWtEI6f3SUrXkh0w721iBniUzoSqiDqT5lqoPivzsa3CHT13dgoIYtT12IVVtXaKItuTVscSHRjyG-dJcJMG0LiBtiOQkt-V3OViKJ_GJd7dcVDDNsJtdCSOa0kulWrGVoHPurfWxAIbA_rOJ5oAShwIi1QwK42LfNQjfEmvoWIAIUAjcgClORUw1VJorvisgBpETYpM0NBroe-9IqqxaZRWyO_CBEebgeRoC-THJG4RZDuDgLnjc_MhA9SrKXAoSbfk6gU6iNl7bLHPv536nb9dQq_YP_BwT_iys9ZrLr-GGTdWzeLCrsPWW382LKCmK1dZbV2nd9JJDMvsiPjqDSkneFgr8k0hdwStZnSw-zlfqGNIDX6POcxlVPimi5VD6WkaYmL5vnz0hCWAUXfvbGFsOuM3_w_S8puofvTl0eNGOErhDa8jPilaOZB_nFqhNeClAXIQyC34u24ugsDSdDwJ6M5lflUnfGpyhAV6xhZC2fMfEGpeEew4ZqloXABKRPJXzKg36fq_deX1JABPHHDfGIfVOHuJgo0m8pk_BAHRbKAU/https://www.amazon.com/dp/B0CG1LGWR6/?_encoding=UTF8&pd_rd_i=B0CG1LGWR6&pd_rd_i=B0CG1LGWR6&ref_=sbx_be_s_sparkle_ssd_tt&pd_rd_w=KyMWr&content-id=amzn1.sym.fa4d7e30-5733-44d5-9cba-72415812908c&pf_rd_p=fa4d7e30-5733-44d5-9cba-72415812908c&pf_rd_r=JDZQZNQQWAQ0TEKP7TNM&pd_rd_wg=ohdz0&pd_rd_r=f3b45206-2fb9-4f78-bc10-62b83f6f3b2c&pf_rd_p=fa4d7e30-5733-44d5-9cba-72415812908c&pf_rd_r=JDZQZNQQWAQ0TEKP7TNM&pd_rd_wg=ohdz0&pd_rd_w=KyMWr&pd_rd_r=f3b45206-2fb9-4f78-bc10-62b83f6f3b2c"
+   },
+   {
+    "idx": 297,
+    "role": "link",
+    "name": "Rated 4.5 out of 5 stars from 12,636 reviews",
+    "section": "dp-container > sims-discoveryAndInspiration_feature_div…",
+    "href": "https://aax-us-east-retail-direct.amazon.com/x/c/JMZ2JQqpSe5MIF3-WFLIk9kAAAGhbgfQPAEAAAH2AQBvbm9fdHhuX2JpZDMgICBvbm9fdHhuX2ltcDIgICDk5IL8/clv1c_ek-wwnHSLcbWDvnNUU0pmS6Joz6YCvPc0DfBD7iMtLsZ-fBQpg2L8SVMKX1-YTXhpVIwfWqZD5jM2PnVu6cJ9Qz5XPszRBaodwg5ALXS3tMJ9RV2kY8XYFSQYnn9pMeVK0LsJsecaycFog_Sn4v589q7sPyenGFhk9rl5xk6kG5PXJ7RGBg07yMKdy9P6R8lcAXJ5cTBHbRN19zx_NrIwJr3K16QKMBaBNoRPNzuNdCu_2Sz9k99SRLHSMH8IoOk4zrdx2BFXG7AGApVvJp1FOromzXfyU7ajM60yZpziJ2F5UQoxhWOzDM4e6zx8-Zm9nyE1PCK5mW7QjNvHRs1iWviAbUTUF6KiZymKez2_rpEzkOWY7AtlpWozf0aU1o3OY40qWQaTSSJn-E1o5ROFBl3IUWgzk6W49baKnTGZPKyhyzcODh5JzJpKA3NI-_U4Z6QLJMk0PSDdktVJK-aWvre0lWZ2SiHofykDofy0NOcwT37dDf1PU9QnxYFd1LPniHsxGghtdeU3ufcMmX-6BNY8zE0nlDBWtEI6f3SUrXkh0w721iBniUzoSqiDqT5lqoPivzsa3CHT13dgoIYtT12IVVtXaKItuTVscSHRjyG-dJcJMG0LiBtiOQkt-V3OViKJ_GJd7dcVDDNsJtdCSOa0kulWrGVoHPurfWxAIbA_rOJ5oAShwIi1QwK42LfNQjfEmvoWIAIUAjcgClORUw1VJorvisgBpETYpM0NBroe-9IqqxaZRWyO_CBEebgeRoC-THJG4RZDuDgLnjc_MhA9SrKXAoSbfk6gU6iNl7bLHPv536nb9dQq_YP_BwT_iys9ZrLr-GGTdWzeLCrsPWW382LKCmK1dZbV2nd9JJDMvsiPjqDSkneFgr8k0hdwStZnSw-zlfqGNIDX6POcxlVPimi5VD6WkaYmL5vnz0hCWAUXfvbGFsOuM3_w_S8puofvTl0eNGOErhDa8jPilaOZB_nFqhNeClAXIQyC34u24ugsDSdDwJ6M5lflUnfGpyhAV6xhZC2fMfEGpeEew4ZqloXABKRPJXzKg36fq_deX1JABPHHDfGIfVOHuJgo0m8pk_BAHRbKAU/https://www.amazon.com/dp/B0CG1LGWR6/?_encoding=UTF8&pd_rd_i=B0CG1LGWR6&pd_rd_i=B0CG1LGWR6&ref_=sbx_be_s_sparkle_ssd_rev&pd_rd_w=KyMWr&content-id=amzn1.sym.fa4d7e30-5733-44d5-9cba-72415812908c&pf_rd_p=fa4d7e30-5733-44d5-9cba-72415812908c&pf_rd_r=JDZQZNQQWAQ0TEKP7TNM&pd_rd_wg=ohdz0&pd_rd_r=f3b45206-2fb9-4f78-bc10-62b83f6f3b2c&pf_rd_p=fa4d7e30-5733-44d5-9cba-72415812908c&pf_rd_r=JDZQZNQQWAQ0TEKP7TNM&pd_rd_wg=ohdz0&pd_rd_w=KyMWr&pd_rd_r=f3b45206-2fb9-4f78-bc10-62b83f6f3b2c"
+   },
+   {
+    "idx": 298,
+    "role": "link",
+    "name": "10% off Limited time deal",
+    "section": "dp-container > sims-discoveryAndInspiration_feature_div…",
+    "href": "https://aax-us-east-retail-direct.amazon.com/x/c/JMZ2JQqpSe5MIF3-WFLIk9kAAAGhbgfQPAEAAAH2AQBvbm9fdHhuX2JpZDMgICBvbm9fdHhuX2ltcDIgICDk5IL8/clv1c_ek-wwnHSLcbWDvnNUU0pmS6Joz6YCvPc0DfBD7iMtLsZ-fBQpg2L8SVMKX1-YTXhpVIwfWqZD5jM2PnVu6cJ9Qz5XPszRBaodwg5ALXS3tMJ9RV2kY8XYFSQYnn9pMeVK0LsJsecaycFog_Sn4v589q7sPyenGFhk9rl5xk6kG5PXJ7RGBg07yMKdy9P6R8lcAXJ5cTBHbRN19zx_NrIwJr3K16QKMBaBNoRPNzuNdCu_2Sz9k99SRLHSMH8IoOk4zrdx2BFXG7AGApVvJp1FOromzXfyU7ajM60yZpziJ2F5UQoxhWOzDM4e6zx8-Zm9nyE1PCK5mW7QjNvHRs1iWviAbUTUF6KiZymKez2_rpEzkOWY7AtlpWozf0aU1o3OY40qWQaTSSJn-E1o5ROFBl3IUWgzk6W49baKnTGZPKyhyzcODh5JzJpKA3NI-_U4Z6QLJMk0PSDdktVJK-aWvre0lWZ2SiHofykDofy0NOcwT37dDf1PU9QnxYFd1LPniHsxGghtdeU3ufcMmX-6BNY8zE0nlDBWtEI6f3SUrXkh0w721iBniUzoSqiDqT5lqoPivzsa3CHT13dgoIYtT12IVVtXaKItuTVscSHRjyG-dJcJMG0LiBtiOQkt-V3OViKJ_GJd7dcVDDNsJtdCSOa0kulWrGVoHPurfWxAIbA_rOJ5oAShwIi1QwK42LfNQjfEmvoWIAIUAjcgClORUw1VJorvisgBpETYpM0NBroe-9IqqxaZRWyO_CBEebgeRoC-THJG4RZDuDgLnjc_MhA9SrKXAoSbfk6gU6iNl7bLHPv536nb9dQq_YP_BwT_iys9ZrLr-GGTdWzeLCrsPWW382LKCmK1dZbV2nd9JJDMvsiPjqDSkneFgr8k0hdwStZnSw-zlfqGNIDX6POcxlVPimi5VD6WkaYmL5vnz0hCWAUXfvbGFsOuM3_w_S8puofvTl0eNGOErhDa8jPilaOZB_nFqhNeClAXIQyC34u24ugsDSdDwJ6M5lflUnfGpyhAV6xhZC2fMfEGpeEew4ZqloXABKRPJXzKg36fq_deX1JABPHHDfGIfVOHuJgo0m8pk_BAHRbKAU/https://www.amazon.com/dp/B0CG1LGWR6/?_encoding=UTF8&pd_rd_i=B0CG1LGWR6&pd_rd_i=B0CG1LGWR6&ref_=sbx_be_s_sparkle_ssd_db&pd_rd_w=KyMWr&content-id=amzn1.sym.fa4d7e30-5733-44d5-9cba-72415812908c&pf_rd_p=fa4d7e30-5733-44d5-9cba-72415812908c&pf_rd_r=JDZQZNQQWAQ0TEKP7TNM&pd_rd_wg=ohdz0&pd_rd_r=f3b45206-2fb9-4f78-bc10-62b83f6f3b2c&pf_rd_p=fa4d7e30-5733-44d5-9cba-72415812908c&pf_rd_r=JDZQZNQQWAQ0TEKP7TNM&pd_rd_wg=ohdz0&pd_rd_w=KyMWr&pd_rd_r=f3b45206-2fb9-4f78-bc10-62b83f6f3b2c"
+   },
+   {
+    "idx": 299,
+    "role": "link",
+    "name": "$8.97 $8.97 List: $9.99 $9.99",
+    "section": "dp-container > sims-discoveryAndInspiration_feature_div…",
+    "href": "https://aax-us-east-retail-direct.amazon.com/x/c/JMZ2JQqpSe5MIF3-WFLIk9kAAAGhbgfQPAEAAAH2AQBvbm9fdHhuX2JpZDMgICBvbm9fdHhuX2ltcDIgICDk5IL8/clv1c_ek-wwnHSLcbWDvnNUU0pmS6Joz6YCvPc0DfBD7iMtLsZ-fBQpg2L8SVMKX1-YTXhpVIwfWqZD5jM2PnVu6cJ9Qz5XPszRBaodwg5ALXS3tMJ9RV2kY8XYFSQYnn9pMeVK0LsJsecaycFog_Sn4v589q7sPyenGFhk9rl5xk6kG5PXJ7RGBg07yMKdy9P6R8lcAXJ5cTBHbRN19zx_NrIwJr3K16QKMBaBNoRPNzuNdCu_2Sz9k99SRLHSMH8IoOk4zrdx2BFXG7AGApVvJp1FOromzXfyU7ajM60yZpziJ2F5UQoxhWOzDM4e6zx8-Zm9nyE1PCK5mW7QjNvHRs1iWviAbUTUF6KiZymKez2_rpEzkOWY7AtlpWozf0aU1o3OY40qWQaTSSJn-E1o5ROFBl3IUWgzk6W49baKnTGZPKyhyzcODh5JzJpKA3NI-_U4Z6QLJMk0PSDdktVJK-aWvre0lWZ2SiHofykDofy0NOcwT37dDf1PU9QnxYFd1LPniHsxGghtdeU3ufcMmX-6BNY8zE0nlDBWtEI6f3SUrXkh0w721iBniUzoSqiDqT5lqoPivzsa3CHT13dgoIYtT12IVVtXaKItuTVscSHRjyG-dJcJMG0LiBtiOQkt-V3OViKJ_GJd7dcVDDNsJtdCSOa0kulWrGVoHPurfWxAIbA_rOJ5oAShwIi1QwK42LfNQjfEmvoWIAIUAjcgClORUw1VJorvisgBpETYpM0NBroe-9IqqxaZRWyO_CBEebgeRoC-THJG4RZDuDgLnjc_MhA9SrKXAoSbfk6gU6iNl7bLHPv536nb9dQq_YP_BwT_iys9ZrLr-GGTdWzeLCrsPWW382LKCmK1dZbV2nd9JJDMvsiPjqDSkneFgr8k0hdwStZnSw-zlfqGNIDX6POcxlVPimi5VD6WkaYmL5vnz0hCWAUXfvbGFsOuM3_w_S8puofvTl0eNGOErhDa8jPilaOZB_nFqhNeClAXIQyC34u24ugsDSdDwJ6M5lflUnfGpyhAV6xhZC2fMfEGpeEew4ZqloXABKRPJXzKg36fq_deX1JABPHHDfGIfVOHuJgo0m8pk_BAHRbKAU/https://www.amazon.com/dp/B0CG1LGWR6/?_encoding=UTF8&pd_rd_i=B0CG1LGWR6&pd_rd_i=B0CG1LGWR6&ref_=sbx_be_s_sparkle_ssd_pce&pd_rd_w=KyMWr&content-id=amzn1.sym.fa4d7e30-5733-44d5-9cba-72415812908c&pf_rd_p=fa4d7e30-5733-44d5-9cba-72415812908c&pf_rd_r=JDZQZNQQWAQ0TEKP7TNM&pd_rd_wg=ohdz0&pd_rd_r=f3b45206-2fb9-4f78-bc10-62b83f6f3b2c&pf_rd_p=fa4d7e30-5733-44d5-9cba-72415812908c&pf_rd_r=JDZQZNQQWAQ0TEKP7TNM&pd_rd_wg=ohdz0&pd_rd_w=KyMWr&pd_rd_r=f3b45206-2fb9-4f78-bc10-62b83f6f3b2c"
+   }
+  ],
+  "textBlocks": [
+   "Skip to",
+   "Main content",
+   "About this item",
+   "Buying options",
+   "Videos",
+   "Keyboard shortcuts",
+   "Search",
+   "opt",
+   "Cart",
+   "shift",
+   "Home",
+   "Orders",
+   "Add to cart",
+   "Product summary",
+   "Show/Hide shortcuts",
+   "To move between items, use your keyboard's up or down arrows.",
+   "Deliver to SOTA",
+   "Berkeley 94720‌",
+   "Electronics",
+   "All Departments",
+   "Alexa Skills",
+   "Amazon Autos",
+   "Amazon Devices",
+   "Amazon Fresh",
+   "Amazon Global Store",
+   "Amazon Haul",
+   "Amazon One Medical",
+   "Amazon Pharmacy",
+   "Amazon Resale",
+   "Appliances",
+   "Apps & Games",
+   "Arts, Crafts & Sewing",
+   "Audible Books & Originals",
+   "Automotive Parts & Accessories",
+   "Baby",
+   "Beauty & Personal Care",
+   "Books",
+   "CDs & Vinyl",
+   "Cell Phones & Accessories",
+   "Clothing, Shoes & Jewelry",
+   "Women's Clothing, Shoes & Jewelry",
+   "Men's Clothing, Shoes & Jewelry",
+   "Girl's Clothing, Shoes & Jewelry",
+   "Boy's Clothing, Shoes & Jewelry",
+   "Baby Clothing, Shoes & Jewelry",
+   "Collectibles & Fine Art",
+   "Computers",
+   "Credit and Payment Cards",
+   "Digital Music",
+   "Garden & Outdoor",
+   "Gift Cards",
+   "Grocery & Gourmet Food",
+   "Handmade",
+   "Health, Household & Baby Care",
+   "Home & Business Services",
+   "Home & Kitchen",
+   "Industrial & Scientific",
+   "Just for Prime",
+   "Kindle Store",
+   "Lucky",
+   "Luggage & Travel Gear",
+   "Luxury Stores",
+   "Magazine Subscriptions",
+   "Movies & TV",
+   "Musical Instruments",
+   "Office Products",
+   "Pet Food Express",
+   "Pet Supplies",
+   "Premium Beauty",
+   "Prime Video",
+   "Same-Day Store",
+   "Smart Home",
+   "Software",
+   "Sports & Outdoors",
+   "Subscribe & Save",
+   "Subscription Boxes",
+   "Tools & Home Improvement",
+   "Toys & Games",
+   "Under $10",
+   "Video Games",
+   "Whole Foods Market",
+   "EN",
+   "Hello, Sota",
+   "Account & Lists",
+   "Returns",
+   "& Orders",
+   "All",
+   "Today's Deals",
+   "Coupons",
+   "Everyday",
+   "Household, Health & Baby Care",
+   "Customer Service",
+   "Best Sellers",
+   "Kindle Books",
+   "Browsing History",
+   "Buy Again",
+   "Groceries",
+   "TV & Video",
+   "Registry",
+   "Whole Foods",
+   "New Releases",
+   "Pharmacy",
+   "Automotive",
+   "Amazon Basics",
+   "Home Improvement",
+   "Music",
+   "Audible",
+   "Home Audio & Theater",
+   "Fashion",
+   "Laptops",
+   "Desktops",
+   "Monitors",
+   "Tablets",
+   "Computer Accessories",
+   "PC Components",
+   "PC Gaming",
+   "Deals",
+   "Product summary presents key product information",
+   "Keyboard shortcut shift + opt + D",
+   "Sponsored",
+   "Computers & Accessories",
+   "Computer Accessories & Peripherals",
+   "Cables & Accessories",
+   "Cables & Interconnects",
+   "USB Cables",
+   "$17.98",
+   "$17",
+   "98",
+   "$8.99 per count",
+   "$8.99",
+   "$8.99 / count)",
+   "Price history",
+   "Two-Day",
+   "FREE Returns",
+   "FREE delivery Monday, October 26",
+   "Deliver to SOTA - Berkeley 94720‌",
+   "In Stock",
+   "Quantity:",
+   "10",
+   "11",
+   "12",
+   "13",
+   "14",
+   "15",
+   "16",
+   "17",
+   "18",
+   "19",
+   "20",
+   "21"
+  ],
+  "fingerprint": "1754jty",
+  "tabId": 1,
+  "capturedAt": "2026-10-24T13:09:33.112Z"
+ }
+}

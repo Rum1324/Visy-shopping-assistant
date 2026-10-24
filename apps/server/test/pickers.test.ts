@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { ok, type ElementPicker, type PageState } from "@visy/contracts";
-import { candidates, elementDoc } from "../src/navigator/pickers/common.ts";
+import { candidates, elementDoc, exactIntentMatch, strictPicker } from "../src/navigator/pickers/common.ts";
 import { pickWithChain } from "../src/navigator/chain.ts";
 
 const state: PageState = {
@@ -44,6 +44,16 @@ test("chain falls through untrusted picks", async () => {
   assert.ok(r.ok);
   assert.equal(r.data.idx, 1);
   assert.deepEqual(r.data.tried, ["moss", "claude"]);
+});
+
+test("strict mode only trusts exact role+name matches (no keyboard-shortcut decoys)", async () => {
+  const atc = { kind: "find_control" as const, intent: "button: Add to Cart | section: buy box", then: "click" as const };
+  const decoy = { idx: 9, role: "button", name: "Add to cart, shift, option, K", section: "Shortcuts menu" };
+  assert.equal(exactIntentMatch(state.elements[1]!, atc), true);
+  assert.equal(exactIntentMatch(decoy, atc), false);
+  const withDecoy = { ...state, elements: [...state.elements, decoy] };
+  const r = await strictPicker(fake("moss", 9, true)).pick(withDecoy, atc);
+  assert.ok(r.ok && !r.data.trusted);
 });
 
 test("chain never returns a purchase-risk element even if a picker trusts it", async () => {

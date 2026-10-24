@@ -1,4 +1,4 @@
-import type { PageElement, PageState, PlanStep } from "@visy/contracts";
+import type { ElementPicker, PageElement, PageState, PlanStep } from "@visy/contracts";
 
 export type FindStep = Extract<PlanStep, { kind: "find_control" }>;
 
@@ -18,3 +18,21 @@ export function candidates(state: PageState, step: FindStep): PageElement[] {
 }
 
 export const siteOf = (url: string) => new URL(url).hostname.replace(/^www\./, "");
+
+/** Intent "button: Add to Cart | section: buy box" matches only role=button with name exactly "add to cart". */
+export function exactIntentMatch(e: PageElement, step: FindStep) {
+  const m = step.intent.match(/^\s*([\w-]+)\s*:\s*([^|]+)/);
+  if (!m) return false;
+  return e.role === m[1]!.toLowerCase() && e.name.trim().toLowerCase() === m[2]!.trim().toLowerCase();
+}
+
+/** Wraps a picker so it's only trusted on an exact role+name match. Used while a page is still loading. */
+export const strictPicker = (p: ElementPicker): ElementPicker => ({
+  name: p.name,
+  pick: async (state, step) => {
+    const r = await p.pick(state, step);
+    if (!r.ok || !r.data.trusted) return r;
+    const el = state.elements.find((e) => e.idx === r.data.idx);
+    return { ok: true, data: { ...r.data, trusted: !!el && exactIntentMatch(el, step) } };
+  },
+});

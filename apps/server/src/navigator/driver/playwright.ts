@@ -2,8 +2,7 @@ import { chromium, type BrowserContext, type Page } from "playwright";
 import { err, ok, BUDGETS_MS, type Action, type BrowserDriver, type PageState, type Result } from "@visy/contracts";
 import { INDEXER_JS } from "./indexer.ts";
 
-const CAPTCHA = /validateCaptcha|captcha|press (&|and) hold|robot or human|enter the characters you see|amazon\.com\/checkpoint\//i;
-const CHALLENGE_SECTION = /tmms-challenge|checkpointForm/i;
+import { CAPTCHA, looksBlocked } from "./blocked.ts";
 
 /**
  * Local Chromium driver. Headed + persistent profile by default: Amazon blocks headless datacenter traffic,
@@ -30,6 +29,12 @@ export class PlaywrightDriver implements BrowserDriver {
     } catch {
       this.ctx = await chromium.launchPersistentContext(dir, launch);
     }
+    // If the user closes the window, start fresh next time instead of reusing a dead context.
+    this.ctx.on("close", () => {
+      this.ctx = undefined;
+      this.pages.clear();
+      this.last.clear();
+    });
     return this.ctx;
   }
 
@@ -50,11 +55,12 @@ export class PlaywrightDriver implements BrowserDriver {
     }
   }
 
-  async navigate(tabId: number, url: string): Promise<Result<{ url: string }>> {
+  /** waitUntil "commit" returns as soon as the response starts; callers then poll for what they need. */
+  async navigate(tabId: number, url: string, waitUntil: "commit" | "domcontentloaded" = "domcontentloaded"): Promise<Result<{ url: string }>> {
     const page = this.pages.get(tabId);
     if (!page) return err("not_found", `no tab ${tabId}`);
     try {
-      await page.goto(url, { waitUntil: "domcontentloaded", timeout: BUDGETS_MS.marketplaceSearch });
+      await page.goto(url, { waitUntil, timeout: BUDGETS_MS.marketplaceSearch });
       return ok({ url: page.url() });
     } catch (e) {
       return err("timeout", `navigate failed: ${(e as Error).message}`, true);
@@ -67,12 +73,7 @@ export class PlaywrightDriver implements BrowserDriver {
     try {
       const raw = (await page.evaluate(`(${INDEXER_JS})(${maxElements})`)) as Omit<PageState, "tabId" | "capturedAt">;
       const state: PageState = { ...raw, tabId, capturedAt: new Date().toISOString() };
-      if (
-        CAPTCHA.test(state.url) ||
-        CAPTCHA.test(state.title) ||
-        state.textBlocks.slice(0, 15).some((t) => CAPTCHA.test(t)) ||
-        state.elements.some((e) => CHALLENGE_SECTION.test(e.section ?? ""))
-      ) {
+      if (looksBlocked(state)) {
         return err("blocked", "Bot check on the page. The user needs to solve it in the browser window.", true);
       }
       this.last.set(tabId, state);
@@ -111,7 +112,8 @@ export class PlaywrightDriver implements BrowserDriver {
           await page.keyboard.press(action.key);
           break;
       }
-      await page.waitForLoadState("domcontentloaded", { timeout: 3000 }).catch(() => {});
+      // No load wait here: callers wait for the signal they actually need (results, confirmation, …).
+      // Waiting for DOMContentLoaded cost ~1.7 s when we click a button before the page finished loading.
       return ok({ navigated: page.url() !== before });
     } catch (e) {
       return err("internal", `act ${action.kind} failed: ${(e as Error).message}`, true);
@@ -130,6 +132,25 @@ export class PlaywrightDriver implements BrowserDriver {
     this.pages.delete(tabId);
     this.last.delete(tabId);
     return ok({});
+  }
+
+  /** Polls a JS predicate in the page (every 100 ms). Returns false on timeout instead of throwing. */
+  async waitFor(tabId: number, js: string, timeoutMs: number): Promise<boolean> {
+    try {
+      await this.pages.get(tabId)!.waitForFunction(js, undefined, { timeout: timeoutMs, polling: 100 });
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  /** Cheap bot-check test (no full index): URL, title, top of the page text, challenge forms. */
+  async isBlocked(tabId: number): Promise<boolean> {
+    const probe = await this.evaluate<string>(
+      tabId,
+      `location.href + " " + document.title + " " + (document.body ? document.body.innerText.slice(0, 600) : "") + (document.querySelector("#checkpointForm, form[action*=validateCaptcha]") ? " captcha" : "")`,
+    ).catch(() => "");
+    return CAPTCHA.test(probe);
   }
 
   /** Not in BrowserDriver: site-specific extraction (result cards, cart subtotal). The extension will need an equivalent op. */
