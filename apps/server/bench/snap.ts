@@ -28,8 +28,13 @@ async function snapTo(tabId: number, file: string, pageType: string) {
   let s = await driver.snapshot(tabId);
   if (!s.ok && s.error.code === "blocked" && process.stdin.isTTY) {
     const rl = createInterface({ input: process.stdin, output: process.stdout });
-    await rl.question(`Bot check on ${file}. Solve it in the window, then press Enter (or Ctrl-C).`);
+    await rl.question(`Bot check on ${file}. Solve it in the browser window (leave the window open), then press Enter here (or Ctrl-C).`);
     rl.close();
+    if (driver.page(tabId)?.isClosed() !== false) {
+      console.log(`  skip ${file}: browser window was closed`);
+      return undefined;
+    }
+    await driver.page(tabId)!.waitForTimeout(1500);
     s = await driver.snapshot(tabId);
   }
   if (!s.ok) {
@@ -41,22 +46,34 @@ async function snapTo(tabId: number, file: string, pageType: string) {
   return s.data;
 }
 
-const tab = await driver.openTab("about:blank");
-if (!tab.ok) throw new Error(tab.error.message);
-const tabId = tab.data.tabId;
+// Reopens the browser/tab if the user closed it, so one closed window doesn't end the whole run.
+let tabId = -1;
+async function liveTab() {
+  if (driver.page(tabId) && !driver.page(tabId)!.isClosed()) return tabId;
+  const tab = await driver.openTab("about:blank");
+  if (!tab.ok) throw new Error(tab.error.message);
+  return (tabId = tab.data.tabId);
+}
+
 for (const site of run) {
   console.log(site);
   for (const q of QUERIES) {
-    await driver.navigate(tabId, SITES[site].search(q));
-    const state = await snapTo(tabId, `${site}-search-${slug(q)}`, `${site}-search`);
-    if (!state) continue;
-    const link = state.elements.find((e) => e.href && SITES[site].product.test(e.href) && e.name.length > 15 && !/sponsored/i.test(e.section ?? ""));
-    if (!link?.href) {
-      console.log("  no product link found");
-      continue;
+    try {
+      const t = await liveTab();
+      await driver.navigate(t, SITES[site].search(q));
+      const state = await snapTo(t, `${site}-search-${slug(q)}`, `${site}-search`);
+      if (!state) continue;
+      const link = state.elements.find((e) => e.href && SITES[site].product.test(e.href) && e.name.length > 15 && !/sponsored/i.test(e.section ?? ""));
+      if (!link?.href) {
+        console.log("  no product link found");
+        continue;
+      }
+      const t2 = await liveTab();
+      await driver.navigate(t2, link.href);
+      await snapTo(t2, `${site}-product-${slug(q)}`, `${site}-product`);
+    } catch (e) {
+      console.log(`  skip ${site} "${q}": ${(e as Error).message.split("\n")[0]}`);
     }
-    await driver.navigate(tabId, link.href);
-    await snapTo(tabId, `${site}-product-${slug(q)}`, `${site}-product`);
   }
 }
 await driver.close();

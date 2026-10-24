@@ -30,6 +30,12 @@ export class PlaywrightDriver implements BrowserDriver {
     } catch {
       this.ctx = await chromium.launchPersistentContext(dir, launch);
     }
+    // If the user closes the window, start fresh next time instead of reusing a dead context.
+    this.ctx.on("close", () => {
+      this.ctx = undefined;
+      this.pages.clear();
+      this.last.clear();
+    });
     return this.ctx;
   }
 

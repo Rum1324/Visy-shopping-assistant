@@ -1,3 +1,4 @@
+import { createHash } from "node:crypto";
 import { MossClient, type SessionIndex } from "@moss-js/moss";
 import { err, ok, type ElementPicker, type PageState, type PickResult, type Result } from "@visy/contracts";
 import { candidates, elementDoc, type FindStep } from "./common.ts";
@@ -9,60 +10,70 @@ export const mossClient = () => {
   return new MossClient(id, key);
 };
 
+const docId = (text: string) => createHash("sha1").update(text).digest("hex").slice(0, 16);
+
 /**
- * Per-page local Moss session over the indexed elements. Trusted when the top hit beats the runner-up by MOSS_GAP.
- * Sessions are cached per page snapshot, so several steps on the same page pay indexing once.
+ * Element matching with one long-lived local Moss session shared by every page.
+ * Embedding is the slow part (~1.5 ms/element), so each element text is embedded once: nav bars, buy boxes
+ * and footers repeat across pages and cost nothing after the first visit. Results are mapped back to the
+ * current page by text. Trusted when the top hit beats the runner-up by MOSS_GAP (tuned with the bench).
  */
 export class MossPicker implements ElementPicker {
   readonly name = "moss" as const;
-  private cache = new Map<string, Promise<SessionIndex>>();
-  private seq = 0;
+  private session?: Promise<SessionIndex>;
+  private known = new Set<string>();
 
   constructor(
     private client = mossClient(),
-    private gap = Number(process.env.MOSS_GAP ?? 0.08),
+    private gap = Number(process.env.MOSS_GAP ?? 0.1),
+    /** Hybrid weight: 1 = semantic only, 0 = keyword (BM25) only. Bench winner: 0.2. */
+    public alpha = Number(process.env.MOSS_ALPHA ?? 0.2),
+    /** Only the first N elements (viewport first) are indexed per page. */
+    private maxPerPage = Number(process.env.MOSS_MAX_ELEMENTS ?? 200),
   ) {}
 
-  private key(state: PageState) {
-    return `${state.tabId}:${state.url}:${state.fingerprint}:${state.capturedAt}`;
+  /** Call once at startup: the first session loads the embedding model (~7 s). */
+  warm() {
+    this.session ??= this.client.session(`visy-elements-${process.pid}`);
+    return this.session;
   }
 
-  /** Builds (or reuses) the session for this snapshot. Returns indexMs = 0 on cache hits. */
+  /** Embeds this page's element texts that haven't been seen before. Returns how long that took. */
   async index(state: PageState): Promise<{ session: SessionIndex; indexMs: number }> {
-    const k = this.key(state);
-    const hit = this.cache.get(k);
-    if (hit) return { session: await hit, indexMs: 0 };
+    const session = await this.warm();
     const t0 = performance.now();
-    const p = (async () => {
-      const s = await this.client.session(`visy-page-${process.pid}-${this.seq++}`);
-      await s.addDocs(state.elements.filter((e) => !e.purchaseRisk).map((e) => ({ id: String(e.idx), text: elementDoc(e) })));
-      return s;
-    })();
-    this.cache.set(k, p);
-    const session = await p;
-    // Keep memory bounded: drop the oldest sessions.
-    while (this.cache.size > 8) {
-      const [oldKey, old] = this.cache.entries().next().value!;
-      this.cache.delete(oldKey);
-      old.then((s) => s.close()).catch(() => {});
+    const fresh = new Map<string, string>();
+    for (const e of state.elements.slice(0, this.maxPerPage)) {
+      if (e.purchaseRisk) continue;
+      const text = elementDoc(e);
+      const id = docId(text);
+      if (!this.known.has(id)) fresh.set(id, text);
     }
-    return { session, indexMs: performance.now() - t0 };
+    if (fresh.size) {
+      await session.addDocs([...fresh].map(([id, text]) => ({ id, text })));
+      for (const id of fresh.keys()) this.known.add(id);
+    }
+    return { session, indexMs: fresh.size ? performance.now() - t0 : 0 };
   }
 
   async pick(state: PageState, step: FindStep): Promise<Result<PickResult & { trusted: boolean }>> {
     try {
-      const allowed = new Set(candidates(state, step).map((e) => e.idx));
-      if (!allowed.size) return err("not_found", "no candidate elements");
+      const byDoc = new Map<string, number>(); // doc id → first allowed element on this page
+      for (const e of candidates(state, step).slice(0, this.maxPerPage)) {
+        const id = docId(elementDoc(e));
+        if (!byDoc.has(id)) byDoc.set(id, e.idx);
+      }
+      if (!byDoc.size) return err("not_found", "no candidate elements");
       const { session, indexMs } = await this.index(state);
       const t0 = performance.now();
-      const res = await session.query(step.intent, { topK: 10 });
+      const res = await session.query(step.intent, { topK: 100, alpha: this.alpha });
       const latencyMs = performance.now() - t0;
-      const docs = res.docs.filter((d) => allowed.has(Number(d.id)));
+      const docs = res.docs.filter((d) => byDoc.has(d.id));
       const top = docs[0];
-      if (!top) return err("low_confidence", "moss found nothing");
+      if (!top) return err("low_confidence", "moss found nothing on this page");
       const runnerUpScore = Math.max(0, ...docs.slice(1).map((d) => d.score));
       return ok({
-        idx: Number(top.id),
+        idx: byDoc.get(top.id)!,
         score: top.score,
         runnerUpScore,
         picker: "moss",
@@ -76,7 +87,8 @@ export class MossPicker implements ElementPicker {
   }
 
   async close() {
-    for (const p of this.cache.values()) await p.then((s) => s.close()).catch(() => {});
-    this.cache.clear();
+    await (await this.session)?.close().catch(() => {});
+    this.session = undefined;
+    this.known.clear();
   }
 }

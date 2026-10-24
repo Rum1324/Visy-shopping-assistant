@@ -31,7 +31,9 @@ const time = async <T>(label: string, fn: () => Promise<T>) => {
 };
 
 const pickers = chain.pickers.map((p) => p.name).join(" → ");
-console.log(`chain: ${pickers}  memory entries: ${(await chain.memory?.size()) ?? "-"}  query: "${query}"`);
+const tWarm = performance.now();
+await chain.moss?.warm(); // loads the embedding model once (~7 s); a server does this at boot
+console.log(`chain: ${pickers}  memory entries: ${(await chain.memory?.size()) ?? "-"}  warm-up ${Math.round(performance.now() - tWarm)} ms  query: "${query}"`);
 const tStart = performance.now();
 try {
   const results = await time("search", () => flow.search(query, viaUi));

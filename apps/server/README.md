@@ -5,11 +5,39 @@ Element picking for the browser agent, fastest first:
 ```
 0. shortcut URL + deterministic extraction (amazon.com/s?k=…)          no AI
 1. memory  Moss session of past successful picks, saved to data/        ~5 ms
-2. moss    per-page local Moss session over PageState.elements          index once per page, ~1–10 ms per query
-3. claude  CLAUDE_PICKER_MODEL picks from the element list              ~1–3 s, result written back to memory
+2. moss    shared local Moss session over element texts (α=0.2)         new text ~1.5 ms/element, ~4 ms per query
+3. claude  Haiku 5.5 / low / thinking off picks from the element list   ~1.2 s, result written back to memory
 ```
 
 Purchase buttons (`purchaseRisk`) are never candidates. Bot checks return `err("blocked")`; the human solves them in the window.
+
+## Results (2026-10-24)
+
+**Moss spike:** query p50 2.7 ms. The first session loads the model (2–7 s), so warm it at boot. `addDocs` costs about 1.5 ms per element. The Moss index is a single session shared across pages, and only new element text gets embedded. Pages with mostly new text cost about 0.8 s at p50; repeat pages cost about 0.
+
+**Bench** (38 cases on 10 real pages: Amazon search and product, Target search, Walmart search):
+
+| Picker | Correct | Wrong clicks | p50 | p95 |
+|---|---|---|---|---|
+| Moss α=0.2, gap ≥ 0.1 (trusted only) | 24/24 trusted (63% of steps) | 0 | 3.5 ms | 5 ms |
+| Moss α=0.8 (Moss default) | 33/38 | 5 (and confident) | 5 ms | 10 ms |
+| **Haiku 5.5, low effort, thinking off** ← default | 38/38 | 0 | 1.17 s | 1.9 s |
+| Haiku 5.5, low effort, thinking on | 38/38 | 0 | 1.24 s | 2.1 s |
+| Sonnet 5.5, low effort, thinking off | 38/38 | 0 | 1.25 s | 2.2 s |
+| Sonnet 5.5, low effort, thinking on | 37/38 (1 abstain) | 0 | 1.17 s | 2.7 s |
+| Opus 5.5, low effort | 35/38 (3 abstain) | 0 | 1.99 s | 2.9 s |
+
+Claude sees elements as `e<idx>`, not bare numbers. With bare numbers, every model answered "107" for the review link named "(107,591)".
+
+**Live Amazon demo** ("picnic blanket": search, open, Add to Cart, cart; signed-in profile):
+
+| Run | Add to Cart picked by | Pick time | Claude calls | Total |
+|---|---|---|---|---|
+| Cold (empty memory) | moss | 6 ms | 0 | 13.1 s |
+| Warm | memory | 56 ms | 0 | 11.3 s |
+| Claude only | claude | 1.45 s | 1 | 11.5 s |
+
+Each picker step saves about 1.4 s, but this flow has only one such step. Page loads (about 3 s each) and the fixed 1.2 s wait after Add to Cart dominate the total. The next speed wins are waiting on selectors instead of fixed sleeps, and preloading the product page.
 
 ## Setup
 
