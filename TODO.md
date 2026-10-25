@@ -17,7 +17,6 @@ Line format: `[status] ID · task · owner · branch · since HH:MM PT`. Use one
 ## In progress
 
 - [working] D-APIFY · External reviews from Reddit, YouTube and articles via Apify (`collectExternal`; needs an Apify token) · agent: Git remote list (for Pixl) · d/apify · since 19:12 PT
-- [working] B-NARROW · Ask 2-3 clarifying questions, collect ~30 candidates per marketplace, narrow to 3 with a Jev-shaped picker (Claude Haiku stand-in), then review synthesis · agent: Run latest demo (for Sota) · b/narrow · since 17:36 PT
 - [working] DOCS-ARCH · Architecture flow diagram · agent: Architecture flow diagram (for Sota) · branch unknown · since 16:40 PT
 
 ## Open
@@ -34,6 +33,7 @@ Line format: `[status] ID · task · owner · branch · since HH:MM PT`. Use one
 
 ## Done
 
+- [done] B-NARROW · Ask 2-3 clarifying questions, collect ~30 candidates per marketplace, narrow to 3 with a Jev-shaped picker (Claude Haiku stand-in), then review synthesis · [PR #12](https://github.com/Rum1324/Visy-shopping-assistant/pull/12)
 - [done] B-INTEL · Track D review summary, accessibility answers and photo description feed the tool loop's product answers · [PR #11](https://github.com/Rum1324/Visy-shopping-assistant/pull/11)
 - [done] D-MAIN · Track D on `main`: review synthesis, Moss review Q&A, photo descriptions, wired into the tool loop · [PR #11](https://github.com/Rum1324/Visy-shopping-assistant/pull/11)
 - [done] A+B · Chrome side panel, Cartesia voice, conversation server · `561b7dd`
