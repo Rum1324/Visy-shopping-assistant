@@ -473,7 +473,7 @@ export function createAgent(
       names.length < 3
         ? `I'll check ${names.join(" and ")}.`
         : process.env.NAV === "amazon"
-          ? "I'll check Amazon. Target and Walmart stay on sample listings."
+          ? "I'll check Amazon and Target. Walmart stays on sample listings."
           : "I'll check Amazon, Target, and Walmart.";
     await say(where);
     if (id !== run || !state) return;

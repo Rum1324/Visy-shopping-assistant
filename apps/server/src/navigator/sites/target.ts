@@ -274,8 +274,7 @@ export class TargetFlow {
   }
 
   /** A bot check goes to the human: bring the tab up, say so, wait up to 90 s. We never solve it. */
-  private async blockedGate(): Promise<Result<{}>> {
-    const tab = this.tabId!;
+  private async blockedGate(tab = this.tabId!): Promise<Result<{}>> {
     if (!(await this.driver.isBlocked(tab))) return ok({});
     await this.driver.focus(tab);
     this.announce("Target is showing a bot check. Solve it in the browser tab I just brought up. I will not bypass it.");
@@ -327,21 +326,40 @@ export class TargetFlow {
    * Claude writes a recipe only if neither the JSON nor the page has a title.
    */
   async getDetail(candidate: ProductCandidate, emit: Emit = () => {}): Promise<Result<ProductDetail>> {
-    this.marks = {};
+    // The agent reads all three options at once, so each read gets its own background tab, closed afterwards.
+    const marks: Record<string, number> = {};
+    const mark = (label: string, t0: number) => (marks[label] = Math.round(performance.now() - t0));
     const tcin = candidate.id.replace(/^target:A-/, "");
     emit({ stage: "reading_product", message: "Reading the Target product page", marketplace: "target", at: at() });
-    const g = await this.goto(candidate.url);
-    if (!g.ok) return g;
+    const t = await this.driver.openTab("about:blank", { background: true });
+    if (!t.ok) return t;
+    const tab = t.data.tabId;
+    try {
+      return await this.readDetail(candidate, tab, tcin, marks, mark, emit);
+    } finally {
+      await this.driver.closeTab(tab).catch(() => {});
+    }
+  }
+
+  private async readDetail(
+    candidate: ProductCandidate,
+    tab: number,
+    tcin: string,
+    marks: Record<string, number>,
+    mark: (label: string, t0: number) => void,
+    emit: Emit,
+  ): Promise<Result<ProductDetail>> {
     const t0 = performance.now();
-    await this.driver.waitFor(this.tabId!, "target.detailReady", 10_000);
-    this.mark("wait detail", t0);
-    const b = await this.blockedGate();
+    const g = await this.driver.navigate(tab, candidate.url, "commit");
+    if (!g.ok) return g;
+    await this.driver.waitFor(tab, "target.detailReady", 10_000);
+    mark("wait detail", t0);
+    const b = await this.blockedGate(tab);
     if (!b.ok) return b;
-    const tab = this.tabId!;
     const json = await this.driver.extract<NextItem | null>(tab, "target.nextItem", tcin).catch(() => null);
     const t1 = performance.now();
     await this.driver.waitFor(tab, "target.priceReady", json?.title ? 2500 : 6000);
-    this.mark("wait price", t1);
+    mark("wait price", t1);
     const run = <T>(name: "recipe.replay" | "recipe.outline", arg: unknown) => this.driver.extract<T>(tab, name, arg);
     const t2 = performance.now();
     let raw = await run<RawDetail>("recipe.replay", TARGET_PRODUCT_SEED).catch(() => null);
@@ -352,7 +370,7 @@ export class TargetFlow {
       raw = x.raw;
       via = x.via;
     }
-    this.mark("recipe", t2);
+    mark("recipe", t2);
     const fulfillment = await this.driver.extract<string[]>(tab, "target.fulfillment").catch(() => []);
     emit({ stage: "reviews", message: "Reading Target reviews", marketplace: "target", at: at() });
     const t3 = performance.now();
@@ -363,9 +381,9 @@ export class TargetFlow {
       scraped = await this.driver.extract<ScrapedReview[]>(tab, "target.reviews").catch(() => []);
     }
     const reviews = toTargetReviews(tcin, candidate.url, scraped);
-    this.mark("reviews", t3);
+    mark("reviews", t3);
     const f = raw ? targetFields(raw, fulfillment) : undefined;
-    console.log(`target detail ${candidate.id}: via ${via}, page price ${f?.price ? "yes" : "no (search price)"}, ${reviews.length} reviews`, this.marks);
+    console.log(`target detail ${candidate.id}: via ${via}, page price ${f?.price ? "yes" : "no (search price)"}, ${reviews.length} reviews`, marks);
     const bullets = f?.bullets.length ? f.bullets : (json?.bullets ?? []);
     return ok({
       ...candidate,

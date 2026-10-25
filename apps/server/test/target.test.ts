@@ -125,7 +125,7 @@ test("target.nextItem reads title, brand, highlights, description, images and sp
   assert.deepEqual(item!.specs, [["Dimensions (Overall)", "80 inches (L), 70 inches (W)"], ["Weight", "2 pounds"], ["Material", "Polyester"]]);
 });
 
-test("TargetFlow.getDetail in a background tab: no rendered price → search price stands, JSON fills the rest, no Claude call", async () => {
+test("TargetFlow.getDetail in its own background tab: no rendered price → search price stands, JSON fills the rest, no Claude call", async () => {
   const candidate = targetCandidate({ tcin: "91558607", path: "/p/x/-/A-91558607", title: "Tirrinia Picnic Blanket", brand: "Tirrinia", lines: ["$29.99 reg $39.99", "Sale", "Shipping arrives Thu, Oct 29", "Ships free - exclusions apply"], rating: "Average customer rating is 4.8 out of 5 stars with 20 reviews.", image: null, sponsored: false })!;
   const item: NextItem = { title: "Tirrinia Extra Large Picnic Blanket", brand: "Tirrinia", bullets: ["EXTRA LARGE", "MULTIPLE USE"], description: "Adventure-ready comfort", images: ["https://target.scene7.com/is/image/Target/GUEST_a"], specs: [["Weight", "2 pounds"]] };
   const json = [{ id: "r1", title: "Great", body: "Waterproof and big.", date: "2026-07-05T10:19:28.094Z", author: "A", rating: 5, verified: null, syndicated: false }];
@@ -138,7 +138,9 @@ test("TargetFlow.getDetail in a background tab: no rendered price → search pri
     extract: async (_t: number, name: string) => values[name],
     isBlocked: async () => false,
     focus: async () => {},
+    closeTab: async (tabId: number) => (closed.push(tabId), { ok: true, data: {} }),
   } as unknown as FlowDriver;
+  const closed: number[] = [];
   const writer = { calls: 0, write: async () => { writer.calls++; return { ok: false, error: { code: "internal", message: "no", retryable: false } } as never; } };
   const flow = new TargetFlow(driver, () => {}, { cache: new RecipeCache("/nonexistent/recipes.json"), writer });
   const r = await flow.getDetail(candidate);
@@ -152,6 +154,7 @@ test("TargetFlow.getDetail in a background tab: no rendered price → search pri
   assert.equal(r.data.description, "Adventure-ready comfort");
   assert.deepEqual(r.data.specs, { Weight: "2 pounds" });
   assert.deepEqual(r.data.retailerReviews.map((x) => x.id), ["target:91558607:r1"]);
+  assert.deepEqual(closed, [3], "its own tab, closed after reading (the agent reads three options at once)");
 });
 
 test("NAV=amazon routes Target search to live target.com in a background tab", async () => {
