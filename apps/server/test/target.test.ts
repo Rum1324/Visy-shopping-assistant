@@ -207,7 +207,7 @@ test("targetCheckout: an empty cart is an error, not a $0 read-back", () => {
   assert.match(r.error.message, /empty/);
 });
 
-test("TargetFlow.addToCart: focuses the tab, picks Shipping over Pickup, clicks Add to cart via the chain, waits for the count", async () => {
+test("TargetFlow.addToCart: focuses the tab, picks Shipping over Pickup, clicks Add to cart (never Add to List) via the chain, waits for the count", async () => {
   const pickupView: PageElement[] = [
     { idx: 0, role: "button", name: "Pickup Get it nearby tomorrow, selected", section: "above-the-fold-information > Fulfillment" },
     { idx: 1, role: "button", name: "Shipping Arrives by Mon, Oct 26,", section: "above-the-fold-information > Fulfillment" },
@@ -216,7 +216,8 @@ test("TargetFlow.addToCart: focuses the tab, picks Shipping over Pickup, clicks 
   const shipView: PageElement[] = [
     { idx: 0, role: "button", name: "Pickup Get it nearby tomorrow,", section: "above-the-fold-information > Fulfillment" },
     { idx: 1, role: "button", name: "Shipping Arrives by Mon, Oct 26, selected", section: "above-the-fold-information > Fulfillment" },
-    { idx: 2, role: "button", name: "Add to cart", section: "pageBodyContainer > above-the-fold-information" },
+    { idx: 2, role: "button", name: "Add to List", section: "pageBodyContainer > above-the-fold-information" },
+    { idx: 3, role: "button", name: "Add to cart", section: "pageBodyContainer > above-the-fold-information" },
   ];
   let view = pickupView;
   const clicks: string[] = [];
@@ -239,7 +240,8 @@ test("TargetFlow.addToCart: focuses the tab, picks Shipping over Pickup, clicks 
   const exact: ElementPicker = {
     name: "moss",
     pick: async (state) => {
-      const el = state.elements.find((e) => e.role === "button" && e.name === "Add to cart");
+      // Like Moss live: "Add to List" scores as well as "Add to cart". The flow must not let it through.
+      const el = state.elements.find((e) => e.role === "button" && /^Add to/.test(e.name));
       return el ? { ok: true, data: { idx: el.idx, score: 1, picker: "moss", latencyMs: 1, trusted: true } } : { ok: false, error: { code: "low_confidence", message: "none", retryable: true } };
     },
   };

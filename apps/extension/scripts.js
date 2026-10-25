@@ -133,7 +133,8 @@ export const SCRIPTS = {
   const t = (h) => (c.querySelector('[data-test="review-card--' + h + '"]')?.textContent || '').replace(/\s+/g, ' ').trim();
   return { title: t('title'), body: (b.innerText || b.textContent || '').trim(), date: t('reviewTime'), author: t('username') || null, rating: parseFloat(t('ratings')) || null, verified: !!c.querySelector('[data-test="review-card--verified-purchase"]'), syndicated: !!c.querySelector('[data-test="review-card--syndicated-badge"]') };
 }).filter((r) => r.body)),
-  "target.buyBoxReady": (arg) => (!!document.querySelector('#SHIPPING, #PICKUP, #DELIVERY, [data-test="shippingButton"]') || /captcha|robot or human|access denied/i.test(document.title)),
+  "target.buyBoxReady": (arg) => ((() => { const t = Array.from(document.querySelectorAll('#SHIPPING, #PICKUP, #DELIVERY')); return t.length > 0 && t.every((b) => !/loading/i.test(b.getAttribute('aria-label') || '')); })() || /captcha|robot or human|access denied/i.test(document.title)),
+  "target.addReady": (arg) => (Array.from(document.querySelectorAll('button')).some((b) => /^add to cart$/i.test((b.textContent || '').trim()) && !b.disabled)),
   "target.shippingSelected": (arg) => (/selected/i.test(document.getElementById('SHIPPING')?.getAttribute('aria-label') || '')),
   "target.cartCount": (arg) => (Number((/(\d+)/.exec(document.querySelector('[data-test="@web/CartLink"]')?.getAttribute('aria-label') || '') || [])[1] || 0)),
   "target.added": (arg) => (Number((/(\d+)/.exec(document.querySelector('[data-test="@web/CartLink"]')?.getAttribute('aria-label') || '') || [])[1] || 0) > Number(arg) || Array.from(document.querySelectorAll('[role="dialog"], [aria-modal="true"]')).some((d) => /^\s*Added to cart/i.test(d.innerText || ''))),

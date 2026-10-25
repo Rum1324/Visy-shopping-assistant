@@ -8,6 +8,7 @@ import {
   type CartLine,
   type ElementPicker,
   type Emit,
+  type PageElement,
   type ProductDetail,
   type Result,
 } from "@visy/contracts";
@@ -145,8 +146,10 @@ export const TARGET_SCRIPTS = {
   "target.scrollReviews": `void document.querySelector('[data-test="ReviewsDashboard"], [data-test="reviews-heading"]')?.scrollIntoView()`,
   "target.reviewsReady": `!!document.querySelector('[data-test="review-card--text"]')`,
   "target.reviews": REVIEWS_JS,
-  // C-TGT-CART. The buy box draws only in a visible tab: Pickup / Delivery / Shipping tiles, then the Add to cart button.
-  "target.buyBoxReady": `!!document.querySelector('#SHIPPING, #PICKUP, #DELIVERY, [data-test="shippingButton"]') || ${CHALLENGE_JS}`,
+  // C-TGT-CART. The buy box draws only in a visible tab, first as a skeleton ("shipping - loading...", a dead
+  // Add to cart button), then the real Pickup / Delivery / Shipping tiles.
+  "target.buyBoxReady": `(() => { const t = Array.from(document.querySelectorAll('#SHIPPING, #PICKUP, #DELIVERY')); return t.length > 0 && t.every((b) => !/loading/i.test(b.getAttribute('aria-label') || '')); })() || ${CHALLENGE_JS}`,
+  "target.addReady": `Array.from(document.querySelectorAll('button')).some((b) => /^add to cart$/i.test((b.textContent || '').trim()) && !b.disabled)`,
   "target.shippingSelected": `/selected/i.test(document.getElementById('SHIPPING')?.getAttribute('aria-label') || '')`,
   "target.cartCount": CART_COUNT_JS,
   // arg = the cart count before the click. Target opens an "Added to cart" dialog and bumps the header count.
@@ -503,8 +506,12 @@ export class TargetFlow {
     });
   }
 
-  /** Snapshot → picker chain → click. The chain never returns a purchaseRisk element, and the driver refuses one too. */
-  private async step(step: FindStep, tries = 2): Promise<Result<ChainPick>> {
+  /**
+   * Snapshot → picker chain → click. The chain never returns a purchaseRisk element, and the driver refuses one too.
+   * `only` narrows what the chain sees: next to Target's Add to cart sits "Add to List", which Moss trusted (0.92)
+   * live when no Add to cart was drawn yet, and memory then replayed it.
+   */
+  private async step(step: FindStep, only?: (e: PageElement) => boolean, tries = 2): Promise<Result<ChainPick>> {
     for (let attempt = 1; ; attempt++) {
       let t0 = performance.now();
       const s = await this.driver.snapshot(this.tabId!);
@@ -515,8 +522,14 @@ export class TargetFlow {
         if (!g.ok) return g;
         continue;
       }
+      const state = only ? { ...s.data, elements: s.data.elements.filter(only) } : s.data;
+      if (!state.elements.length) {
+        if (attempt >= tries) return err("not_found", `no "${step.intent}" on the page`);
+        await sleep(500);
+        continue;
+      }
       t0 = performance.now();
-      const pick = await pickWithChain(this.chain.pickers, s.data, step, this.chain.memory);
+      const pick = await pickWithChain(this.chain.pickers, state, step, this.chain.memory);
       this.mark("pick", t0);
       if (!pick.ok) {
         if (attempt >= tries) return pick;
@@ -545,6 +558,8 @@ export class TargetFlow {
     await this.driver.waitFor(this.tabId!, "target.shippingSelected", 3000);
   }
 
+  private static isAddToCart = (e: PageElement) => e.role === "button" && !e.disabled && /^add to cart\b/i.test(e.name);
+
   /**
    * C-TGT-CART: opens the product in the flow's tab, in front (Target draws the buy box only in a visible tab, and
    * the user sees what's being added), picks Shipping, then clicks Add to cart through the picker chain.
@@ -565,8 +580,12 @@ export class TargetFlow {
     if (!b.ok) return b;
     const before = await this.driver.extract<number>(this.tabId!, "target.cartCount").catch(() => 0);
     await this.chooseShipping();
-    const r = await this.step(TARGET_STEPS.addToCart);
-    if (!r.ok) return r;
+    await this.driver.waitFor(this.tabId!, "target.addReady", 3000);
+    const r = await this.step(TARGET_STEPS.addToCart, TargetFlow.isAddToCart);
+    if (!r.ok) {
+      // Variant items ("Choose size") and ones Target won't ship to this zip have no Add to cart button.
+      return r.error.code === "not_found" ? err("not_found", "Target shows no Add to cart button for this item. It may need a size or color chosen first.") : r;
+    }
     const t1 = performance.now();
     const added = await this.driver.waitFor(this.tabId!, "target.added", 6000, before);
     this.mark("wait confirmation", t1);
