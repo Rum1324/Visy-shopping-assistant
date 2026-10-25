@@ -38,3 +38,26 @@ test("narrow: the budget filters the pool, and a budget nothing meets keeps the 
   const none = await narrowToThree(null, { ...need, budget: { max: { cents: 1, currency: "USD" } } }, pool);
   assert.equal(none.picks.length, 3);
 });
+
+test("narrow: a $100 budget reads options near $100, not the best-rated $20 ones", async () => {
+  // Live run: "100 dollars is the budget" for a keyboard came back as $19.99, $22.84 and $27.03.
+  const at = (id: string, cents: number, rating: number, reviewCount: number) => ({
+    ...pool[0]!,
+    id,
+    price: { cents, currency: "USD" as const },
+    rating,
+    reviewCount,
+  });
+  const cheap = [at("c1", 1999, 4.8, 90000), at("c2", 2284, 4.7, 40000), at("c3", 2703, 4.7, 30000)];
+  const near = [at("n1", 5999, 4.5, 3000), at("n2", 7999, 4.6, 8000), at("n3", 9999, 4.6, 12000)];
+  const budget = { max: { cents: 10000, currency: "USD" as const } };
+  const { picks } = await narrowToThree(null, { ...need, budget }, [...cheap, ...near, at("over", 14999, 4.9, 20000)]);
+  assert.deepEqual(picks.map((p) => p.candidate.id).sort(), ["n1", "n2", "n3"]);
+  // Fewer than three near the cap: the whole in-budget pool is still in play.
+  const thin = await narrowToThree(null, { ...need, budget }, [...cheap, near[2]!]);
+  assert.equal(thin.picks.length, 3);
+  assert.ok(thin.picks.some((p) => p.candidate.price.cents < 5000));
+  // An explicit floor ("premium") is used as given.
+  const floor = await narrowToThree(null, { ...need, budget: { ...budget, min: { cents: 2800, currency: "USD" as const } } }, [...cheap, ...near]);
+  assert.ok(floor.picks.every((p) => p.candidate.price.cents >= 2800));
+});
