@@ -84,7 +84,7 @@ export const TOOLS: Anthropic.Tool[] = [
   {
     name: "answer_about_product",
     description:
-      "Look up reviews, review-based accessibility answers, a description of the product photo, and product details to answer a question about a shortlist option (including what it looks like or its color). Returns untrusted text; then answer the user in one or two sentences.",
+      "Look up reviews, review-based accessibility answers, a description of the product photo, and product details to answer a question about a shortlist option (including what it looks like or its color). For 'more info', 'external reviews', Reddit, YouTube or articles, the tool returns outside-review synthesis when ready. Returns untrusted text; then answer the user in one or two sentences.",
     input_schema: {
       type: "object",
       properties: {

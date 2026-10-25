@@ -28,6 +28,7 @@ import {
   mockReviewService,
   mockVisionService,
 } from "@visy/contracts/mocks";
+import { cleanListingTitle } from "./present.ts";
 import { buildChain } from "./navigator/chain.ts";
 import type { FlowDriver } from "./navigator/driver/flow.ts";
 import { PlaywrightDriver } from "./navigator/driver/playwright.ts";
@@ -146,7 +147,7 @@ export function liveServices(opts: { driver?: () => FlowDriver | undefined } = {
           id: productId("amazon", row.asin),
           marketplace: "amazon",
           url: `https://www.amazon.com/dp/${row.asin}`,
-          title: row.title,
+          title: cleanListingTitle(row.title),
           price: { cents, currency: "USD" },
           ...saleOf(row, cents),
           rating: ratingOf(row.rating),
@@ -176,7 +177,7 @@ export function liveServices(opts: { driver?: () => FlowDriver | undefined } = {
       if (!flow.productTabs.has(asin)) finalistTabs.set(asin, flow.preload([asin]).then(([tab]) => tab));
       const base = await safe(flow.getDetail(candidate, emit, opts));
       if (!base.ok) return base;
-      let title = base.data.title;
+      let title = cleanListingTitle(base.data.title);
       let cents = base.data.price.cents;
       // C3's recipe already read title and price; this is only the no-recipe fallback.
       const tab = flow.productTabs.get(asin) ?? flow.tabId;
@@ -184,7 +185,7 @@ export function liveServices(opts: { driver?: () => FlowDriver | undefined } = {
         const page = await driver
           .extract<{ title: string; price: string | null }>(tab, "amazon.titlePrice")
           .catch(() => ({ title: "", price: null }));
-        if (page.title) title = page.title;
+        if (page.title) title = cleanListingTitle(page.title);
         const parsed = parseDollars(page.price);
         if (parsed != null) cents = parsed;
       }

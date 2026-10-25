@@ -52,7 +52,10 @@ export type VisualDescription = z.infer<typeof VisualDescription>;
 export const ShortlistItem = z.object({
   rank: z.number().int().min(1).max(3),
   product: z.union([ProductDetail, ProductCandidate]),
+  /** Retailer reviews only — used when reading the shortlist aloud. */
   reviews: ReviewSynthesis.optional(),
+  /** Reddit / YouTube / articles from Apify — filled in the background; used for "more info" / external-review follow-ups. */
+  externalReviews: ReviewSynthesis.optional(),
   visual: VisualDescription.optional(),
   whyPicked: z.string(),
 });

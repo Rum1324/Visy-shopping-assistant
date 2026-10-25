@@ -7,7 +7,20 @@ export const SCRIPTS = {
   "blockProbe": (arg) => (location.href + " " + document.title + " " + (document.body ? document.body.innerText.slice(0, 600) : "") + (document.querySelector("#checkpointForm, form[action*=validateCaptcha]") ? " captcha" : "")),
   "amazon.results": (arg) => (Array.from(document.querySelectorAll('[data-component-type="s-search-result"][data-asin]')).map((c) => ({
   asin: c.getAttribute('data-asin'),
-  title: (c.querySelector('h2')?.innerText || '').trim(),
+  title: (() => {
+  const BADGE = /^(Amazon Renewed|Sponsored(?: Ad)?|Best Seller|Overall Pick|Amazon'?s Choice|Climate Pledge Friendly|Limited time deal)$/i;
+  const scrub = (s) => (s || '').replace(/\s+/g, ' ').trim().replace(/^(Amazon Renewed|Sponsored(?: Ad)?)\s*[:\-–—|]*\s*/i, '').trim();
+  const link = c.querySelector('a.a-link-normal[href*="/dp/"], a.a-link-normal[href*="/gp/product/"]') || c.querySelector('h2 a.a-link-normal') || c.querySelector('h2 a');
+  const aria = scrub(link?.getAttribute('aria-label') || '');
+  if (aria && !BADGE.test(aria) && aria.split(' ').length >= 3) return aria;
+  const spans = [...(link || c).querySelectorAll('span.a-text-normal, span.a-size-base-plus, span.a-size-medium, span.a-size-base')]
+    .map((el) => scrub(el.innerText || el.textContent || ''))
+    .filter((t) => t && !BADGE.test(t));
+  if (spans.length) return spans.sort((a, b) => b.length - a.length)[0];
+  const hs = [...c.querySelectorAll('h2')].map((h) => scrub(h.innerText || '')).filter((t) => t && !BADGE.test(t));
+  if (hs.length) return hs.sort((a, b) => b.length - a.length)[0];
+  return scrub(link?.innerText || c.querySelector('h2')?.innerText || '');
+})(),
   price: (c.querySelector('.a-price:not(.a-text-price) .a-offscreen') || c.querySelector('.a-price .a-offscreen'))?.textContent?.trim() || null,
   // UX-SALES: the struck-through "List:" / "Typical:" price, and a deal badge or coupon tile ("Coupon price $28.51").
   listPrice: c.querySelector('.a-text-price[data-a-strike="true"] .a-offscreen')?.textContent?.trim() || null,
