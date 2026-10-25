@@ -43,7 +43,7 @@ Line format: `[status] ID · task · owner · branch · since HH:MM PT`. Use one
 - [open] UX-NARROW · Decide how to handle the 3 narrowing/filtering options · Yuka
 - [open] UX-ASK-END · End every turn by asking the user a question · Yuka
 - [open] UX-PROGRESS · Spoken progress when work takes over ~2 s, with varied lines ("searching Amazon now", "comparing results from Walmart"); "One moment" is too repetitive · Yuka, Sota, yujielee
-- [open] UX-SALES · Say explicitly when a product is on sale or has a deal · yujielee
+- [working] UX-SALES · Say explicitly when a product is on sale or has a deal · yujielee · agent: On-sale mentions (for Sota) · claude/ux-sales-4e5428 · since 20:34 PT
 - [open] UX-SPEED · Let the user adjust voice speed · yujielee
 - [open] B-HISTORY · Use the conversation history as context for follow-up searches · Sota
 - [working] A-SHOWPAGE · When recommending, open the top pick's product page on screen instead of staying on the home tab · Sota (open all 3 options as tabs, focus option 1) · agent: Run latest demo (for Sota) · b/feedback · since 20:16 PT
