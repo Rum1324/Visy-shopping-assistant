@@ -31,7 +31,7 @@ export const ClientMsg = z.discriminatedUnion("type", [
   z.object({ type: z.literal("user.interrupt") }),
   z.object({
     type: z.literal("settings.update"),
-    speechRate: z.number().min(0.5).max(2.5).optional(),
+    speechRate: z.number().min(0.5).max(3).optional(),
     verbosity: z.enum(["brief", "normal", "detailed"]).optional(),
   }),
   z.object({
