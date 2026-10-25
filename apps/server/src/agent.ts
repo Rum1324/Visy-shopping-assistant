@@ -9,7 +9,7 @@ import { apifyToken, prefetchApifySearch, reviewsFromHits } from "./intel/apify.
 import { sourcesSentence } from "./intel/reviews.ts";
 import { haikuJev, narrowToThree } from "./narrow.ts";
 import { applySaved, confirmLine, favoriteStores, prefFact, savedBlock, stated, withFact, type PrefKind } from "./saved-prefs.ts";
-import { overview, pitchWriter, speakable, templateLine, type Option, type PitchWriter } from "./present.ts";
+import { overview, pitchWriter, saleNote, speakable, templateLine, withSale, type Option, type PitchWriter } from "./present.ts";
 import {
   CONTRACT_VERSION,
   Need,
@@ -327,6 +327,7 @@ export function createAgent(
       data.push({
         option: item.rank,
         title: product.title,
+        sale: saleNote(product),
         description: "description" in product ? product.description.slice(0, 400) : undefined,
         bullets: "bullets" in product ? product.bullets.slice(0, 5) : undefined,
         reviewSummary: item.reviews?.summary,
@@ -572,7 +573,8 @@ export function createAgent(
           if (vis.ok) visual = vis.data;
         }
         const option: Option = { rank: i + 1, why, product, reviews };
-        const line = (pitch ? await pitch(need, option, options) : undefined) ?? templateLine(option, options);
+        // UX-SALES: the sale sentence comes from page fields, not the pitch model, so it is never made up.
+        const line = withSale((pitch ? await pitch(need, option, options) : undefined) ?? templateLine(option, options), product);
         return { candidate, why, product, reviews, visual, line };
       })(),
     );
