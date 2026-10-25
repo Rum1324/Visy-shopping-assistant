@@ -1,18 +1,20 @@
 /**
- * Track D3: outside reviews via Apify (Reddit + YouTube + article SERP), in parallel.
- * Dedicated full-page scrapers are richer but colder/slower; we use shallow search actors
- * and SERP snippets so Claude still gets multi-source text inside the time budget.
- * Reddit comes from a site:reddit.com Google query: the Reddit scraper actor timed out on every live run.
+ * Track D3: outside reviews via Apify's Google Search actor (Reddit, YouTube and review sites from SERP snippets).
+ * Two runs per search: one for the shopper's query as soon as it is known, then one with a
+ * "<product> review" query per shortlisted product, so each option gets reviews about itself.
+ * The Reddit scraper actor timed out on every live run and the YouTube actor took 13-25 s, so neither is used.
+ * The account allows 5 Apify runs at once: two runs plus their hedges stay under that.
  */
 import { type ProductDetail, type ProductId, type RawReview } from "@visy/contracts";
 
-const YOUTUBE_ACTOR = process.env.APIFY_YOUTUBE_ACTOR?.trim() || "streamers~youtube-scraper";
 const SEARCH_ACTOR = process.env.APIFY_SEARCH_ACTOR?.trim() || "apify~google-search-scraper";
 const MAX_PER_SOURCE = 4;
 const MAX_TOTAL = 12;
 const MAX_BODY = 700;
 /** Parallel shallow actors usually finish under this; override with APIFY_BUDGET_MS. */
 const DEFAULT_BUDGET_MS = 25_000;
+/** The per-product run doesn't hold up the reading (agent.ts waits for it briefly), so it gets longer. */
+const PRODUCT_BUDGET_MS = 40_000;
 const CACHE_MS = 10 * 60_000;
 /** Google runs usually finish in 3-8 s but about a third hang until the budget; a second run started this late often wins. */
 const HEDGE_MS = 10_000;
@@ -113,9 +115,9 @@ export function reviewsFromSearchItems(productId: string, items: unknown[]): Raw
   return hitsToReviews(productId, hitsFromSearchItems(items));
 }
 
-export function hitsToReviews(productId: string, hits: ExternalHit[]): RawReview[] {
+export function hitsToReviews(productId: string, hits: ExternalHit[], tag = "apify"): RawReview[] {
   return hits.slice(0, MAX_TOTAL).map((h, i) => ({
-    id: `apify:${h.source}:${i + 1}`,
+    id: `${tag}:${h.source}:${i + 1}`,
     productId: productId as ProductId,
     source: h.source,
     url: h.url,
@@ -125,7 +127,7 @@ export function hitsToReviews(productId: string, hits: ExternalHit[]): RawReview
   }));
 }
 
-/** One Google query used only for article discovery (Reddit has its own query, YouTube its own actor). */
+/** The shopper-query Google search for articles (Reddit has its own query). */
 export function buildQueries(phrase: string) {
   const q = phrase.replace(/"/g, "");
   return `"${q}" review -site:amazon.com -site:walmart.com -site:target.com -site:reddit.com -site:youtube.com -site:youtu.be`;
@@ -184,24 +186,6 @@ async function runActor(
   }
 }
 
-function hitsFromYoutube(items: unknown[]): ExternalHit[] {
-  const out: ExternalHit[] = [];
-  for (const raw of items) {
-    if (!raw || typeof raw !== "object") continue;
-    const r = raw as Record<string, unknown>;
-    const title = String(r.title ?? "").trim();
-    const desc = String(r.description ?? r.text ?? "").trim();
-    const url = String(r.url ?? r.parsedUrl ?? (r.id ? `https://www.youtube.com/watch?v=${r.id}` : ""));
-    // Prefer caption/transcript fields when the actor returns them; else title+description.
-    const transcript = String(r.transcript ?? r.subtitles ?? r.captionText ?? "").trim();
-    const body = clip((transcript || [title, desc].filter(Boolean).join(". ")).replace(/\s+/g, " ").trim(), MAX_BODY);
-    if (body.length < 40) continue;
-    out.push({ source: "youtube", url: url || undefined, title: title || undefined, body });
-    if (out.length >= MAX_PER_SOURCE) break;
-  }
-  return out;
-}
-
 async function collectHits(
   phrase: string,
   token: string,
@@ -209,8 +193,7 @@ async function collectHits(
   fetchImpl: ApifyFetch,
   signal?: AbortSignal,
 ): Promise<ExternalHit[]> {
-  const q = `${phrase} review`;
-  console.log(`[apify] parallel YouTube + Google (articles, Reddit) for "${phrase}" (budget ${budgetMs} ms)`);
+  console.log(`[apify] Google (articles, Reddit) for "${phrase}" (budget ${budgetMs} ms)`);
   const serp = (budget: number) =>
     runActor(
       SEARCH_ACTOR,
@@ -227,33 +210,7 @@ async function collectHits(
       fetchImpl,
       signal,
     );
-  const [ytItems, serpItems] = await Promise.all([
-    runActor(
-      YOUTUBE_ACTOR,
-      {
-        searchQueries: [q],
-        maxResults: 4,
-        maxResultsShorts: 0,
-        maxResultStreams: 0,
-      },
-      token,
-      budgetMs,
-      fetchImpl,
-      signal,
-    ),
-    hedged(serp, budgetMs),
-  ]);
-  const hits = [...hitsFromYoutube(ytItems), ...hitsFromSearchItems(serpItems).filter((h) => h.source !== "youtube")];
-  // Prefer diversity: cap total after merge.
-  const counts: Partial<Record<ExternalHit["source"], number>> = {};
-  const mixed: ExternalHit[] = [];
-  for (const h of hits) {
-    if ((counts[h.source] ?? 0) >= MAX_PER_SOURCE) continue;
-    counts[h.source] = (counts[h.source] ?? 0) + 1;
-    mixed.push(h);
-    if (mixed.length >= MAX_TOTAL) break;
-  }
-  return mixed;
+  return hitsFromSearchItems(await hedged(serp, budgetMs));
 }
 
 /** Starts a second run after HEDGE_MS if the first hasn't returned rows; the first run with rows wins. */
@@ -278,7 +235,7 @@ function hedged(run: (budgetMs: number) => Promise<unknown[]>, budgetMs: number)
 
 /**
  * Start outside-review fetch as soon as we know the shopper keywords.
- * Reddit + YouTube + article SERP run in parallel under one budget.
+ * Articles and Reddit threads for the query, from one Google run.
  */
 export function prefetchApifySearch(
   query: string,
@@ -309,15 +266,61 @@ export function prefetchApifySearch(
   return run;
 }
 
-/** Bind prefetched hits to a product (same outside pool for each shortlist option). */
-export function reviewsFromHits(productId: string, hits: ExternalHit[]): RawReview[] {
-  return hitsToReviews(productId, hits);
+/** Bind hits to a product. `tag` keeps a product's own hits apart from the shared query pool in the review index. */
+export function reviewsFromHits(productId: string, hits: ExternalHit[], tag?: string): RawReview[] {
+  return hitsToReviews(productId, hits, tag);
+}
+
+/** Brand first, then the start of the title: "Sony WH-1000XM5 Wireless Noise Canceling". */
+export function productPhrase(title: string, brand?: string) {
+  const words = searchPhrase(title).split(/\s+/).slice(0, 5);
+  const b = brand?.trim();
+  if (b && !words.join(" ").toLowerCase().includes(b.toLowerCase())) words.unshift(b);
+  return words.join(" ");
+}
+
+/**
+ * One Google run for the shortlist, a "<product> review" query each, so every option gets reviews of itself.
+ * A hit has to name the product's first word (usually the brand), which drops generic results for no-name brands.
+ */
+export async function prefetchProductHits(
+  products: { id: string; title: string; brand?: string }[],
+  opts: { token?: string; budgetMs?: number; fetchImpl?: ApifyFetch; signal?: AbortSignal } = {},
+): Promise<Map<string, ExternalHit[]>> {
+  const out = new Map<string, ExternalHit[]>();
+  const token = opts.token ?? apifyToken();
+  if (!token || !products.length) return out;
+  const phrases = products.map((p) => productPhrase(p.title, p.brand));
+  const queries = phrases.map((p) => `${p} review`);
+  const budgetMs = opts.budgetMs ?? PRODUCT_BUDGET_MS;
+  console.log(`[apify] Google per product: ${queries.map((q) => JSON.stringify(q)).join(", ")} (budget ${budgetMs} ms)`);
+  const items = await hedged(
+    (budget) =>
+      runActor(
+        SEARCH_ACTOR,
+        { queries: queries.join("\n"), maxPagesPerQuery: 1, resultsPerPage: 10, languageCode: "en", countryCode: "us" },
+        token,
+        budget,
+        opts.fetchImpl ?? fetch,
+        opts.signal,
+      ),
+    budgetMs,
+  );
+  for (const raw of items) {
+    const term = (raw as { searchQuery?: { term?: unknown } } | null)?.searchQuery?.term;
+    const i = queries.findIndex((q) => q.toLowerCase() === String(term ?? "").toLowerCase());
+    if (i < 0) continue;
+    const name = phrases[i]!.split(/\s+/)[0]!.toLowerCase();
+    out.set(products[i]!.id, hitsFromSearchItems([raw]).filter((h) => name.length < 3 || h.body.toLowerCase().includes(name)));
+  }
+  console.log(`[apify] per-product hits: ${products.map((p, i) => `${phrases[i]} ${out.get(p.id)?.length ?? 0}`).join(", ")}`);
+  return out;
 }
 
 export async function collectViaApify(
   product: ProductDetail,
   opts: { token?: string; budgetMs?: number; fetchImpl?: ApifyFetch; signal?: AbortSignal } = {},
 ): Promise<RawReview[]> {
-  const hits = await prefetchApifySearch(product.title, opts);
-  return hitsToReviews(product.id, hits);
+  const hits = (await prefetchProductHits([product], opts)).get(product.id) ?? [];
+  return hitsToReviews(product.id, hits, "apify-own");
 }
