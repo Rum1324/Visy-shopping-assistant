@@ -1,4 +1,4 @@
-# Visy: Shop at the speed of your voice
+# Visy: Shop at the speed of sound
 
 A voice-first shopping assistant for blind and low-vision shoppers. Tell Visy what you need: it asks a few questions, searches Amazon, Target and Walmart in your own signed-in Chrome, and reads you three picks (best match, best value, most trusted). Ask what a product looks like or what reviewers say. Visy adds your pick to the cart and stops at checkout. **You press the final button.**
 
