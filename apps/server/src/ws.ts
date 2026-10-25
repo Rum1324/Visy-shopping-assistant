@@ -244,7 +244,7 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
     const addr = wss.address();
     const port = typeof addr === "object" && addr ? addr.port : "?";
     const voice = process.env.CARTESIA_API_KEY?.trim() ? "on" : "off";
-    const nav = process.env.NAV === "amazon" ? "amazon live, target and walmart fixtures" : "fixtures";
+    const nav = process.env.NAV === "amazon" ? "amazon and walmart live, target fixtures" : "fixtures";
     const prefs = process.env.PREFS === "convex" ? "convex" : "fixtures";
     console.log(`visy server on ws://localhost:${port} (cartesia ${voice}, ${nav}, prefs ${prefs})`);
   });

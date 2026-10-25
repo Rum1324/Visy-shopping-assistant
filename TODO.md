@@ -26,8 +26,8 @@ Line format: `[status] ID · task · owner · branch · since HH:MM PT`. Use one
 - [open] LIVE-1 · Full live run on `main` in real Chrome: picnic blanket → shortlist → under $20 → review question → add → checkout read-back → yes, with no order placed
 - [open] C4 · Variants (size, color, quantity), filters, sort, and the checkout read-back flow on Amazon (`navigator/sites/amazon.ts`)
 - [working] C-TGT · Real Target search and detail flow (sample listings today) · agent: Target navigator (for Sota) · claude/c-target-9ad777 · since 20:33 PT
-- [working] C-WMT · Real Walmart search and detail flow (sample listings today) · agent: c-walmart (for Sota) · claude/c-walmart-2a1761 · since 20:33 PT
 - [working] B-PRELOAD · Agent calls C1b `flow.preload()` as soon as the shortlist is final (check whether the tool loop already does) · agent: Run latest demo (for Sota) · b/feedback · since 20:16 PT
+- [open] C-WMT-CART · Walmart add to cart and cart read-back. Search and detail are live (PR #16); a Walmart add still goes to the mock and returns not_found
 - [open] D-PAGEQA · Answer "what's on this page?" over the C5 `PageState` capture
 - [open] A-VOICE · Decide whether voice-only must work with no clicks at all (motor-impaired users)
 - [open] DEMO · Feature freeze and rehearsal (H+14); warm `RecipeCache` and picker memory before going on stage
@@ -53,6 +53,7 @@ Line format: `[status] ID · task · owner · branch · since HH:MM PT`. Use one
 
 ## Done
 
+- [done] C-WMT · Real Walmart search and detail flow (live walmart.com via `__NEXT_DATA__`; add to cart not covered) · [PR #16](https://github.com/Rum1324/Visy-shopping-assistant/pull/16)
 - [done] B-INTEL · Track D review summary, accessibility answers and photo description feed the tool loop's product answers · [PR #11](https://github.com/Rum1324/Visy-shopping-assistant/pull/11)
 - [done] D-MAIN · Track D on `main`: review synthesis, Moss review Q&A, photo descriptions, wired into the tool loop · [PR #11](https://github.com/Rum1324/Visy-shopping-assistant/pull/11)
 - [done] A+B · Chrome side panel, Cartesia voice, conversation server · `561b7dd`

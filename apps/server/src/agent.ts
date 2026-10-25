@@ -483,7 +483,7 @@ export function createAgent(
       names.length < 3
         ? `I'll check ${names.join(" and ")}${need.marketplaces.join() === favoriteStores(saved)?.join() ? ", your favorite store" : ""}.`
         : process.env.NAV === "amazon"
-          ? "I'll check Amazon. Target and Walmart stay on sample listings."
+          ? "I'll check Amazon and Walmart. Target stays on sample listings."
           : "I'll check Amazon, Target, and Walmart.";
     await say(where);
     if (id !== run || !state) return;
