@@ -16,6 +16,7 @@ Line format: `[status] ID · task · owner · branch · since HH:MM PT`. Use one
 
 ## In progress
 
+- [working] D-APIFY · External reviews from Reddit, YouTube and articles via Apify (`collectExternal`; needs an Apify token) · agent: Git remote list (for Pixl) · d/apify · since 19:12 PT
 - [working] B-NARROW · Ask 2-3 clarifying questions, collect ~30 candidates per marketplace, narrow to 3 with a Jev-shaped picker (Claude Haiku stand-in), then review synthesis · agent: Run latest demo (for Sota) · b/narrow · since 17:36 PT
 - [working] DOCS-ARCH · Architecture flow diagram · agent: Architecture flow diagram (for Sota) · branch unknown · since 16:40 PT
 
@@ -27,7 +28,6 @@ Line format: `[status] ID · task · owner · branch · since HH:MM PT`. Use one
 - [open] C-TGT · Real Target search and detail flow (sample listings today)
 - [open] C-WMT · Real Walmart search and detail flow (sample listings today)
 - [open] B-PRELOAD · Agent calls C1b `flow.preload()` as soon as the shortlist is final (check whether the tool loop already does)
-- [open] D-APIFY · External reviews from Reddit, YouTube and articles via Apify (`collectExternal`; needs an Apify token)
 - [open] D-PAGEQA · Answer "what's on this page?" over the C5 `PageState` capture
 - [open] A-VOICE · Decide whether voice-only must work with no clicks at all (motor-impaired users)
 - [open] DEMO · Feature freeze and rehearsal (H+14); warm `RecipeCache` and picker memory before going on stage
