@@ -43,8 +43,8 @@ Line format: `[status] ID · task · owner · branch · since HH:MM PT`. Use one
 - [working] UX-ASK-FIRST · Ask clarifying questions before searching · Sota (shipped in B-NARROW / PR #12; now one question at a time) · agent: Run latest demo (for Sota) · b/feedback · since 20:16 PT
 - [open] UX-NARROW · Decide how to handle the 3 narrowing/filtering options · Yuka
 - [open] UX-ASK-END · End every turn by asking the user a question · Yuka
-- [working] UX-SPEED · Let the user adjust voice speed · yujielee · agent: Voice speed adjustment (for Pixl) · cursor/ux-speed-c3e0 · since 21:55 PT
-- [working] B-HISTORY · Use the conversation history as context for follow-up searches · Sota · agent: Mic and conversation UI (for Sota) · claude/a-mic-b8c4a4 · since 22:06 PT
+- [working] UX-PROGRESS · Spoken progress when work takes over ~2 s, with varied lines ("searching Amazon now", "comparing results from Walmart"); "One moment" is too repetitive · Yuka, Sota, yujielee · agent: Run latest demo (for Sota) · b/feedback · since 20:36 PT
+- [open] B-HISTORY · Use the conversation history as context for follow-up searches · Sota
 - [working] A-SHOWPAGE · When recommending, open the top pick's product page on screen instead of staying on the home tab · Sota (open all 3 options as tabs, focus option 1) · agent: Run latest demo (for Sota) · b/feedback · since 20:16 PT
 - [working] D-UNBIASED · Unbiased review summary: balance retailer reviews with outside sources (ties to D-APIFY) · agent: Unbiased review summary (for Pixl) · d/unbiased · since 22:15 PT
 
@@ -69,3 +69,4 @@ Line format: `[status] ID · task · owner · branch · since HH:MM PT`. Use one
 - [done] D-APIFY · External reviews from Reddit, YouTube and articles via Apify · [PR #17](https://github.com/Rum1324/Visy-shopping-assistant/pull/17)
 - [done] UX-SALES · Say explicitly when a product is on sale or has a deal · yujielee · agent: On-sale mentions (for Sota) · [PR #14](https://github.com/Rum1324/Visy-shopping-assistant/pull/14)
 - [done] B-PREFS-TEST · Test that preferences are really stored in Convex: favorite marketplaces and brands, what the user cares about (price, quality, shipping speed) · yujielee · agent: Preferences in Convex (for Sota) · [PR #15](https://github.com/Rum1324/Visy-shopping-assistant/pull/15)
+- [done] UX-SPEED · Let the user adjust voice speed · yujielee · [PR #19](https://github.com/Rum1324/Visy-shopping-assistant/pull/19)

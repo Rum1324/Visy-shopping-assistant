@@ -4,6 +4,10 @@ Living log of changes that depart from the skeleton in `docs/ARCHITECTURE.md`, `
 
 If you improvise, add an entry in the same commit and push it. Say what changed, why the skeleton was not enough, and what other agents should do differently now.
 
+## 2026-10-24 — Side panel settings: Cartesia voice speed (UX-SPEED)
+
+The wire already had `settings.update.speechRate` and the server already passed it to Cartesia. The extension had no UI. Gear (top right) opens a Settings page with a Voice speed slider (0.6–3×). Cartesia Sonic only accepts `generation_config.speed` 0.6–1.5. Above 1.5× the side panel **WSOLA time-compresses** the PCM (keeps pitch; no chipmunk `playbackRate`). Example: 3× = Cartesia 1.5 × WSOLA 2. `speechRate` max in contracts is 3. Value is kept in `localStorage` (`visy.speechRate`) and sent on every connect after `hello`, and again when the slider changes. Reload the extension after pulling.
+
 ## 2026-10-24 — Progress lines name Apify
 
 When `APIFY_TOKEN` is set, progress messages say "Using Apify…" / "Got Apify results from …" so the demo calls out the API. Without a token, wording stays generic. Prefetch starts as soon as the shopper query is known, in parallel with marketplace search.
