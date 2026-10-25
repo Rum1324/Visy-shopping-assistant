@@ -44,6 +44,7 @@ Line format: `[status] ID · task · owner · branch · since HH:MM PT`. Use one
 - [open] UX-NARROW · Decide how to handle the 3 narrowing/filtering options · Yuka
 - [open] UX-ASK-END · End every turn by asking the user a question · Yuka
 - [working] UX-PROGRESS · Spoken progress when work takes over ~2 s, with varied lines ("searching Amazon now", "comparing results from Walmart"); "One moment" is too repetitive · Yuka, Sota, yujielee · agent: Run latest demo (for Sota) · b/feedback · since 20:36 PT
+- [working] UX-PITCH · Bug: spoken option lines include the pitch model's self-corrections ("wait, correction: …") and wrong price math · agent: Clean pitch lines (for Sota) · claude/intelligent-noether-63c123 · since 22:56 PT
 - [open] B-HISTORY · Use the conversation history as context for follow-up searches · Sota
 - [working] A-SHOWPAGE · When recommending, open the top pick's product page on screen instead of staying on the home tab · Sota (open all 3 options as tabs, focus option 1) · agent: Run latest demo (for Sota) · b/feedback · since 20:16 PT
 - [working] D-UNBIASED · Unbiased review summary: balance retailer reviews with outside sources (ties to D-APIFY) · agent: Unbiased review summary (for Pixl) · d/unbiased · since 22:15 PT
