@@ -86,7 +86,8 @@ export function createAgent(
   let stillIdx = 0;
 
   function say(text: string, kind?: SayKind) {
-    spoken++;
+    // Acks and progress lines aren't answers: the Claude loop uses `spoken` to tell whether a turn or tool answered.
+    if (kind !== "progress") spoken++;
     // ~0.33 s a word at 1x, plus synthesis latency. Only used to tell silence from speech.
     const words = text.split(/\s+/).length;
     voiceUntil = Math.max(voiceUntil, Date.now()) + 400 + (words * 330) / speechRate;
@@ -190,7 +191,7 @@ export function createAgent(
     const before = spoken;
     const turn = { said, id, tainted: false, fallback: "" };
     const ack = setTimeout(() => {
-      if (id === run && spoken === before) void say(ACKS[Math.floor(Math.random() * ACKS.length)]!);
+      if (id === run && spoken === before) void say(ACKS[Math.floor(Math.random() * ACKS.length)]!, "progress");
     }, ACK_MS);
     const messages: Anthropic.MessageParam[] = [{ role: "user", content: turnMessage(state, said, recent, asking?.answers) }];
     try {

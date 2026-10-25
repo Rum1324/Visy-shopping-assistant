@@ -307,6 +307,40 @@ test("claude: confirm_checkout_total refuses unless the user said yes", async ()
   assert.equal(agent.state?.phase, "checkout_review");
 });
 
+test("claude failing after the 'One moment' ack still falls back to keyword routing", async () => {
+  const slowBroken: Llm = {
+    messages: {
+      async create() {
+        await new Promise((r) => setTimeout(r, 1000)); // past ACK_MS, so the ack has been said
+        throw new Error("overloaded");
+      },
+    },
+  };
+  const { agent, said } = harness(slowBroken);
+  await agent.hello("demo-user");
+  await agent.handleText("picnic blanket");
+  assert.ok(said.some((s) => /^(One moment|Let me check|On it)\.$/.test(s)), said.join(" | "));
+  assert.equal(agent.state?.shortlist.length, 3);
+});
+
+test("a progress line during a quiet tool still lets Claude answer from its result", async () => {
+  const services = mockServices({ latencyMs: 0 });
+  const search = services.reviewIndex.search.bind(services.reviewIndex);
+  let slow = true;
+  services.reviewIndex.search = async (productId, query, k) => {
+    if (slow) await new Promise((r) => setTimeout(r, 4000)); // long enough for a spoken progress line
+    slow = false;
+    return search(productId, query, k);
+  };
+  const fake = fakeClaude();
+  const { agent, said } = harness(fake.llm, services);
+  await agent.hello("demo-user");
+  await agent.handleText("picnic blanket");
+  await agent.handleText("is it waterproof");
+  assert.match(said.at(-1) ?? "", /waterproof|don't know/i);
+  assert.ok(said.length > 0);
+});
+
 test("claude errors fall back to keyword routing", async () => {
   const broken: Llm = {
     messages: {
