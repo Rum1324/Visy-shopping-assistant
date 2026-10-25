@@ -62,6 +62,77 @@ export const SCRIPTS = {
   const button = t.match(/Place your order(?: in [A-Z]{3})?/i)?.[0] || (/Proceed to checkout/i.test(t) ? 'Proceed to checkout' : null);
   return { total, tax, usd, button, url: location.href };
 })()),
+  "target.results": (arg) => (Array.from(document.querySelectorAll('[data-test="ListingPageProductListing"]')).map((c) => {
+  const t = (e) => (e ? e.textContent || '' : '').replace(/\s+/g, ' ').trim();
+  const a = c.querySelector('a[href*="/A-"]');
+  const href = a ? a.getAttribute('href') || '' : '';
+  const h3 = c.querySelector('h3');
+  const parts = h3 ? Array.from(h3.children).map(t).filter(Boolean) : [];
+  const lines = Array.from(c.querySelectorAll('[data-test="text-quill"], [data-test="cdui-marker-v2"]'))
+    .filter((e) => !e.closest('h3, [data-test="rating-stars"]') && !(e.getAttribute('data-test') === 'cdui-marker-v2' && e.querySelector('[data-test="text-quill"]')))
+    .map(t).filter(Boolean);
+  const aria = (c.querySelector('[data-test="product-listing-gallery-desktop-image-link"]')?.getAttribute('aria-label') || '').trim();
+  const label = aria.replace(/\s+Sponsored$/, '');
+  return {
+    tcin: (/\/A-(\d+)/.exec(href) || [])[1] || null,
+    path: href.split('?')[0].split('#')[0],
+    title: label || t(h3),
+    brand: parts.length > 1 ? parts[0] : null,
+    lines,
+    rating: c.querySelector('[data-test="rating-stars"]')?.getAttribute('aria-label') || null,
+    image: c.querySelector('img')?.getAttribute('src') || null,
+    // Card text runs together ("...may varySponsoredAdd to cart"), so match the "Sponsored" block, not a word.
+    sponsored: lines.some((l) => /^Sponsored$/i.test(l)) || /\sSponsored$/.test(aria),
+  };
+}).filter((r) => r.tcin && r.title)),
+  "target.resultsReady": (arg) => (!!document.querySelector('[data-test="ListingPageProductListing"] h3') || !!document.querySelector('[data-test="nlr-container"]') || /captcha|robot or human|access denied/i.test(document.title)),
+  "target.cardsReady": (arg) => (document.querySelectorAll('[data-test="ListingPageProductListing"] h3').length >= 20),
+  "target.detailReady": (arg) => (!!document.getElementById('__NEXT_DATA__') || !!document.querySelector('[data-test="product-title"]') || /captcha|robot or human|access denied/i.test(document.title)),
+  "target.priceReady": (arg) => (!!document.querySelector('[data-test="product-price"]') || /captcha|robot or human|access denied/i.test(document.title)),
+  "target.fulfillment": (arg) => ([...new Set(Array.from((document.querySelector('[role="region"][aria-label="Fulfillment"]') || document).querySelectorAll('[data-test="text-quill"]')).map((e) => (e.textContent || '').replace(/\s+/g, ' ').trim())
+  .filter((s) => s.length < 120 && /^(Arrives|Get it|Ships free|Shipping|Delivery|Same Day|Pickup|Ready within|Order pickup|Drive Up|Only \d+ left|Out of stock|Sold out|Not available|Temporarily out)/i.test(s)))].slice(0, 6)),
+  "target.nextItem": (arg) => ((() => {
+  let d; try { d = JSON.parse(document.getElementById('__NEXT_DATA__')?.textContent || 'null'); } catch { return null; }
+  const hits = [];
+  const walk = (o, depth) => {
+    if (!o || typeof o !== 'object' || depth > 18 || hits.length > 4) return;
+    if (o.tcin && o.item && o.item.product_description) hits.push(o);
+    for (const k in o) walk(o[k], depth + 1);
+  };
+  walk(d, 0);
+  const p = hits.find((h) => String(h.tcin) === String(arg)) || hits[0];
+  if (!p) return null;
+  const it = p.item, pd = it.product_description || {}, ii = (it.enrichment || {}).image_info || {};
+  const strip = (s) => String(s || '').replace(/<br\s*\/?>/gi, ' ').replace(/<[^>]+>/g, '').replace(/&#(\d+);/g, (_, n) => String.fromCharCode(+n)).replace(/&quot;/g, '"').replace(/&amp;/g, '&').replace(/\s+/g, ' ').trim();
+  return {
+    title: strip(pd.title) || null,
+    brand: (it.primary_brand || {}).name || null,
+    bullets: ((pd.soft_bullets || {}).bullets || []).map(strip).filter(Boolean).slice(0, 12),
+    description: strip(pd.downstream_description).slice(0, 3000) || null,
+    images: [ii.primary_image].concat(ii.alternate_images || []).map((i) => i && i.url).filter(Boolean).slice(0, 8),
+    specs: (pd.bullet_descriptions || []).map((b) => strip(b).split(/:\s*/)).filter((kv) => kv.length > 1 && kv[1]).map((kv) => [kv[0], kv.slice(1).join(': ')]).slice(0, 40),
+  };
+})()),
+  "target.nextReviews": (arg) => ((() => {
+  let d; try { d = JSON.parse(document.getElementById('__NEXT_DATA__')?.textContent || 'null'); } catch { return []; }
+  const hits = [];
+  const walk = (o, depth) => {
+    if (!o || typeof o !== 'object' || depth > 16 || hits.length > 4) return;
+    if (o.ratings_and_reviews && Array.isArray(o.ratings_and_reviews.most_recent)) hits.push(o);
+    for (const k in o) walk(o[k], depth + 1);
+  };
+  walk(d, 0);
+  const p = hits.find((h) => String(h.tcin) === String(arg)) || hits[0];
+  return (p ? p.ratings_and_reviews.most_recent : []).map((r) => ({ id: String(r.id || ''), title: r.title || '', body: r.text || '', date: r.rating?.submitted_at || '', author: r.author?.nickname || null, rating: r.rating?.value ?? null, verified: null, syndicated: false })).filter((r) => r.body);
+})()),
+  "target.scrollReviews": (arg) => (void document.querySelector('[data-test="ReviewsDashboard"], [data-test="reviews-heading"]')?.scrollIntoView()),
+  "target.reviewsReady": (arg) => (!!document.querySelector('[data-test="review-card--text"]')),
+  "target.reviews": (arg) => (Array.from(document.querySelectorAll('[data-test="review-card--text"]')).map((b) => {
+  let c = b;
+  while (c.parentElement && !c.querySelector('[data-test="review-card--username"]')) c = c.parentElement;
+  const t = (h) => (c.querySelector('[data-test="review-card--' + h + '"]')?.textContent || '').replace(/\s+/g, ' ').trim();
+  return { title: t('title'), body: (b.innerText || b.textContent || '').trim(), date: t('reviewTime'), author: t('username') || null, rating: parseFloat(t('ratings')) || null, verified: !!c.querySelector('[data-test="review-card--verified-purchase"]'), syndicated: !!c.querySelector('[data-test="review-card--syndicated-badge"]') };
+}).filter((r) => r.body)),
   "walmart.ready": (arg) => ((document.readyState !== 'loading' && !!document.getElementById('__NEXT_DATA__')) || /^\/blocked/.test(location.pathname)),
   "walmart.results": (arg) => ((() => {
   let d;
