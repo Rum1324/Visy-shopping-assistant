@@ -197,7 +197,7 @@ const sleep = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
  * Finalists are the 3 direct picks plus the 3 best-rated others in budget. Their pages load in parallel, quick
  * reads only (the product page and its own top reviews). Then the role questions are asked
  * again over the finalists with features and review snippets. Everything after the direct picks is capped at
- * `capMs` (VISY_REVIEWS_FIRST_MS, off by default); over it, or if the evidence round fails, the direct picks stand.
+ * `capMs` (VISY_REVIEWS_FIRST_MS, default 9 s); over it, or if the evidence round fails, the direct picks stand.
  */
 export async function narrowWithReviews(
   jev: JevClient | null,
@@ -206,9 +206,9 @@ export async function narrowWithReviews(
   getDetail: (c: ProductCandidate) => Promise<Result<ProductDetail>>,
   opts: { capMs?: number; finalists?: number } = {},
 ): Promise<Finalists> {
-  // Off unless set: live, 6 page reads in the user's Chrome take 4.7-9.8 s (median ~6 s), plus ~2.5 s to pick, so
-  // it adds ~7 s before the options are read. VISY_REVIEWS_FIRST_MS=9000 turns it on with a 9 s cap.
-  const capMs = opts.capMs ?? Number(process.env.VISY_REVIEWS_FIRST_MS ?? 0);
+  // Live, 6 page reads in the user's Chrome take 4.7-9.8 s (median ~6 s), plus ~2.5 s to pick, so this adds ~7 s
+  // before the options are read. VISY_REVIEWS_FIRST_MS=0 turns it off.
+  const capMs = opts.capMs ?? Number(process.env.VISY_REVIEWS_FIRST_MS ?? 9000);
   const size = opts.finalists ?? 6;
   const details = new Map<string, Promise<Result<ProductDetail>>>();
   const load = (c: ProductCandidate) => {

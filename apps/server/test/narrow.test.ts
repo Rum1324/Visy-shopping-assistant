@@ -130,10 +130,10 @@ test("reviews-first: over the time cap, the direct picks stand and their reads a
   for (const p of res.picks) assert.ok(res.details.has(p.candidate.id), "direct pick's read was not started early");
 });
 
-test("reviews-first: off by default, so nothing is read up front", async () => {
+test("reviews-first: a cap of 0 turns it off, so nothing is read up front", async () => {
   let reads = 0;
   const jev: JevClient = { decide: async ({ options }) => ok({ choice: options[0]!, confidence: 0.9 }) };
-  const res = await narrowWithReviews(jev, need, big, async (c) => (reads++, ok(page(c, "x"))));
+  const res = await narrowWithReviews(jev, need, big, async (c) => (reads++, ok(page(c, "x"))), { capMs: 0 });
   assert.equal(res.chose, "direct");
   assert.equal(reads, 0);
 });
