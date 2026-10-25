@@ -43,15 +43,15 @@ Line format: `[status] ID · task · owner · branch · since HH:MM PT`. Use one
 - [open] UX-NARROW · Decide how to handle the 3 narrowing/filtering options · Yuka
 - [open] UX-ASK-END · End every turn by asking the user a question · Yuka
 - [working] UX-PROGRESS · Spoken progress when work takes over ~2 s, with varied lines ("searching Amazon now", "comparing results from Walmart"); "One moment" is too repetitive · Yuka, Sota, yujielee · agent: Run latest demo (for Sota) · b/feedback · since 20:36 PT
-- [working] UX-PITCH · Bug: spoken option lines include the pitch model's self-corrections ("wait, correction: …") and wrong price math · agent: Clean pitch lines (for Sota) · claude/intelligent-noether-63c123 · since 22:56 PT
 - [open] B-HISTORY · Use the conversation history as context for follow-up searches · Sota
 - [working] A-SHOWPAGE · When recommending, open the top pick's product page on screen instead of staying on the home tab · Sota (open all 3 options as tabs, focus option 1) · agent: Run latest demo (for Sota) · b/feedback · since 20:16 PT
 
 
 ## Done
 
-- [done] C-TGT-CART · Target add to cart (Shipping, picker-chain Add to cart) and cart read-back with est. tax and total (needs PR #18 first) · [PR #24](https://github.com/Rum1324/Visy-shopping-assistant/pull/24)
+- [done] C-TGT-CART · Target add to cart (Shipping, picker-chain Add to cart) and cart read-back with est. tax and total · [PR #24](https://github.com/Rum1324/Visy-shopping-assistant/pull/24)
 - [done] C-TGT · Real Target search and detail flow · [PR #18](https://github.com/Rum1324/Visy-shopping-assistant/pull/18)
+- [done] UX-PITCH · Bug: spoken option lines included the pitch model's self-corrections ("wait, correction: …") and wrong price math; the prompt now gets computed differences and a guard falls back to the template · agent: Clean pitch lines (for Sota) · [PR #25](https://github.com/Rum1324/Visy-shopping-assistant/pull/25)
 - [done] D-UNBIASED · Unbiased review summary: drop loaded-language reviews before synthesis (ties to D-APIFY) · agent: Unbiased review summary (for Pixl) · [PR #23](https://github.com/Rum1324/Visy-shopping-assistant/pull/23)
 - [done] UX-PROGRESS · Spoken progress after ~2 s of quiet, varied lines that fit the running tool ("Searching Amazon now", "Reading the reviews"), stops when the answer starts · first version in [PR #13](https://github.com/Rum1324/Visy-shopping-assistant/pull/13), `progress.ts` in [PR #21](https://github.com/Rum1324/Visy-shopping-assistant/pull/21)
 - [done] C-WMT · Real Walmart search and detail flow (live walmart.com via `__NEXT_DATA__`; add to cart not covered) · [PR #16](https://github.com/Rum1324/Visy-shopping-assistant/pull/16)

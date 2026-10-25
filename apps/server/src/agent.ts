@@ -41,6 +41,8 @@ export type AgentSink = {
 
 const YES = /^(yes|confirm|that matches)\b/i;
 const DEFAULT_QUESTIONS = ["What's your budget?", "What matters most?"];
+/** Asked after the answers, so the shopper can add specifics in their own words. */
+const ANYTHING_ELSE = "Anything else you want to add?";
 /** Ends the questions early and searches with what we have. */
 const SKIP = /\b(just search|skip|search now|go ahead|that's (it|all))\b/i;
 const NO_PREFERENCE = /^(no|nope|nothing|none|no preference|anything|whatever|just search|doesn't matter|dont care|don't care)\b/i;
@@ -146,7 +148,8 @@ export function createAgent(
     // Record the answer; any question still left is asked right away, no model call needed.
     if (state.phase === "clarifying" && asking?.questions.length) {
       asking.answers.push({ question: asking.questions.shift()!, answer: said });
-      if (asking.questions.length && !SKIP.test(said)) {
+      if (SKIP.test(said)) asking.questions = [];
+      if (asking.questions.length) {
         await say(asking.questions[0]!, "question");
         return;
       }
@@ -295,6 +298,8 @@ export function createAgent(
         sale: saleNote(product),
         description: "description" in product ? product.description.slice(0, 400) : undefined,
         bullets: "bullets" in product ? product.bullets.slice(0, 5) : undefined,
+        rating: product.rating,
+        reviewCount: product.reviewCount,
         reviewSummary: item.reviews?.summary,
         cons: item.reviews?.cons,
         reviewWarnings: item.reviews?.warnings,
@@ -308,7 +313,7 @@ export function createAgent(
     if (!turn.fallback) turn.fallback = "I don't have a review that answers that.";
     if (state) publish({ ...state, phase: "presenting" });
     return {
-      content: `${untrusted("reviews", data)}\n\nAnswer the user's question from this data in one or two spoken sentences and say which option. If the data does not answer it, say you don't know.`,
+      content: `${untrusted("reviews", data)}\n\nAnswer the user's question from this data in one or two spoken sentences and say which option. If the data does not answer it, say you don't know. Every product has a few unhappy reviews: don't bring up a complaint only one or two reviews make unless the user asked about exactly that, and then say it's a few reviews next to the overall rating.`,
     };
   }
 
@@ -332,7 +337,7 @@ export function createAgent(
     }
     if (/\busual\b/i.test(said) && (await recallUsual(said))) return;
     if (state.phase === "clarifying" && state.need) {
-      const answers = asking?.answers.map((a) => a.answer).join(". ") || said;
+      const answers = asking?.answers.map((a) => a.answer).filter((a) => !NO_PREFERENCE.test(a)).join(". ") || said;
       await shop(state.need.query, id, state.need.marketplaces, needFromAnswer(answers));
       return;
     }
@@ -345,13 +350,13 @@ export function createAgent(
 
   /**
    * Asks up to 2 short questions together in one turn: one at a time was too slow, three at once too long.
-   * The next user turn is the answer (phase "clarifying").
+   * The next user turn is the answer (phase "clarifying"), then "Anything else you want to add?" gets its own turn.
    */
   async function askQuestions(query: string, questions: string[], marketplaces: Marketplace[] = favoriteStores(saved) ?? ["amazon", "target", "walmart"]) {
     if (!state) return;
     const need = Need.parse({ query: query.trim(), marketplaces });
     const together = questions.slice(0, 2).join(" ");
-    asking = { questions: [together], answers: [] };
+    asking = { questions: [together, ANYTHING_ELSE], answers: [] };
     publish({ ...state, phase: "clarifying", need, candidates: [], shortlist: [], cart: [] });
     await say(`Sure, ${need.query}. ${together}`, "question");
   }

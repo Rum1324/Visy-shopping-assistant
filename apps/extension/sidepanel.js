@@ -201,18 +201,34 @@ function stopTalk() {
 function fillChars(el, phrase) {
   el.replaceChildren();
   const chars = [];
-  for (const c of phrase) {
-    if (c === "\n") {
-      const br = document.createElement("br");
-      br.className = "ch nl on";
-      el.append(br);
+  for (const part of phrase.split(/(\s+)/)) {
+    if (!part) continue;
+    if (/^\s+$/.test(part)) {
+      for (const c of part) {
+        if (c === "\n") {
+          const br = document.createElement("br");
+          br.className = "ch nl on";
+          el.append(br);
+          continue;
+        }
+        const span = document.createElement("span");
+        span.className = "ch space";
+        span.textContent = "\u00a0";
+        el.append(span);
+        chars.push(span);
+      }
       continue;
     }
-    const span = document.createElement("span");
-    span.className = c === " " ? "ch space" : "ch";
-    span.textContent = c === " " ? "\u00a0" : c;
-    el.append(span);
-    chars.push(span);
+    const word = document.createElement("span");
+    word.className = "word";
+    for (const c of part) {
+      const span = document.createElement("span");
+      span.className = "ch";
+      span.textContent = c;
+      word.append(span);
+      chars.push(span);
+    }
+    el.append(word);
   }
   return chars;
 }
