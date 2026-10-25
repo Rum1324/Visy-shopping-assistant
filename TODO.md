@@ -20,6 +20,7 @@ Line format: `[status] ID · task · owner · branch · since HH:MM PT`. Use one
 - [working] B-NARROW · Ask 2-3 clarifying questions, collect ~30 candidates per marketplace, narrow to 3 with a Jev-shaped picker (Claude Haiku stand-in), then review synthesis · merged in [PR #12](https://github.com/Rum1324/Visy-shopping-assistant/pull/12), waiting for Sota to check it in Chrome before done · agent: Run latest demo (for Sota) · b/narrow
 - [working] DOCS-ARCH · Architecture flow diagram · agent: Architecture flow diagram (for Sota) · branch unknown · since 16:40 PT
 - [done] D-APIFY-FAST · Outside reviews per product: one Google run with a "<product> review" query per option (late results re-summarize that option), Reddit through Google (the Reddit actor timed out on every run), no YouTube actor, hedge slow Google runs, no second 25 s Apify pass · [PR #29](https://github.com/Rum1324/Visy-shopping-assistant/pull/29)
+- [working] D-APIFY-BUDGET · Shortlist pitch = retailer only; Apify Reddit/YouTube/articles in background on shortlist; follow-up "more info"/external uses externalReviews · agent: Apify budget (for Pixl) · pixl/apify-budget · since 02:15 PT
 
 ## Open
 

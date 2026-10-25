@@ -15,14 +15,30 @@ import { pickWithChain, type ChainPick } from "../chain.ts";
 import { strictPicker, type FindStep } from "../pickers/common.ts";
 import type { MemoryPicker } from "../pickers/memory.ts";
 import { ClaudeRecipeWriter, extractWithRecipes, RecipeCache, type Extracted, type RawDetail, type RecipeFields, type RecipeWriter } from "../recipes.ts";
+import { cleanListingTitle } from "../../present.ts";
 
 export type AmazonResult = { asin: string; title: string; price: string | null; listPrice?: string | null; deal?: string | null; rating: string | null; reviews?: string | null; sponsored: boolean };
 
 // Tier 0: deterministic extraction, no AI. Amazon's result cards are stable enough for a hackathon.
 const RESULT_SEL = '[data-component-type="s-search-result"][data-asin]';
+// Renewed / Choice cards often put the badge in the first h2 ("Amazon Renewed") and the real name in the /dp/ link.
+const RESULT_TITLE_JS = `(() => {
+  const BADGE = /^(Amazon Renewed|Sponsored(?: Ad)?|Best Seller|Overall Pick|Amazon'?s Choice|Climate Pledge Friendly|Limited time deal)$/i;
+  const scrub = (s) => (s || '').replace(/\\s+/g, ' ').trim().replace(/^(Amazon Renewed|Sponsored(?: Ad)?)\\s*[:\\-–—|]*\\s*/i, '').trim();
+  const link = c.querySelector('a.a-link-normal[href*="/dp/"], a.a-link-normal[href*="/gp/product/"]') || c.querySelector('h2 a.a-link-normal') || c.querySelector('h2 a');
+  const aria = scrub(link?.getAttribute('aria-label') || '');
+  if (aria && !BADGE.test(aria) && aria.split(' ').length >= 3) return aria;
+  const spans = [...(link || c).querySelectorAll('span.a-text-normal, span.a-size-base-plus, span.a-size-medium, span.a-size-base')]
+    .map((el) => scrub(el.innerText || el.textContent || ''))
+    .filter((t) => t && !BADGE.test(t));
+  if (spans.length) return spans.sort((a, b) => b.length - a.length)[0];
+  const hs = [...c.querySelectorAll('h2')].map((h) => scrub(h.innerText || '')).filter((t) => t && !BADGE.test(t));
+  if (hs.length) return hs.sort((a, b) => b.length - a.length)[0];
+  return scrub(link?.innerText || c.querySelector('h2')?.innerText || '');
+})()`;
 const RESULTS_JS = `Array.from(document.querySelectorAll('${RESULT_SEL}')).map((c) => ({
   asin: c.getAttribute('data-asin'),
-  title: (c.querySelector('h2')?.innerText || '').trim(),
+  title: ${RESULT_TITLE_JS},
   price: (c.querySelector('.a-price:not(.a-text-price) .a-offscreen') || c.querySelector('.a-price .a-offscreen'))?.textContent?.trim() || null,
   // UX-SALES: the struck-through "List:" / "Typical:" price, and a deal badge or coupon tile ("Coupon price $28.51").
   listPrice: c.querySelector('.a-text-price[data-a-strike="true"] .a-offscreen')?.textContent?.trim() || null,
@@ -566,7 +582,7 @@ export class AmazonFlow {
       const rv = await reviewsP;
       return ok({
         ...candidate,
-        title: f?.title || candidate.title,
+        title: cleanListingTitle(f?.title || candidate.title),
         brand: f?.brand ?? candidate.brand,
         price: f?.price ?? candidate.price,
         listPrice: f?.listPrice ?? candidate.listPrice,

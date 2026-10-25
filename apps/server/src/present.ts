@@ -22,9 +22,28 @@ export function speakable(text: string): string {
   return text.replace(/\b[A-Z]{4,}\b/g, (w) => (ACRONYMS.has(w) ? w : w[0] + w.slice(1).toLowerCase()));
 }
 
+/**
+ * Amazon Renewed / Choice cards often prefix (or replace) the product name with a badge.
+ * Strip those so spoken options and Apify queries use the real name.
+ */
+export function cleanListingTitle(title: string): string {
+  let t = title.replace(/\s+/g, " ").trim();
+  for (let i = 0; i < 3; i++) {
+    const next = t
+      .replace(
+        /^(Amazon Renewed|Sponsored(?:\s+Ad)?|Best Seller|Overall Pick|Amazon'?s Choice|Climate Pledge Friendly|Limited time deal)\s*[:\-–—|]*\s*/i,
+        "",
+      )
+      .trim();
+    if (next === t) break;
+    t = next;
+  }
+  return t || title.replace(/\s+/g, " ").trim();
+}
+
 /** "INIU Portable Charger, Slimmest 10000mAh 5V/3A Power Bank, USB C…" → "INIU Portable Charger". */
 export function shortName(title: string): string {
-  const head = title.split(/\s*[,:|(\[–—]\s*|\s+-\s+/)[0]!.trim();
+  const head = cleanListingTitle(title).split(/\s*[,:|(\[–—]\s*|\s+-\s+/)[0]!.trim();
   const words = head.split(/\s+/).slice(0, 6);
   // "1 Gallon Insulated Water Bottle for" → "1 Gallon Insulated Water Bottle"
   while (words.length > 2 && /^(for|with|and|of|to|the|in|by|a)$/i.test(words.at(-1)!)) words.pop();

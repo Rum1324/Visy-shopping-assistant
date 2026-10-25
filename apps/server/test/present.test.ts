@@ -1,7 +1,16 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { fixtures } from "@visy/contracts/fixtures";
-import { overview, pitchWriter, shortName, speakable, templateLine, type Option } from "../src/present.ts";
+import { cleanListingTitle, overview, pitchWriter, shortName, speakable, templateLine, type Option } from "../src/present.ts";
+
+test("cleanListingTitle drops Amazon Renewed / Sponsored badges", () => {
+  assert.equal(
+    cleanListingTitle("Amazon Renewed GIGABYTE GeForce RTX 3050 WINDFORCE OC V2 6G"),
+    "GIGABYTE GeForce RTX 3050 WINDFORCE OC V2 6G",
+  );
+  assert.equal(shortName("Amazon Renewed GIGABYTE GeForce RTX 3050 WINDFORCE OC V2 6G"), "GIGABYTE GeForce RTX 3050 WINDFORCE OC");
+  assert.equal(shortName("Sponsored Amazon Renewed ASUS Dual GeForce RTX 3050"), "ASUS Dual GeForce RTX 3050");
+});
 
 test("present: short names cut Amazon titles at the first comma or bar", () => {
   assert.equal(shortName("INIU Portable Charger, Slimmest 10000mAh 5V/3A Power Bank, USB C"), "INIU Portable Charger");
