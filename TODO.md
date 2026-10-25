@@ -16,6 +16,7 @@ Line format: `[status] ID · task · owner · branch · since HH:MM PT`. Use one
 
 ## In progress
 
+- [working] B-NARROW · Ask 2-3 clarifying questions, collect ~30 candidates per marketplace, narrow to 3 with a Jev-shaped picker (Claude Haiku stand-in), then review synthesis · agent: Run latest demo (for Sota) · b/narrow · since 17:36 PT
 - [working] DOCS-ARCH · Architecture flow diagram · agent: Architecture flow diagram (for Sota) · branch unknown · since 16:40 PT
 
 ## Open
