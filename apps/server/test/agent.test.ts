@@ -467,3 +467,33 @@ test("claude: a question that cuts off the picks is answered from them, not a ne
   assert.ok(shortlist.some((i) => i.visual), "no photo descriptions landed");
   assert.equal(agent.state?.phase, "presenting");
 });
+
+/** Plays fixed tool calls, one per user turn. */
+function scripted(calls: Call[]): Llm {
+  let i = 0;
+  return {
+    messages: {
+      async create(body) {
+        return typeof body.messages.at(-1)!.content === "string" ? toolUse(calls[i++]!) : say("I don't know.");
+      },
+    },
+  };
+}
+
+test("claude: 'premium' on a follow-up keeps the stated $100 cap; a new amount changes it", async () => {
+  // Live run: budget $100, then "a little more expensive, the premium ones" searched up to $150 and read $119.99 picks.
+  const llm = scripted([
+    { name: "search", input: { query: "wireless keyboard", budgetMaxCents: 10000, skipQuestions: true } },
+    { name: "search", input: { query: "premium wireless keyboard", budgetMaxCents: 15000, budgetMinCents: 5000, skipQuestions: true } },
+    { name: "search", input: { query: "wireless keyboard", budgetMaxCents: 15000, skipQuestions: true } },
+  ]);
+  const { agent } = harness(llm);
+  await agent.hello("demo-user");
+  await agent.handleText("a wireless keyboard, 100 dollars");
+  assert.equal(agent.state?.need?.budget?.max?.cents, 10000);
+  await agent.handleText("we could go a little more expensive, I want to see the premium ones");
+  assert.equal(agent.state?.need?.budget?.max?.cents, 10000);
+  assert.equal(agent.state?.need?.budget?.min?.cents, 5000);
+  await agent.handleText("ok, up to 150 then");
+  assert.equal(agent.state?.need?.budget?.max?.cents, 15000);
+});
