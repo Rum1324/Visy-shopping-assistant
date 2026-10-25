@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import type Anthropic from "@anthropic-ai/sdk";
-import { err, type ServerMsg, type Services } from "@visy/contracts";
+import { err, type JevClient, type ServerMsg, type Services } from "@visy/contracts";
 import { fixtures } from "@visy/contracts/fixtures";
 import { mockServices } from "@visy/contracts/mocks";
 import { createAgent, type AgentSink } from "../src/agent.ts";
@@ -496,6 +496,56 @@ test("claude: 'premium' on a follow-up keeps the stated $100 cap; a new amount c
   assert.equal(agent.state?.need?.budget?.min?.cents, 5000);
   await agent.handleText("ok, up to 150 then");
   assert.equal(agent.state?.need?.budget?.max?.cents, 15000);
+});
+
+test("reviews-first: finalists' pages are read once, the final 3 reuse them, and only they open as tabs", async () => {
+  const base = mockServices({ latencyMs: 0 });
+  const reads: string[] = [];
+  const opened: string[][] = [];
+  const more: string[] = [];
+  const services: Services = {
+    ...base,
+    navigator: {
+      ...base.navigator,
+      async getDetail(candidate, emit) {
+        reads.push(candidate.id);
+        return base.navigator.getDetail(candidate, emit);
+      },
+      async openOptions(ids) {
+        opened.push(ids);
+      },
+      async moreReviews(id) {
+        more.push(id);
+        return { ok: true, data: [{ id: `${id}-more`, productId: id, source: "retailer", body: "From the full review pages.", untrusted: true }] };
+      },
+    },
+  };
+  // Picks p1 from listings; with pages in view, the last finalist (not a direct pick).
+  const jev: JevClient = {
+    async decide({ state, options }) {
+      const choice = state.includes("features:") || state.includes("review") ? options.at(-1)! : options[0]!;
+      return { ok: true, data: { choice, confidence: 0.8 } };
+    },
+  };
+  const said: string[] = [];
+  const agent = createAgent(services, { send() {}, say: async (t) => void said.push(t), stopSpeaking() {} }, { llm: null, jev, clarify: false });
+  await agent.hello("demo-user");
+  process.env.VISY_REVIEWS_FIRST_MS = "5000";
+  try {
+    await agent.handleText("picnic blanket");
+  } finally {
+    delete process.env.VISY_REVIEWS_FIRST_MS;
+  }
+  assert.equal(agent.state?.phase, "presenting", said.join(" | "));
+  const ids = agent.state!.shortlist.map((i) => i.product.id);
+  assert.equal(ids.length, 3);
+  assert.equal(new Set(reads).size, reads.length, `a page was read twice: ${reads.join()}`);
+  assert.ok(reads.length > 3, "only the final 3 were read");
+  for (const id of ids) assert.ok(reads.includes(id));
+  assert.deepEqual(opened, [ids]);
+  // The quick reads skipped the full review pages; they're fetched for the final 3 only.
+  assert.deepEqual([...more].sort(), [...ids].sort());
+  for (const item of agent.state!.shortlist) assert.ok("retailerReviews" in item.product && item.product.retailerReviews.some((r) => r.body === "From the full review pages."), item.product.id);
 });
 
 test("claude: 'more expensive' with nothing in range says so and keeps the last three", async () => {
