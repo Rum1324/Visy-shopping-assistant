@@ -44,6 +44,11 @@ test("sales: coupons and deal badges become one short sentence", () => {
   assert.equal(saleNote(priced(2062, 2568, "Reduced price")), "On sale: $20.62, down from $25.68.");
   assert.equal(saleNote(priced(2062, undefined, "Reduced price")), "It's on sale.");
   assert.equal(saleNote(priced(2062, undefined, "Clearance")), "Deal: Clearance.");
+  // Target (C-TGT): a bare "$10 off" next to the reg price repeats it; a Circle-only one is a different price.
+  assert.equal(saleNote(priced(2000, 3000, "$10 off")), "On sale: $20.00, down from $30.00.");
+  assert.equal(saleNote(priced(2000, 3000, "20% off")), "On sale: $20.00, down from $30.00.");
+  assert.equal(saleNote(priced(2000, 3000, "$10 off", "Target Circle")), "On sale: $20.00, down from $30.00. Deal: $10 off for Target Circle members.");
+  assert.equal(saleNote(priced(2000, undefined, "$10 off")), "Deal: $10 off.");
 });
 
 test("sales: each option's spoken line ends with the sale sentence", () => {
