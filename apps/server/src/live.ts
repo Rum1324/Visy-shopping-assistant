@@ -98,6 +98,8 @@ export function liveServices(opts: { driver?: () => FlowDriver | undefined } = {
     return current;
   };
   const seen = new Map<string, Candidate>();
+  /** asin → the background tab its finalist page read opened (B-REVIEWS-FIRST). */
+  const finalistTabs = new Map<string, Promise<number | undefined>>();
   let lastAdded: Candidate | undefined;
   // C-TGT: live Target search + detail on the same driver, in its own tab. C-TGT-CART: add to cart + cart read-back too.
   const targets = new WeakMap<FlowDriver, TargetFlow>();
@@ -168,6 +170,9 @@ export function liveServices(opts: { driver?: () => FlowDriver | undefined } = {
       // C2 + C3: opens the product, reads details via a cached recipe and scrapes retailer reviews in parallel.
       const { flow, driver } = use();
       const asin = candidate.id.slice("amazon:".length);
+      // B-REVIEWS-FIRST reads ~6 finalists at once, before openOptions: each needs its own background tab, or
+      // open() would navigate the one shared tab under the others. openOptions later closes the ones not picked.
+      if (!flow.productTabs.has(asin)) finalistTabs.set(asin, flow.preload([asin]).then(([tab]) => tab));
       const base = await safe(flow.getDetail(candidate, emit));
       if (!base.ok) return base;
       let title = base.data.title;
@@ -256,6 +261,19 @@ export function liveServices(opts: { driver?: () => FlowDriver | undefined } = {
 
     async openOptions(ids, emit) {
       const asins = ids.filter((id) => id.startsWith("amazon:")).map((id) => id.slice("amazon:".length));
+      // Finalists that weren't picked: close their tabs once their page reads are done with them.
+      const { flow, driver } = use();
+      for (const [asin, tab] of finalistTabs) {
+        if (asins.includes(asin)) continue;
+        finalistTabs.delete(asin);
+        void tab.then(async (tabId) => {
+          if (tabId === undefined) return;
+          if (flow.productTabs.get(asin) === tabId) flow.productTabs.delete(asin);
+          if (flow.tabId === tabId) flow.tabId = undefined;
+          await driver.closeTab(tabId).catch(() => {});
+        });
+      }
+      finalistTabs.clear();
       if (!asins.length) return;
       emit({ stage: "reading_product", marketplace: "amazon", message: "Opening the options in tabs", at: new Date().toISOString() });
       await safe(use().flow.showOptions(asins).then(() => ok({}))).catch(() => {});

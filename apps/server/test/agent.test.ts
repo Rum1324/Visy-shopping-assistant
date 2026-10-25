@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import type Anthropic from "@anthropic-ai/sdk";
-import type { ServerMsg, Services } from "@visy/contracts";
+import type { JevClient, ServerMsg, Services } from "@visy/contracts";
 import { fixtures } from "@visy/contracts/fixtures";
 import { mockServices } from "@visy/contracts/mocks";
 import { createAgent, type AgentSink } from "../src/agent.ts";
@@ -496,4 +496,41 @@ test("claude: 'premium' on a follow-up keeps the stated $100 cap; a new amount c
   assert.equal(agent.state?.need?.budget?.min?.cents, 5000);
   await agent.handleText("ok, up to 150 then");
   assert.equal(agent.state?.need?.budget?.max?.cents, 15000);
+});
+
+test("reviews-first: finalists' pages are read once, the final 3 reuse them, and only they open as tabs", async () => {
+  const base = mockServices({ latencyMs: 0 });
+  const reads: string[] = [];
+  const opened: string[][] = [];
+  const services: Services = {
+    ...base,
+    navigator: {
+      ...base.navigator,
+      async getDetail(candidate, emit) {
+        reads.push(candidate.id);
+        return base.navigator.getDetail(candidate, emit);
+      },
+      async openOptions(ids) {
+        opened.push(ids);
+      },
+    },
+  };
+  // Picks p1 from listings; with pages in view, the last finalist (not a direct pick).
+  const jev: JevClient = {
+    async decide({ state, options }) {
+      const choice = state.includes("features:") || state.includes("review") ? options.at(-1)! : options[0]!;
+      return { ok: true, data: { choice, confidence: 0.8 } };
+    },
+  };
+  const said: string[] = [];
+  const agent = createAgent(services, { send() {}, say: async (t) => void said.push(t), stopSpeaking() {} }, { llm: null, jev, clarify: false });
+  await agent.hello("demo-user");
+  await agent.handleText("picnic blanket");
+  assert.equal(agent.state?.phase, "presenting", said.join(" | "));
+  const ids = agent.state!.shortlist.map((i) => i.product.id);
+  assert.equal(ids.length, 3);
+  assert.equal(new Set(reads).size, reads.length, `a page was read twice: ${reads.join()}`);
+  assert.ok(reads.length > 3, "only the final 3 were read");
+  for (const id of ids) assert.ok(reads.includes(id));
+  assert.deepEqual(opened, [ids]);
 });

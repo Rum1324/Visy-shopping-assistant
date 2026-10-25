@@ -6,7 +6,7 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { zodOutputFormat } from "@anthropic-ai/sdk/helpers/zod";
 import { z } from "zod";
-import { err, ok, type JevClient, type Need, type ProductCandidate } from "@visy/contracts";
+import { err, ok, type JevClient, type Need, type ProductCandidate, type ProductDetail, type Result } from "@visy/contracts";
 
 const Decision = z.object({ choice: z.string(), confidence: z.number() });
 
@@ -92,7 +92,21 @@ function heuristic(pool: ProductCandidate[], taken: Set<string>, n: number): Pic
 
 const dollars = (cents: number) => `$${(cents / 100).toFixed(2)}`;
 
-function describe(need: Need, pool: ProductCandidate[]) {
+const clean = (t: string, n: number) => t.replace(/<\/?\s*untrusted_data[^>]*>/gi, "").replace(/\s+/g, " ").trim().slice(0, n);
+
+/** B-REVIEWS-FIRST: what the product page said, under its listing line. Still inside the untrusted block. */
+function evidenceOf(d: ProductDetail | undefined) {
+  if (!d) return "    (product page not read in time)";
+  const out = [];
+  if (d.bullets.length) out.push(`    features: ${d.bullets.slice(0, 5).map((b) => clean(b, 140)).join(" / ")}`);
+  else if (d.description) out.push(`    description: ${clean(d.description, 300)}`);
+  const reviews = d.retailerReviews.filter((r) => r.body.trim()).slice(0, 5);
+  for (const r of reviews) out.push(`    review${r.rating != null ? ` (${r.rating} stars)` : ""}: ${clean(r.title ? `${r.title}. ${r.body}` : r.body, 220)}`);
+  if (!reviews.length) out.push("    (no reviews on the page)");
+  return out.join("\n");
+}
+
+function describe(need: Need, pool: ProductCandidate[], evidence?: Map<string, ProductDetail>) {
   const want = [
     `query: ${need.query}`,
     need.budget?.max
@@ -107,7 +121,8 @@ function describe(need: Need, pool: ProductCandidate[]) {
   const lines = pool.map(
     (c, i) =>
       `p${i + 1} | ${c.marketplace} | ${dollars(c.price.cents)} | ${c.rating != null ? `${c.rating} stars` : "no rating"}` +
-      `${c.reviewCount != null ? ` (${c.reviewCount} reviews)` : ""} | ${c.title.replace(/<\/?\s*untrusted_data[^>]*>/gi, "").slice(0, 160)}`,
+      `${c.reviewCount != null ? ` (${c.reviewCount} reviews)` : ""} | ${clean(c.title, 160)}` +
+      (evidence ? `\n${evidenceOf(evidence.get(c.id))}` : ""),
   );
   return `<shopper_need>\n${want.join("\n")}\n</shopper_need>\n\n<untrusted_data source="products">\n${lines.join("\n")}\n</untrusted_data>`;
 }
@@ -120,6 +135,7 @@ export async function narrowToThree(
   jev: JevClient | null,
   need: Need,
   candidates: ProductCandidate[],
+  evidence?: Map<string, ProductDetail>,
 ): Promise<{ picks: Pick[]; via: "jev" | "heuristic" }> {
   const ids = new Set<string>();
   const pool = inBudget(need, candidates.filter((c) => !ids.has(c.id) && !!ids.add(c.id)));
@@ -129,7 +145,7 @@ export async function narrowToThree(
     const left = pool.filter((c) => !exclude.has(c.id));
     if (!left.length) return undefined;
     const options = left.map((_, i) => `p${i + 1}`);
-    const res = await jev.decide({ state: describe(need, left), question, options });
+    const res = await jev.decide({ state: describe(need, left, evidence), question, options });
     if (!res.ok) {
       console.warn("narrow: jev stand-in failed:", res.error.message);
       return undefined;
@@ -162,4 +178,70 @@ export async function narrowToThree(
   if (!picks.length) return { picks: heuristic(pool, taken, 3), via: "heuristic" };
   picks.push(...heuristic(pool, taken, 3 - picks.length));
   return { picks, via: "jev" };
+}
+
+export type Finalists = {
+  picks: Pick[];
+  via: "jev" | "heuristic";
+  /** Every finalist's product page read, started once it made the list. shop() reuses these for the final 3. */
+  details: Map<string, Promise<Result<ProductDetail>>>;
+  /** "reviews" = picked from page evidence; "direct" = today's listing-only picks (no Jev, or over the cap). */
+  chose: "reviews" | "direct";
+  ms: { direct: number; extra: number };
+};
+
+const sleep = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
+
+/**
+ * B-REVIEWS-FIRST. Pool → ~6 finalists → 3 picks chosen with product pages and reviews in view.
+ * Finalists are the 3 direct picks plus 3 more from asking the same questions without them. Their pages load in
+ * parallel (the direct 3 start at once, while the second picker round runs). Then the role questions are asked
+ * again over the finalists with features and review snippets. Everything after the direct picks is capped at
+ * `capMs`; over it, or if the evidence round fails, the direct picks stand.
+ */
+export async function narrowWithReviews(
+  jev: JevClient | null,
+  need: Need,
+  candidates: ProductCandidate[],
+  getDetail: (c: ProductCandidate) => Promise<Result<ProductDetail>>,
+  opts: { capMs?: number; finalists?: number } = {},
+): Promise<Finalists> {
+  const capMs = opts.capMs ?? Number(process.env.VISY_REVIEWS_FIRST_MS ?? 7000);
+  const size = opts.finalists ?? 6;
+  const details = new Map<string, Promise<Result<ProductDetail>>>();
+  const load = (c: ProductCandidate) => {
+    if (!details.has(c.id)) details.set(c.id, getDetail(c).catch((e) => err("internal", String(e), true)));
+  };
+  const t0 = performance.now();
+  const direct = await narrowToThree(jev, need, candidates);
+  const tDirect = performance.now();
+  const plain = (): Finalists => ({ ...direct, details, chose: "direct", ms: { direct: Math.round(tDirect - t0), extra: Math.round(performance.now() - tDirect) } });
+  if (!jev || direct.via !== "jev" || capMs <= 0) return plain();
+  direct.picks.forEach((p) => load(p.candidate));
+  const end = tDirect + capMs;
+  // The final round needs ~1.5-3 s of Haiku; pages that aren't in by then are judged on their listing.
+  const pickReserve = Math.min(3000, capMs / 2);
+
+  const evidenced = (async () => {
+    const taken = new Set(direct.picks.map((p) => p.candidate.id));
+    const more = await narrowToThree(jev, need, candidates.filter((c) => !taken.has(c.id)));
+    const finalists = [...direct.picks.map((p) => p.candidate), ...more.picks.map((p) => p.candidate).filter((c) => !taken.has(c.id))].slice(0, size);
+    finalists.forEach(load);
+    const evidence = new Map<string, ProductDetail>();
+    const reads = finalists.map((c) => details.get(c.id)!.then((r) => r.ok && evidence.set(c.id, r.data)));
+    await Promise.race([Promise.allSettled(reads), sleep(Math.max(0, end - pickReserve - performance.now()))]);
+    console.log(`narrow: finalists ${finalists.length}, pages read ${evidence.size} in ${Math.round(performance.now() - tDirect)} ms`);
+    if (!evidence.size) return undefined;
+    const final = await narrowToThree(jev, need, finalists, new Map(evidence));
+    return final.via === "jev" ? final : undefined;
+  })().catch((e) => {
+    console.warn("narrow: reviews-first round failed:", e instanceof Error ? e.message : e);
+    return undefined;
+  });
+  const final = await Promise.race([evidenced, sleep(Math.max(0, end - performance.now())).then(() => "late" as const)]);
+  if (!final || final === "late") {
+    console.log(`narrow: reviews-first ${final === "late" ? `over ${capMs} ms cap` : "had no evidence"}, using direct picks`);
+    return plain();
+  }
+  return { ...final, details, chose: "reviews", ms: { direct: Math.round(tDirect - t0), extra: Math.round(performance.now() - tDirect) } };
 }

@@ -7,7 +7,7 @@ import Anthropic from "@anthropic-ai/sdk";
 import { INPUTS, MODEL, SYSTEM, TIMEOUT_MS, TOOLS, turnMessage, untrusted, type Llm, type ToolName } from "./agent-tools.ts";
 import { apifyToken, prefetchApifySearch, reviewsFromHits } from "./intel/apify.ts";
 import { sourcesSentence } from "./intel/reviews.ts";
-import { haikuJev, narrowToThree } from "./narrow.ts";
+import { haikuJev, narrowWithReviews } from "./narrow.ts";
 import { haikuRelevance, type RelevanceFilter } from "./relevance.ts";
 import { createProgress } from "./progress.ts";
 import { applySaved, confirmLine, favoriteStores, prefFact, savedBlock, stated, withFact, type PrefKind } from "./saved-prefs.ts";
@@ -524,14 +524,23 @@ export function createAgent(
       return;
     }
     publish({ ...state, phase: "shortlisting", candidates: relevant });
+    let reading = false;
     // Narrowing runs while the count is read out.
     const counted = say(
       relevant.length > 3 ? `I found ${relevant.length} products. Picking the best three.` : `I found ${relevant.length} products.`,
       "progress",
     );
     const t0 = performance.now();
-    const narrowed = await narrowToThree(jev, need, relevant);
-    console.log(`narrow: ${relevant.length} → ${narrowed.picks.length} via ${narrowed.via} in ${Math.round(performance.now() - t0)} ms`);
+    // B-REVIEWS-FIRST: ~6 finalists' pages (features + retailer reviews) are read before the final 3 are chosen.
+    const narrowed = await narrowWithReviews(jev, need, relevant, (c) => {
+      if (!reading) emit({ stage: "reviews", message: "Reading reviews for the top picks", at: new Date().toISOString() });
+      reading = true;
+      return services.navigator.getDetail(c, emit);
+    });
+    console.log(
+      `narrow: ${relevant.length} → ${narrowed.picks.length} via ${narrowed.via}, chose from ${narrowed.chose} in ${Math.round(performance.now() - t0)} ms` +
+        ` (direct ${narrowed.ms.direct} ms + reviews-first ${narrowed.ms.extra} ms)`,
+    );
     await counted;
     if (id !== run || !state) return;
     const picks = narrowed.picks;
@@ -540,7 +549,8 @@ export function createAgent(
     const ids = picks.map((p) => p.candidate.id);
     // A-SHOWPAGE: every option opens in its own tab, the first comes to the front.
     const tabs = services.navigator.openOptions ? picks.filter((p) => p.candidate.marketplace === "amazon").length : 0;
-    if (tabs) void services.navigator.openOptions!(ids, emit).catch(() => {});
+    // Also called when only finalists were on Amazon, so their pages' tabs close and only the options stay.
+    if (tabs || narrowed.details.size > picks.length) void services.navigator.openOptions?.(ids, emit).catch(() => {});
     // The picks go into the session before they are named, so a follow-up that cuts the details off
     // ("is the last one really $165?") is answered from them. Details fill in below as they arrive.
     publish({
@@ -553,7 +563,8 @@ export function createAgent(
     // Outside reviews come from the Apify prefetch started above (shared hit pool per query).
     const work = picks.map(({ candidate, why }, i) =>
       (async () => {
-        const detail = await services.navigator.getDetail(candidate, emit);
+        // Finalists' pages were already read (or are still loading) while picking; never fetch twice.
+        const detail = await (narrowed.details.get(candidate.id) ?? services.navigator.getDetail(candidate, emit));
         const product = detail.ok ? detail.data : candidate;
         let reviews: ShortlistItem["reviews"];
         let visual: ShortlistItem["visual"];
