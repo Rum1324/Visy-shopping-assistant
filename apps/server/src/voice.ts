@@ -7,6 +7,33 @@ import WebSocket from "ws";
 const CARTESIA_VERSION = "2026-08-14";
 const DEFAULT_VOICE = "db6b0ed5-d5d3-463d-ae85-518a07d3c2b4";
 
+/** Primary Cartesia emotions we use for say-kind tone. */
+export type CartesiaEmotion = "calm" | "curious" | "confident" | "neutral" | "content";
+
+export type SpeakOpts = {
+  speed?: number;
+  /** Guides Sonic emotion; omit to let the model read the transcript. */
+  emotion?: CartesiaEmotion;
+  signal?: AbortSignal;
+};
+
+/**
+ * Shape transcript + emotion so progress updates sound declarative, not like a question.
+ * Trailing ellipses make Sonic rise; strip them and end with a period. Calm emotion seals it.
+ */
+export function speechForKind(
+  text: string,
+  kind: "answer" | "progress" | "question" = "answer",
+): { transcript: string; emotion?: CartesiaEmotion } {
+  const raw = text.trim();
+  if (kind === "progress") {
+    const body = raw.replace(/[.…]+$/u, "").trimEnd();
+    return { transcript: body ? `${body}.` : raw, emotion: "calm" };
+  }
+  if (kind === "question") return { transcript: raw, emotion: "curious" };
+  return { transcript: raw };
+}
+
 export class Cartesia {
   constructor(
     private apiKey = process.env.CARTESIA_API_KEY?.trim() ?? "",
@@ -17,11 +44,19 @@ export class Cartesia {
     return this.apiKey.length > 0;
   }
 
-  async speak(text: string, speed = 1, signal?: AbortSignal): Promise<Buffer> {
+  async speak(text: string, opts: SpeakOpts | number = {}, signal?: AbortSignal): Promise<Buffer> {
     if (!this.enabled) throw new Error("CARTESIA_API_KEY is not set");
+    // Back-compat: speak(text, speed, signal)
+    const normalized: SpeakOpts =
+      typeof opts === "number" ? { speed: opts, signal } : { ...opts, signal: opts.signal ?? signal };
+    const generation_config: { speed: number; emotion?: CartesiaEmotion } = {
+      speed: clamp(normalized.speed ?? 1, 0.6, 1.5),
+    };
+    if (normalized.emotion) generation_config.emotion = normalized.emotion;
+
     const res = await fetch("https://api.cartesia.ai/tts/bytes", {
       method: "POST",
-      signal,
+      signal: normalized.signal,
       headers: {
         Authorization: `Bearer ${this.apiKey}`,
         "X-API-Key": this.apiKey,
@@ -34,7 +69,7 @@ export class Cartesia {
         voice: this.voiceId,
         language: "en",
         output_format: { container: "raw", encoding: "pcm_s16le", sample_rate: 24000 },
-        generation_config: { speed: clamp(speed, 0.6, 1.5) },
+        generation_config,
       }),
     });
     if (!res.ok) {

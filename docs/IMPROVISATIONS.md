@@ -4,6 +4,26 @@ Living log of changes that depart from the skeleton in `docs/ARCHITECTURE.md`, `
 
 If you improvise, add an entry in the same commit and push it. Say what changed, why the skeleton was not enough, and what other agents should do differently now.
 
+## 2026-10-24 — Progress lines name Apify
+
+When `APIFY_TOKEN` is set, progress messages say "Using Apify…" / "Got Apify results from …" so the demo calls out the API. Without a token, wording stays generic. Prefetch starts as soon as the shopper query is known, in parallel with marketplace search.
+
+## 2026-10-24 — Progress TTS is calm + declarative
+
+`agent.say` with `kind: "progress"` is spoken only when TTS is idle (`ws.ts` skips progress audio while another say is queued). Cartesia was reading trailing `…` with rising question intonation. `speechForKind` in `voice.ts` strips trailing ellipses, ends with a period, and sets `generation_config.emotion` to `calm` for progress (`curious` for questions).
+
+## 2026-10-24 — Apify external reviews via parallel actors (D-APIFY)
+
+Outside reviews: `prefetchApifySearch` runs **three Apify actors in parallel** (Reddit lite search, YouTube search, one Google SERP for articles only) under `APIFY_BUDGET_MS` (default 25 s), started as soon as the shopper query is known. We deliberately do **not** chain full transcript/page scrapes after discovery — that is the slow path; search snippets (+ YouTube description/captions when the actor returns them) feed Claude. The shortlist still uses main's narrow + `present.ts` overview/pitch; Apify hits are shared across the three options via `reviewsFromHits`.
+
+## 2026-10-24 — Team feedback: one question per turn, option tabs, shorter options, real checkout total
+
+- **Questions one at a time (UX-ASK-FIRST).** The questions from `ask_shopping_questions` are asked one per turn, and the agent asks the next one itself with no model call. "Just search" or "skip" ends them early. The last answer goes to Claude with every question and answer in `session_state`.
+- **Option tabs (A-SHOWPAGE, B-PRELOAD).** After narrowing, the agent says "Opening the 3 tabs now", and `Navigator.openOptions` (new, optional, additive) opens each Amazon option in its own tab with option 1 in front. Each product keeps its tab (`AmazonFlow.productTabs`), so getDetail runs for all three at once and Add to Cart always uses the chosen option's tab. A new search closes the old option tabs. Search uses its own tab.
+- **How options are read (UX-FORMAT, UX-LEN).** First a one-line overview ("Best match: X, $45.99. Best value: …"), then one comparative sentence per option ("If you want to spend less, …, $6 cheaper"), written by Haiku in `present.ts`, with a template fallback. It ends with "Want to hear more about one, or should I add one to your cart?" The photo description and accessibility answers moved to follow-up questions.
+- **Checkout read-back (B-READBACK).** From the cart, the flow presses Proceed to checkout (not a purchase button) and reads the order total with tax on the review page: "Your Amazon total is $107.23, including $7.25 tax. Press Place your order when you're ready." If that page doesn't come up (sign-in, Prime upsell), it reads the cart subtotal before tax and says "Press Proceed to checkout". It never says "I will not place the order" any more. Visy still never presses that button.
+- **Sample listings** for Target and Walmart (always picnic blankets) are only offered when they match the search words.
+
 ## 2026-10-24 — Questions first, then a ~30-product pool narrowed to 3 (B-NARROW)
 
 A new product request now gets 2–3 spoken questions first (budget, what matters, who it's for). The answer fills `Need.budget`, `mustHaves`, `niceToHaves` and `accessibilityNotes`, and only then do we search. `VISY_CLARIFY=0` turns the questions off. The Claude tool loop asks with `ask_shopping_questions`. If it calls `search` without asking first, the agent asks default questions instead.

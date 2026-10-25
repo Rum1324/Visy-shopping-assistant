@@ -15,7 +15,7 @@ import { convexPreferenceStore } from "./prefs-convex.ts";
 import { claudeReviewService } from "./intel/reviews.ts";
 import { claudeVisionService } from "./intel/vision.ts";
 import { mossReviewIndex } from "./intel/review-index.ts";
-import { Cartesia } from "./voice.ts";
+import { Cartesia, speechForKind } from "./voice.ts";
 
 const TTS_RATE = 24000;
 const STOP_WORDS = /^\s*(stop|wait|cancel|hold on|pause|no)\b/i;
@@ -50,6 +50,8 @@ export function start(
     let sayId = 0;
     let generation = 0;
     let queue: Promise<void> = Promise.resolve();
+    /** Jobs queued or speaking — progress TTS is skipped while this is > 0. */
+    let ttsBusy = 0;
     const aborters = new Set<AbortController>();
     // A-STT: one live Cartesia turns session while the panel streams the mic (audio.start → audio.end).
     let stt: ReturnType<Cartesia["listen"]> | null = null;
@@ -117,28 +119,57 @@ export function start(
       const scope = turnScope.getStore();
       if (scope !== undefined && scope !== epoch) return Promise.resolve(); // a cancelled turn
       const gen = generation;
+      // Progress UI comes from the `progress` wire event. Speak it only when TTS is idle.
+      if (kind === "progress") {
+        if (ttsBusy > 0 || !cartesia.enabled) return Promise.resolve();
+        ttsBusy++;
+        const job = queue.then(() => speak(text, kind, gen));
+        queue = job.then(
+          () => {
+            ttsBusy--;
+          },
+          () => {
+            ttsBusy--;
+          },
+        );
+        return job;
+      }
+      ttsBusy++;
       const job = queue.then(() => speak(text, kind, gen));
       queue = job.then(
-        () => {},
-        () => {},
+        () => {
+          ttsBusy--;
+        },
+        () => {
+          ttsBusy--;
+        },
       );
       return job;
     }
 
-    async function speak(text: string, _kind: SayKind, gen: number) {
+    async function speak(text: string, kind: SayKind = "answer", gen: number) {
       if (gen !== generation) return;
       const id = `say-${++sayId}`;
-      send({ type: "agent.say", id, text });
+      send({ type: "agent.say", id, text, kind });
+      await speakAudio(id, text, kind, gen);
+    }
+
+    async function speakAudio(id: string, text: string, kind: SayKind, gen: number) {
       if (!cartesia.enabled || gen !== generation) return;
+      const { transcript, emotion } = speechForKind(text, kind);
       const ac = new AbortController();
       aborters.add(ac);
       try {
         send({ type: "tts.start", id, format: { encoding: "pcm_s16le", sampleRate: TTS_RATE } });
-        const audio = await cartesia.speak(text, agent.speechRate, ac.signal);
+        const audio = await cartesia.speak(transcript, {
+          speed: agent.speechRate,
+          emotion,
+          signal: ac.signal,
+        });
         if (gen !== generation || ws.readyState !== ws.OPEN) return;
         ws.send(audio);
         send({ type: "tts.end", id });
-        noteSpoken(text, audio.length / 2 / TTS_RATE);
+        noteSpoken(transcript, audio.length / 2 / TTS_RATE);
       } catch (e) {
         if (ac.signal.aborted || gen !== generation) return;
         console.warn("tts failed:", e instanceof Error ? e.message : e);
@@ -154,6 +185,7 @@ export function start(
       aborters.clear();
       queue = Promise.resolve();
       speakingUntil = 0;
+      ttsBusy = 0;
       send({ type: "tts.stop" });
     }
 
@@ -297,7 +329,7 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
     const addr = wss.address();
     const port = typeof addr === "object" && addr ? addr.port : "?";
     const voice = process.env.CARTESIA_API_KEY?.trim() ? "on" : "off";
-    const nav = process.env.NAV === "amazon" ? "amazon live, target and walmart fixtures" : "fixtures";
+    const nav = process.env.NAV === "amazon" ? "amazon and walmart live, target fixtures" : "fixtures";
     const prefs = process.env.PREFS === "convex" ? "convex" : "fixtures";
     console.log(`visy server on ws://localhost:${port} (cartesia ${voice}, ${nav}, prefs ${prefs})`);
   });
