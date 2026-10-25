@@ -65,12 +65,21 @@ function score(c: ProductCandidate) {
 
 const byScore = (a: ProductCandidate, b: ProductCandidate) => score(b) - score(a) || a.price.cents - b.price.cents;
 
+/** A cap with no floor reads as "around this much": picks come from its top half when there are enough of them. */
+const NEAR_BUDGET = 0.5;
+
 function inBudget(need: Need, pool: ProductCandidate[]) {
   const max = need.budget?.max?.cents;
   const min = need.budget?.min?.cents;
   const kept = pool.filter((c) => (max == null || c.price.cents <= max) && (min == null || c.price.cents >= min));
   // A budget nothing meets would leave nothing to say; read the closest options instead.
-  return kept.length ? kept : pool;
+  if (!kept.length) return pool;
+  // "A $100 keyboard" means around $100, not the cheapest one: $20 picks aren't what they asked for.
+  if (max != null && min == null) {
+    const near = kept.filter((c) => c.price.cents >= max * NEAR_BUDGET);
+    if (near.length >= 3) return near;
+  }
+  return kept;
 }
 
 function heuristic(pool: ProductCandidate[], taken: Set<string>, n: number): Pick[] {
@@ -86,7 +95,9 @@ const dollars = (cents: number) => `$${(cents / 100).toFixed(2)}`;
 function describe(need: Need, pool: ProductCandidate[]) {
   const want = [
     `query: ${need.query}`,
-    need.budget?.max ? `budget: up to ${dollars(need.budget.max.cents)}` : "",
+    need.budget?.max
+      ? `budget: up to ${dollars(need.budget.max.cents)} (the shopper expects options priced near this, not the cheapest; cheaper is not better value by itself)`
+      : "",
     need.budget?.min ? `price at least: ${dollars(need.budget.min.cents)}` : "",
     need.mustHaves.length ? `must have: ${need.mustHaves.join("; ")}` : "",
     need.niceToHaves.length ? `nice to have: ${need.niceToHaves.join("; ")}` : "",
