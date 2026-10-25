@@ -7,6 +7,22 @@
   </head>
   <body>
     <canvas class="bg" id="bg" aria-hidden="true"></canvas>
+    <button type="button" id="settings-open" class="icon-btn" aria-label="Settings" title="Settings" aria-expanded="false" aria-controls="settings">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <circle cx="12" cy="12" r="7" fill="none" stroke="currentColor" stroke-width="1.7" />
+        <circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.7" />
+        <g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round">
+          <line x1="12" y1="1.8" x2="12" y2="4.2" />
+          <line x1="12" y1="19.8" x2="12" y2="22.2" />
+          <line x1="1.8" y1="12" x2="4.2" y2="12" />
+          <line x1="19.8" y1="12" x2="22.2" y2="12" />
+          <line x1="12" y1="1.8" x2="12" y2="4.2" transform="rotate(45 12 12)" />
+          <line x1="12" y1="1.8" x2="12" y2="4.2" transform="rotate(135 12 12)" />
+          <line x1="12" y1="1.8" x2="12" y2="4.2" transform="rotate(225 12 12)" />
+          <line x1="12" y1="1.8" x2="12" y2="4.2" transform="rotate(315 12 12)" />
+        </g>
+      </svg>
+    </button>
     <p id="status" hidden></p>
     <div id="welcome">
       <svg class="mark" viewBox="0 0 64 64" aria-hidden="true">
@@ -30,6 +46,42 @@
         <button type="button" id="confirm">The total matches. I will press Place order myself.</button>
       </section>
     </div>
+    <section id="settings" hidden aria-label="Settings">
+      <header class="settings-head">
+        <button type="button" id="settings-back" class="icon-btn" aria-label="Back" title="Back">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.8"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M15 6 9 12l6 6"
+            />
+          </svg>
+        </button>
+        <h1>Settings</h1>
+      </header>
+      <div class="settings-body">
+        <label class="setting" for="speech-rate">
+          <span class="setting-title">Voice speed</span>
+          <span class="setting-hint">Up to 3× without raising pitch. Faster helps many screen-reader users.</span>
+          <div class="speed-row">
+            <span aria-hidden="true">Slow</span>
+            <input
+              id="speech-rate"
+              type="range"
+              min="0.6"
+              max="3"
+              step="0.1"
+              value="1"
+            />
+            <span aria-hidden="true">Fast</span>
+          </div>
+          <output id="speech-rate-value" for="speech-rate">1.0×</output>
+        </label>
+      </div>
+    </section>
     <form id="composer">
       <button type="button" id="mic" class="mic" aria-pressed="false" aria-label="Microphone on. Press to mute." title="Mute">
         <svg class="icon-mic" viewBox="0 0 24 24" aria-hidden="true">
