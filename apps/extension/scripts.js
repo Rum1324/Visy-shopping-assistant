@@ -49,6 +49,15 @@ export const SCRIPTS = {
   "amazon.titlePrice": (arg) => (({ title: (document.querySelector("#productTitle")?.innerText || "").trim(), price: document.querySelector(".a-price .a-offscreen")?.textContent?.trim() || null })),
   "amazon.subtotalReady": (arg) => (!!document.querySelector('#sc-subtotal-amount-activecart, #sc-subtotal-amount-buybox')),
   "amazon.subtotal": (arg) => ((document.querySelector('#sc-subtotal-amount-activecart, #sc-subtotal-amount-buybox')?.innerText || '').trim()),
+  "amazon.clickProceed": (arg) => ((() => { const b = document.querySelector('input[name="proceedToRetailCheckout"], [data-feature-id="proceed-to-checkout-action"] input, #sc-buy-box-ptc-button input'); if (!b) return false; b.click(); return true; })()),
+  "amazon.orderTotalReady": (arg) => (/Order total:?\s*\$\s*[\d,]+\.\d{2}/i.test(document.body?.innerText || '') || /\/ap\/signin/.test(location.pathname) || !!document.querySelector('#checkpointForm, form[action*=validateCaptcha]')),
+  "amazon.orderTotal": (arg) => ((() => {
+  const t = document.body?.innerText || '';
+  const total = t.match(/Order total:?\s*(\$\s*[\d,]+\.\d{2})/i)?.[1] || null;
+  const tax = t.match(/(?:Estimated tax to be collected|Estimated tax|Tax):?\s*(\$\s*[\d,]+\.\d{2})/i)?.[1] || null;
+  const button = /Place your order/i.test(t) ? 'Place your order' : null;
+  return { total, tax, button, url: location.href };
+})()),
   "recipe.replay": (arg) => (((f) => {
   const one = (s, root) => { if (!s) return null; try { return (root || document).querySelector(s.css); } catch { return null; } };
   const all = (s, root) => { if (!s) return []; try { return Array.from((root || document).querySelectorAll(s.css)); } catch { return []; } };

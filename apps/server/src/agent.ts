@@ -6,6 +6,7 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { INPUTS, MODEL, SYSTEM, TIMEOUT_MS, TOOLS, turnMessage, untrusted, type Llm, type ToolName } from "./agent-tools.ts";
 import { haikuJev, narrowToThree } from "./narrow.ts";
+import { overview, pitchWriter, speakable, templateLine, type Option, type PitchWriter } from "./present.ts";
 import {
   CONTRACT_VERSION,
   Need,
@@ -35,7 +36,9 @@ export type AgentSink = {
 
 const YES = /^(yes|confirm|that matches)\b/i;
 const ACK_MS = 800;
-const DEFAULT_QUESTIONS = ["What's your budget?", "Is there anything it must have?"];
+const DEFAULT_QUESTIONS = ["What's your budget?", "Anything it must have?"];
+/** Ends the questions early and searches with what we have. */
+const SKIP = /\b(just search|skip|search now|go ahead|that's (it|all))\b/i;
 const NO_PREFERENCE = /^(no|nope|nothing|none|no preference|anything|whatever|just search|doesn't matter|dont care|don't care)\b/i;
 
 /** Need fields beyond query and marketplaces, from the search tool or a keyword answer. */
@@ -55,10 +58,12 @@ function defaultLlm(): Llm | null {
 export function createAgent(
   services: Services,
   sink: AgentSink,
-  opts: { llm?: Llm | null; jev?: JevClient | null; clarify?: boolean } = {},
+  opts: { llm?: Llm | null; jev?: JevClient | null; pitch?: PitchWriter | null; clarify?: boolean } = {},
 ) {
   const llm = opts.llm === undefined ? defaultLlm() : opts.llm;
-  const jev = opts.jev !== undefined ? opts.jev : opts.llm === undefined && llm ? haikuJev() : null;
+  const live = opts.llm === undefined && !!llm;
+  const jev = opts.jev !== undefined ? opts.jev : live ? haikuJev() : null;
+  const pitch = opts.pitch !== undefined ? opts.pitch : live ? pitchWriter() : null;
   const clarify = opts.clarify ?? process.env.VISY_CLARIFY !== "0";
   let state: SessionState | null = null;
   let run = 0;
@@ -66,10 +71,12 @@ export function createAgent(
   let spoken = 0;
   let turnAbort: AbortController | null = null;
   const recent: string[] = [];
+  /** Questions still to ask before searching, one per turn, and the answers so far. */
+  let asking: { questions: string[]; answers: { question: string; answer: string }[] } | null = null;
 
   function say(text: string, kind?: SayKind) {
     spoken++;
-    return sink.say(text, kind);
+    return sink.say(speakable(text), kind);
   }
 
   const emit: Emit = (event) => {
@@ -120,6 +127,14 @@ export function createAgent(
       await confirm(state.checkout.total);
       return;
     }
+    // Questions go one at a time: record the answer and ask the next one, no model call needed.
+    if (state.phase === "clarifying" && asking?.questions.length) {
+      asking.answers.push({ question: asking.questions.shift()!, answer: said });
+      if (asking.questions.length && !SKIP.test(said)) {
+        await say(asking.questions[0]!, "question");
+        return;
+      }
+    }
     const handled = llm ? await routeWithClaude(llm, said, id) : false;
     recent.push(said);
     if (recent.length > 3) recent.shift();
@@ -137,7 +152,7 @@ export function createAgent(
     const ack = setTimeout(() => {
       if (id === run && spoken === before) void sink.say("One moment.");
     }, ACK_MS);
-    const messages: Anthropic.MessageParam[] = [{ role: "user", content: turnMessage(state, said, recent) }];
+    const messages: Anthropic.MessageParam[] = [{ role: "user", content: turnMessage(state, said, recent, asking?.answers) }];
     try {
       for (let step = 0; step < 4; step++) {
         const res = await llm.messages.create(
@@ -299,7 +314,8 @@ export function createAgent(
     }
     if (/\busual\b/i.test(said) && (await recallUsual(said))) return;
     if (state.phase === "clarifying" && state.need) {
-      await shop(state.need.query, id, state.need.marketplaces, needFromAnswer(said));
+      const answers = asking?.answers.map((a) => a.answer).join(". ") || said;
+      await shop(state.need.query, id, state.need.marketplaces, needFromAnswer(answers));
       return;
     }
     if (clarify) {
@@ -309,12 +325,13 @@ export function createAgent(
     await shop(said, id);
   }
 
-  /** One spoken turn with 2-3 questions. The next user turn is their answer (phase "clarifying"). */
+  /** Asks the first of 2-3 questions; handleText asks the rest one per turn (phase "clarifying"). */
   async function askQuestions(query: string, questions: string[], marketplaces: Marketplace[] = ["amazon", "target", "walmart"]) {
     if (!state) return;
     const need = Need.parse({ query: query.trim(), marketplaces });
+    asking = { questions: questions.slice(0, 3), answers: [] };
     publish({ ...state, phase: "clarifying", need, candidates: [], shortlist: [], cart: [] });
-    await say(`Before I search for ${need.query}: ${questions.slice(0, 3).join(" ")}`, "question");
+    await say(`Sure, ${need.query}. ${asking.questions[0]}`, "question");
   }
 
   async function recallUsual(query: string) {
@@ -397,13 +414,14 @@ export function createAgent(
       await saveUsual(line.productId, line.title, "You confirmed this cart. Visy did not place the order.");
     }
     publish({ ...state, phase: "done" });
-    await say("That matches the total I read back. I will not press Place order. That button is yours. I saved it as your usual.");
+    await say("Got it, I saved that as your usual. The final button is yours whenever you're ready.");
   }
 
   async function shop(text: string, id: number, marketplaces: Marketplace[] = ["amazon", "target", "walmart"], extra: NeedExtra = {}) {
     if (!state) return;
     const defined = Object.fromEntries(Object.entries(extra).filter(([, v]) => v !== undefined));
     const need = Need.parse({ query: text.trim(), marketplaces, ...defined });
+    asking = null;
     publish({ ...state, phase: "searching", need, candidates: [], shortlist: [], cart: [] });
     const names = need.marketplaces.map((m) => m[0]!.toUpperCase() + m.slice(1));
     const where =
@@ -435,28 +453,44 @@ export function createAgent(
     await counted;
     if (id !== run || !state) return;
     const picks = narrowed.picks;
+    // UX-FORMAT: names and prices of all three first, then one comparative line each as its details arrive.
+    const options: Option[] = picks.map((p, i) => ({ rank: i + 1, why: p.why, product: p.candidate }));
+    const ids = picks.map((p) => p.candidate.id);
+    // A-SHOWPAGE: every option opens in its own tab, the first comes to the front.
+    const tabs = services.navigator.openOptions ? picks.filter((p) => p.candidate.marketplace === "amazon").length : 0;
+    if (tabs) void services.navigator.openOptions!(ids, emit).catch(() => {});
+    await say(`${tabs ? `Opening the ${tabs === 1 ? "tab" : `${tabs} tabs`} now. ` : ""}${overview(options)}`);
+    // Details, reviews, photo and the spoken line for all three run at once; they are read in order.
+    const work = picks.map(({ candidate, why }, i) =>
+      (async () => {
+        const detail = await services.navigator.getDetail(candidate, emit);
+        const product = detail.ok ? detail.data : candidate;
+        let reviews: ShortlistItem["reviews"];
+        let visual: ShortlistItem["visual"];
+        if (detail.ok) {
+          // Vision only needs the photo, so it runs alongside review collection, indexing and synthesis.
+          const synthP = (async () => {
+            const external = await services.reviews.collectExternal(detail.data, emit);
+            const pool = [...detail.data.retailerReviews, ...(external.ok ? external.data : [])];
+            const [, synth] = await Promise.all([
+              pool.length ? services.reviewIndex.index(detail.data.id, pool) : undefined,
+              services.reviews.synthesize(detail.data, pool, need),
+            ]);
+            return synth;
+          })();
+          const [synth, vis] = await Promise.all([synthP, services.vision.describe(detail.data)]);
+          if (synth.ok) reviews = synth.data;
+          if (vis.ok) visual = vis.data;
+        }
+        const option: Option = { rank: i + 1, why, product, reviews };
+        const line = (pitch ? await pitch(need, option, options) : undefined) ?? templateLine(option, options);
+        return { candidate, why, product, reviews, visual, line };
+      })(),
+    );
     const shortlist: ShortlistItem[] = [];
-    for (const { candidate, why } of picks) {
+    for (const job of work) {
+      const { candidate, why, product, reviews, visual, line } = await job;
       if (id !== run || !state) return;
-      const detail = await services.navigator.getDetail(candidate, emit);
-      const product = detail.ok ? detail.data : candidate;
-      let reviews: ShortlistItem["reviews"];
-      let visual: ShortlistItem["visual"];
-      if (detail.ok) {
-        // Vision only needs the photo, so it runs alongside review collection, indexing and synthesis.
-        const synthP = (async () => {
-          const external = await services.reviews.collectExternal(detail.data, emit);
-          const pool = [...detail.data.retailerReviews, ...(external.ok ? external.data : [])];
-          const [, synth] = await Promise.all([
-            pool.length ? services.reviewIndex.index(detail.data.id, pool) : undefined,
-            services.reviews.synthesize(detail.data, pool, need),
-          ]);
-          return synth;
-        })();
-        const [synth, vis] = await Promise.all([synthP, services.vision.describe(detail.data)]);
-        if (synth.ok) reviews = synth.data;
-        if (vis.ok) visual = vis.data;
-      }
       const item: ShortlistItem = {
         rank: (shortlist.length + 1) as 1 | 2 | 3,
         product,
@@ -470,12 +504,12 @@ export function createAgent(
         phase: shortlist.length === picks.length ? "presenting" : "shortlisting",
         candidates,
         shortlist: [...shortlist],
-        focusedProductId: product.id,
+        focusedProductId: shortlist[0]!.product.id,
       });
-      const price = `$${(product.price.cents / 100).toFixed(2)}`;
-      const access = reviews?.accessibility?.find((a) => a.sentiment !== "unknown");
-      await say(`Option ${item.rank}${why ? `, ${why}` : ""}: ${product.title}, ${price}. ${visual?.short ?? ""} ${reviews?.summary ?? ""}${access ? ` ${access.answer}` : ""}`);
+      await say(line);
     }
+    if (id !== run || !state) return;
+    await say("Want to hear more about one, or should I add one to your cart?", "question");
   }
 
   async function addToCart(index: number, id: number) {
@@ -499,8 +533,8 @@ export function createAgent(
       await say("I couldn't open checkout.");
       return;
     }
-    const readBack = `${review.data.readBack} I will not place the order. Press Place your order when you are ready.`;
-    const checkout = { ...review.data, readBack };
+    const readBack = review.data.readBack;
+    const checkout = review.data;
     publish({ ...state, phase: "checkout_review", checkout });
     sink.send({ type: "checkout.confirmRequired", review: checkout });
     await say(readBack, "question");

@@ -23,8 +23,8 @@ export const SYSTEM = `You are Visy, a voice shopping assistant for blind and lo
 
 Pick the tool that does what the user asked. The tools speak their own results aloud, so do not write text alongside a tool call. Write text only when a tool result asks you to answer, or when no tool fits; keep it to one or two short spoken sentences with no markdown.
 
-- New product request: first call ask_shopping_questions with 2 or 3 short questions whose answers would change which product to pick: budget, the one feature that matters most, and size, who it's for, or an accessibility need. Skip them and call search with skipQuestions true only when the user already gave a budget and what matters, or says to just search.
-- phase clarifying: the user is answering your questions about the last search. Call search with that query (add key words from the answer) and put the answer into budgetMaxCents, mustHaves, niceToHaves and accessibilityNotes. "No preference" still means search.
+- New product request: first call ask_shopping_questions with 2 or 3 questions whose answers would change which product to pick: budget, the one feature that matters most, and size, who it's for, or an accessibility need. They are asked one per turn, so each is under 8 words with no list of examples ("What's your budget?", "What matters most to you?"). Skip them and call search with skipQuestions true only when the user already gave a budget and what matters, or says to just search.
+- phase clarifying: the user has answered your questions (listed in session_state). Call search with that query (add key words from the answers) and put the answers into budgetMaxCents, mustHaves, niceToHaves and accessibilityNotes. "No preference" still means search.
 - A price cap or "cheaper" on the current shortlist: filter_shortlist ("cheaper" with no option named means a maxPriceCents just below the most expensive option; "cheaper than option 2" means just below option 2). A question about a listed product, with or without a question mark: answer_about_product. "Add option 2", "get the second one": add_to_cart. The user saying yes to the checkout total: confirm_checkout_total. "The usual", "my regular": recall_usual. "Remember this": remember_as_usual. Unclear: ask_clarifying_question.
 - Options are numbered from 1 in the order they were read.
 - You can never place an order. The user presses Place your order themselves. Never claim an order was placed.
@@ -56,7 +56,7 @@ export const TOOLS: Anthropic.Tool[] = [
       type: "object",
       properties: {
         query: { type: "string", description: "What they want to shop for, e.g. 'picnic blanket'." },
-        questions: { type: "array", items: { type: "string" }, description: "2 or 3 short spoken questions, e.g. 'What's your budget?'" },
+        questions: { type: "array", items: { type: "string" }, description: "2 or 3 spoken questions, each under 8 words, asked one per turn, e.g. 'What's your budget?'" },
         marketplaces: { type: "array", items: { type: "string", enum: ["amazon", "target", "walmart"] } },
       },
       required: ["query", "questions"],
@@ -160,7 +160,7 @@ const clip = (s: string, n: number) => (s.length > n ? `${s.slice(0, n)}…` : s
 const dollars = (cents: number) => `$${(cents / 100).toFixed(2)}`;
 
 /** The per-turn user message: session facts we own, then listing text as untrusted data, then the user's words. */
-export function turnMessage(state: SessionState, said: string, recent: string[]): string {
+export function turnMessage(state: SessionState, said: string, recent: string[], answers?: { question: string; answer: string }[]): string {
   const focused = state.shortlist.find((item) => item.product.id === state.focusedProductId);
   const facts = [
     `phase: ${state.phase}`,
@@ -170,6 +170,9 @@ export function turnMessage(state: SessionState, said: string, recent: string[])
     state.cart.length ? `cart lines: ${state.cart.length}` : "",
     state.checkout ? `checkout total read back: ${dollars(state.checkout.total.cents)}` : "",
     recent.length ? `earlier user turns: ${recent.map((t) => JSON.stringify(t)).join(", ")}` : "",
+    state.phase === "clarifying" && answers?.length
+      ? `your questions and the shopper's answers: ${answers.map((a) => `${JSON.stringify(a.question)} → ${JSON.stringify(a.answer)}`).join("; ")}`
+      : "",
   ].filter(Boolean);
   const listing = state.shortlist.map((item) => ({
     option: item.rank,
