@@ -57,6 +57,20 @@ const REVIEWS_JS = `Array.from(document.querySelectorAll('[data-test="review-car
   const t = (h) => (c.querySelector('[data-test="review-card--' + h + '"]')?.textContent || '').replace(/\\s+/g, ' ').trim();
   return { title: t('title'), body: (b.innerText || b.textContent || '').trim(), date: t('reviewTime'), author: t('username') || null, rating: parseFloat(t('ratings')) || null, verified: !!c.querySelector('[data-test="review-card--verified-purchase"]'), syndicated: !!c.querySelector('[data-test="review-card--syndicated-badge"]') };
 }).filter((r) => r.body)`;
+// The ~8 newest reviews ship in the page's Next.js JSON (product.ratings_and_reviews.most_recent), so they're readable
+// in a background tab, where the review cards never render (they lazy-load on scroll). arg = the tcin to match.
+const NEXT_REVIEWS_JS = `(() => {
+  let d; try { d = JSON.parse(document.getElementById('__NEXT_DATA__')?.textContent || 'null'); } catch { return []; }
+  const hits = [];
+  const walk = (o, depth) => {
+    if (!o || typeof o !== 'object' || depth > 16 || hits.length > 4) return;
+    if (o.ratings_and_reviews && Array.isArray(o.ratings_and_reviews.most_recent)) hits.push(o);
+    for (const k in o) walk(o[k], depth + 1);
+  };
+  walk(d, 0);
+  const p = hits.find((h) => String(h.tcin) === String(arg)) || hits[0];
+  return (p ? p.ratings_and_reviews.most_recent : []).map((r) => ({ id: String(r.id || ''), title: r.title || '', body: r.text || '', date: r.rating?.submitted_at || '', author: r.author?.nickname || null, rating: r.rating?.value ?? null, verified: null, syndicated: false })).filter((r) => r.body);
+})()`;
 
 /** Named page scripts (navigator/scripts.ts); the extension runs them by name. Whatever they return is UNTRUSTED. */
 export const TARGET_SCRIPTS = {
@@ -67,7 +81,8 @@ export const TARGET_SCRIPTS = {
   "target.cardsReady": `document.querySelectorAll('${CARD_SEL} h3').length >= 20`,
   "target.detailReady": `!!document.querySelector('[data-test="product-title"]') && !!document.querySelector('[data-test="product-price"], [data-test="price-cdui-row"]') || ${CHALLENGE_JS}`,
   "target.fulfillment": FULFILLMENT_JS,
-  // Reviews load when their section scrolls into view. Scrolling only, never a click.
+  "target.nextReviews": NEXT_REVIEWS_JS,
+  // Fallback: review cards load when their section scrolls into view (foreground tab only). Scrolling only, never a click.
   "target.scrollReviews": `void document.querySelector('[data-test="ReviewsDashboard"], [data-test="reviews-heading"]')?.scrollIntoView()`,
   "target.reviewsReady": `!!document.querySelector('[data-test="review-card--text"]')`,
   "target.reviews": REVIEWS_JS,
@@ -172,24 +187,24 @@ export function targetFields(raw: RawDetail, fulfillment: string[] = []) {
   };
 }
 
-type ScrapedReview = { title: string; body: string; date: string; author: string | null; rating: number | null; verified: boolean; syndicated: boolean };
+type ScrapedReview = { id?: string; title: string; body: string; date: string; author: string | null; rating: number | null; verified: boolean | null; syndicated: boolean };
 
 const hash = (s: string) => {
   let h = 5381;
   for (let i = 0; i < s.length; i++) h = ((h << 5) + h + s.charCodeAt(i)) | 0;
   return (h >>> 0).toString(36);
 };
-/** "5 July, 2026" → ISO, or undefined. */
+/** "5 July, 2026" (review card) or "2021-08-05T06:18:14.000Z" (page JSON) → ISO, or undefined. */
 export function targetReviewDate(s: string): string | undefined {
-  const t = Date.parse(`${s.replace(/,/g, "")} UTC`);
+  const t = /^\d{4}-\d\d-\d\d/.test(s) ? Date.parse(s) : Date.parse(`${s.replace(/,/g, "")} UTC`);
   return Number.isNaN(t) ? undefined : new Date(t).toISOString();
 }
 
-/** Target shows no review ids, so the id hashes author + date + body. Text is untrusted. */
+/** Page JSON reviews carry an id; review cards don't, so theirs hashes author + date + body. Text is untrusted. */
 export function toTargetReviews(tcin: string, url: string, scraped: ScrapedReview[]): RawReview[] {
   const out = new Map<string, RawReview>();
   for (const r of scraped) {
-    const id = `target:${tcin}:${hash(`${r.author}|${r.date}|${r.body}`)}`;
+    const id = `target:${tcin}:${r.id || hash(`${r.author}|${r.date}|${r.body}`)}`;
     const parsed = RawReview.safeParse({
       id,
       productId: productId("target", `A-${tcin}`),
@@ -200,7 +215,7 @@ export function toTargetReviews(tcin: string, url: string, scraped: ScrapedRevie
       title: r.title || undefined,
       body: r.body.slice(0, 4000),
       date: targetReviewDate(r.date),
-      verifiedPurchase: r.verified,
+      verifiedPurchase: r.verified ?? undefined,
       untrusted: true,
     });
     if (parsed.success) out.set(id, parsed.data);
@@ -273,7 +288,7 @@ export class TargetFlow {
     return candidates.length ? ok(candidates) : err("parse_failed", rows.length ? "Target results had no priced organic products" : "no Target result cards found");
   }
 
-  /** Navigator.getDetail for Target: seed recipe first (no AI), Claude-written recipe on a miss, then ~8 reviews if they load. */
+  /** Navigator.getDetail for Target: seed recipe first (no AI), Claude-written recipe on a miss, then the ~8 newest reviews. */
   async getDetail(candidate: ProductCandidate, emit: Emit = () => {}): Promise<Result<ProductDetail>> {
     this.marks = {};
     const tcin = candidate.id.replace(/^target:A-/, "");
@@ -300,9 +315,13 @@ export class TargetFlow {
     const fulfillment = await this.driver.extract<string[]>(tab, "target.fulfillment").catch(() => []);
     emit({ stage: "reviews", message: "Reading Target reviews", marketplace: "target", at: at() });
     const t2 = performance.now();
-    await this.driver.extract(tab, "target.scrollReviews").catch(() => {});
-    await this.driver.waitFor(tab, "target.reviewsReady", 4000);
-    const reviews = toTargetReviews(tcin, candidate.url, await this.driver.extract<ScrapedReview[]>(tab, "target.reviews").catch(() => []));
+    let scraped = await this.driver.extract<ScrapedReview[]>(tab, "target.nextReviews", tcin).catch(() => []);
+    if (!scraped.length) {
+      await this.driver.extract(tab, "target.scrollReviews").catch(() => {});
+      await this.driver.waitFor(tab, "target.reviewsReady", 2500);
+      scraped = await this.driver.extract<ScrapedReview[]>(tab, "target.reviews").catch(() => []);
+    }
+    const reviews = toTargetReviews(tcin, candidate.url, scraped);
     this.mark("reviews", t2);
     const f = raw ? targetFields(raw, fulfillment) : undefined;
     return ok({

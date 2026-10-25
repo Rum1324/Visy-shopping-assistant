@@ -102,6 +102,18 @@ test("target product page: seed recipe, buy-box fulfillment and reviews, no zip"
   assert.deepEqual(toTargetReviews("91558607", url, [...(rv as never[]), ...(rv as never[])]).length, 1, "same review twice → one id");
 });
 
+test("target.nextReviews reads the page JSON (background tabs never render review cards)", { skip: !browser && "no Chromium for Playwright" }, async () => {
+  const [mine, any] = await run<never[]>(fixture("target-product.html"), ["target.nextReviews", "91558607"], ["target.nextReviews", "123"]);
+  const reviews = toTargetReviews("91558607", "https://www.target.com/p/-/A-91558607", mine);
+  assert.deepEqual(reviews.map((r) => [r.id, r.rating, r.author, r.date]), [
+    ["target:91558607:d96357cf-6f9d-40c7-9ef4-e1aa9c75afa4", 5, "Pooky Loo", "2026-07-05T10:19:28.094Z"],
+    ["target:91558607:92458522-143c-4f95-b9e4-bd95e91cef45", 4, "soziejmidwest5", "2026-03-04T02:00:05.000Z"],
+  ]);
+  assert.equal(reviews[1]!.title, "Very large and easy to repackage after use");
+  assert.equal(reviews[0]!.verifiedPurchase, undefined);
+  assert.equal(any.length, 1, "no tcin match → first product's reviews");
+});
+
 test("NAV=amazon routes Target search to live target.com in a background tab", async () => {
   process.env.PICKER_CHAIN = "";
   const sent: DriverRequest[] = [];

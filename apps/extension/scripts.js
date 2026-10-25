@@ -77,6 +77,18 @@ export const SCRIPTS = {
   "target.detailReady": (arg) => (!!document.querySelector('[data-test="product-title"]') && !!document.querySelector('[data-test="product-price"], [data-test="price-cdui-row"]') || /captcha|robot or human|access denied/i.test(document.title)),
   "target.fulfillment": (arg) => ([...new Set(Array.from((document.querySelector('[role="region"][aria-label="Fulfillment"]') || document).querySelectorAll('[data-test="text-quill"]')).map((e) => (e.textContent || '').replace(/\s+/g, ' ').trim())
   .filter((s) => s.length < 120 && /^(Arrives|Get it|Ships free|Shipping|Delivery|Same Day|Pickup|Ready within|Order pickup|Drive Up|Only \d+ left|Out of stock|Sold out|Not available|Temporarily out)/i.test(s)))].slice(0, 6)),
+  "target.nextReviews": (arg) => ((() => {
+  let d; try { d = JSON.parse(document.getElementById('__NEXT_DATA__')?.textContent || 'null'); } catch { return []; }
+  const hits = [];
+  const walk = (o, depth) => {
+    if (!o || typeof o !== 'object' || depth > 16 || hits.length > 4) return;
+    if (o.ratings_and_reviews && Array.isArray(o.ratings_and_reviews.most_recent)) hits.push(o);
+    for (const k in o) walk(o[k], depth + 1);
+  };
+  walk(d, 0);
+  const p = hits.find((h) => String(h.tcin) === String(arg)) || hits[0];
+  return (p ? p.ratings_and_reviews.most_recent : []).map((r) => ({ id: String(r.id || ''), title: r.title || '', body: r.text || '', date: r.rating?.submitted_at || '', author: r.author?.nickname || null, rating: r.rating?.value ?? null, verified: null, syndicated: false })).filter((r) => r.body);
+})()),
   "target.scrollReviews": (arg) => (void document.querySelector('[data-test="ReviewsDashboard"], [data-test="reviews-heading"]')?.scrollIntoView()),
   "target.reviewsReady": (arg) => (!!document.querySelector('[data-test="review-card--text"]')),
   "target.reviews": (arg) => (Array.from(document.querySelectorAll('[data-test="review-card--text"]')).map((b) => {
