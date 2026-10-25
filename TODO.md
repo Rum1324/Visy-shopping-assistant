@@ -34,7 +34,6 @@ Line format: `[status] ID · task · owner · branch · since HH:MM PT`. Use one
 
 ### From team testing (Slack, Oct 24)
 
-- [working] UX-STOP-ALL · Stop only silences voice today; it should cancel in-flight work (Apify, review synthesis, search/narrow) for the current item, then wait for the next utterance before resuming that search or switching (e.g. a different product) · yujielee · agent: Stop cancels work (for Pixl) · cursor/ux-stop-all · since 00:31 PT
 - [working] UX-LEN · Spoken replies are too long; each option takes too long to read. Decide how much to say per turn (Alexa as a benchmark) · Yuka, Sota · agent: Run latest demo (for Sota) · b/feedback · since 20:16 PT
 - [working] UX-FORMAT · Present the 3 options like a normal store: names and prices first, then pros and cons for each · yujielee · agent: Run latest demo (for Sota) · b/feedback · since 20:16 PT
 - [open] UX-OPT3 · Bug: the agent only presents up to Option 2, not all 3 · Yuka
