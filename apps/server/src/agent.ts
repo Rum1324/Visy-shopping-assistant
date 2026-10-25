@@ -5,6 +5,8 @@
  */
 import Anthropic from "@anthropic-ai/sdk";
 import { INPUTS, MODEL, SYSTEM, TIMEOUT_MS, TOOLS, turnMessage, untrusted, type Llm, type ToolName } from "./agent-tools.ts";
+import { apifyToken, prefetchApifySearch, reviewsFromHits } from "./intel/apify.ts";
+import { sourcesSentence } from "./intel/reviews.ts";
 import { haikuJev, narrowToThree } from "./narrow.ts";
 import { overview, pitchWriter, speakable, templateLine, type Option, type PitchWriter } from "./present.ts";
 import {
@@ -18,6 +20,7 @@ import {
   type Money,
   type PageState,
   type Result,
+  type ReviewSynthesis,
   type ServerMsg,
   type SessionState,
   type Services,
@@ -417,8 +420,7 @@ export function createAgent(
     const shortlist = kept.map((item, i) => ({ ...item, rank: i + 1 }));
     publish({ ...state, phase: "presenting", shortlist, focusedProductId: shortlist[0]!.product.id });
     if (id !== run) return;
-    const spoken = shortlist.map((item) => `Option ${item.rank}: ${item.product.title}, $${(item.product.price.cents / 100).toFixed(2)}.`).join(" ");
-    await say(spoken);
+    await say(formatShortlistRoster(shortlist));
   }
 
   async function answerQuestion(text: string, id: number) {
@@ -477,6 +479,16 @@ export function createAgent(
           : "I'll check Amazon, Target, and Walmart.";
     await say(where);
     if (id !== run || !state) return;
+    // Kick off Apify immediately (Reddit + YouTube + articles in parallel) beside marketplace search.
+    const usingApify = Boolean(apifyToken());
+    emit({
+      stage: "reviews",
+      message: usingApify
+        ? "Using Apify to search Reddit, YouTube, and articles"
+        : "Searching Reddit, YouTube, and articles for reviews",
+      at: new Date().toISOString(),
+    });
+    const apifyHitsP = prefetchApifySearch(need.query, { mustHaves: need.mustHaves });
     const results = await Promise.all(need.marketplaces.map((m) => services.navigator.search(need, m, emit)));
     if (id !== run || !state) return;
     results.forEach((r, i) => !r.ok && console.warn(`search ${need.marketplaces[i]} failed: ${r.error.code} ${r.error.message}`));
@@ -506,6 +518,7 @@ export function createAgent(
     if (tabs) void services.navigator.openOptions!(ids, emit).catch(() => {});
     await say(`${tabs ? `Opening the ${tabs === 1 ? "tab" : `${tabs} tabs`} now. ` : ""}${overview(options)}`);
     // Details, reviews, photo and the spoken line for all three run at once; they are read in order.
+    // Outside reviews come from the Apify prefetch started above (shared hit pool per query).
     const work = picks.map(({ candidate, why }, i) =>
       (async () => {
         const detail = await services.navigator.getDetail(candidate, emit);
@@ -513,10 +526,33 @@ export function createAgent(
         let reviews: ShortlistItem["reviews"];
         let visual: ShortlistItem["visual"];
         if (detail.ok) {
-          // Vision only needs the photo, so it runs alongside review collection, indexing and synthesis.
           const synthP = (async () => {
-            const external = await services.reviews.collectExternal(detail.data, emit);
-            const pool = [...detail.data.retailerReviews, ...(external.ok ? external.data : [])];
+            // Prefetched Apify hits when the token is set; otherwise collectExternal
+            // (mock fixtures in tests, or a second Apify pass that shares the cache).
+            const hits = await apifyHitsP;
+            let external = reviewsFromHits(detail.data.id, hits);
+            if (!external.length) {
+              const got = await services.reviews.collectExternal(detail.data, emit);
+              if (got.ok) external = got.data;
+            }
+            const by = external.reduce<Partial<Record<string, number>>>((acc, r) => {
+              acc[r.source] = (acc[r.source] ?? 0) + 1;
+              return acc;
+            }, {});
+            const bits = (["reddit", "youtube", "article"] as const)
+              .filter((s) => by[s])
+              .map((s) => (s === "article" ? "articles" : s === "youtube" ? "YouTube" : "Reddit"));
+            emit({
+              stage: "reviews",
+              marketplace: detail.data.marketplace,
+              message: bits.length
+                ? usingApify
+                  ? `Got Apify results from ${bits.join(", ")}`
+                  : `Using outside reviews from ${bits.join(", ")}`
+                : "Using retailer reviews only",
+              at: new Date().toISOString(),
+            });
+            const pool = [...detail.data.retailerReviews, ...external];
             const [, synth] = await Promise.all([
               pool.length ? services.reviewIndex.index(detail.data.id, pool) : undefined,
               services.reviews.synthesize(detail.data, pool, need),
@@ -643,6 +679,62 @@ function needFromAnswer(said: string): NeedExtra {
     budget: dollars != null ? { max: { cents: Math.round(dollars * 100), currency: "USD" } } : undefined,
     mustHaves: rest && !NO_PREFERENCE.test(rest) ? [rest] : undefined,
   };
+}
+
+/** Keep the first useful keywords from a noisy marketplace title. */
+export function shortTitle(title: string, maxWords = 6) {
+  const stop = new Set(["with", "and", "the", "for", "in", "a", "an", "of", "to", "by"]);
+  const words = title
+    .replace(/\(.*?\)/g, " ")
+    .split(/[,|–—•]/)[0]!
+    .replace(/[^\w\s.'/&+-]/g, " ")
+    .split(/\s+/)
+    .filter(Boolean);
+  const kept: string[] = [];
+  for (const w of words) {
+    if (kept.length >= maxWords) break;
+    if (kept.length >= 2 && stop.has(w.toLowerCase())) continue;
+    kept.push(w);
+  }
+  return kept.join(" ") || title.slice(0, 40);
+}
+
+export function formatOptionLine(rank: number, title: string, priceCents: number) {
+  return `Option ${rank}: ${shortTitle(title)}, $${(priceCents / 100).toFixed(2)}`;
+}
+
+/** Brief roster of all options (name + price only). Used when re-listing after a filter. */
+export function formatShortlistRoster(items: Pick<ShortlistItem, "rank" | "product">[]) {
+  return items.map((item) => formatOptionLine(item.rank, item.product.title, item.product.price.cents)).join("\n");
+}
+
+/** Pros / Cons / Sources lines (no option header). */
+export function formatProsConsSection(marketplace: Marketplace, reviews: ReviewSynthesis | undefined) {
+  const lines: string[] = [];
+  const pros = reviews?.pros ?? [];
+  const cons = reviews?.cons ?? [];
+  if (pros.length) {
+    lines.push("Pros:");
+    for (const p of pros) lines.push(`- ${p}`);
+  }
+  if (cons.length) {
+    lines.push("Cons:");
+    for (const c of cons) lines.push(`- ${c}`);
+  }
+  const sources = reviews ? sourcesSentence(reviews.sourceCounts, marketplace) : "";
+  if (sources) lines.push(`Sources: ${sources}`);
+  else if (!pros.length && !cons.length) lines.push("No review summary yet.");
+  return lines.join("\n");
+}
+
+/**
+ * One spoken option: name + price, then Pros / Cons / Sources.
+ * Kept for follow-up / tests; first pass uses present.ts overview + pitch lines.
+ */
+export function formatOptionBlock(item: Pick<ShortlistItem, "rank" | "product" | "reviews">) {
+  const head = formatOptionLine(item.rank, item.product.title, item.product.price.cents);
+  const body = formatProsConsSection(item.product.marketplace, item.reviews);
+  return body ? `${head}\n${body}` : head;
 }
 
 function optionIndex(text: string): number {

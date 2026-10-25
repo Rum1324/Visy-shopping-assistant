@@ -119,13 +119,29 @@ function stopTalk() {
 
 function fillChars(el, phrase) {
   el.replaceChildren();
-  return [...phrase].map((c) => {
+  const chars = [];
+  for (const c of phrase) {
+    if (c === "\n") {
+      const br = document.createElement("br");
+      br.className = "ch nl on";
+      el.append(br);
+      continue;
+    }
     const span = document.createElement("span");
     span.className = c === " " ? "ch space" : "ch";
     span.textContent = c === " " ? "\u00a0" : c;
     el.append(span);
-    return span;
-  });
+    chars.push(span);
+  }
+  return chars;
+}
+
+/** Top progress bar (#status). Empty clears it. */
+function setProgress(message) {
+  const text = (message ?? "").trim();
+  statusEl.hidden = !text;
+  statusEl.textContent = text;
+  statusEl.classList.toggle("thinking", Boolean(text));
 }
 
 function revealChars(chars, shown, n) {
@@ -188,18 +204,30 @@ function beginSay(id, phrase, onto) {
   pendingSay.set(id, {
     id,
     text: phrase,
+    onto,
     el: onto === "welcome" ? welcomeLine : null,
     done: false,
   });
+  if (onto === "progress") setProgress(phrase);
 }
 
 function finishSay(item, bytes) {
   if (!item || item.done) return;
-  const played = bytes && bytes.length > 1 ? playPcm(bytes, ttsRate) : null;
-  if (!played) return;
   item.done = true;
   pendingSay.delete(item.id);
+  if (item.onto === "progress") {
+    setProgress(item.text);
+    if (bytes && bytes.length > 1) playPcm(bytes, ttsRate);
+    paintGo();
+    return;
+  }
+  const played = bytes && bytes.length > 1 ? playPcm(bytes, ttsRate) : null;
   if (!item.el) item.el = addTurn("Visy");
+  if (!played) {
+    sparkOnly(item.el, item.text);
+    paintGo();
+    return;
+  }
   playWithAudio(item.el, item.text, played);
 }
 
@@ -253,6 +281,8 @@ function setBusy(next) {
 }
 
 function showLink(message) {
+  // Reconnect copy uses the same top slot; don't mark it as thinking pulse.
+  statusEl.classList.remove("thinking");
   statusEl.hidden = !message;
   statusEl.textContent = message ?? "";
 }
@@ -312,7 +342,11 @@ async function onMessage(ev) {
   }
   const msg = JSON.parse(ev.data);
   if (msg.type === "agent.say") {
-    beginSay(msg.id, msg.text, chatting ? "chat" : "welcome");
+    if (msg.kind === "progress") {
+      beginSay(msg.id, msg.text, "progress");
+    } else {
+      beginSay(msg.id, msg.text, chatting ? "chat" : "welcome");
+    }
   } else if (msg.type === "transcript") {
     line("You", msg.text);
   } else if (msg.type === "tts.start") {
@@ -333,7 +367,10 @@ async function onMessage(ev) {
     if (chatting) stopTalk();
   } else if (msg.type === "session.snapshot") {
     setBusy(WORKING.has(msg.state.phase));
-    if (!WORKING.has(msg.state.phase)) maybeListen();
+    if (!WORKING.has(msg.state.phase)) {
+      setProgress("");
+      maybeListen();
+    }
     options.replaceChildren();
     for (const item of msg.state.shortlist ?? []) {
       const li = document.createElement("li");
@@ -343,6 +380,7 @@ async function onMessage(ev) {
     }
   } else if (msg.type === "progress") {
     setBusy(true);
+    setProgress(msg.event?.message ?? "");
   } else if (msg.type === "driver.request") {
     const res = await chrome.runtime.sendMessage({ type: "visy.driver", req: msg.req });
     send({
