@@ -48,7 +48,7 @@ Line format: `[status] ID · task · owner · branch · since HH:MM PT`. Use one
 
 ## Done
 
-- [done] UX-PAUSE · Bug: after pausing voice, clicking the "type here" input resumes voice (audioCtx unlock ignored while paused) · yujielee · agent: Pause voice input bug (for yujielee) · PR pending
+- [done] UX-PAUSE · Bug: after pausing voice, clicking the "type here" input resumes voice (audioCtx unlock ignored while paused) · yujielee · agent: Pause voice input bug (for yujielee) · [PR #26](https://github.com/Rum1324/Visy-shopping-assistant/pull/26)
 - [done] C-TGT-CART · Target add to cart (Shipping, picker-chain Add to cart) and cart read-back with est. tax and total · [PR #24](https://github.com/Rum1324/Visy-shopping-assistant/pull/24)
 - [done] C-TGT · Real Target search and detail flow · [PR #18](https://github.com/Rum1324/Visy-shopping-assistant/pull/18)
 - [done] UX-PITCH · Bug: spoken option lines included the pitch model's self-corrections ("wait, correction: …") and wrong price math; the prompt now gets computed differences and a guard falls back to the template · agent: Clean pitch lines (for Sota) · [PR #25](https://github.com/Rum1324/Visy-shopping-assistant/pull/25)
