@@ -28,7 +28,6 @@ Line format: `[status] ID · task · owner · branch · since HH:MM PT`. Use one
 - [working] B-PRELOAD · Agent calls C1b `flow.preload()` as soon as the shortlist is final (check whether the tool loop already does) · agent: Run latest demo (for Sota) · b/feedback · since 20:16 PT
 - [open] C-WMT-CART · Walmart add to cart and cart read-back. Search and detail are live (PR #16); a Walmart add still goes to the mock and returns not_found
 - [open] D-PAGEQA · Answer "what's on this page?" over the C5 `PageState` capture
-- [working] C-TGT-CART · Target add to cart and cart read-back (needs PR #18) · agent: Target cart (for Sota) · claude/magical-austin-6f8bb6 · since 22:02 PT
 - [open] A-VOICE · Decide whether voice-only must work with no clicks at all (motor-impaired users)
 - [open] DEMO · Feature freeze and rehearsal (H+14); warm `RecipeCache` and picker memory before going on stage
 
@@ -50,6 +49,7 @@ Line format: `[status] ID · task · owner · branch · since HH:MM PT`. Use one
 
 ## Done
 
+- [done] C-TGT-CART · Target add to cart (Shipping, picker-chain Add to cart) and cart read-back with est. tax and total (needs PR #18 first) · [PR #24](https://github.com/Rum1324/Visy-shopping-assistant/pull/24)
 - [done] C-TGT · Real Target search and detail flow · [PR #18](https://github.com/Rum1324/Visy-shopping-assistant/pull/18)
 - [done] UX-PROGRESS · Spoken progress after ~2 s of quiet, varied lines that fit the running tool ("Searching Amazon now", "Reading the reviews"), stops when the answer starts · first version in [PR #13](https://github.com/Rum1324/Visy-shopping-assistant/pull/13), `progress.ts` in [PR #21](https://github.com/Rum1324/Visy-shopping-assistant/pull/21)
 - [done] C-WMT · Real Walmart search and detail flow (live walmart.com via `__NEXT_DATA__`; add to cart not covered) · [PR #16](https://github.com/Rum1324/Visy-shopping-assistant/pull/16)
