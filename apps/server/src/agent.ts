@@ -5,6 +5,8 @@
  */
 import Anthropic from "@anthropic-ai/sdk";
 import { INPUTS, MODEL, SYSTEM, TIMEOUT_MS, TOOLS, turnMessage, untrusted, type Llm, type ToolName } from "./agent-tools.ts";
+import { prefetchApifySearch, reviewsFromHits } from "./intel/apify.ts";
+import { sourcesSentence } from "./intel/reviews.ts";
 import {
   CONTRACT_VERSION,
   Need,
@@ -15,7 +17,9 @@ import {
   type Money,
   type PageState,
   type ProductCandidate,
+  type ProgressEvent,
   type Result,
+  type ReviewSynthesis,
   type ServerMsg,
   type SessionState,
   type Services,
@@ -59,6 +63,13 @@ export function createAgent(services: Services, sink: AgentSink, opts: { llm?: L
   const emit: Emit = (event) => {
     sink.send({ type: "progress", event });
   };
+
+  /** In-place thinking line in the chat (spoken). Empty message clears it. */
+  function think(message: string, stage: ProgressEvent["stage"] = "reviews") {
+    const text = message.trim();
+    emit({ stage, message: text, at: new Date().toISOString() });
+    if (text) void say(text, "progress");
+  }
 
   function publish(next: SessionState) {
     state = SessionStateSchema.parse({ ...next, updatedAt: new Date().toISOString() });
@@ -310,8 +321,7 @@ export function createAgent(services: Services, sink: AgentSink, opts: { llm?: L
     const shortlist = kept.map((item, i) => ({ ...item, rank: i + 1 }));
     publish({ ...state, phase: "presenting", shortlist, focusedProductId: shortlist[0]!.product.id });
     if (id !== run) return;
-    const spoken = shortlist.map((item) => `Option ${item.rank}: ${item.product.title}, $${(item.product.price.cents / 100).toFixed(2)}.`).join(" ");
-    await say(spoken);
+    await say(formatShortlistRoster(shortlist));
   }
 
   async function answerQuestion(text: string, id: number) {
@@ -368,6 +378,9 @@ export function createAgent(services: Services, sink: AgentSink, opts: { llm?: L
           : "I'll check Amazon, Target, and Walmart.";
     await say(where);
     if (id !== run || !state) return;
+    // Kick off Apify immediately (Reddit + YouTube + articles in parallel) beside marketplace search.
+    think("Searching Reddit, YouTube, and articles for reviews…", "reviews");
+    const apifyHitsP = prefetchApifySearch(need.query, { mustHaves: need.mustHaves });
     const results = await Promise.all(need.marketplaces.map((m) => services.navigator.search(need, m, emit)));
     if (id !== run || !state) return;
     const candidates = results.flatMap((r) => (r.ok ? r.data : []));
@@ -375,15 +388,31 @@ export function createAgent(services: Services, sink: AgentSink, opts: { llm?: L
     const shortlist: ShortlistItem[] = [];
     for (const candidate of picks) {
       if (id !== run || !state) return;
+      const rank = (shortlist.length + 1) as 1 | 2 | 3;
+      const store = candidate.marketplace[0]!.toUpperCase() + candidate.marketplace.slice(1);
+      think(`Reading option ${rank} on ${store}…`, "reading_product");
       const detail = await services.navigator.getDetail(candidate, emit);
       const product = detail.ok ? detail.data : candidate;
       let reviews: ShortlistItem["reviews"];
       let visual: ShortlistItem["visual"];
       if (detail.ok) {
-        // Vision only needs the photo, so it runs alongside review collection, indexing and synthesis.
         const synthP = (async () => {
-          const external = await services.reviews.collectExternal(detail.data, emit);
-          const pool = [...detail.data.retailerReviews, ...(external.ok ? external.data : [])];
+          think(`Waiting on outside reviews for option ${rank}…`, "reviews");
+          const hits = await apifyHitsP;
+          const external = reviewsFromHits(detail.data.id, hits);
+          const by = external.reduce<Partial<Record<string, number>>>((acc, r) => {
+            acc[r.source] = (acc[r.source] ?? 0) + 1;
+            return acc;
+          }, {});
+          const bits = (["reddit", "youtube", "article"] as const)
+            .filter((s) => by[s])
+            .map((s) => (s === "article" ? "articles" : s === "youtube" ? "YouTube" : "Reddit"));
+          think(
+            bits.length ? `Using outside reviews from ${bits.join(", ")}…` : "Using retailer reviews only…",
+            "reviews",
+          );
+          think(`Summarizing option ${rank}…`, "reviews");
+          const pool = [...detail.data.retailerReviews, ...external];
           const [, synth] = await Promise.all([
             pool.length ? services.reviewIndex.index(detail.data.id, pool) : undefined,
             services.reviews.synthesize(detail.data, pool, need),
@@ -395,7 +424,7 @@ export function createAgent(services: Services, sink: AgentSink, opts: { llm?: L
         if (vis.ok) visual = vis.data;
       }
       const item: ShortlistItem = {
-        rank: (shortlist.length + 1) as 1 | 2 | 3,
+        rank,
         product,
         reviews,
         visual,
@@ -409,10 +438,17 @@ export function createAgent(services: Services, sink: AgentSink, opts: { llm?: L
         shortlist: [...shortlist],
         focusedProductId: product.id,
       });
-      const price = `$${(product.price.cents / 100).toFixed(2)}`;
-      const access = reviews?.accessibility?.find((a) => a.sentiment !== "unknown");
-      await say(`Option ${item.rank}: ${product.title}, ${price}. ${visual?.short ?? ""} ${reviews?.summary ?? ""}${access ? ` ${access.answer}` : ""}`);
     }
+    if (id !== run || !state || !shortlist.length) return;
+    think("");
+    // One spoken/captioned block so newlines stay intact and TTS isn't chopped into many turns.
+    await say(
+      [
+        formatShortlistRoster(shortlist),
+        "",
+        ...shortlist.map((item) => formatProsConsSection(item.rank, item.product.marketplace, item.reviews)),
+      ].join("\n\n"),
+    );
   }
 
   async function addToCart(index: number, id: number) {
@@ -490,6 +526,65 @@ async function saveUsual(productId: string, title: string, evidence: string) {
       return state;
     },
   };
+}
+
+/** Keep the first useful keywords from a noisy marketplace title. */
+export function shortTitle(title: string, maxWords = 6) {
+  const stop = new Set(["with", "and", "the", "for", "in", "a", "an", "of", "to", "by"]);
+  const words = title
+    .replace(/\(.*?\)/g, " ")
+    .split(/[,|–—•]/)[0]!
+    .replace(/[^\w\s.'/&+-]/g, " ")
+    .split(/\s+/)
+    .filter(Boolean);
+  const kept: string[] = [];
+  for (const w of words) {
+    if (kept.length >= maxWords) break;
+    if (kept.length >= 2 && stop.has(w.toLowerCase())) continue;
+    kept.push(w);
+  }
+  return kept.join(" ") || title.slice(0, 40);
+}
+
+export function formatOptionLine(rank: number, title: string, priceCents: number) {
+  return `Option ${rank}: ${shortTitle(title)}, $${(priceCents / 100).toFixed(2)}`;
+}
+
+/** Brief roster of all options (name + price only). */
+export function formatShortlistRoster(items: Pick<ShortlistItem, "rank" | "product">[]) {
+  return items.map((item) => formatOptionLine(item.rank, item.product.title, item.product.price.cents)).join("\n");
+}
+
+/**
+ * Pros/cons block for one option. Labels Pros / Cons, then a Sources line.
+ * Example:
+ * Here are the pros and cons of option 1:
+ * Pros:
+ * - Truly waterproof
+ * Cons:
+ * - Color duller than photos
+ * Sources: Reviews from Amazon and Reddit.
+ */
+export function formatProsConsSection(
+  rank: number,
+  marketplace: Marketplace,
+  reviews: ReviewSynthesis | undefined,
+) {
+  const lines = [`Here are the pros and cons of option ${rank}:`];
+  const pros = reviews?.pros ?? [];
+  const cons = reviews?.cons ?? [];
+  if (pros.length) {
+    lines.push("Pros:");
+    for (const p of pros) lines.push(`- ${p}`);
+  }
+  if (cons.length) {
+    lines.push("Cons:");
+    for (const c of cons) lines.push(`- ${c}`);
+  }
+  const sources = reviews ? sourcesSentence(reviews.sourceCounts, marketplace) : "";
+  if (sources) lines.push(`Sources: ${sources}`);
+  else if (!pros.length && !cons.length) lines.push("No review summary yet.");
+  return lines.join("\n");
 }
 
 function bestPerMarketplace(candidates: ProductCandidate[]): ProductCandidate[] {
