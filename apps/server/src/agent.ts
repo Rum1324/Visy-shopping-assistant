@@ -6,7 +6,7 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { INPUTS, MODEL, SYSTEM, TIMEOUT_MS, TOOLS, turnMessage, untrusted, type Llm, type ToolName } from "./agent-tools.ts";
 import { haikuJev, narrowToThree } from "./narrow.ts";
-import { overview, pitchWriter, templateLine, type Option, type PitchWriter } from "./present.ts";
+import { overview, pitchWriter, speakable, templateLine, type Option, type PitchWriter } from "./present.ts";
 import {
   CONTRACT_VERSION,
   Need,
@@ -76,7 +76,7 @@ export function createAgent(
 
   function say(text: string, kind?: SayKind) {
     spoken++;
-    return sink.say(text, kind);
+    return sink.say(speakable(text), kind);
   }
 
   const emit: Emit = (event) => {

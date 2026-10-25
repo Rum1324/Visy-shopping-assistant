@@ -418,7 +418,14 @@ export class AmazonFlow {
   async showOptions(asins: string[]) {
     void this.preload(asins.filter((a) => !this.productTabs.has(a)));
     const first = asins[0] ? await this.tabFor(asins[0]) : undefined;
-    if (first !== undefined) await this.driver.focus(first);
+    if (first === undefined) return;
+    await this.driver.focus(first);
+    // The results page has done its job; leave only the option tabs. The next search opens a fresh one.
+    if (this.searchTab !== undefined) {
+      if (this.tabId === this.searchTab) this.tabId = first;
+      await this.driver.closeTab(this.searchTab).catch(() => {});
+      this.searchTab = undefined;
+    }
   }
 
   async open(asin: string): Promise<Result<{ url: string; tabId?: number }>> {

@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { fixtures } from "@visy/contracts/fixtures";
-import { overview, shortName, templateLine, type Option } from "../src/present.ts";
+import { overview, shortName, speakable, templateLine, type Option } from "../src/present.ts";
 
 test("present: short names cut Amazon titles at the first comma or bar", () => {
   assert.equal(shortName("INIU Portable Charger, Slimmest 10000mAh 5V/3A Power Bank, USB C"), "INIU Portable Charger");
@@ -20,4 +20,9 @@ test("present: the overview is one short sentence per option, and each line comp
   assert.ok(text.split(" ").length < 45);
   assert.match(templateLine(options[1]!, options), /^If you want to spend less/);
   assert.match(templateLine(options[0]!, options), /more than the cheapest|cheapest of the three/);
+});
+
+test("present: all-caps brand names are spoken as words, short acronyms stay", () => {
+  assert.equal(speakable("POWCAN Portable Charger with USB-C and LED, by YETI. HDMI cable"), "Powcan Portable Charger with USB-C and LED, by Yeti. HDMI cable");
+  assert.equal(speakable("IPX7 rated, 20000mAh"), "IPX7 rated, 20000mAh");
 });

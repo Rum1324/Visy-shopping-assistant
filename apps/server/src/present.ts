@@ -11,6 +11,17 @@ export type PitchWriter = (need: Need, option: Option, all: Option[]) => Promise
 
 const dollars = (cents: number) => `$${(cents / 100).toFixed(2)}`;
 
+// All-caps acronyms that should still be spelled out. Shorter ones (USB, LED, BPA) are left alone anyway.
+const ACRONYMS = new Set(["HDMI", "WIFI", "USBC", "NASA", "ANSI", "FIFA", "NCAA", "PFAS", "MSRP"]);
+
+/**
+ * Cartesia spells out all-caps words ("POWCAN" → P-O-W-C-A-N). Brand names in Amazon titles are often written
+ * that way, so all-caps words of 4+ letters become "Powcan". No model call: this runs on every spoken line.
+ */
+export function speakable(text: string): string {
+  return text.replace(/\b[A-Z]{4,}\b/g, (w) => (ACRONYMS.has(w) ? w : w[0] + w.slice(1).toLowerCase()));
+}
+
 /** "INIU Portable Charger, Slimmest 10000mAh 5V/3A Power Bank, USB C…" → "INIU Portable Charger". */
 export function shortName(title: string): string {
   const head = title.split(/\s*[,|(\[–—]\s*|\s+-\s+/)[0]!.trim();
