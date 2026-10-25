@@ -164,7 +164,7 @@ export function liveServices(opts: { driver?: () => FlowDriver | undefined } = {
       return candidates.length ? ok(candidates) : err("parse_failed", "Amazon results had no priced organic products");
     },
 
-    async getDetail(candidate, emit) {
+    async getDetail(candidate, emit, opts) {
       if (candidate.id.startsWith("target:")) return safe(target().getDetail(candidate, emit));
       if (candidate.id.startsWith("walmart:")) return safe(useWalmart().getDetail(candidate, emit));
       if (!candidate.id.startsWith("amazon:")) return mocks.getDetail(candidate, emit);
@@ -174,7 +174,7 @@ export function liveServices(opts: { driver?: () => FlowDriver | undefined } = {
       // B-REVIEWS-FIRST reads ~6 finalists at once, before openOptions: each needs its own background tab, or
       // open() would navigate the one shared tab under the others. openOptions later closes the ones not picked.
       if (!flow.productTabs.has(asin)) finalistTabs.set(asin, flow.preload([asin]).then(([tab]) => tab));
-      const base = await safe(flow.getDetail(candidate, emit));
+      const base = await safe(flow.getDetail(candidate, emit, opts));
       if (!base.ok) return base;
       let title = base.data.title;
       let cents = base.data.price.cents;
@@ -258,6 +258,14 @@ export function liveServices(opts: { driver?: () => FlowDriver | undefined } = {
           ? `Your Amazon total is ${o.total} with tax. Press ${button} when you're ready.`
           : `Your Amazon cart subtotal is ${usd(cents)} before tax. Press ${button} when you're ready.`,
       });
+    },
+
+    async moreReviews(id, emit) {
+      // Only Amazon's quick read skips reviews (its separate review pages); Target and Walmart read them all at once.
+      if (!id.startsWith("amazon:")) return ok([]);
+      emit({ stage: "reviews", marketplace: "amazon", message: "Reading more Amazon reviews", at: new Date().toISOString() });
+      const rv = await safe(use().flow.reviews(id.slice("amazon:".length)));
+      return rv.ok ? ok(rv.data.reviews) : rv;
     },
 
     async openOptions(ids, emit) {

@@ -194,10 +194,10 @@ const sleep = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
 
 /**
  * B-REVIEWS-FIRST. Pool → ~6 finalists → 3 picks chosen with product pages and reviews in view.
- * Finalists are the 3 direct picks plus 3 more from asking the same questions without them. Their pages load in
- * parallel (the direct 3 start at once, while the second picker round runs). Then the role questions are asked
+ * Finalists are the 3 direct picks plus the 3 best-rated others in budget. Their pages load in parallel, quick
+ * reads only (the product page and its own top reviews). Then the role questions are asked
  * again over the finalists with features and review snippets. Everything after the direct picks is capped at
- * `capMs`; over it, or if the evidence round fails, the direct picks stand.
+ * `capMs` (VISY_REVIEWS_FIRST_MS, off by default); over it, or if the evidence round fails, the direct picks stand.
  */
 export async function narrowWithReviews(
   jev: JevClient | null,
@@ -206,11 +206,19 @@ export async function narrowWithReviews(
   getDetail: (c: ProductCandidate) => Promise<Result<ProductDetail>>,
   opts: { capMs?: number; finalists?: number } = {},
 ): Promise<Finalists> {
-  const capMs = opts.capMs ?? Number(process.env.VISY_REVIEWS_FIRST_MS ?? 7000);
+  // Off unless set: live, 6 page reads in the user's Chrome take 4.7-9.8 s (median ~6 s), plus ~2.5 s to pick, so
+  // it adds ~7 s before the options are read. VISY_REVIEWS_FIRST_MS=9000 turns it on with a 9 s cap.
+  const capMs = opts.capMs ?? Number(process.env.VISY_REVIEWS_FIRST_MS ?? 0);
   const size = opts.finalists ?? 6;
   const details = new Map<string, Promise<Result<ProductDetail>>>();
   const load = (c: ProductCandidate) => {
-    if (!details.has(c.id)) details.set(c.id, getDetail(c).catch((e) => err("internal", String(e), true)));
+    if (details.has(c.id)) return;
+    const t = performance.now();
+    const read = getDetail(c).catch((e) => err("internal", String(e), true));
+    details.set(c.id, read);
+    void read.then((r) =>
+      console.log(`narrow: page ${c.id} ${r.ok ? `read, ${r.data.retailerReviews.length} reviews` : `failed (${r.error.code})`} in ${Math.round(performance.now() - t)} ms`),
+    );
   };
   const t0 = performance.now();
   const direct = await narrowToThree(jev, need, candidates);
@@ -223,9 +231,13 @@ export async function narrowWithReviews(
   const pickReserve = Math.min(3000, capMs / 2);
 
   const evidenced = (async () => {
+    // The challengers are the best-rated others in budget: a second picker round would cost ~2 s before their
+    // pages could start loading (measured live), and the evidence round re-judges them anyway.
     const taken = new Set(direct.picks.map((p) => p.candidate.id));
-    const more = await narrowToThree(jev, need, candidates.filter((c) => !taken.has(c.id)));
-    const finalists = [...direct.picks.map((p) => p.candidate), ...more.picks.map((p) => p.candidate).filter((c) => !taken.has(c.id))].slice(0, size);
+    const ids = new Set<string>();
+    const pool = inBudget(need, candidates.filter((c) => !ids.has(c.id) && !!ids.add(c.id)));
+    const more = heuristic(pool, taken, size - taken.size).map((p) => p.candidate);
+    const finalists = [...direct.picks.map((p) => p.candidate), ...more];
     finalists.forEach(load);
     const evidence = new Map<string, ProductDetail>();
     const reads = finalists.map((c) => details.get(c.id)!.then((r) => r.ok && evidence.set(c.id, r.data)));

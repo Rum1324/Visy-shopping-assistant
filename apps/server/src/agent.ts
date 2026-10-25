@@ -17,6 +17,7 @@ import {
   Need,
   PreferenceFact,
   SessionState as SessionStateSchema,
+  ok,
   type Emit,
   type JevClient,
   type Marketplace,
@@ -550,7 +551,7 @@ export function createAgent(
     const narrowed = await narrowWithReviews(jev, need, relevant, (c) => {
       if (!reading) emit({ stage: "reviews", message: "Reading reviews for the top picks", at: new Date().toISOString() });
       reading = true;
-      return services.navigator.getDetail(c, emit);
+      return services.navigator.getDetail(c, emit, { quick: true });
     });
     console.log(
       `narrow: ${relevant.length} → ${narrowed.picks.length} via ${narrowed.via}, chose from ${narrowed.chose} in ${Math.round(performance.now() - t0)} ms` +
@@ -578,8 +579,16 @@ export function createAgent(
     // Outside reviews come from the Apify prefetch started above (shared hit pool per query).
     const work = picks.map(({ candidate, why }, i) =>
       (async () => {
-        // Finalists' pages were already read (or are still loading) while picking; never fetch twice.
-        const detail = await (narrowed.details.get(candidate.id) ?? services.navigator.getDetail(candidate, emit));
+        // Finalists' pages were already read (or are still loading) while picking; never fetch twice. That read was
+        // quick, so the reviews it skipped (Amazon's review pages) load now, beside the outside reviews.
+        const early = narrowed.details.get(candidate.id);
+        const moreP = early && services.navigator.moreReviews ? services.navigator.moreReviews(candidate.id, emit) : undefined;
+        let detail = await (early ?? services.navigator.getDetail(candidate, emit));
+        const more = await moreP?.catch(() => undefined);
+        if (detail.ok && more?.ok && more.data.length) {
+          const have = new Set(detail.data.retailerReviews.map((r) => r.body));
+          detail = ok({ ...detail.data, retailerReviews: [...detail.data.retailerReviews, ...more.data.filter((r) => !have.has(r.body))] });
+        }
         const product = detail.ok ? detail.data : candidate;
         let reviews: ShortlistItem["reviews"];
         let visual: ShortlistItem["visual"];

@@ -55,12 +55,18 @@ export interface ElementPicker {
 /** Track C. All browser work. Uses a BrowserDriver and a chain of ElementPickers internally, with Claude as the final fallback. */
 export interface Navigator {
   search(need: Need, marketplace: Marketplace, emit: Emit): Promise<Result<ProductCandidate[]>>;
-  getDetail(candidate: ProductCandidate, emit: Emit): Promise<Result<ProductDetail>>;
+  /**
+   * `quick` (B-REVIEWS-FIRST, for comparing finalists): only what the product page itself shows, including its own
+   * top reviews; skips slow extras such as Amazon's separate review pages. moreReviews() fetches those later.
+   */
+  getDetail(candidate: ProductCandidate, emit: Emit, opts?: { quick?: boolean }): Promise<Result<ProductDetail>>;
   addToCart(productId: ProductId, quantity: number, emit: Emit): Promise<Result<CartLine>>;
   /** Navigates to the final review page and extracts it. MUST stop before placing the order. */
   openCheckout(marketplace: Marketplace, emit: Emit): Promise<Result<CheckoutReview>>;
   /** Optional. Opens each shortlisted product in its own browser tab and brings the first to the front. */
   openOptions?(ids: ProductId[], emit: Emit): Promise<void>;
+  /** Optional. Retailer reviews a quick getDetail skipped (Amazon's review pages). Empty where there are none. */
+  moreReviews?(productId: ProductId, emit: Emit): Promise<Result<RawReview[]>>;
 }
 
 /** Track D. */

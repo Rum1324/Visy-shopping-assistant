@@ -502,6 +502,7 @@ test("reviews-first: finalists' pages are read once, the final 3 reuse them, and
   const base = mockServices({ latencyMs: 0 });
   const reads: string[] = [];
   const opened: string[][] = [];
+  const more: string[] = [];
   const services: Services = {
     ...base,
     navigator: {
@@ -512,6 +513,10 @@ test("reviews-first: finalists' pages are read once, the final 3 reuse them, and
       },
       async openOptions(ids) {
         opened.push(ids);
+      },
+      async moreReviews(id) {
+        more.push(id);
+        return { ok: true, data: [{ id: `${id}-more`, productId: id, source: "retailer", body: "From the full review pages.", untrusted: true }] };
       },
     },
   };
@@ -525,7 +530,12 @@ test("reviews-first: finalists' pages are read once, the final 3 reuse them, and
   const said: string[] = [];
   const agent = createAgent(services, { send() {}, say: async (t) => void said.push(t), stopSpeaking() {} }, { llm: null, jev, clarify: false });
   await agent.hello("demo-user");
-  await agent.handleText("picnic blanket");
+  process.env.VISY_REVIEWS_FIRST_MS = "5000";
+  try {
+    await agent.handleText("picnic blanket");
+  } finally {
+    delete process.env.VISY_REVIEWS_FIRST_MS;
+  }
   assert.equal(agent.state?.phase, "presenting", said.join(" | "));
   const ids = agent.state!.shortlist.map((i) => i.product.id);
   assert.equal(ids.length, 3);
@@ -533,6 +543,9 @@ test("reviews-first: finalists' pages are read once, the final 3 reuse them, and
   assert.ok(reads.length > 3, "only the final 3 were read");
   for (const id of ids) assert.ok(reads.includes(id));
   assert.deepEqual(opened, [ids]);
+  // The quick reads skipped the full review pages; they're fetched for the final 3 only.
+  assert.deepEqual([...more].sort(), [...ids].sort());
+  for (const item of agent.state!.shortlist) assert.ok("retailerReviews" in item.product && item.product.retailerReviews.some((r) => r.body === "From the full review pages."), item.product.id);
 });
 
 test("claude: 'more expensive' with nothing in range says so and keeps the last three", async () => {
