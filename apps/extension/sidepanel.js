@@ -498,8 +498,12 @@ async function onMessage(ev) {
     maybeListen();
   } else if (msg.type === "session.snapshot") {
     setBusy(WORKING.has(msg.state.phase));
-    if (!WORKING.has(msg.state.phase)) {
+    // Keep the top bar during presenting — Apify often still runs while options are read aloud.
+    // Only clear when the session is truly idle (or done).
+    if (msg.state.phase === "idle" || msg.state.phase === "done") {
       setProgress("");
+      maybeListen();
+    } else if (!WORKING.has(msg.state.phase)) {
       maybeListen();
     }
     options.replaceChildren();

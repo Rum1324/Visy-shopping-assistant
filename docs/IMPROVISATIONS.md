@@ -8,6 +8,54 @@ If you improvise, add an entry in the same commit and push it. Say what changed,
 
 "I'm out of sugar, get the usual" used to say the first saved usual (always seaweed) and stop, because any query with "usual" returned every usual item. Now `select()` in `prefs.ts` drops filler words ("get", "the", "usual", "out"…) and, when an item is named, returns only the usuals and purchases that mention it; with nothing named it still returns all usuals. `recallUsual` puts the item up as a one-item shortlist, opens its product page (`getDetail`, which the live Amazon cart needs), and asks "Want me to add it to your cart?"; the next turn's yes or "add it" goes straight to `addToCart` and the normal checkout read-back, no model call. `npm run seed-prefs` now also seeds a real Amazon sugar canister (`B01JA9KAOM`) for the demo video's cold open. Other agents: pass the item the user named as `recall_usual`'s query.
 
+## 2026-10-25 — Bounded Reddit thread deepen after Google
+
+Google still discovers Reddit URLs (`site:reddit.com` SERP). After Q&A unlocks on snippets, `enrichWithReddit` runs `trudax~reddit-scraper-lite` on ≤2 URLs/product (≤6 total), max 25 comments, ~25 s (`APIFY_REDDIT_BUDGET_MS`), then YouTube enrich. Replaces SERP snippets with post+comment text when the actor returns. Does not block the first external answer.
+
+## 2026-10-25 — External answers must not lead with Amazon stars
+
+Outside Q&A was mixing product `rating`/`reviewCount` into Claude’s tool payload, so answers sounded like Amazon blurbs even when Apify had Reddit SERP hits. External asks now omit retailer rating/description and must use only external summary/pros/cons + source line. Still: Apify does **not** scrape full Reddit threads — only Google title+snippet text.
+
+## 2026-10-25 — Don't apologize that outside reviews are "snippets"
+
+Apify only pulls Google SERP text for Reddit/YouTube/articles (not full thread bodies). We were injecting that as a synthesis warning, and Claude read it aloud (“short search snippets, not full retailer reviews”) even when Reddit hits existed. Stop injecting/speaking that; cite sources instead (`Reviews from Reddit…`).
+
+## 2026-10-25 — Stale shortlist after external wait
+
+After `waitExternal`, answers still read the **pre-wait** shortlist object, so `externalReviews` looked missing and Claude said “still gathering” even when Apify+synth had finished. Re-read `state.shortlist` after the wait. Cap 90 s (Google often 35–70 s). Biggest wall time: Apify Google Search Scraper.
+
+## 2026-10-25 — Don't block external Q&A on YouTube enrich
+
+`waitExternal` used to wait until Google **and** the shared YouTube actor finished (YouTube only starts after all three Google runs — often 30–90 s of "Reading the reviews"). Ready now unlocks after that option's Google hits are synthesized; YouTube may refresh `externalReviews` later.
+
+## 2026-10-25 — Outside reviews: quote the model key, speak the findings
+
+Quoted `"ASUS rtx 5060"` missed real SERP titles like “ASUS Dual GeForce RTX 5060”. Queries now use brand loose + model quoted (`ASUS "rtx 5060"`). Synthesis must put product findings in summary/pros/cons (not “reviews are short snippets”); meta goes in warnings. Keyword “more info” answers speak summary + pros + cons + sources. Non-Ti products reject Ti sibling hits (`rtx 5060` ⊂ `rtx 5060 ti`).
+
+## 2026-10-25 — Outside reviews must name the exact model
+
+Apify hits were kept if they mentioned the **brand** (first word), so “Zotac RTX 4070” leaked into a 5060 Ti option. Now: `modelKeys` pulls fingerprints (`rtx 5060 ti`, `wh-1000xm5`), Google/YouTube queries quote the model key (not brand+model as one phrase), and `hitMatchesProduct` drops snippets that don’t include a model key (soft goods still need two phrase words).
+
+## 2026-10-25 — Concurrent Apify per shortlist option
+
+Outside reviews: **three parallel** Google Search Scraper calls (one product each, `hedge: false` so we stay under Apify’s 5 concurrent-run cap). Each option synthesizes as soon as *its* call returns. Then one shared YouTube enrich. Status bar stays through presenting; follow-ups wait up to 120 s. Reload the extension after pulling.
+
+## 2026-10-25 — Apify starts at shortlist; per-option ready
+
+Apify was waiting for all three `getDetail`s, then one big scrape+synth — so “external reviews for option 1” felt stuck. Now: Google scrape starts the moment the shortlist is known (parallel with speaking). Option 1 is scraped first. Asking about option 1 waits only on that product’s promise. YouTube can still refresh afterward.
+
+## 2026-10-25 — Amazon Renewed badge was the "product name"
+
+Search cards often put **Amazon Renewed** (or Sponsored / Choice) in the first `h2`, so the shortlist said "Amazon Renewed" and Apify queried that. Fix: `amazon.results` takes the `/dp/` link aria-label or longest non-badge span; `cleanListingTitle` strips badge prefixes for spoken names and Apify; Apify waits for product-page titles before searching. Re-run `npm run gen-indexer -w @visy/server` and reload the extension after pulling.
+
+## 2026-10-25 — Retailer pitch, Apify external in background (D-APIFY-BUDGET)
+
+Shortlist **spoken descriptions use retailer reviews only** (fast). When the three picks are known, Apify runs in the **background**: parallel Google per option, then bounded Reddit thread deepen + YouTube. Results land on `ShortlistItem.externalReviews` (additive). Follow-ups use that synthesis. Budgets: Google 60–90 s, Reddit deepen ~25 s. Other agents: don't mix Apify into the initial pitch; keep Reddit/YouTube sequential after Google so we stay under the 5-run cap.
+
+## 2026-10-25 — Longer Apify budgets (superseded by retailer/external split above)
+
+Earlier pass raised Google budgets only. Behavior above replaces waiting on Apify during the shortlist reading.
+
 ## 2026-10-25 — Claude relevance filter before narrowing (B-RELEVANCE)
 
 Marketplace keyword search returns near-misses (query "avocado" → avocado oil). After scraping Amazon/Target/Walmart, `haikuRelevance()` in `relevance.ts` sends titles to Haiku and keeps only products that *are* what the shopper asked for; then `narrowToThree` runs on that pool. Offline tests pass a `relevance` filter into `createAgent`. API failure fails open (keeps the pool); a deliberate empty keep list means "nothing matched" and Visy says so. Other agents: don't keyword-filter titles in site scrapers for this; the Claude gate is the cross-marketplace fix.
