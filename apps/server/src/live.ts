@@ -91,7 +91,13 @@ export function liveServices(opts: { driver?: () => FlowDriver | undefined } = {
   const navigator: Navigator = {
     async search(need, marketplace, emit) {
       announce = (message) => emit({ stage: "searching", marketplace, message, at: new Date().toISOString() });
-      if (marketplace !== "amazon") return mocks.search(need, marketplace, emit);
+      if (marketplace !== "amazon") {
+        // Target and Walmart are sample listings (picnic blankets). Only offer them when they match the search,
+        // so "power bank" doesn't come back with blankets.
+        const sample = await mocks.search(need, marketplace, emit);
+        const words = need.query.toLowerCase().split(/\W+/).filter((w) => w.length > 3);
+        return sample.ok ? ok(sample.data.filter((c) => words.some((w) => c.title.toLowerCase().includes(w)))) : sample;
+      }
       emit({ stage: "searching", marketplace: "amazon", message: "Searching Amazon now", at: new Date().toISOString() });
       const { flow } = use();
       const found = await safe(flow.search(need.query));
@@ -126,14 +132,16 @@ export function liveServices(opts: { driver?: () => FlowDriver | undefined } = {
       if (!candidate.id.startsWith("amazon:")) return mocks.getDetail(candidate, emit);
       // C2 + C3: opens the product, reads details via a cached recipe and scrapes retailer reviews in parallel.
       const { flow, driver } = use();
+      const asin = candidate.id.slice("amazon:".length);
       const base = await safe(flow.getDetail(candidate, emit));
       if (!base.ok) return base;
       let title = base.data.title;
       let cents = base.data.price.cents;
       // C3's recipe already read title and price; this is only the no-recipe fallback.
-      if (flow.tabId != null && flow.lastExtract?.via === "none") {
+      const tab = flow.productTabs.get(asin) ?? flow.tabId;
+      if (tab != null && flow.extracts.get(asin)?.via === "none") {
         const page = await driver
-          .extract<{ title: string; price: string | null }>(flow.tabId, "amazon.titlePrice")
+          .extract<{ title: string; price: string | null }>(tab, "amazon.titlePrice")
           .catch(() => ({ title: "", price: null }));
         if (page.title) title = page.title;
         const parsed = parseDollars(page.price);
@@ -155,10 +163,9 @@ export function liveServices(opts: { driver?: () => FlowDriver | undefined } = {
       if (!product) return err("not_found", `No Amazon product ${id}`);
       emit({ stage: "carting", marketplace: "amazon", message: "Adding it to your Amazon cart", at: new Date().toISOString() });
       const { flow } = use();
-      if (!flow.tabId) {
-        const opened = await safe(flow.open(id.slice("amazon:".length)));
-        if (!opened.ok) return opened;
-      }
+      // Always switch to this product's tab: with 3 option tabs open, the current tab may be another option.
+      const opened = await safe(flow.open(id.slice("amazon:".length)));
+      if (!opened.ok) return opened;
       const added = await safe(flow.addToCart());
       if (!added.ok) return added;
       lastAdded = product;
@@ -168,19 +175,48 @@ export function liveServices(opts: { driver?: () => FlowDriver | undefined } = {
     async openCheckout(marketplace, emit) {
       if (marketplace !== "amazon") return mocks.openCheckout(marketplace, emit);
       emit({ stage: "checkout", marketplace: "amazon", message: "Opening your Amazon cart", at: new Date().toISOString() });
-      const cart = await safe(use().flow.viewCart());
+      const { flow } = use();
+      const cart = await safe(flow.viewCart());
       if (!cart.ok) return cart;
       const cents = parseDollars(cart.data.subtotal);
       if (cents == null) return err("parse_failed", "Amazon cart subtotal was not on the page");
       const line = lastAdded ?? [...seen.values()][0];
+      const lines = line ? [{ productId: line.id, title: line.title, quantity: 1, price: line.price }] : [];
+      const usd = (c: number) => `$${(c / 100).toFixed(2)}`;
+      // B-READBACK: go one step further to the order review page for the total with tax. Never press its final button.
+      emit({ stage: "checkout", marketplace: "amazon", message: "Opening checkout", at: new Date().toISOString() });
+      const order = await safe(flow.reviewOrder());
+      const total = order.ok ? parseDollars(order.data.total) : undefined;
+      if (order.ok && total != null) {
+        const tax = parseDollars(order.data.tax);
+        return ok({
+          marketplace: "amazon" as Marketplace,
+          url: order.data.url,
+          lines,
+          subtotal: { cents, currency: "USD" as const },
+          ...(tax != null ? { tax: { cents: tax, currency: "USD" as const } } : {}),
+          total: { cents: total, currency: "USD" as const },
+          readBack:
+            `Your Amazon total is ${usd(total)}${tax != null ? `, including ${usd(tax)} tax` : " with tax"}. ` +
+            `Press ${order.data.button ?? "Place your order"} when you're ready.`,
+        });
+      }
+      if (!order.ok) console.warn("checkout review failed, reading the cart instead:", order.error.message);
       return ok({
         marketplace: "amazon" as Marketplace,
         url: "https://www.amazon.com/gp/cart/view.html",
-        lines: line ? [{ productId: line.id, title: line.title, quantity: 1, price: line.price }] : [],
+        lines,
         subtotal: { cents, currency: "USD" as const },
         total: { cents, currency: "USD" as const },
-        readBack: `Amazon cart subtotal is $${(cents / 100).toFixed(2)}, before tax. I stopped on the cart page.`,
+        readBack: `Your Amazon cart subtotal is ${usd(cents)} before tax. Press Proceed to checkout when you're ready.`,
       });
+    },
+
+    async openOptions(ids, emit) {
+      const asins = ids.filter((id) => id.startsWith("amazon:")).map((id) => id.slice("amazon:".length));
+      if (!asins.length) return;
+      emit({ stage: "reading_product", marketplace: "amazon", message: "Opening the options in tabs", at: new Date().toISOString() });
+      await safe(use().flow.showOptions(asins).then(() => ok({}))).catch(() => {});
     },
   };
 

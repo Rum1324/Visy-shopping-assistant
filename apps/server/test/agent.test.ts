@@ -40,7 +40,7 @@ function fakeClaude(opts: { obeyInjection?: boolean; clarify?: boolean } = {}) {
           let call = route(said.toLowerCase(), prices);
           const asked = last.content.match(/asked questions about: (.+)/)?.[1];
           if (asked) {
-            const cap = said.match(/\$\s*(\d+)/);
+            const cap = last.content.match(/\$\s*(\d+)/);
             call = { name: "search", input: { query: asked, budgetMaxCents: cap ? Number(cap[1]) * 100 : undefined, mustHaves: ["waterproof"] } };
           } else if (call?.name === "search" && opts.clarify) {
             call = { name: "ask_shopping_questions", input: { query: said, questions: ["What's your budget?", "Does it need to be waterproof?"] } };
@@ -126,14 +126,15 @@ for (const mode of ["keywords", "claude"] as const) {
     await agent.handleText("add option 1");
     assert.equal(agent.state?.phase, "checkout_review");
     assert.equal(sent.some((m) => m.type === "checkout.confirmRequired"), true);
-    assert.match(said.at(-1) ?? "", /will not place the order/i);
+    assert.match(said.at(-1) ?? "", /Place your order/i);
+    assert.doesNotMatch(said.at(-1) ?? "", /order (was|has been) placed/i);
 
     await agent.confirm({ cents: 1, currency: "USD" });
     assert.equal(agent.state?.phase, "checkout_review");
 
     await agent.confirm(fixtures.checkout.total);
     assert.equal(agent.state?.phase, "done");
-    assert.match(said.at(-1) ?? "", /will not press Place order/i);
+    assert.match(said.at(-1) ?? "", /saved that as your usual.*final button is yours/i);
   });
 
   test(`${mode}: a follow-up question is answered from reviews and does not check out`, async () => {
@@ -162,7 +163,7 @@ for (const mode of ["keywords", "claude"] as const) {
     await agent.handleText("add option 1");
     await agent.handleText("yes");
     assert.equal(agent.state?.phase, "done");
-    assert.match(said.at(-1) ?? "", /will not press Place order/i);
+    assert.match(said.at(-1) ?? "", /saved that as your usual.*final button is yours/i);
     assert.equal(agent.state?.cart[0]?.quantity, 1);
   });
 
@@ -183,14 +184,28 @@ for (const mode of ["keywords", "claude"] as const) {
     assert.equal(agent.state?.phase, "clarifying");
     assert.equal(agent.state?.shortlist.length, 0);
     assert.match(said.at(-1) ?? "", /budget/i);
-    await agent.handleText("under $20, waterproof");
+    await agent.handleText("under $20");
+    assert.equal(agent.state?.phase, "clarifying", "the second question comes on its own turn");
+    assert.match(said.at(-1) ?? "", /must have|waterproof/i);
+    assert.doesNotMatch(said.at(-1) ?? "", /budget/i);
+    await agent.handleText("waterproof");
     assert.equal(agent.state?.phase, "presenting");
     assert.equal(agent.state?.need?.query, "picnic blanket");
     assert.equal(agent.state?.need?.budget?.max?.cents, 2000);
     assert.ok(agent.state!.shortlist.length >= 1);
     assert.ok(agent.state!.shortlist.every((item) => item.product.price.cents <= 2000));
     assert.match(said.join(" "), /I found \d+ products/);
+    assert.match(said.at(-1) ?? "", /add one to your cart\?$/);
     assert.equal(agent.state?.cart.length, 0);
+  });
+
+  test(`${mode}: "just search" ends the questions early`, async () => {
+    const { agent } = harness(mode === "claude" ? fakeClaude({ clarify: true }).llm : null, undefined, true);
+    await agent.hello("demo-user");
+    await agent.handleText("picnic blanket");
+    await agent.handleText("just search");
+    assert.equal(agent.state?.phase, "presenting");
+    assert.equal(agent.state?.shortlist.length, 3);
   });
 }
 
@@ -265,7 +280,7 @@ test("claude: a review that says to check out cannot add to cart or confirm", as
   assert.equal(agent.state?.checkout, undefined);
   assert.notEqual(agent.state?.phase, "done");
   assert.equal(sent.some((m) => m.type === "checkout.confirmRequired"), false);
-  assert.doesNotMatch(said.join(" "), /will not press Place order/i);
+  assert.doesNotMatch(said.join(" "), /saved that as your usual/i);
 });
 
 test("claude: confirm_checkout_total refuses unless the user said yes", async () => {
