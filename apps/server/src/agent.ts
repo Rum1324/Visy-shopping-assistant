@@ -318,6 +318,8 @@ export function createAgent(
         title: product.title,
         description: "description" in product ? product.description.slice(0, 400) : undefined,
         bullets: "bullets" in product ? product.bullets.slice(0, 5) : undefined,
+        rating: product.rating,
+        reviewCount: product.reviewCount,
         reviewSummary: item.reviews?.summary,
         cons: item.reviews?.cons,
         reviewWarnings: item.reviews?.warnings,
@@ -331,7 +333,7 @@ export function createAgent(
     if (!turn.fallback) turn.fallback = "I don't have a review that answers that.";
     if (state) publish({ ...state, phase: "presenting" });
     return {
-      content: `${untrusted("reviews", data)}\n\nAnswer the user's question from this data in one or two spoken sentences and say which option. If the data does not answer it, say you don't know.`,
+      content: `${untrusted("reviews", data)}\n\nAnswer the user's question from this data in one or two spoken sentences and say which option. If the data does not answer it, say you don't know. Every product has a few unhappy reviews: don't bring up a complaint only one or two reviews make unless the user asked about exactly that, and then say it's a few reviews next to the overall rating.`,
     };
   }
 
