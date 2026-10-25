@@ -4,6 +4,25 @@ Living log of changes that depart from the skeleton in `docs/ARCHITECTURE.md`, `
 
 If you improvise, add an entry in the same commit and push it. Say what changed, why the skeleton was not enough, and what other agents should do differently now.
 
+## 2026-10-24 — Drop loaded-language reviews before synthesis (D-UNBIASED)
+
+`ReviewService.synthesize` now runs `excludeLoaded` over the retailer + Apify pool before Claude sees it. Reviews with stacked hype/rage markers (e.g. "life changing", "don't waste your money", heavy ALL CAPS, `!!!`) are set aside when enough calmer reviews remain; if the calm pool is thin we keep the least-loaded ones so synthesis still has evidence. A speakable warning notes how many were set aside. Heuristic only — no new contract fields. Other agents: don't re-prompt Claude to "ignore bias"; filter first in `intel/reviews.ts`.
+## 2026-10-24 — Side panel settings: Cartesia voice speed (UX-SPEED)
+
+The wire already had `settings.update.speechRate` and the server already passed it to Cartesia. The extension had no UI. Gear (top right) opens a Settings page with a Voice speed slider (0.6–3×). Cartesia Sonic only accepts `generation_config.speed` 0.6–1.5. Above 1.5× the side panel **WSOLA time-compresses** the PCM (keeps pitch; no chipmunk `playbackRate`). Example: 3× = Cartesia 1.5 × WSOLA 2. `speechRate` max in contracts is 3. Value is kept in `localStorage` (`visy.speechRate`) and sent on every connect after `hello`, and again when the slider changes. Reload the extension after pulling.
+
+## 2026-10-24 — Progress lines name Apify
+
+When `APIFY_TOKEN` is set, progress messages say "Using Apify…" / "Got Apify results from …" so the demo calls out the API. Without a token, wording stays generic. Prefetch starts as soon as the shopper query is known, in parallel with marketplace search.
+
+## 2026-10-24 — Progress TTS is calm + declarative
+
+`agent.say` with `kind: "progress"` is spoken only when TTS is idle (`ws.ts` skips progress audio while another say is queued). Cartesia was reading trailing `…` with rising question intonation. `speechForKind` in `voice.ts` strips trailing ellipses, ends with a period, and sets `generation_config.emotion` to `calm` for progress (`curious` for questions).
+
+## 2026-10-24 — Apify external reviews via parallel actors (D-APIFY)
+
+Outside reviews: `prefetchApifySearch` runs **three Apify actors in parallel** (Reddit lite search, YouTube search, one Google SERP for articles only) under `APIFY_BUDGET_MS` (default 25 s), started as soon as the shopper query is known. We deliberately do **not** chain full transcript/page scrapes after discovery — that is the slow path; search snippets (+ YouTube description/captions when the actor returns them) feed Claude. The shortlist still uses main's narrow + `present.ts` overview/pitch; Apify hits are shared across the three options via `reviewsFromHits`.
+
 ## 2026-10-24 — Team feedback: one question per turn, option tabs, shorter options, real checkout total
 
 - **Questions one at a time (UX-ASK-FIRST).** The questions from `ask_shopping_questions` are asked one per turn, and the agent asks the next one itself with no model call. "Just search" or "skip" ends them early. The last answer goes to Claude with every question and answer in `session_state`.

@@ -6,7 +6,7 @@ import { fixtures } from "@visy/contracts/fixtures";
 import { mockServices } from "@visy/contracts/mocks";
 import { createAgent, type AgentSink } from "../src/agent.ts";
 import type { Llm } from "../src/agent-tools.ts";
-import { Cartesia } from "../src/voice.ts";
+import { Cartesia, speechForKind } from "../src/voice.ts";
 
 type Call = { name: string; input: Record<string, unknown> };
 
@@ -92,6 +92,19 @@ function harness(llm: Llm | null, services: Services = mockServices({ latencyMs:
 
 test("cartesia is off when the key is empty", () => {
   assert.equal(new Cartesia("").enabled, false);
+});
+
+test("speechForKind makes progress declarative", () => {
+  assert.deepEqual(speechForKind("Reading option 1 on Amazon…", "progress"), {
+    transcript: "Reading option 1 on Amazon.",
+    emotion: "calm",
+  });
+  assert.deepEqual(speechForKind("Still waiting...", "progress"), {
+    transcript: "Still waiting.",
+    emotion: "calm",
+  });
+  assert.equal(speechForKind("Which one?", "question").emotion, "curious");
+  assert.equal(speechForKind("Here are three options.").emotion, undefined);
 });
 
 // Every demo-path test runs on keyword routing (no key) and on the Claude tool loop (fake client).
@@ -226,8 +239,8 @@ test("a silent stretch while working is filled with what Visy is doing", async (
   const search = services.navigator.search.bind(services.navigator);
   services.navigator.search = async (need, marketplace, emit) => {
     emit({ stage: "searching", marketplace, message: `Searching ${marketplace} now`, at: new Date().toISOString() });
-    // Longer than the spoken "I'll check …" line plus the 2.5 s of quiet allowed after it.
-    await new Promise((r) => setTimeout(r, 5500));
+    // Longer than the greeting and the "I'll check …" line (both still being heard) plus 2 s of quiet.
+    await new Promise((r) => setTimeout(r, 8000));
     return search(need, marketplace, emit);
   };
   const { agent, said } = harness(null, services);
@@ -322,11 +335,11 @@ test("claude: confirm_checkout_total refuses unless the user said yes", async ()
   assert.equal(agent.state?.phase, "checkout_review");
 });
 
-test("claude failing after the 'One moment' ack still falls back to keyword routing", async () => {
+test("claude failing after a spoken progress line still falls back to keyword routing", async () => {
   const slowBroken: Llm = {
     messages: {
       async create() {
-        await new Promise((r) => setTimeout(r, 1000)); // past ACK_MS, so the ack has been said
+        await new Promise((r) => setTimeout(r, 5500)); // past the greeting and 2 s of quiet, so a progress line has been said
         throw new Error("overloaded");
       },
     },
@@ -334,7 +347,7 @@ test("claude failing after the 'One moment' ack still falls back to keyword rout
   const { agent, said } = harness(slowBroken);
   await agent.hello("demo-user");
   await agent.handleText("picnic blanket");
-  assert.ok(said.some((s) => /^(One moment|Let me check|On it)\.$/.test(s)), said.join(" | "));
+  assert.ok(said.some((s) => /^(One sec|Let me check|Working on it|Just a moment)\.$/.test(s)), said.join(" | "));
   assert.equal(agent.state?.shortlist.length, 3);
 });
 
@@ -343,7 +356,7 @@ test("a progress line during a quiet tool still lets Claude answer from its resu
   const search = services.reviewIndex.search.bind(services.reviewIndex);
   let slow = true;
   services.reviewIndex.search = async (productId, query, k) => {
-    if (slow) await new Promise((r) => setTimeout(r, 4000)); // long enough for a spoken progress line
+    if (slow) await new Promise((r) => setTimeout(r, 3000)); // long enough for a spoken progress line
     slow = false;
     return search(productId, query, k);
   };
@@ -351,9 +364,11 @@ test("a progress line during a quiet tool still lets Claude answer from its resu
   const { agent, said } = harness(fake.llm, services);
   await agent.hello("demo-user");
   await agent.handleText("picnic blanket");
+  // The user cuts in, so the options still queued to be heard don't count as speech.
+  agent.interrupt();
   await agent.handleText("is it waterproof");
   assert.match(said.at(-1) ?? "", /waterproof|don't know/i);
-  assert.ok(said.length > 0);
+  assert.ok(said.includes("Reading the reviews."), said.join(" | "));
 });
 
 test("claude errors fall back to keyword routing", async () => {

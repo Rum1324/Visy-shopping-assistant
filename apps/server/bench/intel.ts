@@ -27,16 +27,22 @@ if (process.argv.includes("--amazon")) {
   const d = detail.data;
   console.log(`\n${d.id} ${d.title.slice(0, 80)}\n  ${d.retailerReviews.length} retailer reviews, image ${d.imageUrls[0] ?? "none"}, getDetail ${Math.round(performance.now() - t)} ms`);
   t = performance.now();
-  const [s, v] = await Promise.all([claudeReviewService().synthesize(d, d.retailerReviews, need), claudeVisionService().describe(d)]);
+  const reviews = claudeReviewService();
+  const external = await reviews.collectExternal(d, emit);
+  console.log(`  collectExternal: ${external.ok ? external.data.length : external.error.message} in ${Math.round(performance.now() - t)} ms`);
+  const pool = [...d.retailerReviews, ...(external.ok ? external.data : [])];
+  t = performance.now();
+  const [s, v] = await Promise.all([reviews.synthesize(d, pool, need), claudeVisionService().describe(d)]);
   console.log(`  synthesis + vision in parallel: ${Math.round(performance.now() - t)} ms`);
   if (s.ok) {
+    console.log(`  sources: ${JSON.stringify(s.data.sourceCounts)}`);
     console.log(`  ${s.data.summary}\n  pros: ${s.data.pros.join("; ")}\n  cons: ${s.data.cons.join("; ")}\n  warnings: ${s.data.warnings.join(" | ")}`);
     for (const a of s.data.accessibility) console.log(`  [${a.sentiment} ×${a.evidenceCount}] ${a.answer}`);
   } else console.log(`  synthesis ERROR ${s.error.code} ${s.error.message}`);
   console.log(v.ok ? `  vision: ${v.data.short} (${v.data.confidence})` : `  vision ERROR ${v.error.message}`);
   await warm;
   t = performance.now();
-  const ix = await index.index(d.id, d.retailerReviews);
+  const ix = await index.index(d.id, pool);
   console.log(`  moss index: ${ix.ok ? ix.data.chunks : ix.error.message} chunks, ${Math.round(performance.now() - t)} ms`);
   for (const q of ["is it easy to fold up by feel?", "does the color match the photos?", "is it really waterproof?"]) {
     t = performance.now();

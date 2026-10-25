@@ -8,7 +8,10 @@ export const SCRIPTS = {
   "amazon.results": (arg) => (Array.from(document.querySelectorAll('[data-component-type="s-search-result"][data-asin]')).map((c) => ({
   asin: c.getAttribute('data-asin'),
   title: (c.querySelector('h2')?.innerText || '').trim(),
-  price: c.querySelector('.a-price .a-offscreen')?.textContent?.trim() || null,
+  price: (c.querySelector('.a-price:not(.a-text-price) .a-offscreen') || c.querySelector('.a-price .a-offscreen'))?.textContent?.trim() || null,
+  // UX-SALES: the struck-through "List:" / "Typical:" price, and a deal badge or coupon tile ("Coupon price $28.51").
+  listPrice: c.querySelector('.a-text-price[data-a-strike="true"] .a-offscreen')?.textContent?.trim() || null,
+  deal: [...c.querySelectorAll('.a-badge-text, [class*="coupon-tile-text"], .s-coupon-unclipped')].map((e) => (e.innerText || '').replace(/\s+/g, ' ').trim()).find((t) => /deal|coupon|sale|% off/i.test(t))?.slice(0, 80) || null,
   rating: c.querySelector('.a-icon-alt')?.textContent?.trim() || null,
   reviews: (() => { const r = c.querySelector('[aria-label$="ratings"], [aria-label$="rating"], a[href*="customerReviews"] span'); return r ? (r.getAttribute('aria-label') || r.textContent || '').trim() || null : null; })(),
   sponsored: !!c.querySelector('.puis-sponsored-label-text, [aria-label*="Sponsored"]') || /^Sponsored/.test((c.innerText || '').trim()),
@@ -58,6 +61,79 @@ export const SCRIPTS = {
   const usd = /^\$/.test(total || '') ? total : t.match(/USD\s*([\d,]+\.\d{2})/)?.[1] || null;
   const button = t.match(/Place your order(?: in [A-Z]{3})?/i)?.[0] || (/Proceed to checkout/i.test(t) ? 'Proceed to checkout' : null);
   return { total, tax, usd, button, url: location.href };
+})()),
+  "walmart.ready": (arg) => ((document.readyState !== 'loading' && !!document.getElementById('__NEXT_DATA__')) || /^\/blocked/.test(location.pathname)),
+  "walmart.results": (arg) => ((() => {
+  let d;
+  try { d = JSON.parse(document.getElementById('__NEXT_DATA__').textContent); } catch { return []; }
+  const stacks = d?.props?.pageProps?.initialData?.searchResult?.itemStacks || [];
+  const ordered = [...stacks.filter((s) => s.layoutEnum !== 'CAROUSEL'), ...stacks.filter((s) => s.layoutEnum === 'CAROUSEL')];
+  const seen = new Set();
+  const out = [];
+  for (const s of ordered) for (const it of s.items || []) {
+    if (it.__typename !== 'Product' || !it.usItemId || !it.name || seen.has(String(it.usItemId))) continue;
+    seen.add(String(it.usItemId));
+    const line = (types, key) => {
+      for (const l of it.priceInfo?.priceDetails?.priceLines || []) if (types.includes(l.lineType)) for (const v of l.values || []) if (v.key === key) return v.value;
+      return null;
+    };
+    const tile = (it.badges?.groupsV2 || []).find((g) => g.name === 'ProdTileBadgeModule5');
+    const ship = (tile?.members || []).map((m) => (m.content || []).map((c) => c.value).filter(Boolean).join(' ').replace(/\s+/g, ' ').trim()).filter(Boolean);
+    out.push({
+      id: String(it.usItemId),
+      title: it.name,
+      brand: it.brand || null,
+      price: line(['CURRENT_PRICE', 'DISCOUNTED_PRICE'], 'PRICE') ?? line(['OPTIONS', 'OPTIONS_RANGE'], 'LOW_PRICE') ?? (it.price ?? null),
+      wasPrice: line(['COMPARISON'], 'WAS_PRICE'),
+      rating: typeof it.averageRating === 'number' ? it.averageRating : null,
+      reviews: typeof it.numberOfReviews === 'number' ? it.numberOfReviews : null,
+      image: it.imageInfo?.thumbnailUrl || null,
+      path: (it.canonicalUrl || '').split('?')[0] || null,
+      availability: it.availabilityStatusV2?.value || null,
+      flags: (it.badges?.flags || []).map((f) => ({ key: f.key || '', text: f.text || '' })),
+      delivery: ship.find((t) => /shipping/i.test(t)) || ship[0] || null,
+      sponsored: !!it.isSponsoredFlag,
+    });
+  }
+  return out;
+})()),
+  "walmart.detail": (arg) => ((() => {
+  let d;
+  try { d = JSON.parse(document.getElementById('__NEXT_DATA__').textContent).props.pageProps.initialData.data; } catch { return null; }
+  const p = d?.product;
+  if (!p) return null;
+  const idml = d.idml || {};
+  const strip = (s) => String(s || '').replace(/<[^>]+>/g, ' ').replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&').replace(/&quot;/g, '"').replace(/&#39;|&apos;/g, "'").replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/\s+/g, ' ').trim();
+  const pi = p.priceInfo || {};
+  const ship = (p.fulfillmentOptions || []).find((o) => o.type === 'SHIPPING');
+  return {
+    title: p.name || null,
+    brand: p.brand || null,
+    price: pi.currentPrice?.price ?? null,
+    wasPrice: pi.wasPrice?.price ?? null,
+    savings: pi.savings?.priceString || null,
+    flags: (p.badges?.flags || []).map((f) => ({ key: f.key || '', text: f.text || '' })),
+    rating: typeof p.averageRating === 'number' ? p.averageRating : null,
+    reviews: typeof p.numberOfReviews === 'number' ? p.numberOfReviews : null,
+    images: (p.imageInfo?.allImages || []).map((i) => String(i.url || '').split('?')[0]).filter(Boolean).slice(0, 8),
+    availability: p.availabilityStatus || null,
+    shipEta: ship?.speedDetails?.fulfillmentBadge || null,
+    shipFree: ship?.speedDetails?.freeFulfillment ?? null,
+    lowStock: ship?.isLowInStock ? (ship.availableQuantity ?? 0) : null,
+    description: strip(idml.shortDescription || p.shortDescription).slice(0, 3000) || null,
+    bullets: (String(idml.longDescription || '').match(/<li[^>]*>[\s\S]*?<\/li>/gi) || []).map(strip).filter(Boolean).slice(0, 12),
+    specs: (idml.specifications || []).map((s) => [strip(s.name), strip(s.value)]).filter((kv) => kv[0] && kv[1]).slice(0, 40),
+    variants: (p.variantCriteria || []).map((v) => ({ name: v.name || '', options: (v.variantList || []).map((o) => o.name).filter(Boolean).slice(0, 30) })).filter((v) => v.name && v.options.length).slice(0, 6),
+    customerReviews: (d.reviews?.customerReviews || []).map((r) => ({
+      id: String(r.reviewId || ''),
+      rating: typeof r.rating === 'number' ? r.rating : null,
+      title: r.reviewTitle || '',
+      body: r.reviewText || '',
+      date: r.reviewSubmissionTime || '',
+      author: r.userNickname || null,
+      verified: (r.badges || []).some((b) => b.id === 'VerifiedPurchaser'),
+    })),
+  };
 })()),
   "recipe.replay": (arg) => (((f) => {
   const one = (s, root) => { if (!s) return null; try { return (root || document).querySelector(s.css); } catch { return null; } };

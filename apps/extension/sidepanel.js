@@ -8,6 +8,18 @@ const go = document.querySelector("#go");
 const checkout = document.querySelector("#checkout");
 const checkoutText = document.querySelector("#checkout-text");
 const confirmBtn = document.querySelector("#confirm");
+const settingsOpenBtn = document.querySelector("#settings-open");
+const settingsBackBtn = document.querySelector("#settings-back");
+const settingsEl = document.querySelector("#settings");
+const speechRateInput = document.querySelector("#speech-rate");
+const speechRateValue = document.querySelector("#speech-rate-value");
+
+const SPEED_KEY = "visy.speechRate";
+/** UI / wire range. Cartesia only goes to 1.5; above that we WSOLA time-compress (keeps pitch). */
+const SPEED_MIN = 0.6;
+const SPEED_MAX = 3;
+const CARTESIA_SPEED_MIN = 0.6;
+const CARTESIA_SPEED_MAX = 1.5;
 
 let ws = null;
 let checkoutTotal = null;
@@ -34,6 +46,7 @@ let micStream = null;
 let micCtx = null;
 let micNode = null;
 const MIC_RATE = 16000;
+let speechRate = loadSpeechRate();
 
 boot();
 
@@ -65,6 +78,11 @@ function showWelcome() {
 async function boot() {
   userName = (await getDisplayName()) || "You";
   audioCtx ??= new AudioContext({ sampleRate: 24000 });
+  paintSpeechRate();
+  settingsOpenBtn.addEventListener("click", openSettings);
+  settingsBackBtn.addEventListener("click", closeSettings);
+  speechRateInput.addEventListener("input", onSpeechRateInput);
+  speechRateInput.addEventListener("change", onSpeechRateCommit);
   document.addEventListener(
     "pointerdown",
     () => {
@@ -79,6 +97,68 @@ async function boot() {
   connect();
 }
 
+function loadSpeechRate() {
+  try {
+    const raw = Number(localStorage.getItem(SPEED_KEY));
+    if (Number.isFinite(raw)) return clampSpeed(raw);
+  } catch {
+    /* ignore */
+  }
+  return 1;
+}
+
+function clampSpeed(n) {
+  const stepped = Math.round(n * 10) / 10;
+  return Math.min(SPEED_MAX, Math.max(SPEED_MIN, stepped));
+}
+
+function formatSpeed(n) {
+  return `${n.toFixed(1)}×`;
+}
+
+function paintSpeechRate() {
+  speechRateInput.value = String(speechRate);
+  speechRateValue.textContent = formatSpeed(speechRate);
+  speechRateInput.setAttribute("aria-valuetext", formatSpeed(speechRate));
+}
+
+function onSpeechRateInput() {
+  speechRate = clampSpeed(Number(speechRateInput.value));
+  paintSpeechRate();
+}
+
+function onSpeechRateCommit() {
+  speechRate = clampSpeed(Number(speechRateInput.value));
+  paintSpeechRate();
+  try {
+    localStorage.setItem(SPEED_KEY, String(speechRate));
+  } catch {
+    /* ignore */
+  }
+  pushSpeechRate();
+}
+
+function pushSpeechRate() {
+  send({ type: "settings.update", speechRate });
+}
+
+function openSettings() {
+  document.body.classList.add("settings-open");
+  settingsEl.hidden = false;
+  settingsOpenBtn.setAttribute("aria-expanded", "true");
+  pauseAll();
+  stopListening({ flush: false });
+  speechRateInput.focus();
+}
+
+function closeSettings() {
+  document.body.classList.remove("settings-open");
+  settingsEl.hidden = true;
+  settingsOpenBtn.setAttribute("aria-expanded", "false");
+  settingsOpenBtn.focus();
+  if (paused) resumeAll();
+}
+
 function helloWithName() {
   send({
     type: "hello",
@@ -87,6 +167,7 @@ function helloWithName() {
     client: "extension",
     displayName: userName !== "You" ? userName : undefined,
   });
+  pushSpeechRate();
 }
 
 function stopVoice() {
@@ -124,6 +205,12 @@ function fillChars(el, phrase) {
     if (!part) continue;
     if (/^\s+$/.test(part)) {
       for (const c of part) {
+        if (c === "\n") {
+          const br = document.createElement("br");
+          br.className = "ch nl on";
+          el.append(br);
+          continue;
+        }
         const span = document.createElement("span");
         span.className = "ch space";
         span.textContent = "\u00a0";
@@ -144,6 +231,14 @@ function fillChars(el, phrase) {
     el.append(word);
   }
   return chars;
+}
+
+/** Top progress bar (#status). Empty clears it. */
+function setProgress(message) {
+  const text = (message ?? "").trim();
+  statusEl.hidden = !text;
+  statusEl.textContent = text;
+  statusEl.classList.toggle("thinking", Boolean(text));
 }
 
 function revealChars(chars, shown, n) {
@@ -206,18 +301,30 @@ function beginSay(id, phrase, onto) {
   pendingSay.set(id, {
     id,
     text: phrase,
+    onto,
     el: onto === "welcome" ? welcomeLine : null,
     done: false,
   });
+  if (onto === "progress") setProgress(phrase);
 }
 
 function finishSay(item, bytes) {
   if (!item || item.done) return;
-  const played = bytes && bytes.length > 1 ? playPcm(bytes, ttsRate) : null;
-  if (!played) return;
   item.done = true;
   pendingSay.delete(item.id);
+  if (item.onto === "progress") {
+    setProgress(item.text);
+    if (bytes && bytes.length > 1) playPcm(bytes, ttsRate);
+    paintGo();
+    return;
+  }
+  const played = bytes && bytes.length > 1 ? playPcm(bytes, ttsRate) : null;
   if (!item.el) item.el = addTurn("Visy");
+  if (!played) {
+    sparkOnly(item.el, item.text);
+    paintGo();
+    return;
+  }
   playWithAudio(item.el, item.text, played);
 }
 
@@ -271,6 +378,8 @@ function setBusy(next) {
 }
 
 function showLink(message) {
+  // Reconnect copy uses the same top slot; don't mark it as thinking pulse.
+  statusEl.classList.remove("thinking");
   statusEl.hidden = !message;
   statusEl.textContent = message ?? "";
 }
@@ -330,7 +439,11 @@ async function onMessage(ev) {
   }
   const msg = JSON.parse(ev.data);
   if (msg.type === "agent.say") {
-    beginSay(msg.id, msg.text, chatting ? "chat" : "welcome");
+    if (msg.kind === "progress") {
+      beginSay(msg.id, msg.text, "progress");
+    } else {
+      beginSay(msg.id, msg.text, chatting ? "chat" : "welcome");
+    }
   } else if (msg.type === "transcript") {
     line("You", msg.text);
   } else if (msg.type === "tts.start") {
@@ -351,7 +464,10 @@ async function onMessage(ev) {
     if (chatting) stopTalk();
   } else if (msg.type === "session.snapshot") {
     setBusy(WORKING.has(msg.state.phase));
-    if (!WORKING.has(msg.state.phase)) maybeListen();
+    if (!WORKING.has(msg.state.phase)) {
+      setProgress("");
+      maybeListen();
+    }
     options.replaceChildren();
     for (const item of msg.state.shortlist ?? []) {
       const li = document.createElement("li");
@@ -361,6 +477,7 @@ async function onMessage(ev) {
     }
   } else if (msg.type === "progress") {
     setBusy(true);
+    setProgress(msg.event?.message ?? "");
   } else if (msg.type === "driver.request") {
     const res = await chrome.runtime.sendMessage({ type: "visy.driver", req: msg.req });
     send({
@@ -429,21 +546,90 @@ function playPcm(bytes, rate) {
   audioCtx ??= new AudioContext({ sampleRate: rate });
   if (audioCtx.state === "suspended") void audioCtx.resume();
   const samples = new Int16Array(bytes.buffer, bytes.byteOffset, Math.floor(bytes.byteLength / 2));
-  const buffer = audioCtx.createBuffer(1, samples.length, rate);
-  const ch = buffer.getChannelData(0);
-  for (let i = 0; i < samples.length; i++) ch[i] = (samples[i] ?? 0) / 32768;
+  const mono = new Float32Array(samples.length);
+  for (let i = 0; i < samples.length; i++) mono[i] = (samples[i] ?? 0) / 32768;
+
+  // Cartesia already applied up to 1.5× at natural pitch. Extra speed via WSOLA (not playbackRate),
+  // so 3× does not chipmunk.
+  const cartesiaSpeed = Math.min(CARTESIA_SPEED_MAX, Math.max(CARTESIA_SPEED_MIN, speechRate));
+  const extra = speechRate / cartesiaSpeed;
+  const pcm = extra > 1.02 ? timeCompress(mono, extra) : mono;
+
+  const buffer = audioCtx.createBuffer(1, pcm.length, rate);
+  buffer.copyToChannel(pcm, 0);
   const src = audioCtx.createBufferSource();
   src.buffer = buffer;
   src.connect(audioCtx.destination);
   const start = Math.max(audioCtx.currentTime, nextTime);
+  const duration = buffer.duration;
   src.start(start);
-  nextTime = start + buffer.duration;
+  nextTime = start + duration;
   playingCount += 1;
   src.onended = () => {
     playingCount = Math.max(0, playingCount - 1);
     maybeListen();
   };
-  return { ctx: audioCtx, start, duration: buffer.duration };
+  return { ctx: audioCtx, start, duration };
+}
+
+/** Hann window of length n. */
+function hann(n) {
+  const w = new Float32Array(n);
+  if (n < 2) {
+    w[0] = 1;
+    return w;
+  }
+  for (let i = 0; i < n; i++) w[i] = 0.5 * (1 - Math.cos((2 * Math.PI * i) / (n - 1)));
+  return w;
+}
+
+/**
+ * Speed up mono PCM without raising pitch (WSOLA).
+ * factor > 1 → shorter output (e.g. 2 = twice as fast).
+ */
+function timeCompress(input, factor) {
+  const f = Math.min(4, Math.max(1, factor));
+  if (f <= 1.02 || input.length < 64) return input;
+
+  const frame = 1024;
+  const overlap = 256;
+  const hopOut = frame - overlap;
+  const hopIn = Math.max(1, Math.round(hopOut * f));
+  const search = 128;
+  const win = hann(frame);
+  const outLen = Math.floor(input.length / f) + frame * 2;
+  const out = new Float32Array(outLen);
+
+  let read = 0;
+  let write = 0;
+  while (read + frame < input.length && write + frame < outLen) {
+    let best = read;
+    if (write > 0) {
+      let bestCorr = -Infinity;
+      const from = Math.max(0, read - search);
+      const to = Math.min(input.length - frame, read + search);
+      for (let at = from; at <= to; at++) {
+        let corr = 0;
+        for (let k = 0; k < overlap; k++) corr += out[write + k] * input[at + k];
+        if (corr > bestCorr) {
+          bestCorr = corr;
+          best = at;
+        }
+      }
+    }
+    for (let k = 0; k < frame; k++) out[write + k] += input[best + k] * win[k];
+    read += hopIn;
+    write += hopOut;
+  }
+
+  // Normalize overlap-add peaks a bit so windows don't boost level.
+  let peak = 1e-6;
+  for (let i = 0; i < write; i++) peak = Math.max(peak, Math.abs(out[i]));
+  if (peak > 1) {
+    const inv = 1 / peak;
+    for (let i = 0; i < write; i++) out[i] *= inv;
+  }
+  return out.subarray(0, Math.max(write, 1));
 }
 
 let askingMic = false;
