@@ -29,7 +29,6 @@ Line format: `[status] ID · task · owner · branch · since HH:MM PT`. Use one
 - [working] C-WMT-CART · Walmart add to cart and cart read-back. Search and detail are live (PR #16); a Walmart add still goes to the mock and returns not_found · agent: Multi-item cart tests (for Sota) · claude/multi-cart · since 23:02 PT
 - [open] D-PAGEQA · Answer "what's on this page?" over the C5 `PageState` capture
 - [working] C-MULTI · Several items (and quantities) in one cart, and choosing a color/size variant before adding, on Amazon, Walmart and Target; covers the variant + quantity part of C4 · agent: Multi-item cart tests (for Sota) · claude/multi-cart · since 23:02 PT
-- [working] C-TGT-CART · Target add to cart and cart read-back (needs PR #18) · agent: Target cart (for Sota) · claude/magical-austin-6f8bb6 · since 22:02 PT
 - [open] A-VOICE · Decide whether voice-only must work with no clicks at all (motor-impaired users)
 - [open] DEMO · Feature freeze and rehearsal (H+14); warm `RecipeCache` and picker memory before going on stage
 
@@ -50,6 +49,7 @@ Line format: `[status] ID · task · owner · branch · since HH:MM PT`. Use one
 
 ## Done
 
+- [done] C-TGT-CART · Target add to cart (Shipping, picker-chain Add to cart) and cart read-back with est. tax and total · [PR #24](https://github.com/Rum1324/Visy-shopping-assistant/pull/24)
 - [done] C-TGT · Real Target search and detail flow · [PR #18](https://github.com/Rum1324/Visy-shopping-assistant/pull/18)
 - [done] UX-PITCH · Bug: spoken option lines included the pitch model's self-corrections ("wait, correction: …") and wrong price math; the prompt now gets computed differences and a guard falls back to the template · agent: Clean pitch lines (for Sota) · [PR #25](https://github.com/Rum1324/Visy-shopping-assistant/pull/25)
 - [done] D-UNBIASED · Unbiased review summary: drop loaded-language reviews before synthesis (ties to D-APIFY) · agent: Unbiased review summary (for Pixl) · [PR #23](https://github.com/Rum1324/Visy-shopping-assistant/pull/23)

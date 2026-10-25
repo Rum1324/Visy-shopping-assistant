@@ -1,6 +1,7 @@
 /**
  * Real Amazon search/cart behind Services.navigator.
- * Target and Walmart are live too (navigator/sites/target.ts, navigator/sites/walmart.ts): search and detail.
+ * Target and Walmart are live too (navigator/sites/target.ts, navigator/sites/walmart.ts): search and detail,
+ * and Target add to cart + cart read-back.
  * Set NAV=amazon. A bot check is handed to the human; we never solve it.
  *
  * Called from apps/server/src/ws.ts start() when NAV=amazon. `driver()` returns the connected extension's
@@ -98,11 +99,11 @@ export function liveServices(opts: { driver?: () => FlowDriver | undefined } = {
   };
   const seen = new Map<string, Candidate>();
   let lastAdded: Candidate | undefined;
-  // C-TGT: live Target search + detail on the same driver, in its own tab. Cart/checkout stay on fixtures.
+  // C-TGT: live Target search + detail on the same driver, in its own tab. C-TGT-CART: add to cart + cart read-back too.
   const targets = new WeakMap<FlowDriver, TargetFlow>();
   const target = () => {
     const { driver } = use();
-    if (!targets.has(driver)) targets.set(driver, new TargetFlow(driver, (m) => announce(m)));
+    if (!targets.has(driver)) targets.set(driver, new TargetFlow(driver, (m) => announce(m), undefined, chain));
     return targets.get(driver)!;
   };
   // C-WMT: Walmart search + detail on the same driver as Amazon, in its own background tabs.
@@ -192,6 +193,7 @@ export function liveServices(opts: { driver?: () => FlowDriver | undefined } = {
     },
 
     async addToCart(id, quantity, emit) {
+      if (id.startsWith("target:")) return safe(target().addToCart(id, emit));
       if (!id.startsWith("amazon:")) return mocks.addToCart(id, quantity, emit);
       const product = seen.get(id);
       if (!product) return err("not_found", `No Amazon product ${id}`);
@@ -207,6 +209,7 @@ export function liveServices(opts: { driver?: () => FlowDriver | undefined } = {
     },
 
     async openCheckout(marketplace, emit) {
+      if (marketplace === "target") return safe(target().checkout(emit));
       if (marketplace !== "amazon") return mocks.openCheckout(marketplace, emit);
       emit({ stage: "checkout", marketplace: "amazon", message: "Opening your Amazon cart", at: new Date().toISOString() });
       const { flow } = use();

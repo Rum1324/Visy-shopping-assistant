@@ -1,5 +1,21 @@
-import { err, ok, productId, ProductCandidate, RawReview, type Emit, type ProductDetail, type Result } from "@visy/contracts";
+import {
+  CheckoutReview,
+  err,
+  ok,
+  productId,
+  ProductCandidate,
+  RawReview,
+  type CartLine,
+  type ElementPicker,
+  type Emit,
+  type PageElement,
+  type ProductDetail,
+  type Result,
+} from "@visy/contracts";
 import type { FlowDriver } from "../driver/flow.ts";
+import { pickWithChain, type ChainPick } from "../chain.ts";
+import type { FindStep } from "../pickers/common.ts";
+import type { MemoryPicker } from "../pickers/memory.ts";
 import { ClaudeRecipeWriter, extractWithRecipes, RecipeCache, type RawDetail, type RecipeFields, type RecipeWriter } from "../recipes.ts";
 
 /**
@@ -96,6 +112,23 @@ const NEXT_ITEM_JS = `(() => {
   };
 })()`;
 
+// C-TGT-CART, checked by hand on live target.com 2026-10-24. The header cart link reads "cart 0 items" / "cart 1 item".
+const CART_COUNT_JS = `Number((/(\\d+)/.exec(document.querySelector('[data-test="@web/CartLink"]')?.getAttribute('aria-label') || '') || [])[1] || 0)`;
+// Cart page summary: "Subtotal (1 item)$20.00", "Shipping$5.99", "Estimated taxes$2.05", "Est. total$28.04". The
+// button is "Check out", or "Sign in to check out" for a guest cart. We only read it: the user presses it.
+const CART_JS = String.raw`(() => {
+  const t = (s) => (document.querySelector('[data-test="' + s + '"]')?.innerText || '').replace(/\s+/g, ' ').trim();
+  const amt = (s) => (/\$[\d,]+(?:\.\d{2})?/.exec(t(s)) || [])[0] || null;
+  const items = Array.from(document.querySelectorAll('[data-test="cartItem"]')).map((c) => ({
+    tcin: (/\/A-(\d+)/.exec(c.querySelector('a[href*="/A-"]')?.getAttribute('href') || '') || [])[1] || null,
+    title: (c.querySelector('[data-test="cartItem-title"]')?.innerText || '').replace(/\s+/g, ' ').trim(),
+    price: (c.querySelector('[data-test="cartItem-price"]')?.innerText || '').replace(/\s+/g, ' ').trim(),
+    qty: Number(c.querySelector('[data-test="cartItem-qty-stepper"] select')?.value) || 1,
+  })).filter((i) => i.tcin && i.title);
+  const button = (document.querySelector('[data-test="checkout-button"]')?.innerText || '').replace(/\s+/g, ' ').trim() || null;
+  return { subtotal: amt('cart-summary-subTotal'), shipping: t('cart-summary-fulfillment') || null, tax: amt('cart-summary-taxes'), total: amt('cart-summary-total'), items, button, empty: !!document.querySelector('[data-test="boxEmptyMsg"]'), url: location.href };
+})()`;
+
 /** Named page scripts (navigator/scripts.ts); the extension runs them by name. Whatever they return is UNTRUSTED. */
 export const TARGET_SCRIPTS = {
   "target.results": RESULTS_JS,
@@ -113,6 +146,34 @@ export const TARGET_SCRIPTS = {
   "target.scrollReviews": `void document.querySelector('[data-test="ReviewsDashboard"], [data-test="reviews-heading"]')?.scrollIntoView()`,
   "target.reviewsReady": `!!document.querySelector('[data-test="review-card--text"]')`,
   "target.reviews": REVIEWS_JS,
+  // C-TGT-CART. The buy box draws only in a visible tab, first as a skeleton ("shipping - loading...", a dead
+  // Add to cart button), then the real Pickup / Delivery / Shipping tiles.
+  "target.buyBoxReady": `(() => { const t = Array.from(document.querySelectorAll('#SHIPPING, #PICKUP, #DELIVERY')); return t.length > 0 && t.every((b) => !/loading/i.test(b.getAttribute('aria-label') || '')); })() || ${CHALLENGE_JS}`,
+  "target.addReady": `Array.from(document.querySelectorAll('button')).some((b) => /^add to cart$/i.test((b.textContent || '').trim()) && !b.disabled)`,
+  "target.shippingSelected": `/selected/i.test(document.getElementById('SHIPPING')?.getAttribute('aria-label') || '')`,
+  "target.cartCount": CART_COUNT_JS,
+  // arg = the cart count before the click. Target opens an "Added to cart" dialog and bumps the header count.
+  "target.added": `${CART_COUNT_JS} > Number(arg) || Array.from(document.querySelectorAll('[role="dialog"], [aria-modal="true"]')).some((d) => /^\\s*Added to cart/i.test(d.innerText || ''))`,
+  "target.titlePrice": `({ title: (document.querySelector('[data-test="product-title"]')?.textContent || '').trim(), price: (document.querySelector('[data-test="product-price"]')?.textContent || '').trim() || null })`,
+  "target.cartReady": `!!document.querySelector('[data-test="cart-summary-subTotal"], [data-test="boxEmptyMsg"]') || ${CHALLENGE_JS}`,
+  "target.cartFilled": `!!document.querySelector('[data-test="cart-summary-subTotal"]')`,
+  "target.cart": CART_JS,
+};
+
+export const TARGET_STEPS = {
+  addToCart: { kind: "find_control", intent: "button: Add to cart | section: above-the-fold-information", then: "click" },
+} satisfies Record<string, FindStep>;
+
+/** target.cart: the cart page as text (untrusted). Amounts as shown ("$20.00"); shipping is the whole row ("Shipping$5.99", "ShippingFree"). */
+export type TargetCart = {
+  subtotal: string | null;
+  shipping: string | null;
+  tax: string | null;
+  total: string | null;
+  items: { tcin: string; title: string; price: string; qty: number }[];
+  button: string | null;
+  empty: boolean;
+  url: string;
 };
 
 /** C3 seed recipe for target.com product pages, checked by hand on a live page (2026-10-24). Replayed first: no AI. */
@@ -255,6 +316,39 @@ export function toTargetReviews(tcin: string, url: string, scraped: ScrapedRevie
   return [...out.values()];
 }
 
+/** C-TGT-CART: the cart page → the read-back. Target's cart already shows estimated tax and total, so we stop there. */
+export function targetCheckout(cart: TargetCart): Result<CheckoutReview> {
+  const subtotal = money(cart.subtotal);
+  if (!subtotal) return err("parse_failed", cart.empty ? "Target cart is empty" : "Target cart subtotal was not on the page");
+  const total = money(cart.total);
+  const tax = money(cart.tax);
+  const shipping = /free/i.test(cart.shipping ?? "") ? { cents: 0, currency: "USD" as const } : money(cart.shipping);
+  const lines = cart.items.flatMap((i) => {
+    const price = money(i.price);
+    return price ? [{ productId: productId("target", `A-${i.tcin}`), title: i.title, quantity: Math.max(1, i.qty), price }] : [];
+  });
+  const usd = (m: { cents: number }) => `$${(m.cents / 100).toFixed(2)}`;
+  const button = cart.button ?? "Check out";
+  const count = cart.items.reduce((n, i) => n + Math.max(1, i.qty), 0);
+  const what = count > 1 ? `Your Target cart has ${count} items. ` : "";
+  const extras = [tax ? `${usd(tax)} estimated tax` : "", shipping?.cents ? `${usd(shipping)} shipping` : ""].filter(Boolean).join(" and ");
+  const readBack = total
+    ? `${what}Your Target total is about ${usd(total)}${extras ? `, including ${extras}` : " with tax"}. Press ${button} when you're ready.`
+    : `${what}Your Target cart subtotal is ${usd(subtotal)} before tax. Press ${button} when you're ready.`;
+  return ok(
+    CheckoutReview.parse({
+      marketplace: "target",
+      url: cart.url,
+      lines,
+      subtotal,
+      ...(shipping ? { shipping } : {}),
+      ...(tax ? { tax } : {}),
+      total: total ?? subtotal,
+      readBack,
+    }),
+  );
+}
+
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 const at = () => new Date().toISOString();
 
@@ -262,11 +356,15 @@ export class TargetFlow {
   tabId?: number;
   /** Sub-step timings for the last call, like AmazonFlow.marks. */
   marks: Record<string, number> = {};
+  /** id → search candidate, so addToCart can name the product and its price (live.ts keeps no Target candidates). */
+  private known = new Map<string, ProductCandidate>();
 
   constructor(
     private driver: FlowDriver,
     private announce: (message: string) => void = (m) => console.log(m),
     private recipes: { cache: RecipeCache; writer: RecipeWriter } = { cache: new RecipeCache(), writer: new ClaudeRecipeWriter() },
+    /** The picker chain for Add to cart (live.ts passes buildChain()). Empty → addToCart fails with low_confidence. */
+    private chain: { pickers: ElementPicker[]; memory?: MemoryPicker } = { pickers: [] },
   ) {}
 
   private mark(label: string, t0: number) {
@@ -315,6 +413,7 @@ export class TargetFlow {
     const rows = await this.driver.extract<TargetRow[]>(this.tabId!, "target.results");
     const fetchedAt = at();
     const candidates = rows.map((r) => targetCandidate(r, fetchedAt)).filter((c): c is ProductCandidate => !!c).slice(0, max);
+    for (const c of candidates) this.known.set(c.id, c);
     console.log(`target search: ${rows.length} cards, ${rows.filter((r) => r.sponsored).length} sponsored → ${candidates.length} candidates`, this.marks);
     return candidates.length ? ok(candidates) : err("parse_failed", rows.length ? "Target results had no priced organic products" : "no Target result cards found");
   }
@@ -405,5 +504,117 @@ export class TargetFlow {
       variants: [],
       retailerReviews: reviews,
     });
+  }
+
+  /**
+   * Snapshot → picker chain → click. The chain never returns a purchaseRisk element, and the driver refuses one too.
+   * `only` narrows what the chain sees: next to Target's Add to cart sits "Add to List", which Moss trusted (0.92)
+   * live when no Add to cart was drawn yet, and memory then replayed it.
+   */
+  private async step(step: FindStep, only?: (e: PageElement) => boolean, tries = 2): Promise<Result<ChainPick>> {
+    for (let attempt = 1; ; attempt++) {
+      let t0 = performance.now();
+      const s = await this.driver.snapshot(this.tabId!);
+      this.mark("snapshot", t0);
+      if (!s.ok) {
+        if (s.error.code !== "blocked" || attempt >= tries) return s;
+        const g = await this.blockedGate();
+        if (!g.ok) return g;
+        continue;
+      }
+      const state = only ? { ...s.data, elements: s.data.elements.filter(only) } : s.data;
+      if (!state.elements.length) {
+        if (attempt >= tries) return err("not_found", `no "${step.intent}" on the page`);
+        await sleep(500);
+        continue;
+      }
+      t0 = performance.now();
+      const pick = await pickWithChain(this.chain.pickers, state, step, this.chain.memory);
+      this.mark("pick", t0);
+      if (!pick.ok) {
+        if (attempt >= tries) return pick;
+        await sleep(500);
+        continue;
+      }
+      t0 = performance.now();
+      const r = await this.driver.act(this.tabId!, { kind: "click", idx: pick.data.idx });
+      this.mark("act", t0);
+      if (!r.ok) return r;
+      return ok(pick.data);
+    }
+  }
+
+  /**
+   * Pickup is Target's default, and when the user's store doesn't stock the item the buy box shows "Show in-stock
+   * stores" instead of Add to cart. So pick the Shipping tile first. Deterministic: the Fulfillment region's
+   * "Shipping …" button, skipped if it's already selected or unavailable.
+   */
+  private async chooseShipping() {
+    const s = await this.driver.snapshot(this.tabId!);
+    if (!s.ok) return;
+    const tile = s.data.elements.find((e) => e.role === "button" && /^Shipping\b(?!\s*&)/i.test(e.name) && /Fulfillment/.test(e.section ?? ""));
+    if (!tile || tile.disabled || /selected$/i.test(tile.name) || /not available|unavailable/i.test(tile.name)) return;
+    await this.driver.act(this.tabId!, { kind: "click", idx: tile.idx });
+    await this.driver.waitFor(this.tabId!, "target.shippingSelected", 3000);
+  }
+
+  private static isAddToCart = (e: PageElement) => e.role === "button" && !e.disabled && /^add to cart\b/i.test(e.name);
+
+  /**
+   * C-TGT-CART: opens the product in the flow's tab, in front (Target draws the buy box only in a visible tab, and
+   * the user sees what's being added), picks Shipping, then clicks Add to cart through the picker chain.
+   * Quantity stays 1, like AmazonFlow.
+   */
+  async addToCart(id: string, emit: Emit = () => {}): Promise<Result<CartLine>> {
+    this.marks = {};
+    const tcin = id.replace(/^target:A-/, "");
+    const product = this.known.get(id);
+    emit({ stage: "carting", marketplace: "target", message: "Adding it to your Target cart", at: at() });
+    const g = await this.goto(product?.url ?? `https://www.target.com/p/-/A-${tcin}`);
+    if (!g.ok) return g;
+    await this.driver.focus(this.tabId!);
+    const t0 = performance.now();
+    await this.driver.waitFor(this.tabId!, "target.buyBoxReady", 12_000);
+    this.mark("wait buy box", t0);
+    const b = await this.blockedGate();
+    if (!b.ok) return b;
+    const before = await this.driver.extract<number>(this.tabId!, "target.cartCount").catch(() => 0);
+    await this.chooseShipping();
+    await this.driver.waitFor(this.tabId!, "target.addReady", 3000);
+    const r = await this.step(TARGET_STEPS.addToCart, TargetFlow.isAddToCart);
+    if (!r.ok) {
+      // Variant items ("Choose size") and ones Target won't ship to this zip have no Add to cart button.
+      return r.error.code === "not_found" ? err("not_found", "Target shows no Add to cart button for this item. It may need a size or color chosen first.") : r;
+    }
+    const t1 = performance.now();
+    const added = await this.driver.waitFor(this.tabId!, "target.added", 6000, before);
+    this.mark("wait confirmation", t1);
+    console.log(`target add ${id}: ${added ? "added" : "no confirmation"} via ${r.data.picker}`, this.marks);
+    if (!added) return err("not_found", "Target did not confirm the item was added to the cart");
+    const page = await this.driver.extract<{ title: string; price: string | null }>(this.tabId!, "target.titlePrice").catch(() => ({ title: "", price: null }));
+    const price = product?.price ?? money(page.price);
+    if (!price) return err("parse_failed", "added to the Target cart, but no price was on the page");
+    return ok({ productId: id, title: product?.title || page.title || id, quantity: 1, price });
+  }
+
+  /** Goes to target.com/cart, in front, and reads the summary. Never presses the checkout button: the user does. */
+  async checkout(emit: Emit = () => {}): Promise<Result<CheckoutReview>> {
+    this.marks = {};
+    emit({ stage: "checkout", marketplace: "target", message: "Opening your Target cart", at: at() });
+    const g = await this.goto("https://www.target.com/cart");
+    if (!g.ok) return g;
+    await this.driver.focus(this.tabId!);
+    const t0 = performance.now();
+    await this.driver.waitFor(this.tabId!, "target.cartReady", 10_000);
+    const b = await this.blockedGate();
+    if (!b.ok) return b;
+    let cart = await this.driver.extract<TargetCart>(this.tabId!, "target.cart");
+    // The empty-cart box can show before the cart's items load.
+    if (!cart.subtotal && (await this.driver.waitFor(this.tabId!, "target.cartFilled", 4000))) {
+      cart = await this.driver.extract<TargetCart>(this.tabId!, "target.cart");
+    }
+    this.mark("wait cart", t0);
+    console.log(`target cart: ${cart.items.length} lines, subtotal ${cart.subtotal}, total ${cart.total}`, this.marks);
+    return targetCheckout(cart);
   }
 }
