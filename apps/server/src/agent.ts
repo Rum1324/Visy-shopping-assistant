@@ -22,6 +22,7 @@ import {
   type Marketplace,
   type Money,
   type PageState,
+  type ProductCandidate,
   type Result,
   type ReviewSynthesis,
   type ServerMsg,
@@ -476,6 +477,7 @@ export function createAgent(
     const need = applySaved(Need.parse({ query: text.trim(), marketplaces, ...defined }), saved);
     asking = null;
     const search = ++searches;
+    const before = state;
     publish({ ...state, phase: "searching", need, candidates: [], shortlist: [], cart: [] });
     const names = need.marketplaces.map((m) => m[0]!.toUpperCase() + m.slice(1));
     const where =
@@ -500,6 +502,14 @@ export function createAgent(
     if (id !== run || !state) return;
     results.forEach((r, i) => !r.ok && console.warn(`search ${need.marketplaces[i]} failed: ${r.error.code} ${r.error.message}`));
     const candidates = results.flatMap((r) => (r.ok ? r.data : []));
+    // Sites filter by price now, so a budget nothing meets comes back empty. Say so plainly and keep the last picks,
+    // instead of reading "try different words" or the same three again.
+    const keepLast = () => publish({ ...state!, phase: before.shortlist.length ? "presenting" : "idle", candidates: before.candidates, shortlist: before.shortlist, cart: before.cart, focusedProductId: before.focusedProductId });
+    if (!candidates.length && need.budget && (need.budget.min || need.budget.max)) {
+      keepLast();
+      await say(nothingInRange(need));
+      return;
+    }
     if (!candidates.length) {
       publish({ ...state, phase: "idle" });
       await say("I couldn't find any products for that. Try different words.");
@@ -521,6 +531,11 @@ export function createAgent(
     if (!relevant.length) {
       publish({ ...state, phase: "idle", candidates });
       await say("I found listings, but none looked like what you asked for. Try different words.");
+      return;
+    }
+    if (!relevant.some((c) => inRange(need, c))) {
+      keepLast();
+      await say(nothingInRange(need));
       return;
     }
     publish({ ...state, phase: "shortlisting", candidates: relevant });
@@ -729,6 +744,20 @@ async function saveUsual(productId: string, title: string, evidence: string) {
  * The cap the user stated holds across follow-up searches: "premium" or "more expensive" with no amount
  * can't raise it (that moves the floor instead). It changes only when the user names a new amount.
  */
+const inRange = (need: Need, c: ProductCandidate) =>
+  (need.budget?.max == null || c.price.cents <= need.budget.max.cents) && (need.budget?.min == null || c.price.cents >= need.budget.min.cents);
+
+const wholeDollars = (cents: number) => `$${cents % 100 ? (cents / 100).toFixed(2) : (cents / 100).toLocaleString("en-US")}`;
+
+/** "I didn't find any water bottle over $2,000." Said instead of reading picks outside the budget. */
+export function nothingInRange(need: Need) {
+  const min = need.budget?.min?.cents;
+  const max = need.budget?.max?.cents;
+  const range =
+    min != null && max != null ? `between ${wholeDollars(min)} and ${wholeDollars(max)}` : min != null ? `over ${wholeDollars(min)}` : `under ${wholeDollars(max ?? 0)}`;
+  return `I didn't find any ${need.query} ${range}. Want to try a different price?`;
+}
+
 function searchBudget(input: { budgetMinCents?: number; budgetMaxCents?: number }, last: Need | undefined, said: string): Need["budget"] {
   const lastMax = last?.budget?.max?.cents;
   const max = input.budgetMaxCents != null && lastMax != null && !SAYS_AMOUNT.test(said) ? lastMax : input.budgetMaxCents;

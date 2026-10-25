@@ -34,6 +34,7 @@ import { PlaywrightDriver } from "./navigator/driver/playwright.ts";
 import { AmazonFlow } from "./navigator/sites/amazon.ts";
 import { TargetFlow } from "./navigator/sites/target.ts";
 import { WalmartFlow } from "./navigator/sites/walmart.ts";
+import { priceRange } from "./navigator/sites/search-urls.ts";
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 /** A driver call can throw (tab closed, extension reloaded mid-call). Turn it into an error the agent can say. */
@@ -119,12 +120,12 @@ export function liveServices(opts: { driver?: () => FlowDriver | undefined } = {
   const navigator: Navigator = {
     async search(need, marketplace, emit) {
       if (marketplace === "walmart") {
-        const found = await safe(useWalmart().search(need.query, emit, POOL_PER_MARKET));
+        const found = await safe(useWalmart().search(need.query, emit, POOL_PER_MARKET, priceRange(need)));
         if (found.ok) for (const c of found.data) seen.set(c.id, c);
         return found;
       }
       announce = (message) => emit({ stage: "searching", marketplace, message, at: new Date().toISOString() });
-      if (marketplace === "target") return safe(target().search(need.query, emit, POOL_PER_MARKET));
+      if (marketplace === "target") return safe(target().search(need.query, emit, POOL_PER_MARKET, priceRange(need)));
       if (marketplace !== "amazon") {
         // Any other marketplace is sample listings (picnic blankets). Only offer them when they match the search,
         // so "power bank" doesn't come back with blankets.
@@ -134,7 +135,7 @@ export function liveServices(opts: { driver?: () => FlowDriver | undefined } = {
       }
       emit({ stage: "searching", marketplace: "amazon", message: "Searching Amazon now", at: new Date().toISOString() });
       const { flow } = use();
-      const found = await safe(flow.search(need.query));
+      const found = await safe(flow.search(need.query, false, priceRange(need)));
       if (!found.ok) return found;
       const candidates: Candidate[] = [];
       for (const row of found.data) {

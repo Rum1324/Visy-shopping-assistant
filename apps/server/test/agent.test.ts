@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import type Anthropic from "@anthropic-ai/sdk";
-import type { JevClient, ServerMsg, Services } from "@visy/contracts";
+import { err, type JevClient, type ServerMsg, type Services } from "@visy/contracts";
 import { fixtures } from "@visy/contracts/fixtures";
 import { mockServices } from "@visy/contracts/mocks";
 import { createAgent, type AgentSink } from "../src/agent.ts";
@@ -533,4 +533,38 @@ test("reviews-first: finalists' pages are read once, the final 3 reuse them, and
   assert.ok(reads.length > 3, "only the final 3 were read");
   for (const id of ids) assert.ok(reads.includes(id));
   assert.deepEqual(opened, [ids]);
+});
+
+test("claude: 'more expensive' with nothing in range says so and keeps the last three", async () => {
+  // Live run: $2000 water bottle, then "something more expensive" re-ran the search and read the same picks again.
+  const llm = scripted([
+    { name: "search", input: { query: "picnic blanket", budgetMaxCents: 200000, skipQuestions: true } },
+    { name: "search", input: { query: "premium picnic blanket", budgetMaxCents: 300000, budgetMinCents: 100000, skipQuestions: true } },
+  ]);
+  const { agent, said } = harness(llm);
+  await agent.hello("demo-user");
+  await agent.handleText("a picnic blanket, up to 2000 dollars");
+  const first = agent.state?.shortlist.map((i) => i.product.id);
+  assert.equal(first?.length, 3);
+  const n = said.length;
+  await agent.handleText("I want something more expensive");
+  assert.equal(agent.state?.need?.budget?.min?.cents, 100000);
+  assert.equal(agent.state?.need?.budget?.max?.cents, 200000);
+  assert.deepEqual(
+    said.slice(n).filter((s) => !/check|Searching|found/i.test(s)),
+    ["I didn't find any premium picnic blanket between $1,000 and $2,000. Want to try a different price?"],
+  );
+  assert.deepEqual(agent.state?.shortlist.map((i) => i.product.id), first);
+  assert.equal(agent.state?.phase, "presenting");
+});
+
+test("claude: a price-filtered search that comes back empty names the range, not 'different words'", async () => {
+  const services = mockServices({ latencyMs: 0 });
+  services.navigator = { ...services.navigator, search: async () => err("parse_failed", "no result cards found") };
+  const llm = scripted([{ name: "search", input: { query: "water bottle", budgetMinCents: 200000, skipQuestions: true } }]);
+  const { agent, said } = harness(llm, services);
+  await agent.hello("demo-user");
+  await agent.handleText("a water bottle over 2000 dollars");
+  assert.equal(said.at(-1), "I didn't find any water bottle over $2,000. Want to try a different price?");
+  assert.equal(agent.state?.phase, "idle");
 });

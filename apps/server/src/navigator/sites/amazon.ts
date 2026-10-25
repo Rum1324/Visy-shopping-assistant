@@ -15,6 +15,7 @@ import { pickWithChain, type ChainPick } from "../chain.ts";
 import { strictPicker, type FindStep } from "../pickers/common.ts";
 import type { MemoryPicker } from "../pickers/memory.ts";
 import { ClaudeRecipeWriter, extractWithRecipes, RecipeCache, type Extracted, type RawDetail, type RecipeFields, type RecipeWriter } from "../recipes.ts";
+import { amazonSearchUrl, type PriceRange } from "./search-urls.ts";
 
 export type AmazonResult = { asin: string; title: string; price: string | null; listPrice?: string | null; deal?: string | null; rating: string | null; reviews?: string | null; sponsored: boolean };
 
@@ -336,8 +337,8 @@ export class AmazonFlow {
     }
   }
 
-  /** viaUi=false uses the shortcut URL (fastest). viaUi=true types into the search box through the picker chain. */
-  async search(query: string, viaUi = false): Promise<Result<AmazonResult[]>> {
+  /** viaUi=false uses the shortcut URL (fastest), with the price filter when given. viaUi=true types into the search box through the picker chain. */
+  async search(query: string, viaUi = false, price: PriceRange = {}): Promise<Result<AmazonResult[]>> {
     this.marks = {};
     await this.dropPreloads();
     for (const tab of this.productTabs.values()) if (tab !== this.searchTab) await this.driver.closeTab(tab).catch(() => {});
@@ -349,7 +350,7 @@ export class AmazonFlow {
       const r = await this.step({ ...STEPS.searchBox, text: query });
       if (!r.ok) return r;
     } else {
-      const g = await this.goto(`https://www.amazon.com/s?k=${encodeURIComponent(query)}`);
+      const g = await this.goto(amazonSearchUrl(query, price));
       if (!g.ok) return g;
     }
     const t0 = performance.now();
