@@ -15,6 +15,18 @@ body {
   position: relative;
   isolation: isolate;
 }
+body.settings-open #welcome,
+body.settings-open #chat,
+body.settings-open #composer,
+body.settings-open #status {
+  display: none !important;
+}
+body.settings-open #settings {
+  display: flex;
+}
+body.settings-open #settings-open {
+  display: none;
+}
 .bg {
   position: fixed;
   inset: 0;
@@ -155,3 +167,94 @@ button { cursor: pointer; }
 button:focus, input:focus { outline: 3px solid #f5d90a; outline-offset: 2px; }
 .go:focus { outline-offset: 2px; }
 .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+
+.icon-btn {
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: none;
+  border-radius: 10px;
+  background: transparent;
+  color: #d6d6c8;
+  display: grid;
+  place-items: center;
+  flex: none;
+}
+.icon-btn svg { width: 20px; height: 20px; }
+.icon-btn:hover { color: #f5f5f0; background: rgba(255, 255, 255, 0.06); }
+#settings-open {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  z-index: 2;
+}
+
+#settings {
+  display: none;
+  flex: 1;
+  min-height: 0;
+  flex-direction: column;
+  gap: 20px;
+  padding-top: 4px;
+}
+.settings-head {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 36px;
+}
+.settings-head h1 {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+.settings-body {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  overflow-y: auto;
+  min-height: 0;
+}
+.setting {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px 0;
+}
+.setting-title {
+  font-size: 1.02rem;
+  font-weight: 500;
+}
+.setting-hint {
+  font-size: 0.86rem;
+  color: #a8a89c;
+  line-height: 1.35;
+}
+.speed-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 4px;
+}
+.speed-row > span {
+  font-size: 0.78rem;
+  color: #8e8e84;
+  flex: none;
+  width: 2.4em;
+}
+.speed-row > span:last-of-type { text-align: right; }
+.speed-row input[type="range"] {
+  flex: 1;
+  min-width: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+  accent-color: #5abeFF;
+  height: 28px;
+}
+#speech-rate-value {
+  font-variant-numeric: tabular-nums;
+  font-size: 1.05rem;
+  color: #f5f5f0;
+}
