@@ -43,7 +43,7 @@ Line format: `[status] ID · task · owner · branch · since HH:MM PT`. Use one
 - [open] UX-NARROW · Decide how to handle the 3 narrowing/filtering options · Yuka
 - [open] UX-ASK-END · End every turn by asking the user a question · Yuka
 - [working] UX-PROGRESS · Spoken progress when work takes over ~2 s, with varied lines ("searching Amazon now", "comparing results from Walmart"); "One moment" is too repetitive · Yuka, Sota, yujielee · agent: Run latest demo (for Sota) · b/feedback · since 20:36 PT
-- [working] UX-SALES · Say explicitly when a product is on sale or has a deal · yujielee · agent: On-sale mentions (for Sota) · claude/ux-sales-4e5428 · since 20:34 PT
+- [done] UX-SALES · Say explicitly when a product is on sale or has a deal · yujielee · agent: On-sale mentions (for Sota) · [PR #14](https://github.com/Rum1324/Visy-shopping-assistant/pull/14)
 - [working] UX-SPEED · Let the user adjust voice speed · yujielee · agent: Voice speed adjustment (for Pixl) · cursor/ux-speed-c3e0 · since 21:55 PT
 - [open] B-HISTORY · Use the conversation history as context for follow-up searches · Sota
 - [working] A-SHOWPAGE · When recommending, open the top pick's product page on screen instead of staying on the home tab · Sota (open all 3 options as tabs, focus option 1) · agent: Run latest demo (for Sota) · b/feedback · since 20:16 PT

@@ -8,7 +8,10 @@ export const SCRIPTS = {
   "amazon.results": (arg) => (Array.from(document.querySelectorAll('[data-component-type="s-search-result"][data-asin]')).map((c) => ({
   asin: c.getAttribute('data-asin'),
   title: (c.querySelector('h2')?.innerText || '').trim(),
-  price: c.querySelector('.a-price .a-offscreen')?.textContent?.trim() || null,
+  price: (c.querySelector('.a-price:not(.a-text-price) .a-offscreen') || c.querySelector('.a-price .a-offscreen'))?.textContent?.trim() || null,
+  // UX-SALES: the struck-through "List:" / "Typical:" price, and a deal badge or coupon tile ("Coupon price $28.51").
+  listPrice: c.querySelector('.a-text-price[data-a-strike="true"] .a-offscreen')?.textContent?.trim() || null,
+  deal: [...c.querySelectorAll('.a-badge-text, [class*="coupon-tile-text"], .s-coupon-unclipped')].map((e) => (e.innerText || '').replace(/\s+/g, ' ').trim()).find((t) => /deal|coupon|sale|% off/i.test(t))?.slice(0, 80) || null,
   rating: c.querySelector('.a-icon-alt')?.textContent?.trim() || null,
   reviews: (() => { const r = c.querySelector('[aria-label$="ratings"], [aria-label$="rating"], a[href*="customerReviews"] span'); return r ? (r.getAttribute('aria-label') || r.textContent || '').trim() || null : null; })(),
   sponsored: !!c.querySelector('.puis-sponsored-label-text, [aria-label*="Sponsored"]') || /^Sponsored/.test((c.innerText || '').trim()),
