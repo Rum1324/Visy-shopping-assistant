@@ -119,13 +119,31 @@ function stopTalk() {
 
 function fillChars(el, phrase) {
   el.replaceChildren();
-  return [...phrase].map((c) => {
-    const span = document.createElement("span");
-    span.className = c === " " ? "ch space" : "ch";
-    span.textContent = c === " " ? "\u00a0" : c;
-    el.append(span);
-    return span;
-  });
+  const chars = [];
+  for (const part of phrase.split(/(\s+)/)) {
+    if (!part) continue;
+    if (/^\s+$/.test(part)) {
+      for (const c of part) {
+        const span = document.createElement("span");
+        span.className = "ch space";
+        span.textContent = "\u00a0";
+        el.append(span);
+        chars.push(span);
+      }
+      continue;
+    }
+    const word = document.createElement("span");
+    word.className = "word";
+    for (const c of part) {
+      const span = document.createElement("span");
+      span.className = "ch";
+      span.textContent = c;
+      word.append(span);
+      chars.push(span);
+    }
+    el.append(word);
+  }
+  return chars;
 }
 
 function revealChars(chars, shown, n) {

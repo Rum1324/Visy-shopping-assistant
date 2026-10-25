@@ -51,6 +51,7 @@ body {
   letter-spacing: 0.01em;
   white-space: nowrap;
 }
+.word { white-space: nowrap; }
 .ch {
   display: inline-block;
   opacity: 0;
