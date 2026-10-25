@@ -22,6 +22,7 @@ Line format: `[status] ID · task · owner · branch · since HH:MM PT`. Use one
 - [working] B-REVIEWS-FIRST · Picker reads reviews before choosing: narrow to ~6 finalists, fetch their details/retailer reviews in parallel, pick the final 3 from that evidence (time-capped, falls back to direct picks) · agent: Reviews before picking (for Sota) · claude/reviews-first-9ea1b9 · since 02:50 PT
 - [working] D-APIFY-FAST · Outside reviews: Reddit actor times out on every run and a 0-hit prefetch triggers a second 25 s Apify pass; get Reddit via the fast Google actor and drop the retry · agent: Context and Apify check (for Sota) · claude/apify-reviews · since 02:00 PT
 - [working] B-PRICE-FILTER · Put the budget into each site's search URL (Amazon, Walmart, Target price filters) and say plainly when nothing is in range instead of re-reading the same picks · agent: Price filters (for Sota) · claude/price-filters-808483 · since 02:50 PT
+- [working] B-USUAL · "I'm out of sugar, get the usual": recall picks the item named (keyword match, not the first saved usual), "add it" goes through to cart and checkout read-back, and a real Amazon sugar product is seeded in Convex · agent: Demo video plan (for Sota) · b/feedback · since 03:19 PT
 
 ## Open
 
