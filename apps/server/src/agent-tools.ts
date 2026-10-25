@@ -55,7 +55,7 @@ export const TOOLS: Anthropic.Tool[] = [
   {
     name: "ask_shopping_questions",
     description:
-      "Before a new product search, ask the shopper 1 or 2 short questions in one spoken turn. Their next turn is the answer; then call search.",
+      "Before a new product search, ask the shopper 1 or 2 short questions in one spoken turn. Visy then asks 'Anything else you want to add?' on its own, so never include that. Once both are answered, call search.",
     input_schema: {
       type: "object",
       properties: {

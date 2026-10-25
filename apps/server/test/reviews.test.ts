@@ -1,8 +1,18 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { excludeLoaded, loadedScore } from "../src/intel/reviews.ts";
+import { commonCons, excludeLoaded, loadedScore } from "../src/intel/reviews.ts";
 import { reviewDate, toRawReviews } from "../src/navigator/sites/amazon.ts";
 import type { RawReview } from "@visy/contracts";
+
+test("commonCons drops complaints only a small share of reviewers raise", () => {
+  const cons = [
+    { text: "Strap broke", mentions: 1 },
+    { text: "Zipper sticks", mentions: 3 },
+    { text: "Runs small", mentions: 6 },
+  ];
+  assert.deepEqual(commonCons(cons, 30), ["Runs small"]); // needs 5 of 30
+  assert.deepEqual(commonCons(cons, 8), ["Zipper sticks", "Runs small"]); // needs 2 of 8
+});
 
 test("reviewDate parses Amazon's date line", () => {
   assert.equal(reviewDate("Reviewed in the United States on September 18, 2026"), "2026-09-18T00:00:00.000Z");

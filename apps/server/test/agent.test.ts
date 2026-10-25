@@ -199,6 +199,10 @@ for (const mode of ["keywords", "claude"] as const) {
     // Two short questions, together in one turn.
     assert.match(said.at(-1) ?? "", /budget\?.*(matters|waterproof)/i);
     await agent.handleText("under $20, waterproof");
+    // Then one open question, so the shopper can add specifics in their own words.
+    assert.equal(agent.state?.phase, "clarifying");
+    assert.match(said.at(-1) ?? "", /anything else/i);
+    await agent.handleText("no");
     assert.equal(agent.state?.phase, "presenting");
     assert.equal(agent.state?.need?.query, "picnic blanket");
     assert.equal(agent.state?.need?.budget?.max?.cents, 2000);
@@ -218,6 +222,17 @@ for (const mode of ["keywords", "claude"] as const) {
     assert.equal(agent.state?.shortlist.length, 3);
   });
 }
+
+test("keywords: what the shopper adds after 'anything else' reaches the search", async () => {
+  const { agent } = harness(null, undefined, true);
+  await agent.hello("demo-user");
+  await agent.handleText("picnic blanket");
+  await agent.handleText("under $20");
+  await agent.handleText("waterproof backing");
+  assert.equal(agent.state?.phase, "presenting");
+  assert.equal(agent.state?.need?.budget?.max?.cents, 2000);
+  assert.match(agent.state?.need?.mustHaves?.join(" ") ?? "", /waterproof backing/);
+});
 
 test("a silent stretch while working is filled with what Visy is doing", async () => {
   const services = mockServices({ latencyMs: 0 });
