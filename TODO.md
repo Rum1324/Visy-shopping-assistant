@@ -37,7 +37,6 @@ Line format: `[status] ID · task · owner · branch · since HH:MM PT`. Use one
 - [working] UX-LEN · Spoken replies are too long; each option takes too long to read. Decide how much to say per turn (Alexa as a benchmark) · Yuka, Sota · agent: Run latest demo (for Sota) · b/feedback · since 20:16 PT
 - [working] UX-FORMAT · Present the 3 options like a normal store: names and prices first, then pros and cons for each · yujielee · agent: Run latest demo (for Sota) · b/feedback · since 20:16 PT
 - [open] UX-OPT3 · Bug: the agent only presents up to Option 2, not all 3 · Yuka
-- [working] UX-PAUSE · Bug: after pausing voice, clicking the "type here" input resumes voice · yujielee · agent: Pause voice input bug (for yujielee) · cursor/ux-pause · since 23:04 PT
 - [working] UX-CUT · Text is cut mid-word (the caption shows "Picnic Blank / et"). Check whether it's caption wrapping or how TTS chunks the text · Yuka · agent: Caption word wrap (for Sota) · b/feedback · since 20:48 PT
 - [working] UX-ASK-FIRST · Ask clarifying questions before searching · Sota (shipped in B-NARROW / PR #12; now one question at a time) · agent: Run latest demo (for Sota) · b/feedback · since 20:16 PT
 - [open] UX-NARROW · Decide how to handle the 3 narrowing/filtering options · Yuka
@@ -49,6 +48,7 @@ Line format: `[status] ID · task · owner · branch · since HH:MM PT`. Use one
 
 ## Done
 
+- [done] UX-PAUSE · Bug: after pausing voice, clicking the "type here" input resumes voice (audioCtx unlock ignored while paused) · yujielee · agent: Pause voice input bug (for yujielee) · [PR #26](https://github.com/Rum1324/Visy-shopping-assistant/pull/26)
 - [done] C-TGT-CART · Target add to cart (Shipping, picker-chain Add to cart) and cart read-back with est. tax and total · [PR #24](https://github.com/Rum1324/Visy-shopping-assistant/pull/24)
 - [done] C-TGT · Real Target search and detail flow · [PR #18](https://github.com/Rum1324/Visy-shopping-assistant/pull/18)
 - [done] UX-PITCH · Bug: spoken option lines included the pitch model's self-corrections ("wait, correction: …") and wrong price math; the prompt now gets computed differences and a guard falls back to the template · agent: Clean pitch lines (for Sota) · [PR #25](https://github.com/Rum1324/Visy-shopping-assistant/pull/25)

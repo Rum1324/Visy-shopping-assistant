@@ -99,7 +99,8 @@ async function boot() {
   document.addEventListener(
     "pointerdown",
     () => {
-      void audioCtx?.resume?.();
+      // Unlock AudioContext for Chrome autoplay, but don't override an intentional pause.
+      if (!paused) void audioCtx?.resume?.();
       void micCtx?.resume?.();
       void toneCtx?.resume?.();
       maybeListen();
@@ -114,7 +115,7 @@ async function boot() {
   paintMic();
   requestAnimationFrame(paintLevel);
   text.addEventListener("focus", () => {
-    void audioCtx?.resume?.();
+    if (!paused) void audioCtx?.resume?.();
   });
   connect();
 }
@@ -585,7 +586,8 @@ function concat(chunks) {
 function playPcm(bytes, rate) {
   if (bytes.length < 2) return null;
   audioCtx ??= new AudioContext({ sampleRate: rate });
-  if (audioCtx.state === "suspended") void audioCtx.resume();
+  // Keep suspended while paused so late TTS chunks don't un-pause for us.
+  if (audioCtx.state === "suspended" && !paused) void audioCtx.resume();
   const samples = new Int16Array(bytes.buffer, bytes.byteOffset, Math.floor(bytes.byteLength / 2));
   const mono = new Float32Array(samples.length);
   for (let i = 0; i < samples.length; i++) mono[i] = (samples[i] ?? 0) / 32768;
