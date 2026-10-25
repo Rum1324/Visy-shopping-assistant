@@ -25,7 +25,6 @@ Line format: `[status] ID · task · owner · branch · since HH:MM PT`. Use one
 - [working] B-PRICE-FILTER · Put the budget into each site's search URL (Amazon, Walmart, Target price filters) and say plainly when nothing is in range instead of re-reading the same picks · agent: Price filters (for Sota) · claude/price-filters-808483 · since 02:50 PT
 - [done] B-USUAL · "I'm out of sugar, get the usual": recall picks the item named (keyword match, not the first saved usual), "add it" goes through to cart and checkout read-back, and a real Amazon sugar product (B01JA9KAOM) is seeded in Convex · agent: Demo video plan (for Sota) · pushed straight to `main`
 - [working] C-PLANT · Nearly Natural (Shopify fake-plant shop) as a 4th store for plant searches: search + detail from Shopify JSON, no cart · agent: Plant shop for demo (for Sota) · b/feedback · since 04:43 PT
-- [working] C-SHOPS · Any search also checks 1–2 specialty Shopify shops Claude suggests (verified live via /search/suggest.json); Nearly Natural stays the plant pick · agent: Specialty Shopify shops (for Sota) · claude/any-shop-e3422f · since 05:10 PT
 
 ## Open
 
@@ -60,6 +59,7 @@ Line format: `[status] ID · task · owner · branch · since HH:MM PT`. Use one
 
 ## Done
 
+- [done] C-SHOPS · Any search also checks 1–2 specialty Shopify shops Claude suggests (verified live via /search/suggest.json); Nearly Natural stays the plant pick · [PR #33](https://github.com/Rum1324/Visy-shopping-assistant/pull/33)
 - [done] UX-PAUSE · Bug: after pausing voice, clicking the "type here" input resumes voice (audioCtx unlock ignored while paused) · yujielee · agent: Pause voice input bug (for yujielee) · [PR #26](https://github.com/Rum1324/Visy-shopping-assistant/pull/26)
 - [done] C-TGT-CART · Target add to cart (Shipping, picker-chain Add to cart) and cart read-back with est. tax and total · [PR #24](https://github.com/Rum1324/Visy-shopping-assistant/pull/24)
 - [done] C-TGT · Real Target search and detail flow · [PR #18](https://github.com/Rum1324/Visy-shopping-assistant/pull/18)
