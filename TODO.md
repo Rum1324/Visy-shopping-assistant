@@ -82,3 +82,4 @@ Line format: `[status] ID · task · owner · branch · since HH:MM PT`. Use one
 - [done] UX-SALES · Say explicitly when a product is on sale or has a deal · yujielee · agent: On-sale mentions (for Sota) · [PR #14](https://github.com/Rum1324/Visy-shopping-assistant/pull/14), follow-up [PR #22](https://github.com/Rum1324/Visy-shopping-assistant/pull/22)
 - [done] B-PREFS-TEST · Test that preferences are really stored in Convex: favorite marketplaces and brands, what the user cares about (price, quality, shipping speed) · yujielee · agent: Preferences in Convex (for Sota) · [PR #15](https://github.com/Rum1324/Visy-shopping-assistant/pull/15)
 - [done] UX-SPEED · Let the user adjust voice speed · yujielee · [PR #19](https://github.com/Rum1324/Visy-shopping-assistant/pull/19)
+- [working] UX-SPEED-VOICE · Change voice speed by saying/typing it ("speak faster", "set speed to 1.5") · agent: Voice speed by prompt (for Pixl) · cursor/ux-speed-voice · since 04:38 PT
