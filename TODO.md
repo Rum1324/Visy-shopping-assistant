@@ -25,7 +25,6 @@ Line format: `[status] ID · task · owner · branch · since HH:MM PT`. Use one
 - [working] A-STT · Investigate speech-to-text: it looks broken and the mic button is missing from the side panel. Lead: `5dd71f1` simplified the panel to one send/stop control and may have dropped push-to-talk. Check `apps/extension/sidepanel.*` and the server's Cartesia `audio.end` path in `voice.ts` · agent: Mic and conversation UI (for Sota) · claude/a-mic-b8c4a4 · since 20:33 PT
 - [open] LIVE-1 · Full live run on `main` in real Chrome: picnic blanket → shortlist → under $20 → review question → add → checkout read-back → yes, with no order placed
 - [open] C4 · Variants (size, color, quantity), filters, sort, and the checkout read-back flow on Amazon (`navigator/sites/amazon.ts`)
-- [working] C-TGT · Real Target search and detail flow (sample listings today) · agent: Target navigator (for Sota) · claude/c-target-9ad777 · since 20:33 PT
 - [working] B-PRELOAD · Agent calls C1b `flow.preload()` as soon as the shortlist is final (check whether the tool loop already does) · agent: Run latest demo (for Sota) · b/feedback · since 20:16 PT
 - [working] C-WMT-CART · Walmart add to cart and cart read-back. Search and detail are live (PR #16); a Walmart add still goes to the mock and returns not_found · agent: Multi-item cart tests (for Sota) · claude/multi-cart · since 23:02 PT
 - [open] D-PAGEQA · Answer "what's on this page?" over the C5 `PageState` capture
@@ -51,6 +50,7 @@ Line format: `[status] ID · task · owner · branch · since HH:MM PT`. Use one
 
 ## Done
 
+- [done] C-TGT · Real Target search and detail flow · [PR #18](https://github.com/Rum1324/Visy-shopping-assistant/pull/18)
 - [done] UX-PITCH · Bug: spoken option lines included the pitch model's self-corrections ("wait, correction: …") and wrong price math; the prompt now gets computed differences and a guard falls back to the template · agent: Clean pitch lines (for Sota) · [PR #25](https://github.com/Rum1324/Visy-shopping-assistant/pull/25)
 - [done] D-UNBIASED · Unbiased review summary: drop loaded-language reviews before synthesis (ties to D-APIFY) · agent: Unbiased review summary (for Pixl) · [PR #23](https://github.com/Rum1324/Visy-shopping-assistant/pull/23)
 - [done] UX-PROGRESS · Spoken progress after ~2 s of quiet, varied lines that fit the running tool ("Searching Amazon now", "Reading the reviews"), stops when the answer starts · first version in [PR #13](https://github.com/Rum1324/Visy-shopping-assistant/pull/13), `progress.ts` in [PR #21](https://github.com/Rum1324/Visy-shopping-assistant/pull/21)
