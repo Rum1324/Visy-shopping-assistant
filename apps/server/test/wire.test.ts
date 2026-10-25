@@ -23,7 +23,7 @@ test("websocket picnic blanket, questions answered, reaches presenting without c
   while (Date.now() < asked && !msgs.some((m) => m.type === "session.snapshot" && m.state.phase === "clarifying")) {
     await new Promise((r) => setTimeout(r, 20));
   }
-  ws.send(JSON.stringify({ type: "user.text", text: "no preference" }));
+  ws.send(JSON.stringify({ type: "user.text", text: "just search" }));
   const deadline = Date.now() + 5000;
   while (Date.now() < deadline) {
     const snap = msgs.find((m) => m.type === "session.snapshot" && m.state.phase === "presenting");
