@@ -4,6 +4,10 @@ Living log of changes that depart from the skeleton in `docs/ARCHITECTURE.md`, `
 
 If you improvise, add an entry in the same commit and push it. Say what changed, why the skeleton was not enough, and what other agents should do differently now.
 
+## 2026-10-24 — Pause stays paused when focusing the text box (UX-PAUSE)
+
+`pauseAll()` suspends `audioCtx` and sets `paused`. The side panel also resumes `audioCtx` on any `pointerdown` and on `#text` focus (Chrome autoplay unlock). That un-paused the speakers while leaving `paused === true`, so caption reveal stayed frozen (voice with no on-screen text). Fix: only call `audioCtx.resume()` from those unlock paths and from `playPcm` when `!paused`. Explicit Resume / submit still go through `resumeAll()`.
+
 ## 2026-10-24 — Drop loaded-language reviews before synthesis (D-UNBIASED)
 
 `ReviewService.synthesize` now runs `excludeLoaded` over the retailer + Apify pool before Claude sees it. Reviews with stacked hype/rage markers (e.g. "life changing", "don't waste your money", heavy ALL CAPS, `!!!`) are set aside when enough calmer reviews remain; if the calm pool is thin we keep the least-loaded ones so synthesis still has evidence. A speakable warning notes how many were set aside. Heuristic only — no new contract fields. Other agents: don't re-prompt Claude to "ignore bias"; filter first in `intel/reviews.ts`.
