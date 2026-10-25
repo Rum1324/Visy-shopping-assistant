@@ -4,17 +4,21 @@ Living log of changes that depart from the skeleton in `docs/ARCHITECTURE.md`, `
 
 If you improvise, add an entry in the same commit and push it. Say what changed, why the skeleton was not enough, and what other agents should do differently now.
 
+## 2026-10-24 — Stream options one-by-one; progress bar on top
+
+Shortlist is no longer a roster-then-pros dump. As soon as option N is ready, Visy speaks `formatOptionBlock` (name, price, Pros/Cons/Sources) while option N+1 prepares in the background (detail + Apify synth). The progress line lives in `#status` at the top of the side panel. Progress is spoken only when Cartesia is idle — while an option is being read, status text still updates but stays silent.
+
 ## 2026-10-24 — Progress lines name Apify
 
-When `APIFY_TOKEN` is set, the spoken thinking bar says "Using Apify…" / "Waiting on Apify…" / "Got Apify results from …" so the demo calls out the API. Without a token, wording stays generic.
+When `APIFY_TOKEN` is set, the top progress bar says "Using Apify…" / "Waiting on Apify…" / "Got Apify results from …" so the demo calls out the API. Without a token, wording stays generic.
 
 ## 2026-10-24 — Progress TTS is calm + declarative
 
-`agent.say` with `kind: "progress"` still speaks (in-chat thinking bar). Cartesia was reading trailing `…` with rising question intonation. `speechForKind` in `voice.ts` strips trailing ellipses, ends with a period, and sets `generation_config.emotion` to `calm` for progress (`curious` for questions). Captions keep the original ellipsis text.
+`agent.say` with `kind: "progress"` is spoken only when TTS is idle. Cartesia was reading trailing `…` with rising question intonation. `speechForKind` in `voice.ts` strips trailing ellipses, ends with a period, and sets `generation_config.emotion` to `calm` for progress (`curious` for questions).
 
 ## 2026-10-24 — Apify external reviews via one Google Search run (D-APIFY)
 
-Outside reviews: `prefetchApifySearch` runs **three Apify actors in parallel** (Reddit lite search, YouTube search, one Google SERP for articles only) under `APIFY_BUDGET_MS` (default 25 s), started as soon as the shopper query is known. We deliberately do **not** chain full transcript/page scrapes after discovery — that is the slow path; search snippets (+ YouTube description/captions when the actor returns them) feed Claude. Progress updates go to a single in-place thinking line and are spoken with calm/declarative TTS. Final shortlist is one `agent.say` with newlines.
+Outside reviews: `prefetchApifySearch` runs **three Apify actors in parallel** (Reddit lite search, YouTube search, one Google SERP for articles only) under `APIFY_BUDGET_MS` (default 25 s), started as soon as the shopper query is known. We deliberately do **not** chain full transcript/page scrapes after discovery — that is the slow path; search snippets (+ YouTube description/captions when the actor returns them) feed Claude. Options stream one-by-one while the next prepares.
 
 ## 2026-10-24 — Listen after the greeting
 

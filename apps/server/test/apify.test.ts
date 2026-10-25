@@ -12,7 +12,7 @@ import {
   searchPhrase,
 } from "../src/intel/apify.ts";
 import { citeFor, claudeReviewService, sourcesSentence } from "../src/intel/reviews.ts";
-import { formatOptionLine, formatProsConsSection, formatShortlistRoster, shortTitle } from "../src/agent.ts";
+import { formatOptionBlock, formatOptionLine, formatProsConsSection, formatShortlistRoster, shortTitle } from "../src/agent.ts";
 
 test("citeFor maps review sources to speakable labels", () => {
   assert.equal(citeFor("retailer", "amazon"), "Amazon");
@@ -37,7 +37,7 @@ test("shortTitle keeps important keywords", () => {
   );
 });
 
-test("roster then pros/cons sections match the spoken layout", () => {
+test("option-by-option spoken layout is name/price then pros/cons", () => {
   const reviews = {
     productId: "amazon:B0EXAMPLE1" as never,
     summary: "skip",
@@ -57,9 +57,24 @@ test("roster then pros/cons sections match the spoken layout", () => {
     "Option 1: Waterproof Picnic Blanket, $27.99\nOption 2: Sand-Proof Beach Mat, $19.99",
   );
   assert.equal(
-    formatProsConsSection(1, "amazon", reviews),
+    formatProsConsSection("amazon", reviews),
     [
-      "Here are the pros and cons of option 1:",
+      "Pros:",
+      "- Truly waterproof",
+      "- Easy to fold",
+      "Cons:",
+      "- Color duller than photos",
+      "Sources: Reviews from Amazon and Reddit.",
+    ].join("\n"),
+  );
+  assert.equal(
+    formatOptionBlock({
+      rank: 1,
+      product: { title: "Waterproof Picnic Blanket XL", price: { cents: 2799 }, marketplace: "amazon" } as never,
+      reviews,
+    }),
+    [
+      "Option 1: Waterproof Picnic Blanket XL, $27.99",
       "Pros:",
       "- Truly waterproof",
       "- Easy to fold",

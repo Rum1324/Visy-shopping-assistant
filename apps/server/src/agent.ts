@@ -64,7 +64,7 @@ export function createAgent(services: Services, sink: AgentSink, opts: { llm?: L
     sink.send({ type: "progress", event });
   };
 
-  /** In-place thinking line in the chat (spoken). Empty message clears it. */
+  /** Top progress bar. Spoken only when TTS is idle (ws skips progress audio while busy). Empty clears it. */
   function think(message: string, stage: ProgressEvent["stage"] = "reviews") {
     const text = message.trim();
     emit({ stage, message: text, at: new Date().toISOString() });
@@ -391,10 +391,8 @@ export function createAgent(services: Services, sink: AgentSink, opts: { llm?: L
     if (id !== run || !state) return;
     const candidates = results.flatMap((r) => (r.ok ? r.data : []));
     const picks = bestPerMarketplace(candidates);
-    const shortlist: ShortlistItem[] = [];
-    for (const candidate of picks) {
-      if (id !== run || !state) return;
-      const rank = (shortlist.length + 1) as 1 | 2 | 3;
+
+    async function prepareOption(candidate: ProductCandidate, rank: 1 | 2 | 3): Promise<ShortlistItem> {
       const store = candidate.marketplace[0]!.toUpperCase() + candidate.marketplace.slice(1);
       think(`Reading option ${rank} on ${store}…`, "reading_product");
       const detail = await services.navigator.getDetail(candidate, emit);
@@ -402,64 +400,67 @@ export function createAgent(services: Services, sink: AgentSink, opts: { llm?: L
       let reviews: ShortlistItem["reviews"];
       let visual: ShortlistItem["visual"];
       if (detail.ok) {
-        const synthP = (async () => {
-          if (usingApify) think(`Waiting on Apify for outside reviews on option ${rank}…`, "reviews");
-          else think(`Waiting on outside reviews for option ${rank}…`, "reviews");
-          const hits = await apifyHitsP;
-          const external = reviewsFromHits(detail.data.id, hits);
-          const by = external.reduce<Partial<Record<string, number>>>((acc, r) => {
-            acc[r.source] = (acc[r.source] ?? 0) + 1;
-            return acc;
-          }, {});
-          const bits = (["reddit", "youtube", "article"] as const)
-            .filter((s) => by[s])
-            .map((s) => (s === "article" ? "articles" : s === "youtube" ? "YouTube" : "Reddit"));
-          think(
-            bits.length
-              ? usingApify
-                ? `Got Apify results from ${bits.join(", ")}…`
-                : `Using outside reviews from ${bits.join(", ")}…`
-              : "Using retailer reviews only…",
-            "reviews",
-          );
-          think(`Summarizing option ${rank}…`, "reviews");
-          const pool = [...detail.data.retailerReviews, ...external];
-          const [, synth] = await Promise.all([
-            pool.length ? services.reviewIndex.index(detail.data.id, pool) : undefined,
-            services.reviews.synthesize(detail.data, pool, need),
-          ]);
-          return synth;
-        })();
-        const [synth, vis] = await Promise.all([synthP, services.vision.describe(detail.data)]);
+        if (usingApify) think(`Waiting on Apify for outside reviews on option ${rank}…`, "reviews");
+        else think(`Waiting on outside reviews for option ${rank}…`, "reviews");
+        const hits = await apifyHitsP;
+        const external = reviewsFromHits(detail.data.id, hits);
+        const by = external.reduce<Partial<Record<string, number>>>((acc, r) => {
+          acc[r.source] = (acc[r.source] ?? 0) + 1;
+          return acc;
+        }, {});
+        const bits = (["reddit", "youtube", "article"] as const)
+          .filter((s) => by[s])
+          .map((s) => (s === "article" ? "articles" : s === "youtube" ? "YouTube" : "Reddit"));
+        think(
+          bits.length
+            ? usingApify
+              ? `Got Apify results from ${bits.join(", ")}…`
+              : `Using outside reviews from ${bits.join(", ")}…`
+            : "Using retailer reviews only…",
+          "reviews",
+        );
+        think(`Summarizing option ${rank}…`, "reviews");
+        const pool = [...detail.data.retailerReviews, ...external];
+        const [, synth, vis] = await Promise.all([
+          pool.length ? services.reviewIndex.index(detail.data.id, pool) : undefined,
+          services.reviews.synthesize(detail.data, pool, need),
+          services.vision.describe(detail.data),
+        ]);
         if (synth.ok) reviews = synth.data;
         if (vis.ok) visual = vis.data;
       }
-      const item: ShortlistItem = {
+      return {
         rank,
         product,
         reviews,
         visual,
         whyPicked: reviews?.summary ?? `Available at ${candidate.marketplace}.`,
       };
+    }
+
+    // Present option N while preparing N+1 so speech overlaps with the next detail/Apify synth.
+    const shortlist: ShortlistItem[] = [];
+    let nextPrep: Promise<ShortlistItem> | null = picks[0] ? prepareOption(picks[0], 1) : null;
+    for (let i = 0; i < picks.length; i++) {
+      if (id !== run || !state || !nextPrep) return;
+      const item = await nextPrep;
+      if (id !== run || !state) return;
       shortlist.push(item);
       publish({
         ...state,
         phase: shortlist.length === picks.length ? "presenting" : "shortlisting",
         candidates,
         shortlist: [...shortlist],
-        focusedProductId: product.id,
+        focusedProductId: item.product.id,
       });
+      // Queue speech first so ttsBusy > 0 before next prepare's progress updates (silent while reading).
+      const speaking = say(formatOptionBlock(item));
+      const following = picks[i + 1];
+      nextPrep = following ? prepareOption(following, (i + 2) as 1 | 2 | 3) : null;
+      await speaking;
+      if (id !== run || !state) return;
     }
-    if (id !== run || !state || !shortlist.length) return;
     think("");
-    // One spoken/captioned block so newlines stay intact and TTS isn't chopped into many turns.
-    await say(
-      [
-        formatShortlistRoster(shortlist),
-        "",
-        ...shortlist.map((item) => formatProsConsSection(item.rank, item.product.marketplace, item.reviews)),
-      ].join("\n\n"),
-    );
   }
 
   async function addToCart(index: number, id: number) {
@@ -561,27 +562,17 @@ export function formatOptionLine(rank: number, title: string, priceCents: number
   return `Option ${rank}: ${shortTitle(title)}, $${(priceCents / 100).toFixed(2)}`;
 }
 
-/** Brief roster of all options (name + price only). */
+/** Brief roster of all options (name + price only). Used when re-listing after a filter. */
 export function formatShortlistRoster(items: Pick<ShortlistItem, "rank" | "product">[]) {
   return items.map((item) => formatOptionLine(item.rank, item.product.title, item.product.price.cents)).join("\n");
 }
 
-/**
- * Pros/cons block for one option. Labels Pros / Cons, then a Sources line.
- * Example:
- * Here are the pros and cons of option 1:
- * Pros:
- * - Truly waterproof
- * Cons:
- * - Color duller than photos
- * Sources: Reviews from Amazon and Reddit.
- */
+/** Pros / Cons / Sources lines (no option header). */
 export function formatProsConsSection(
-  rank: number,
   marketplace: Marketplace,
   reviews: ReviewSynthesis | undefined,
 ) {
-  const lines = [`Here are the pros and cons of option ${rank}:`];
+  const lines: string[] = [];
   const pros = reviews?.pros ?? [];
   const cons = reviews?.cons ?? [];
   if (pros.length) {
@@ -596,6 +587,22 @@ export function formatProsConsSection(
   if (sources) lines.push(`Sources: ${sources}`);
   else if (!pros.length && !cons.length) lines.push("No review summary yet.");
   return lines.join("\n");
+}
+
+/**
+ * One spoken option: name + price, then Pros / Cons / Sources.
+ * Example:
+ * Option 1: Waterproof Picnic Blanket XL, $27.99
+ * Pros:
+ * - Truly waterproof
+ * Cons:
+ * - Color duller than photos
+ * Sources: Reviews from Amazon and Reddit.
+ */
+export function formatOptionBlock(item: Pick<ShortlistItem, "rank" | "product" | "reviews">) {
+  const head = formatOptionLine(item.rank, item.product.title, item.product.price.cents);
+  const body = formatProsConsSection(item.product.marketplace, item.reviews);
+  return body ? `${head}\n${body}` : head;
 }
 
 function bestPerMarketplace(candidates: ProductCandidate[]): ProductCandidate[] {

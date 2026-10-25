@@ -44,6 +44,8 @@ export function start(
     let sayId = 0;
     let generation = 0;
     let queue: Promise<void> = Promise.resolve();
+    /** Jobs queued or speaking — progress TTS is skipped while this is > 0. */
+    let ttsBusy = 0;
     const aborters = new Set<AbortController>();
     let capturing = false;
     let sampleRate = 16000;
@@ -80,10 +82,30 @@ export function start(
 
     function say(text: string, kind: SayKind = "answer") {
       const gen = generation;
+      // Progress UI comes from the `progress` wire event. Speak it only when TTS is idle.
+      if (kind === "progress") {
+        if (ttsBusy > 0 || !cartesia.enabled) return Promise.resolve();
+        ttsBusy++;
+        const job = queue.then(() => speak(text, kind, gen));
+        queue = job.then(
+          () => {
+            ttsBusy--;
+          },
+          () => {
+            ttsBusy--;
+          },
+        );
+        return job;
+      }
+      ttsBusy++;
       const job = queue.then(() => speak(text, kind, gen));
       queue = job.then(
-        () => {},
-        () => {},
+        () => {
+          ttsBusy--;
+        },
+        () => {
+          ttsBusy--;
+        },
       );
       return job;
     }
@@ -91,8 +113,11 @@ export function start(
     async function speak(text: string, kind: SayKind = "answer", gen: number) {
       if (gen !== generation) return;
       const id = `say-${++sayId}`;
-      // Captions keep the original text (ellipsis ok); TTS gets declarative shaping for progress.
       send({ type: "agent.say", id, text, kind });
+      await speakAudio(id, text, kind, gen);
+    }
+
+    async function speakAudio(id: string, text: string, kind: SayKind, gen: number) {
       if (!cartesia.enabled || gen !== generation) return;
       const { transcript, emotion } = speechForKind(text, kind);
       const ac = new AbortController();
@@ -121,6 +146,7 @@ export function start(
       for (const ac of aborters) ac.abort();
       aborters.clear();
       queue = Promise.resolve();
+      ttsBusy = 0;
       send({ type: "tts.stop" });
     }
 

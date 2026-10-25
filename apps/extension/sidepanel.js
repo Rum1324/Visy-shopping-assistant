@@ -2,8 +2,6 @@ const statusEl = document.querySelector("#status");
 const welcomeLine = document.querySelector("#welcome-line");
 const options = document.querySelector("#options");
 const log = document.querySelector("#log");
-/** In-chat thinking turn: same DOM node is rewritten on each progress update. */
-let thinkingTurn = null;
 const form = document.querySelector("#composer");
 const text = document.querySelector("#text");
 const go = document.querySelector("#go");
@@ -138,37 +136,12 @@ function fillChars(el, phrase) {
   return chars;
 }
 
-function ensureThinkingTurn() {
-  if (thinkingTurn?.p?.isConnected) return thinkingTurn;
-  startChat();
-  const p = document.createElement("p");
-  p.className = "visy thinking";
-  if (lastSpeaker !== "Visy") {
-    const label = document.createElement("span");
-    label.className = "who";
-    label.textContent = "Visy :";
-    p.append(label);
-    lastSpeaker = "Visy";
-  }
-  const msg = document.createElement("span");
-  msg.className = "said";
-  p.append(msg);
-  log.append(p);
-  thinkingTurn = { p, msg };
-  return thinkingTurn;
-}
-
-function setThinking(message) {
+/** Top progress bar (#status). Empty clears it. */
+function setProgress(message) {
   const text = (message ?? "").trim();
-  if (!text) {
-    thinkingTurn?.p?.remove();
-    thinkingTurn = null;
-    return;
-  }
-  const turn = ensureThinkingTurn();
-  turn.msg.textContent = text;
-  log.append(turn.p);
-  log.scrollTop = log.scrollHeight;
+  statusEl.hidden = !text;
+  statusEl.textContent = text;
+  statusEl.classList.toggle("thinking", Boolean(text));
 }
 
 function revealChars(chars, shown, n) {
@@ -232,22 +205,23 @@ function beginSay(id, phrase, onto) {
     id,
     text: phrase,
     onto,
-    el: onto === "welcome" ? welcomeLine : onto === "thinking" ? ensureThinkingTurn().msg : null,
+    el: onto === "welcome" ? welcomeLine : null,
     done: false,
   });
-  if (onto === "thinking") setThinking(phrase);
+  if (onto === "progress") setProgress(phrase);
 }
 
 function finishSay(item, bytes) {
   if (!item || item.done) return;
   item.done = true;
   pendingSay.delete(item.id);
-  const played = bytes && bytes.length > 1 ? playPcm(bytes, ttsRate) : null;
-  if (item.onto === "thinking") {
-    setThinking(item.text);
+  if (item.onto === "progress") {
+    setProgress(item.text);
+    if (bytes && bytes.length > 1) playPcm(bytes, ttsRate);
     paintGo();
     return;
   }
+  const played = bytes && bytes.length > 1 ? playPcm(bytes, ttsRate) : null;
   if (!item.el) item.el = addTurn("Visy");
   if (!played) {
     sparkOnly(item.el, item.text);
@@ -307,6 +281,8 @@ function setBusy(next) {
 }
 
 function showLink(message) {
+  // Reconnect copy uses the same top slot; don't mark it as thinking pulse.
+  statusEl.classList.remove("thinking");
   statusEl.hidden = !message;
   statusEl.textContent = message ?? "";
 }
@@ -367,9 +343,8 @@ async function onMessage(ev) {
   const msg = JSON.parse(ev.data);
   if (msg.type === "agent.say") {
     if (msg.kind === "progress") {
-      beginSay(msg.id, msg.text, "thinking");
+      beginSay(msg.id, msg.text, "progress");
     } else {
-      setThinking("");
       beginSay(msg.id, msg.text, chatting ? "chat" : "welcome");
     }
   } else if (msg.type === "transcript") {
@@ -393,7 +368,7 @@ async function onMessage(ev) {
   } else if (msg.type === "session.snapshot") {
     setBusy(WORKING.has(msg.state.phase));
     if (!WORKING.has(msg.state.phase)) {
-      setThinking("");
+      setProgress("");
       maybeListen();
     }
     options.replaceChildren();
@@ -405,8 +380,7 @@ async function onMessage(ev) {
     }
   } else if (msg.type === "progress") {
     setBusy(true);
-    // Text + speech come from agent.say kind=progress; keep the line if a bare progress arrives.
-    if (msg.event?.message) setThinking(msg.event.message);
+    setProgress(msg.event?.message ?? "");
   } else if (msg.type === "driver.request") {
     const res = await chrome.runtime.sendMessage({ type: "visy.driver", req: msg.req });
     send({
