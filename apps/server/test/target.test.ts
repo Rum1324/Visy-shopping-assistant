@@ -8,7 +8,8 @@ import { ExtensionDriver } from "../src/navigator/driver/extension.ts";
 import type { FlowDriver } from "../src/navigator/driver/flow.ts";
 import { RecipeCache, type RawDetail } from "../src/navigator/recipes.ts";
 import { scriptCall, type ScriptName } from "../src/navigator/scripts.ts";
-import { TARGET_PRODUCT_SEED, TargetFlow, targetCandidate, targetFields, toTargetReviews, type NextItem, type TargetRow } from "../src/navigator/sites/target.ts";
+import { TARGET_PRODUCT_SEED, TargetFlow, targetCandidate, targetCheckout, targetFields, toTargetReviews, type NextItem, type TargetCart, type TargetRow } from "../src/navigator/sites/target.ts";
+import type { ElementPicker, PageElement } from "@visy/contracts";
 
 const fixture = (f: string) => readFileSync(new URL(`./fixtures/${f}`, import.meta.url), "utf8");
 
@@ -182,4 +183,100 @@ test("NAV=amazon routes Target search to live target.com in a background tab", a
   assert.deepEqual(r.data.map((c) => [c.id, c.price.cents, c.listPrice?.cents, c.deal?.label]), [["target:A-2", 2500, 3000, "Sale"]]);
   assert.deepEqual(sent[0], { op: "openTab", url: "about:blank", background: true });
   assert.ok(sent.some((q) => q.op === "navigate" && q.url === "https://www.target.com/s?searchTerm=picnic%20blanket"));
+});
+
+// --- C-TGT-CART ---
+
+test("target.cart reads the live cart page; read-back says the total with tax and the real button", { skip: !browser && "no Chromium for Playwright" }, async () => {
+  const [ready, count, cart] = await run<unknown>(fixture("target-cart.html"), ["target.cartReady"], ["target.cartCount"], ["target.cart"]);
+  assert.equal(ready, true);
+  assert.equal(count, 1);
+  const c = cart as TargetCart;
+  assert.deepEqual([c.subtotal, c.tax, c.total, c.shipping, c.button], ["$20.00", "$2.05", "$28.04", "Shipping $5.99", "Sign in to check out"]);
+  assert.deepEqual(c.items.map((i) => [i.tcin, i.price, i.qty]), [["94935705", "$20.00", 1]]);
+  const r = targetCheckout(c);
+  assert.ok(r.ok, JSON.stringify(r));
+  assert.deepEqual([r.data.subtotal.cents, r.data.shipping?.cents, r.data.tax?.cents, r.data.total.cents], [2000, 599, 205, 2804]);
+  assert.deepEqual(r.data.lines.map((l) => [l.productId, l.quantity, l.price.cents]), [["target:A-94935705", 1, 2000]]);
+  assert.equal(r.data.readBack, "Your Target total is about $28.04, including $2.05 estimated tax and $5.99 shipping. Press Sign in to check out when you're ready.");
+});
+
+test("targetCheckout: an empty cart is an error, not a $0 read-back", () => {
+  const r = targetCheckout({ subtotal: null, shipping: null, tax: null, total: null, items: [], button: null, empty: true, url: "https://www.target.com/cart" });
+  assert.ok(!r.ok);
+  assert.match(r.error.message, /empty/);
+});
+
+test("TargetFlow.addToCart: focuses the tab, picks Shipping over Pickup, clicks Add to cart via the chain, waits for the count", async () => {
+  const pickupView: PageElement[] = [
+    { idx: 0, role: "button", name: "Pickup Get it nearby tomorrow, selected", section: "above-the-fold-information > Fulfillment" },
+    { idx: 1, role: "button", name: "Shipping Arrives by Mon, Oct 26,", section: "above-the-fold-information > Fulfillment" },
+    { idx: 2, role: "button", name: "Show in-stock stores for Blanket", section: "Show in-stock stores for Blanket" },
+  ];
+  const shipView: PageElement[] = [
+    { idx: 0, role: "button", name: "Pickup Get it nearby tomorrow,", section: "above-the-fold-information > Fulfillment" },
+    { idx: 1, role: "button", name: "Shipping Arrives by Mon, Oct 26, selected", section: "above-the-fold-information > Fulfillment" },
+    { idx: 2, role: "button", name: "Add to cart", section: "pageBodyContainer > above-the-fold-information" },
+  ];
+  let view = pickupView;
+  const clicks: string[] = [];
+  const focused: number[] = [];
+  const waits: [string, unknown][] = [];
+  const driver = {
+    openTab: async () => ({ ok: true, data: { tabId: 9 } }),
+    navigate: async (_t: number, url: string) => ({ ok: true, data: { url } }),
+    focus: async (t: number) => void focused.push(t),
+    isBlocked: async () => false,
+    waitFor: async (_t: number, name: string, _ms: number, arg?: unknown) => (waits.push([name, arg]), true),
+    extract: async (_t: number, name: string) => (name === "target.cartCount" ? 0 : name === "target.titlePrice" ? { title: "Sidelines Lap Blanket", price: "$20.00" } : undefined),
+    snapshot: async () => ({ ok: true, data: { url: "https://www.target.com/p/-/A-94935705", title: "x", elements: view, textBlocks: [], fingerprint: "f" } }),
+    act: async (_t: number, a: { idx: number }) => {
+      clicks.push(view.find((e) => e.idx === a.idx)!.name);
+      if (view === pickupView && a.idx === 1) view = shipView;
+      return { ok: true, data: { navigated: false } };
+    },
+  } as unknown as FlowDriver;
+  const exact: ElementPicker = {
+    name: "moss",
+    pick: async (state) => {
+      const el = state.elements.find((e) => e.role === "button" && e.name === "Add to cart");
+      return el ? { ok: true, data: { idx: el.idx, score: 1, picker: "moss", latencyMs: 1, trusted: true } } : { ok: false, error: { code: "low_confidence", message: "none", retryable: true } };
+    },
+  };
+  const flow = new TargetFlow(driver, () => {}, undefined, { pickers: [exact] });
+  const r = await flow.addToCart("target:A-94935705");
+  assert.ok(r.ok, JSON.stringify(r));
+  assert.deepEqual(r.data, { productId: "target:A-94935705", title: "Sidelines Lap Blanket", quantity: 1, price: { cents: 2000, currency: "USD" } });
+  assert.deepEqual(clicks, ["Shipping Arrives by Mon, Oct 26,", "Add to cart"]);
+  assert.deepEqual(focused, [9], "Target draws the buy box only in a visible tab");
+  assert.deepEqual(waits.find(([n]) => n === "target.added"), ["target.added", 0]);
+});
+
+test("NAV=amazon routes Target add to cart and checkout to target.com, not the mock", async () => {
+  process.env.PICKER_CHAIN = "";
+  const sent: DriverRequest[] = [];
+  const cart: TargetCart = { subtotal: "$20.00", shipping: "Shipping $5.99", tax: "$2.05", total: "$28.04", items: [{ tcin: "94935705", title: "Blanket", price: "$20.00", qty: 1 }], button: "Check out", empty: false, url: "https://www.target.com/cart" };
+  const driver: ExtensionDriver = new ExtensionDriver((msg: ServerMsg) => {
+    if (msg.type !== "driver.request") return;
+    const req = DriverRequest.parse(msg.req);
+    sent.push(req);
+    const data =
+      req.op === "openTab" ? { tabId: 7 }
+      : req.op === "navigate" ? { url: req.url }
+      : req.op === "waitFor" ? { met: true }
+      : req.op === "snapshot" ? { url: "https://www.target.com/p/-/A-94935705", title: "x", elements: [], textBlocks: [], fingerprint: "f" }
+      : req.op === "extract" ? { value: req.name === "target.cart" ? cart : req.name === "target.cartCount" ? 0 : "" }
+      : {};
+    setImmediate(() => driver.handle({ type: "driver.response", id: msg.id, ok: true, data }));
+  }, 500);
+  const services = liveServices({ driver: () => driver });
+  const added = await services.navigator.addToCart("target:A-94935705", 1, () => {});
+  assert.ok(!added.ok && added.error.code !== "not_found", "reached the Target flow (no pickers here, so no trusted pick)");
+  assert.ok(sent.some((q) => q.op === "navigate" && q.url === "https://www.target.com/p/-/A-94935705"));
+  const r = await services.navigator.openCheckout("target", () => {});
+  assert.ok(r.ok, JSON.stringify(r));
+  assert.equal(r.data.total.cents, 2804);
+  assert.equal(r.data.readBack, "Your Target total is about $28.04, including $2.05 estimated tax and $5.99 shipping. Press Check out when you're ready.");
+  assert.ok(sent.some((q) => q.op === "navigate" && q.url === "https://www.target.com/cart"));
+  assert.ok(!sent.some((q) => q.op === "act"), "nothing clicked on the cart page");
 });

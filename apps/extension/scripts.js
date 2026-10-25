@@ -133,6 +133,25 @@ export const SCRIPTS = {
   const t = (h) => (c.querySelector('[data-test="review-card--' + h + '"]')?.textContent || '').replace(/\s+/g, ' ').trim();
   return { title: t('title'), body: (b.innerText || b.textContent || '').trim(), date: t('reviewTime'), author: t('username') || null, rating: parseFloat(t('ratings')) || null, verified: !!c.querySelector('[data-test="review-card--verified-purchase"]'), syndicated: !!c.querySelector('[data-test="review-card--syndicated-badge"]') };
 }).filter((r) => r.body)),
+  "target.buyBoxReady": (arg) => (!!document.querySelector('#SHIPPING, #PICKUP, #DELIVERY, [data-test="shippingButton"]') || /captcha|robot or human|access denied/i.test(document.title)),
+  "target.shippingSelected": (arg) => (/selected/i.test(document.getElementById('SHIPPING')?.getAttribute('aria-label') || '')),
+  "target.cartCount": (arg) => (Number((/(\d+)/.exec(document.querySelector('[data-test="@web/CartLink"]')?.getAttribute('aria-label') || '') || [])[1] || 0)),
+  "target.added": (arg) => (Number((/(\d+)/.exec(document.querySelector('[data-test="@web/CartLink"]')?.getAttribute('aria-label') || '') || [])[1] || 0) > Number(arg) || Array.from(document.querySelectorAll('[role="dialog"], [aria-modal="true"]')).some((d) => /^\s*Added to cart/i.test(d.innerText || ''))),
+  "target.titlePrice": (arg) => (({ title: (document.querySelector('[data-test="product-title"]')?.textContent || '').trim(), price: (document.querySelector('[data-test="product-price"]')?.textContent || '').trim() || null })),
+  "target.cartReady": (arg) => (!!document.querySelector('[data-test="cart-summary-subTotal"], [data-test="boxEmptyMsg"]') || /captcha|robot or human|access denied/i.test(document.title)),
+  "target.cartFilled": (arg) => (!!document.querySelector('[data-test="cart-summary-subTotal"]')),
+  "target.cart": (arg) => ((() => {
+  const t = (s) => (document.querySelector('[data-test="' + s + '"]')?.innerText || '').replace(/\s+/g, ' ').trim();
+  const amt = (s) => (/\$[\d,]+(?:\.\d{2})?/.exec(t(s)) || [])[0] || null;
+  const items = Array.from(document.querySelectorAll('[data-test="cartItem"]')).map((c) => ({
+    tcin: (/\/A-(\d+)/.exec(c.querySelector('a[href*="/A-"]')?.getAttribute('href') || '') || [])[1] || null,
+    title: (c.querySelector('[data-test="cartItem-title"]')?.innerText || '').replace(/\s+/g, ' ').trim(),
+    price: (c.querySelector('[data-test="cartItem-price"]')?.innerText || '').replace(/\s+/g, ' ').trim(),
+    qty: Number(c.querySelector('[data-test="cartItem-qty-stepper"] select')?.value) || 1,
+  })).filter((i) => i.tcin && i.title);
+  const button = (document.querySelector('[data-test="checkout-button"]')?.innerText || '').replace(/\s+/g, ' ').trim() || null;
+  return { subtotal: amt('cart-summary-subTotal'), shipping: t('cart-summary-fulfillment') || null, tax: amt('cart-summary-taxes'), total: amt('cart-summary-total'), items, button, empty: !!document.querySelector('[data-test="boxEmptyMsg"]'), url: location.href };
+})()),
   "walmart.ready": (arg) => ((document.readyState !== 'loading' && !!document.getElementById('__NEXT_DATA__')) || /^\/blocked/.test(location.pathname)),
   "walmart.results": (arg) => ((() => {
   let d;
