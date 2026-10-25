@@ -16,6 +16,7 @@ import { strictPicker, type FindStep } from "../pickers/common.ts";
 import type { MemoryPicker } from "../pickers/memory.ts";
 import { ClaudeRecipeWriter, extractWithRecipes, RecipeCache, type Extracted, type RawDetail, type RecipeFields, type RecipeWriter } from "../recipes.ts";
 import { cleanListingTitle } from "../../present.ts";
+import { amazonSearchUrl, type PriceRange } from "./search-urls.ts";
 
 export type AmazonResult = { asin: string; title: string; price: string | null; listPrice?: string | null; deal?: string | null; rating: string | null; reviews?: string | null; sponsored: boolean };
 
@@ -352,8 +353,8 @@ export class AmazonFlow {
     }
   }
 
-  /** viaUi=false uses the shortcut URL (fastest). viaUi=true types into the search box through the picker chain. */
-  async search(query: string, viaUi = false): Promise<Result<AmazonResult[]>> {
+  /** viaUi=false uses the shortcut URL (fastest), with the price filter when given. viaUi=true types into the search box through the picker chain. */
+  async search(query: string, viaUi = false, price: PriceRange = {}): Promise<Result<AmazonResult[]>> {
     this.marks = {};
     await this.dropPreloads();
     for (const tab of this.productTabs.values()) if (tab !== this.searchTab) await this.driver.closeTab(tab).catch(() => {});
@@ -365,7 +366,7 @@ export class AmazonFlow {
       const r = await this.step({ ...STEPS.searchBox, text: query });
       if (!r.ok) return r;
     } else {
-      const g = await this.goto(`https://www.amazon.com/s?k=${encodeURIComponent(query)}`);
+      const g = await this.goto(amazonSearchUrl(query, price));
       if (!g.ok) return g;
     }
     const t0 = performance.now();
@@ -559,10 +560,11 @@ export class AmazonFlow {
    * Navigator.getDetail for Amazon. Opens the product (a tab switch if preloaded) and scrapes reviews in parallel.
    * C3: detail fields come from a cached recipe (no AI); Claude writes one only on the first visit or a miss.
    */
-  async getDetail(candidate: ProductCandidate, emit: Emit = () => {}): Promise<Result<ProductDetail>> {
+  async getDetail(candidate: ProductCandidate, emit: Emit = () => {}, opts: { quick?: boolean } = {}): Promise<Result<ProductDetail>> {
     const asin = candidate.id.replace(/^amazon:/, "");
     emit({ stage: "reading_product", message: "Reading the Amazon product page", marketplace: "amazon", at: new Date().toISOString() });
-    const reviewsP = this.reviews(asin);
+    // quick (B-REVIEWS-FIRST finalists): the ~8 top reviews already on the product page, no review-page tab.
+    const reviewsP = opts.quick ? undefined : this.reviews(asin);
     try {
       const opened = await this.open(asin);
       if (!opened.ok) return opened;
@@ -579,7 +581,13 @@ export class AmazonFlow {
       const f = x.raw ? amazonFields(x.raw) : undefined;
       const d = f?.bullets.length || f?.description ? { bullets: f.bullets, description: f.description ?? "" } : await this.driver.extract<{ bullets: string[]; description: string }>(tab, "amazon.detail");
       emit({ stage: "reviews", message: "Reading Amazon reviews", marketplace: "amazon", at: new Date().toISOString() });
-      const rv = await reviewsP;
+      const rv: Result<{ reviews: RawReview[] }> = reviewsP
+        ? await reviewsP
+        : await this.driver
+            .waitFor(tab, "amazon.productReviewsReady", 3000)
+            .then(() => this.driver.extract<ScrapedReview[]>(tab, "amazon.reviews"))
+            .then((s) => ok({ reviews: toRawReviews(asin, s) }))
+            .catch((e) => err("internal", String(e)));
       return ok({
         ...candidate,
         title: cleanListingTitle(f?.title || candidate.title),
@@ -603,7 +611,7 @@ export class AmazonFlow {
     } catch (e) {
       return err("internal", `getDetail failed: ${(e as Error).message}`, true);
     } finally {
-      await reviewsP.catch(() => undefined);
+      await reviewsP?.catch(() => undefined);
     }
   }
 

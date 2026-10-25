@@ -14,7 +14,7 @@ import {
   type ExternalHit,
 } from "./intel/apify.ts";
 import { sourcesSentence } from "./intel/reviews.ts";
-import { haikuJev, narrowToThree } from "./narrow.ts";
+import { haikuJev, narrowWithReviews } from "./narrow.ts";
 import { haikuRelevance, type RelevanceFilter } from "./relevance.ts";
 import { createProgress } from "./progress.ts";
 import { applySaved, confirmLine, favoriteStores, prefFact, savedBlock, stated, withFact, type PrefKind } from "./saved-prefs.ts";
@@ -24,12 +24,14 @@ import {
   Need,
   PreferenceFact,
   SessionState as SessionStateSchema,
+  ok,
   type Emit,
   type JevClient,
   type Marketplace,
   type Money,
   type ProductDetail,
   type PageState,
+  type ProductCandidate,
   type Result,
   type ReviewSynthesis,
   type ServerMsg,
@@ -212,12 +214,14 @@ export function createAgent(
     ];
     try {
       for (let step = 0; step < 4; step++) {
+        const t0 = performance.now();
         const res = await llm.messages.create(
           { model: MODEL, max_tokens: 1024, system: SYSTEM, tools: TOOLS, output_config: { effort: "low" }, messages },
           { signal: ac.signal, timeout: TIMEOUT_MS, maxRetries: 0 },
         );
         if (id !== run || !state) return true;
         const calls = res.content.filter((b): b is Anthropic.ToolUseBlock => b.type === "tool_use");
+        console.log(`router: ${MODEL} step ${step + 1} → ${calls.map((c) => c.name).join(", ") || "text"} in ${Math.round(performance.now() - t0)} ms`);
         if (!calls.length) {
           const text = res.content.map((b) => (b.type === "text" ? b.text : "")).join(" ").trim();
           if (text) await say(text);
@@ -565,6 +569,7 @@ export function createAgent(
     const need = applySaved(Need.parse({ query: text.trim(), marketplaces, ...defined }), saved);
     asking = null;
     const search = ++searches;
+    const before = state;
     publish({ ...state, phase: "searching", need, candidates: [], shortlist: [], cart: [] });
     const names = need.marketplaces.map((m) => m[0]!.toUpperCase() + m.slice(1));
     const where =
@@ -580,6 +585,14 @@ export function createAgent(
     if (id !== run || !state) return;
     results.forEach((r, i) => !r.ok && console.warn(`search ${need.marketplaces[i]} failed: ${r.error.code} ${r.error.message}`));
     const candidates = results.flatMap((r) => (r.ok ? r.data : []));
+    // Sites filter by price now, so a budget nothing meets comes back empty. Say so plainly and keep the last picks,
+    // instead of reading "try different words" or the same three again.
+    const keepLast = () => publish({ ...state!, phase: before.shortlist.length ? "presenting" : "idle", candidates: before.candidates, shortlist: before.shortlist, cart: before.cart, focusedProductId: before.focusedProductId });
+    if (!candidates.length && need.budget && (need.budget.min || need.budget.max)) {
+      keepLast();
+      await say(nothingInRange(need));
+      return;
+    }
     if (!candidates.length) {
       publish({ ...state, phase: "idle" });
       await say("I couldn't find any products for that. Try different words.");
@@ -603,15 +616,29 @@ export function createAgent(
       await say("I found listings, but none looked like what you asked for. Try different words.");
       return;
     }
+    if (!relevant.some((c) => inRange(need, c))) {
+      keepLast();
+      await say(nothingInRange(need));
+      return;
+    }
     publish({ ...state, phase: "shortlisting", candidates: relevant });
+    let reading = false;
     // Narrowing runs while the count is read out.
     const counted = say(
       relevant.length > 3 ? `I found ${relevant.length} products. Picking the best three.` : `I found ${relevant.length} products.`,
       "progress",
     );
     const t0 = performance.now();
-    const narrowed = await narrowToThree(jev, need, relevant);
-    console.log(`narrow: ${relevant.length} → ${narrowed.picks.length} via ${narrowed.via} in ${Math.round(performance.now() - t0)} ms`);
+    // B-REVIEWS-FIRST: ~6 finalists' pages (features + retailer reviews) are read before the final 3 are chosen.
+    const narrowed = await narrowWithReviews(jev, need, relevant, (c) => {
+      if (!reading) emit({ stage: "reviews", message: "Reading reviews for the top picks", at: new Date().toISOString() });
+      reading = true;
+      return services.navigator.getDetail(c, emit, { quick: true });
+    });
+    console.log(
+      `narrow: ${relevant.length} → ${narrowed.picks.length} via ${narrowed.via}, chose from ${narrowed.chose} in ${Math.round(performance.now() - t0)} ms` +
+        ` (direct ${narrowed.ms.direct} ms + reviews-first ${narrowed.ms.extra} ms)`,
+    );
     await counted;
     if (id !== run || !state) return;
     const picks = narrowed.picks;
@@ -620,7 +647,8 @@ export function createAgent(
     const ids = picks.map((p) => p.candidate.id);
     // A-SHOWPAGE: every option opens in its own tab, the first comes to the front.
     const tabs = services.navigator.openOptions ? picks.filter((p) => p.candidate.marketplace === "amazon").length : 0;
-    if (tabs) void services.navigator.openOptions!(ids, emit).catch(() => {});
+    // Also called when only finalists were on Amazon, so their pages' tabs close and only the options stay.
+    if (tabs || narrowed.details.size > picks.length) void services.navigator.openOptions?.(ids, emit).catch(() => {});
     // The picks go into the session before they are named, so a follow-up that cuts the details off
     // ("is the last one really $165?") is answered from them. Details fill in below as they arrive.
     publish({
@@ -791,11 +819,23 @@ export function createAgent(
 
     const work = picks.map(({ candidate, why }, i) =>
       (async () => {
+        // Finalists' pages were already read (or are still loading) while picking; never fetch twice. That read was
+        // quick, so the reviews it skipped (Amazon's review pages) load now, beside the outside reviews.
+        const early = narrowed.details.get(candidate.id);
+        const moreP = early && services.navigator.moreReviews ? services.navigator.moreReviews(candidate.id, emit) : undefined;
         let product: ProductDetail | typeof candidate = candidate;
         let reviews: ShortlistItem["reviews"];
         let visual: ShortlistItem["visual"];
         try {
-          const detail = await services.navigator.getDetail(candidate, emit);
+          let detail = await (early ?? services.navigator.getDetail(candidate, emit));
+          const more = await moreP?.catch(() => undefined);
+          if (detail.ok && more?.ok && more.data.length) {
+            const have = new Set(detail.data.retailerReviews.map((r) => r.body));
+            detail = ok({
+              ...detail.data,
+              retailerReviews: [...detail.data.retailerReviews, ...more.data.filter((r) => !have.has(r.body))],
+            });
+          }
           product = detail.ok ? detail.data : candidate;
           if (detail.ok) {
             detailSlot.get(candidate.id)?.resolve(detail.data);
@@ -943,6 +983,20 @@ async function saveUsual(productId: string, title: string, evidence: string) {
  * The cap the user stated holds across follow-up searches: "premium" or "more expensive" with no amount
  * can't raise it (that moves the floor instead). It changes only when the user names a new amount.
  */
+const inRange = (need: Need, c: ProductCandidate) =>
+  (need.budget?.max == null || c.price.cents <= need.budget.max.cents) && (need.budget?.min == null || c.price.cents >= need.budget.min.cents);
+
+const wholeDollars = (cents: number) => `$${cents % 100 ? (cents / 100).toFixed(2) : (cents / 100).toLocaleString("en-US")}`;
+
+/** "I didn't find any water bottle over $2,000." Said instead of reading picks outside the budget. */
+export function nothingInRange(need: Need) {
+  const min = need.budget?.min?.cents;
+  const max = need.budget?.max?.cents;
+  const range =
+    min != null && max != null ? `between ${wholeDollars(min)} and ${wholeDollars(max)}` : min != null ? `over ${wholeDollars(min)}` : `under ${wholeDollars(max ?? 0)}`;
+  return `I didn't find any ${need.query} ${range}. Want to try a different price?`;
+}
+
 function searchBudget(input: { budgetMinCents?: number; budgetMaxCents?: number }, last: Need | undefined, said: string): Need["budget"] {
   const lastMax = last?.budget?.max?.cents;
   const max = input.budgetMaxCents != null && lastMax != null && !SAYS_AMOUNT.test(said) ? lastMax : input.budgetMaxCents;

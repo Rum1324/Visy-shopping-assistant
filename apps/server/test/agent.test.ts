@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import type Anthropic from "@anthropic-ai/sdk";
-import type { ServerMsg, Services } from "@visy/contracts";
+import { err, type JevClient, type ServerMsg, type Services } from "@visy/contracts";
 import { fixtures } from "@visy/contracts/fixtures";
 import { mockServices } from "@visy/contracts/mocks";
 import { createAgent, type AgentSink } from "../src/agent.ts";
@@ -496,4 +496,88 @@ test("claude: 'premium' on a follow-up keeps the stated $100 cap; a new amount c
   assert.equal(agent.state?.need?.budget?.min?.cents, 5000);
   await agent.handleText("ok, up to 150 then");
   assert.equal(agent.state?.need?.budget?.max?.cents, 15000);
+});
+
+test("reviews-first: finalists' pages are read once, the final 3 reuse them, and only they open as tabs", async () => {
+  const base = mockServices({ latencyMs: 0 });
+  const reads: string[] = [];
+  const opened: string[][] = [];
+  const more: string[] = [];
+  const services: Services = {
+    ...base,
+    navigator: {
+      ...base.navigator,
+      async getDetail(candidate, emit) {
+        reads.push(candidate.id);
+        return base.navigator.getDetail(candidate, emit);
+      },
+      async openOptions(ids) {
+        opened.push(ids);
+      },
+      async moreReviews(id) {
+        more.push(id);
+        return { ok: true, data: [{ id: `${id}-more`, productId: id, source: "retailer", body: "From the full review pages.", untrusted: true }] };
+      },
+    },
+  };
+  // Picks p1 from listings; with pages in view, the last finalist (not a direct pick).
+  const jev: JevClient = {
+    async decide({ state, options }) {
+      const choice = state.includes("features:") || state.includes("review") ? options.at(-1)! : options[0]!;
+      return { ok: true, data: { choice, confidence: 0.8 } };
+    },
+  };
+  const said: string[] = [];
+  const agent = createAgent(services, { send() {}, say: async (t) => void said.push(t), stopSpeaking() {} }, { llm: null, jev, clarify: false });
+  await agent.hello("demo-user");
+  process.env.VISY_REVIEWS_FIRST_MS = "5000";
+  try {
+    await agent.handleText("picnic blanket");
+  } finally {
+    delete process.env.VISY_REVIEWS_FIRST_MS;
+  }
+  assert.equal(agent.state?.phase, "presenting", said.join(" | "));
+  const ids = agent.state!.shortlist.map((i) => i.product.id);
+  assert.equal(ids.length, 3);
+  assert.equal(new Set(reads).size, reads.length, `a page was read twice: ${reads.join()}`);
+  assert.ok(reads.length > 3, "only the final 3 were read");
+  for (const id of ids) assert.ok(reads.includes(id));
+  assert.deepEqual(opened, [ids]);
+  // The quick reads skipped the full review pages; they're fetched for the final 3 only.
+  assert.deepEqual([...more].sort(), [...ids].sort());
+  for (const item of agent.state!.shortlist) assert.ok("retailerReviews" in item.product && item.product.retailerReviews.some((r) => r.body === "From the full review pages."), item.product.id);
+});
+
+test("claude: 'more expensive' with nothing in range says so and keeps the last three", async () => {
+  // Live run: $2000 water bottle, then "something more expensive" re-ran the search and read the same picks again.
+  const llm = scripted([
+    { name: "search", input: { query: "picnic blanket", budgetMaxCents: 200000, skipQuestions: true } },
+    { name: "search", input: { query: "premium picnic blanket", budgetMaxCents: 300000, budgetMinCents: 100000, skipQuestions: true } },
+  ]);
+  const { agent, said } = harness(llm);
+  await agent.hello("demo-user");
+  await agent.handleText("a picnic blanket, up to 2000 dollars");
+  const first = agent.state?.shortlist.map((i) => i.product.id);
+  assert.equal(first?.length, 3);
+  const n = said.length;
+  await agent.handleText("I want something more expensive");
+  assert.equal(agent.state?.need?.budget?.min?.cents, 100000);
+  assert.equal(agent.state?.need?.budget?.max?.cents, 200000);
+  assert.deepEqual(
+    said.slice(n).filter((s) => !/check|Searching|found/i.test(s)),
+    ["I didn't find any premium picnic blanket between $1,000 and $2,000. Want to try a different price?"],
+  );
+  assert.deepEqual(agent.state?.shortlist.map((i) => i.product.id), first);
+  assert.equal(agent.state?.phase, "presenting");
+});
+
+test("claude: a price-filtered search that comes back empty names the range, not 'different words'", async () => {
+  const services = mockServices({ latencyMs: 0 });
+  services.navigator = { ...services.navigator, search: async () => err("parse_failed", "no result cards found") };
+  const llm = scripted([{ name: "search", input: { query: "water bottle", budgetMinCents: 200000, skipQuestions: true } }]);
+  const { agent, said } = harness(llm, services);
+  await agent.hello("demo-user");
+  await agent.handleText("a water bottle over 2000 dollars");
+  assert.equal(said.at(-1), "I didn't find any water bottle over $2,000. Want to try a different price?");
+  assert.equal(agent.state?.phase, "idle");
 });
