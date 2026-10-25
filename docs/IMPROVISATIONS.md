@@ -4,9 +4,13 @@ Living log of changes that depart from the skeleton in `docs/ARCHITECTURE.md`, `
 
 If you improvise, add an entry in the same commit and push it. Say what changed, why the skeleton was not enough, and what other agents should do differently now.
 
+## 2026-10-24 — Progress TTS is calm + declarative
+
+`agent.say` with `kind: "progress"` still speaks (in-chat thinking bar). Cartesia was reading trailing `…` with rising question intonation. `speechForKind` in `voice.ts` strips trailing ellipses, ends with a period, and sets `generation_config.emotion` to `calm` for progress (`curious` for questions). Captions keep the original ellipsis text.
+
 ## 2026-10-24 — Apify external reviews via one Google Search run (D-APIFY)
 
-Outside reviews: `prefetchApifySearch` runs **three Apify actors in parallel** (Reddit lite search, YouTube search, one Google SERP for articles only) under `APIFY_BUDGET_MS` (default 25 s), started as soon as the shopper query is known. We deliberately do **not** chain full transcript/page scrapes after discovery — that is the slow path; search snippets (+ YouTube description/captions when the actor returns them) feed Claude. Progress updates go to a single in-place thinking line (not spoken). Final shortlist is one `agent.say` with newlines.
+Outside reviews: `prefetchApifySearch` runs **three Apify actors in parallel** (Reddit lite search, YouTube search, one Google SERP for articles only) under `APIFY_BUDGET_MS` (default 25 s), started as soon as the shopper query is known. We deliberately do **not** chain full transcript/page scrapes after discovery — that is the slow path; search snippets (+ YouTube description/captions when the actor returns them) feed Claude. Progress updates go to a single in-place thinking line and are spoken with calm/declarative TTS. Final shortlist is one `agent.say` with newlines.
 
 ## 2026-10-24 — Listen after the greeting
 

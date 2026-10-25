@@ -14,7 +14,7 @@ import { convexPreferenceStore } from "./prefs-convex.ts";
 import { claudeReviewService } from "./intel/reviews.ts";
 import { claudeVisionService } from "./intel/vision.ts";
 import { mossReviewIndex } from "./intel/review-index.ts";
-import { Cartesia } from "./voice.ts";
+import { Cartesia, speechForKind } from "./voice.ts";
 
 const TTS_RATE = 24000;
 
@@ -91,13 +91,19 @@ export function start(
     async function speak(text: string, kind: SayKind = "answer", gen: number) {
       if (gen !== generation) return;
       const id = `say-${++sayId}`;
+      // Captions keep the original text (ellipsis ok); TTS gets declarative shaping for progress.
       send({ type: "agent.say", id, text, kind });
       if (!cartesia.enabled || gen !== generation) return;
+      const { transcript, emotion } = speechForKind(text, kind);
       const ac = new AbortController();
       aborters.add(ac);
       try {
         send({ type: "tts.start", id, format: { encoding: "pcm_s16le", sampleRate: TTS_RATE } });
-        const audio = await cartesia.speak(text, agent.speechRate, ac.signal);
+        const audio = await cartesia.speak(transcript, {
+          speed: agent.speechRate,
+          emotion,
+          signal: ac.signal,
+        });
         if (gen !== generation || ws.readyState !== ws.OPEN) return;
         ws.send(audio);
         send({ type: "tts.end", id });
