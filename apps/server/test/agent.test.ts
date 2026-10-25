@@ -386,3 +386,84 @@ test("claude errors fall back to keyword routing", async () => {
   await agent.handleText("under $1");
   assert.match(said.at(-1) ?? "", /Nothing on the shortlist/i);
 });
+
+test("claude: a question that cuts off the picks is answered from them, not a new search", async () => {
+  // Live run: Visy named the three picks, the user cut in ("is the last one really $165?") while the
+  // details loaded, and Visy said it had no results and searched again.
+  const base = mockServices({ latencyMs: 0 });
+  const services: Services = {
+    ...base,
+    navigator: {
+      ...base.navigator,
+      getDetail: async (candidate, emit) => {
+        await new Promise((r) => setTimeout(r, 30));
+        return base.navigator.getDetail(candidate, emit);
+      },
+    },
+  };
+  const turns: string[] = [];
+  const results: string[] = [];
+  const calls: string[] = [];
+  const llm: Llm = {
+    messages: {
+      async create(body) {
+        const last = body.messages.at(-1)!;
+        if (typeof last.content === "string") {
+          turns.push(last.content);
+          const said: string = JSON.parse(last.content.split("User said: ")[1]!);
+          const call = /picnic/.test(said)
+            ? { name: "search", input: { query: said, skipQuestions: true } }
+            : { name: "answer_about_product", input: { question: said } };
+          calls.push(call.name);
+          return toolUse(call);
+        }
+        const out = last.content as Anthropic.ToolResultBlockParam[];
+        results.push(...out.map((r) => `${r.is_error ? "ERROR " : ""}${String(r.content)}`));
+        return say("Answered from the picks.");
+      },
+    },
+  };
+  const said: string[] = [];
+  let followUp: Promise<void> | undefined;
+  const agent = createAgent(
+    services,
+    {
+      send() {},
+      say: async (text) => {
+        said.push(text);
+        // Cut in right after the names and prices, before any option's details have loaded.
+        if (!followUp && /^(Best match|Option 1): /.test(text)) {
+          followUp = (async () => {
+            await null;
+            agent.interrupt();
+            await agent.handleText("is the last one really that cheap");
+            await agent.handleText("describe what they look like");
+          })();
+        }
+      },
+      stopSpeaking() {},
+    },
+    { llm, clarify: false },
+  );
+  await agent.hello("demo-user");
+  await agent.handleText("picnic blanket");
+  assert.ok(followUp, said.join(" | "));
+  await followUp;
+
+  assert.deepEqual(calls, ["search", "answer_about_product", "answer_about_product"]);
+  assert.equal(said.filter((s) => /^I'll check/.test(s)).length, 1, "searched again");
+  const shortlist = agent.state!.shortlist;
+  assert.equal(shortlist.length, 3);
+  const last = shortlist.at(-1)!;
+  const price = `$${(last.product.price.cents / 100).toFixed(2)}`;
+  // The follow-up turn sees the picks with their prices.
+  assert.match(turns[1]!, /shortlist has 3 options/);
+  assert.ok(turns[1]!.includes(`"option":3`) && turns[1]!.includes(price), turns[1]);
+  // The answers come from the picks: prices, and what the photos show once the details are in.
+  assert.equal(results.length, 2);
+  assert.ok(results.every((r) => !r.startsWith("ERROR")), results.join("\n"));
+  assert.ok(results[0]!.includes(price), results[0]);
+  for (const item of shortlist.filter((i) => i.visual)) assert.ok(results[1]!.includes(item.visual!.short.slice(0, 30)), results[1]);
+  assert.ok(shortlist.some((i) => i.visual), "no photo descriptions landed");
+  assert.equal(agent.state?.phase, "presenting");
+});
