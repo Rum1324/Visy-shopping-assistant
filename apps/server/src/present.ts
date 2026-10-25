@@ -67,9 +67,11 @@ function dealSentence(label: string, membership?: string): string | undefined {
 export function saleNote(p: Priced): string | undefined {
   const was = wasPrice(p);
   const parts = [was ? `On sale: ${dollars(p.price.cents)}, down from ${dollars(was)}.` : undefined];
-  // Once the strike price was said, a bare "Sale" / "Reduced price" badge or a "save $5.06" adds nothing.
+  // Once the strike price was said, a bare "Sale" / "Reduced price" / "$10 off" badge or a "save $5.06" adds nothing.
+  // A members-only "$10 off" is still said: it's a different price.
   const label = was ? p.deal?.label.replace(/,?\s*save \$[\d,.]+$/i, "").trim() : p.deal?.label;
-  if (label && !(was && /^((on )?sale|reduced price)$/i.test(label))) parts.push(dealSentence(label, p.deal?.requiresMembership));
+  const repeat = /^((on )?sale|reduced price)$/i.test(label ?? "") || (!p.deal?.requiresMembership && /^(\$[\d,.]+|\d+%) off$/i.test(label ?? ""));
+  if (label && !(was && repeat)) parts.push(dealSentence(label, p.deal?.requiresMembership));
   return parts.filter(Boolean).join(" ") || undefined;
 }
 
