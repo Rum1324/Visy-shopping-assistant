@@ -22,7 +22,7 @@ Line format: `[status] ID · task · owner · branch · since HH:MM PT`. Use one
 
 ## Open
 
-- [working] A-STT · Investigate speech-to-text: it looks broken and the mic button is missing from the side panel. Lead: `5dd71f1` simplified the panel to one send/stop control and may have dropped push-to-talk. Check `apps/extension/sidepanel.*` and the server's Cartesia `audio.end` path in `voice.ts` · agent: Mic and conversation UI (for Sota) · claude/a-mic-b8c4a4 · since 20:33 PT
+- [done] A-STT · Hands-free voice: mic on by default, live transcript in the input box (Cartesia /stt/turns), listen/stop tones, mute stops the track, barge-in · [PR #20](https://github.com/Rum1324/Visy-shopping-assistant/pull/20)
 - [open] LIVE-1 · Full live run on `main` in real Chrome: picnic blanket → shortlist → under $20 → review question → add → checkout read-back → yes, with no order placed
 - [open] C4 · Variants (size, color, quantity), filters, sort, and the checkout read-back flow on Amazon (`navigator/sites/amazon.ts`)
 - [working] C-TGT · Real Target search and detail flow (sample listings today) · agent: Target navigator (for Sota) · claude/c-target-9ad777 · since 20:33 PT
@@ -30,7 +30,7 @@ Line format: `[status] ID · task · owner · branch · since HH:MM PT`. Use one
 - [open] C-WMT-CART · Walmart add to cart and cart read-back. Search and detail are live (PR #16); a Walmart add still goes to the mock and returns not_found
 - [open] D-PAGEQA · Answer "what's on this page?" over the C5 `PageState` capture
 - [working] C-TGT-CART · Target add to cart and cart read-back (needs PR #18) · agent: Target cart (for Sota) · claude/magical-austin-6f8bb6 · since 22:02 PT
-- [open] A-VOICE · Decide whether voice-only must work with no clicks at all (motor-impaired users)
+- [done] A-VOICE · Yes: voice-only works with no clicks (mic on by default; only Chrome's one-time Allow, which mic.html asks for on open) · [PR #20](https://github.com/Rum1324/Visy-shopping-assistant/pull/20)
 - [open] DEMO · Feature freeze and rehearsal (H+14); warm `RecipeCache` and picker memory before going on stage
 
 ### From team testing (Slack, Oct 24)
@@ -45,7 +45,7 @@ Line format: `[status] ID · task · owner · branch · since HH:MM PT`. Use one
 - [open] UX-ASK-END · End every turn by asking the user a question · Yuka
 - [working] UX-PROGRESS · Spoken progress when work takes over ~2 s, with varied lines ("searching Amazon now", "comparing results from Walmart"); "One moment" is too repetitive · Yuka, Sota, yujielee · agent: Run latest demo (for Sota) · b/feedback · since 20:36 PT
 - [working] UX-SPEED · Let the user adjust voice speed · yujielee · agent: Voice speed adjustment (for Pixl) · cursor/ux-speed-c3e0 · since 21:55 PT
-- [working] B-HISTORY · Use the conversation history as context for follow-up searches · Sota · agent: Mic and conversation UI (for Sota) · claude/a-mic-b8c4a4 · since 22:06 PT
+- [done] B-HISTORY · Follow-up searches ("make it black") keep the last search's budget and needs · [PR #20](https://github.com/Rum1324/Visy-shopping-assistant/pull/20)
 - [working] A-SHOWPAGE · When recommending, open the top pick's product page on screen instead of staying on the home tab · Sota (open all 3 options as tabs, focus option 1) · agent: Run latest demo (for Sota) · b/feedback · since 20:16 PT
 - [open] D-UNBIASED · Unbiased review summary: balance retailer reviews with outside sources (ties to D-APIFY) · Yuka
 
