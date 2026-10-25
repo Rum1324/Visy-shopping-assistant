@@ -50,7 +50,13 @@ export const ServerMsg = z.discriminatedUnion("type", [
   z.object({ type: z.literal("welcome"), sessionId: z.string(), protocol: z.number().int() }),
   z.object({ type: z.literal("transcript"), text: z.string(), final: z.boolean() }),
   /** Text being spoken, for captions and braille displays. Sent before the matching audio. */
-  z.object({ type: z.literal("agent.say"), id: z.string(), text: z.string() }),
+  z.object({
+    type: z.literal("agent.say"),
+    id: z.string(),
+    text: z.string(),
+    /** progress = in-place thinking line in the chat; omit/answer = new turn. */
+    kind: z.enum(["answer", "progress", "question"]).optional(),
+  }),
   z.object({ type: z.literal("tts.start"), id: z.string(), format: AudioFormat }),
   z.object({ type: z.literal("tts.end"), id: z.string() }),
   /** Drop any buffered TTS audio right now (barge-in). */

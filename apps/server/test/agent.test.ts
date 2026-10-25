@@ -6,7 +6,7 @@ import { fixtures } from "@visy/contracts/fixtures";
 import { mockServices } from "@visy/contracts/mocks";
 import { createAgent, type AgentSink } from "../src/agent.ts";
 import type { Llm } from "../src/agent-tools.ts";
-import { Cartesia } from "../src/voice.ts";
+import { Cartesia, speechForKind } from "../src/voice.ts";
 
 type Call = { name: string; input: Record<string, unknown> };
 
@@ -92,6 +92,19 @@ function harness(llm: Llm | null, services: Services = mockServices({ latencyMs:
 
 test("cartesia is off when the key is empty", () => {
   assert.equal(new Cartesia("").enabled, false);
+});
+
+test("speechForKind makes progress declarative", () => {
+  assert.deepEqual(speechForKind("Reading option 1 on Amazon…", "progress"), {
+    transcript: "Reading option 1 on Amazon.",
+    emotion: "calm",
+  });
+  assert.deepEqual(speechForKind("Still waiting...", "progress"), {
+    transcript: "Still waiting.",
+    emotion: "calm",
+  });
+  assert.equal(speechForKind("Which one?", "question").emotion, "curious");
+  assert.equal(speechForKind("Here are three options.").emotion, undefined);
 });
 
 // Every demo-path test runs on keyword routing (no key) and on the Claude tool loop (fake client).
