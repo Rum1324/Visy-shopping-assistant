@@ -3,6 +3,7 @@ import { test } from "node:test";
 import { fixtures } from "@visy/contracts/fixtures";
 import {
   buildQueries,
+  prefetchProductHits,
   collectViaApify,
   hitsToReviews,
   prefetchApifySearch,
@@ -154,19 +155,12 @@ test("collectViaApify returns [] without a token", async () => {
   }
 });
 
-test("prefetchApifySearch gets YouTube from its actor and articles plus Reddit from one Google run", async () => {
+test("prefetchApifySearch gets articles and Reddit from one Google run", async () => {
   resetApifyCache();
   const actors = new Set<string>();
   let serpBody = "";
   const fetchImpl: typeof fetch = async (input, init) => {
-    const url = String(input);
-    actors.add(url);
-    if (url.includes("youtube")) {
-      return new Response(
-        JSON.stringify([{ title: "Picnic blanket review", description: "Shows folding along the pre-creased lines in ten seconds.", url: "https://www.youtube.com/watch?v=a" }]),
-        { status: 200, headers: { "Content-Type": "application/json" } },
-      );
-    }
+    actors.add(String(input));
     serpBody = String(init?.body ?? "");
     return new Response(
       JSON.stringify([
@@ -193,16 +187,45 @@ test("prefetchApifySearch gets YouTube from its actor and articles plus Reddit f
     );
   };
   const hits = await prefetchApifySearch("picnic blanket", { token: "test-token", fetchImpl, budgetMs: 5_000 });
-  // The Reddit scraper actor timed out on every live run, so Reddit comes from Google.
-  assert.ok(![...actors].some((u) => u.includes("reddit")));
-  assert.ok([...actors].some((u) => u.includes("youtube")));
-  assert.ok([...actors].some((u) => u.includes("google-search")));
+  // The Reddit and YouTube actors were too slow live; only the Google actor runs.
+  assert.deepEqual([...actors].map((u) => new URL(u).pathname.split("/")[3]), ["apify~google-search-scraper"]);
   const queries = String(JSON.parse(serpBody).queries).split("\n");
   assert.deepEqual(queries, [buildQueries("picnic blanket"), "picnic blanket site:reddit.com"]);
-  assert.deepEqual(
-    hits.map((h) => h.source).sort(),
-    ["article", "reddit", "youtube"],
+  assert.deepEqual(hits.map((h) => h.source).sort(), ["article", "reddit"]);
+});
+
+test("prefetchProductHits gives each product the hits from its own query", async () => {
+  resetApifyCache();
+  let queries: string[] = [];
+  const page = (term: string, results: { title: string; url: string; description: string }[]) => ({ searchQuery: { term }, organicResults: results });
+  const fetchImpl: typeof fetch = async (_input, init) => {
+    queries = String(JSON.parse(String(init?.body)).queries).split("\n");
+    return new Response(
+      JSON.stringify([
+        // Google can return pages out of order.
+        page(queries[1]!, [
+          { title: "Soundcore Space One review", url: "https://www.soundguys.com/space-one", description: "Battery lasted 40 hours with ANC on in our test." },
+          { title: "Best headphones of the year", url: "https://www.example.com/best", description: "Our favorite over-ear picks for travel and the office." },
+        ]),
+        page(queries[0]!, [
+          { title: "Wh-1000XM5 review after 2 years", url: "https://www.reddit.com/r/sony/comments/x", description: "Sony WH-1000XM5 headband cracked after a year, sound still great." },
+          { title: "Sony WH-1000XM5 Review", url: "https://www.amazon.com/dp/B09", description: "Sony WH-1000XM5 on Amazon with free shipping today." },
+        ]),
+      ]),
+      { status: 200, headers: { "Content-Type": "application/json" } },
+    );
+  };
+  const out = await prefetchProductHits(
+    [
+      { id: "sony", title: "Sony WH-1000XM5 Wireless Noise Canceling Headphones, 30 Hour Battery" },
+      { id: "anker", title: "Space One Active Noise Cancelling Headphones", brand: "Soundcore" },
+    ],
+    { token: "test-token", fetchImpl, budgetMs: 5_000 },
   );
+  assert.deepEqual(queries, ["Sony WH-1000XM5 Wireless Noise Canceling review", "Soundcore Space One Active Noise Cancelling review"]);
+  // Retailer pages are dropped, and so is a result that doesn't name the brand.
+  assert.deepEqual(out.get("sony")?.map((h) => h.source), ["reddit"]);
+  assert.deepEqual(out.get("anker")?.map((h) => h.url), ["https://www.soundguys.com/space-one"]);
 });
 
 test("buildQueries is a single Google search for articles", () => {
