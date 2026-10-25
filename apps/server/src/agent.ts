@@ -5,7 +5,6 @@
  */
 import Anthropic from "@anthropic-ai/sdk";
 import { INPUTS, MODEL, SYSTEM, TIMEOUT_MS, TOOLS, turnMessage, untrusted, type Llm, type ToolName } from "./agent-tools.ts";
-import { apifyToken, prefetchApifySearch, prefetchProductHits, reviewsFromHits, type ExternalHit } from "./intel/apify.ts";
 import { sourcesSentence } from "./intel/reviews.ts";
 import { haikuJev, narrowToThree } from "./narrow.ts";
 import { haikuRelevance, type RelevanceFilter } from "./relevance.ts";
@@ -21,7 +20,6 @@ import {
   type JevClient,
   type Marketplace,
   type Money,
-  type ProductDetail,
   type PageState,
   type Result,
   type ReviewSynthesis,
@@ -42,8 +40,6 @@ export type AgentSink = {
 };
 
 const YES = /^(yes|confirm|that matches)\b/i;
-/** How long the reading waits for each option's own outside reviews before using the shared query pool. */
-const OWN_REVIEWS_WAIT_MS = 10_000;
 /** The user named an amount (or dropped the cap) this turn, so a follow-up search may change the budget. */
 const SAYS_AMOUNT = /\d|\b(ten|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|hundred|thousand|grand)\b|\bno (budget|limit)\b|\bany price\b/i;
 const DEFAULT_QUESTIONS = ["What's your budget?", "What matters most?"];
@@ -489,16 +485,6 @@ export function createAgent(
           : "I'll check Amazon, Target, and Walmart.";
     await say(where);
     if (id !== run || !state) return;
-    // Kick off Apify immediately (Reddit + YouTube + articles in parallel) beside marketplace search.
-    const usingApify = Boolean(apifyToken());
-    emit({
-      stage: "reviews",
-      message: usingApify
-        ? "Using Apify to search Reddit and review sites"
-        : "Searching Reddit and review sites for reviews",
-      at: new Date().toISOString(),
-    });
-    const apifyHitsP = prefetchApifySearch(need.query, { mustHaves: need.mustHaves });
     const results = await Promise.all(need.marketplaces.map((m) => services.navigator.search(need, m, emit)));
     if (id !== run || !state) return;
     results.forEach((r, i) => !r.ok && console.warn(`search ${need.marketplaces[i]} failed: ${r.error.code} ${r.error.message}`));
@@ -553,10 +539,6 @@ export function createAgent(
       focusedProductId: picks[0]?.candidate.id,
     });
     // Details, reviews, photo and the spoken line for all three run at once, starting while the names are read; they are read in order.
-    // Outside reviews: each option's own Google results if they come within OWN_REVIEWS_WAIT_MS, else the query pool
-    // from the prefetch above. Own results that come later replace the pool and redo that option's summary.
-    const ownP = usingApify ? prefetchProductHits(picks.map((p) => p.candidate)) : Promise.resolve(new Map<string, ExternalHit[]>());
-    const ownDeadline = new Promise<undefined>((r) => setTimeout(() => r(undefined), OWN_REVIEWS_WAIT_MS).unref());
     const work = picks.map(({ candidate, why }, i) =>
       (async () => {
         const detail = await services.navigator.getDetail(candidate, emit);
@@ -565,33 +547,9 @@ export function createAgent(
         let visual: ShortlistItem["visual"];
         if (detail.ok) {
           const synthP = (async () => {
-            // Apify hits when the token is set; otherwise collectExternal (mock fixtures in tests).
-            const ownMap = await Promise.race([ownP, ownDeadline]);
-            const own = ownMap?.get(candidate.id);
-            let external = own?.length ? reviewsFromHits(detail.data.id, own, "apify-own") : reviewsFromHits(detail.data.id, await apifyHitsP);
-            if (!ownMap) void lateOwnReviews(detail.data, i);
-            if (!external.length && !usingApify) {
-              const got = await services.reviews.collectExternal(detail.data, emit);
-              if (got.ok) external = got.data;
-            }
-            const by = external.reduce<Partial<Record<string, number>>>((acc, r) => {
-              acc[r.source] = (acc[r.source] ?? 0) + 1;
-              return acc;
-            }, {});
-            const bits = (["reddit", "youtube", "article"] as const)
-              .filter((s) => by[s])
-              .map((s) => (s === "article" ? "articles" : s === "youtube" ? "YouTube" : "Reddit"));
-            emit({
-              stage: "reviews",
-              marketplace: detail.data.marketplace,
-              message: bits.length
-                ? usingApify
-                  ? `Got Apify results ${own?.length ? `about option ${i + 1}` : "for the search"} from ${bits.join(", ")}`
-                  : `Using outside reviews from ${bits.join(", ")}`
-                : "Using retailer reviews only",
-              at: new Date().toISOString(),
-            });
-            const pool = [...detail.data.retailerReviews, ...external];
+            // Outside reviews: one "<product> review" Google search for this option (intel/apify.ts), capped at APIFY_BUDGET_MS.
+            const external = await services.reviews.collectExternal(detail.data, emit);
+            const pool = [...detail.data.retailerReviews, ...(external.ok ? external.data : [])];
             const [, synth] = await Promise.all([
               pool.length ? services.reviewIndex.index(detail.data.id, pool) : undefined,
               services.reviews.synthesize(detail.data, pool, need),
@@ -616,16 +574,6 @@ export function createAgent(
         return line;
       })(),
     );
-    /** An option's own reviews came after the reading started: re-index and re-summarize it with them. */
-    async function lateOwnReviews(product: ProductDetail, i: number) {
-      const own = (await ownP).get(product.id);
-      if (!own?.length || search !== searches) return;
-      const pool = [...product.retailerReviews, ...reviewsFromHits(product.id, own, "apify-own")];
-      const [, synth] = await Promise.all([services.reviewIndex.index(product.id, pool), services.reviews.synthesize(product, pool, need)]);
-      if (!synth.ok || search !== searches || !state) return;
-      publish({ ...state, shortlist: state.shortlist.map((item) => (item.product.id === product.id ? { ...item, reviews: synth.data } : item)) });
-      emit({ stage: "reviews", marketplace: product.marketplace, message: `Got Apify results about option ${i + 1}`, at: new Date().toISOString() });
-    }
     // allSettled also keeps a job that fails after the user cut in from crashing the server.
     details = Promise.allSettled(work);
     await say(`${tabs ? `Opening the ${tabs === 1 ? "tab" : `${tabs} tabs`} now. ` : ""}${overview(options)}`);

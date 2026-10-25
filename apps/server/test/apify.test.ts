@@ -1,17 +1,8 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
+import type { ProductId } from "@visy/contracts";
 import { fixtures } from "@visy/contracts/fixtures";
-import {
-  buildQueries,
-  prefetchProductHits,
-  collectViaApify,
-  hitsToReviews,
-  prefetchApifySearch,
-  resetApifyCache,
-  reviewKeywords,
-  reviewsFromSearchItems,
-  searchPhrase,
-} from "../src/intel/apify.ts";
+import { collectViaApify, hitsFromSearchItems, hitsToReviews, searchPhrase } from "../src/intel/apify.ts";
 import { citeFor, claudeReviewService, sourcesSentence } from "../src/intel/reviews.ts";
 import { formatOptionBlock, formatOptionLine, formatProsConsSection, formatShortlistRoster, shortTitle } from "../src/agent.ts";
 
@@ -93,11 +84,7 @@ test("searchPhrase keeps a short clean query", () => {
   );
 });
 
-test("reviewKeywords folds must-haves into the Apify phrase", () => {
-  assert.match(reviewKeywords("picnic blanket", ["waterproof"]), /waterproof/i);
-});
-
-test("reviewsFromSearchItems maps SERP hits and caps per source", () => {
+test("hitsFromSearchItems maps SERP hits and drops retailer pages", () => {
   const product = fixtures.details[0]!;
   const items = [
     {
@@ -125,7 +112,7 @@ test("reviewsFromSearchItems maps SERP hits and caps per source", () => {
       ],
     },
   ];
-  const reviews = reviewsFromSearchItems(product.id, items);
+  const reviews = hitsToReviews(product.id, hitsFromSearchItems(items));
   assert.equal(reviews.length, 3);
   assert.deepEqual(
     reviews.map((r) => r.source).sort(),
@@ -155,90 +142,34 @@ test("collectViaApify returns [] without a token", async () => {
   }
 });
 
-test("prefetchApifySearch gets articles and Reddit from one Google run", async () => {
-  resetApifyCache();
-  const actors = new Set<string>();
-  let serpBody = "";
+test("collectViaApify runs one Google search for the product and keeps hits that name it", async () => {
+  const calls: { actor: string; queries: string }[] = [];
   const fetchImpl: typeof fetch = async (input, init) => {
-    actors.add(String(input));
-    serpBody = String(init?.body ?? "");
+    calls.push({ actor: new URL(String(input)).pathname.split("/")[3]!, queries: JSON.parse(String(init?.body)).queries });
     return new Response(
       JSON.stringify([
         {
           organicResults: [
-            {
-              title: "Outdoor gear roundup",
-              url: "https://www.wirecutter.com/reviews/picnic-blankets/",
-              description: "Editors liked the soft feel but noted the color runs dull in sunlight.",
-            },
-          ],
-        },
-        {
-          organicResults: [
-            {
-              title: "BIFL picnic blanket?",
-              url: "https://www.reddit.com/r/BuyItForLife/comments/abc/picnic/",
-              description: "Had mine two summers, backing still waterproof after washes.",
-            },
+            { title: "Wh-1000XM5 review after 2 years", url: "https://www.reddit.com/r/sony/comments/x", description: "Sony WH-1000XM5 headband cracked after a year, sound still great." },
+            { title: "Sony WH-1000XM5 Review", url: "https://www.amazon.com/dp/B09", description: "Sony WH-1000XM5 on Amazon with free shipping today." },
+            { title: "Best headphones of the year", url: "https://www.example.com/best", description: "Our favorite over-ear picks for travel and the office." },
           ],
         },
       ]),
       { status: 200, headers: { "Content-Type": "application/json" } },
     );
   };
-  const hits = await prefetchApifySearch("picnic blanket", { token: "test-token", fetchImpl, budgetMs: 5_000 });
-  // The Reddit and YouTube actors were too slow live; only the Google actor runs.
-  assert.deepEqual([...actors].map((u) => new URL(u).pathname.split("/")[3]), ["apify~google-search-scraper"]);
-  const queries = String(JSON.parse(serpBody).queries).split("\n");
-  assert.deepEqual(queries, [buildQueries("picnic blanket"), "picnic blanket site:reddit.com"]);
-  assert.deepEqual(hits.map((h) => h.source).sort(), ["article", "reddit"]);
-});
-
-test("prefetchProductHits gives each product the hits from its own query", async () => {
-  resetApifyCache();
-  let queries: string[] = [];
-  const page = (term: string, results: { title: string; url: string; description: string }[]) => ({ searchQuery: { term }, organicResults: results });
-  const fetchImpl: typeof fetch = async (_input, init) => {
-    queries = String(JSON.parse(String(init?.body)).queries).split("\n");
-    return new Response(
-      JSON.stringify([
-        // Google can return pages out of order.
-        page(queries[1]!, [
-          { title: "Soundcore Space One review", url: "https://www.soundguys.com/space-one", description: "Battery lasted 40 hours with ANC on in our test." },
-          { title: "Best headphones of the year", url: "https://www.example.com/best", description: "Our favorite over-ear picks for travel and the office." },
-        ]),
-        page(queries[0]!, [
-          { title: "Wh-1000XM5 review after 2 years", url: "https://www.reddit.com/r/sony/comments/x", description: "Sony WH-1000XM5 headband cracked after a year, sound still great." },
-          { title: "Sony WH-1000XM5 Review", url: "https://www.amazon.com/dp/B09", description: "Sony WH-1000XM5 on Amazon with free shipping today." },
-        ]),
-      ]),
-      { status: 200, headers: { "Content-Type": "application/json" } },
-    );
-  };
-  const out = await prefetchProductHits(
-    [
-      { id: "sony", title: "Sony WH-1000XM5 Wireless Noise Canceling Headphones, 30 Hour Battery" },
-      { id: "anker", title: "Space One Active Noise Cancelling Headphones", brand: "Soundcore" },
-    ],
+  const out = await collectViaApify(
+    { id: "amazon:B09" as ProductId, title: "Sony WH-1000XM5 Wireless Noise Canceling Headphones, 30 Hour Battery" },
     { token: "test-token", fetchImpl, budgetMs: 5_000 },
   );
-  assert.deepEqual(queries, ["Sony WH-1000XM5 Wireless Noise Canceling review", "Soundcore Space One Active Noise Cancelling review"]);
-  // Retailer pages are dropped, and so is a result that doesn't name the brand.
-  assert.deepEqual(out.get("sony")?.map((h) => h.source), ["reddit"]);
-  assert.deepEqual(out.get("anker")?.map((h) => h.url), ["https://www.soundguys.com/space-one"]);
-});
-
-test("buildQueries is a single Google search for articles", () => {
-  const q = buildQueries("picnic blanket");
-  assert.equal(
-    q,
-    '"picnic blanket" review -site:amazon.com -site:walmart.com -site:target.com -site:reddit.com -site:youtube.com -site:youtu.be',
-  );
-  assert.doesNotMatch(q, /\n/);
+  // One run, one query; the Reddit and YouTube actors were too slow live.
+  assert.deepEqual(calls, [{ actor: "apify~google-search-scraper", queries: "Sony WH-1000XM5 Wireless Noise Canceling review" }]);
+  // The retailer page is dropped, and so is a result that doesn't name the brand.
+  assert.deepEqual(out.map((r) => [r.source, r.productId]), [["reddit", "amazon:B09"]]);
 });
 
 test("collectViaApify returns [] on timeout", async () => {
-  resetApifyCache();
   const fetchImpl: typeof fetch = async (_input, init) => {
     await new Promise<never>((_resolve, reject) => {
       init?.signal?.addEventListener("abort", () => reject(Object.assign(new Error("aborted"), { name: "AbortError" })));

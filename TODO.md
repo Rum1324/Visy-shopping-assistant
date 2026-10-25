@@ -19,7 +19,7 @@ Line format: `[status] ID · task · owner · branch · since HH:MM PT`. Use one
 - [working] B-READBACK · Checkout read-back: say the total after tax and name the real button (Proceed to checkout vs Place your order); drop "I will not place the order" · agent: Run latest demo (for Sota) · b/feedback · since 20:16 PT
 - [working] B-NARROW · Ask 2-3 clarifying questions, collect ~30 candidates per marketplace, narrow to 3 with a Jev-shaped picker (Claude Haiku stand-in), then review synthesis · merged in [PR #12](https://github.com/Rum1324/Visy-shopping-assistant/pull/12), waiting for Sota to check it in Chrome before done · agent: Run latest demo (for Sota) · b/narrow
 - [working] DOCS-ARCH · Architecture flow diagram · agent: Architecture flow diagram (for Sota) · branch unknown · since 16:40 PT
-- [done] D-APIFY-FAST · Outside reviews per product: one Google run with a "<product> review" query per option (late results re-summarize that option), Reddit through Google (the Reddit actor timed out on every run), no YouTube actor, hedge slow Google runs, no second 25 s Apify pass · [PR #29](https://github.com/Rum1324/Visy-shopping-assistant/pull/29)
+- [done] D-APIFY-FAST · Outside reviews per product: one "<product> review" Google search per option, 25 s cap; Reddit and YouTube actors dropped (Reddit timed out on every run), no second Apify pass · [PR #29](https://github.com/Rum1324/Visy-shopping-assistant/pull/29)
 
 ## Open
 
