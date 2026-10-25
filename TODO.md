@@ -32,6 +32,24 @@ Line format: `[status] ID · task · owner · branch · since HH:MM PT`. Use one
 - [open] A-VOICE · Decide whether voice-only must work with no clicks at all (motor-impaired users)
 - [open] DEMO · Feature freeze and rehearsal (H+14); warm `RecipeCache` and picker memory before going on stage
 
+### From team testing (Slack, Oct 24)
+
+- [open] UX-LEN · Spoken replies are too long; each option takes too long to read. Decide how much to say per turn (Alexa as a benchmark) · Yuka, Sota
+- [open] UX-FORMAT · Present the 3 options like a normal store: names and prices first, then pros and cons for each · yujielee
+- [open] UX-OPT3 · Bug: the agent only presents up to Option 2, not all 3 · Yuka
+- [open] UX-CUT · Text is cut mid-word (the caption shows "Picnic Blank / et"). Check whether it's caption wrapping or how TTS chunks the text · Yuka
+- [open] UX-ASK-FIRST · Ask clarifying questions before searching · Sota
+- [open] UX-NARROW · Decide how to handle the 3 narrowing/filtering options · Yuka
+- [open] UX-ASK-END · End every turn by asking the user a question · Yuka
+- [open] UX-PROGRESS · Spoken progress when work takes over ~2 s, with varied lines ("searching Amazon now", "comparing results from Walmart"); "One moment" is too repetitive · Yuka, Sota, yujielee
+- [open] UX-SALES · Say explicitly when a product is on sale or has a deal · yujielee
+- [open] UX-SPEED · Let the user adjust voice speed · yujielee
+- [open] B-HISTORY · Use the conversation history as context for follow-up searches · Sota
+- [open] A-SHOWPAGE · When recommending, open the top pick's product page on screen instead of staying on the home tab · Sota
+- [open] D-UNBIASED · Unbiased review summary: balance retailer reviews with outside sources (ties to D-APIFY) · Yuka
+- [open] B-PREFS-TEST · Test that preferences are really stored in Convex: favorite marketplaces and brands, what the user cares about (price, quality, shipping speed) · yujielee
+
+
 ## Done
 
 - [done] B-INTEL · Track D review summary, accessibility answers and photo description feed the tool loop's product answers · [PR #11](https://github.com/Rum1324/Visy-shopping-assistant/pull/11)
