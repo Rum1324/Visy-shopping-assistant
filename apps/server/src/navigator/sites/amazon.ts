@@ -31,6 +31,18 @@ const RESULTS_JS = `Array.from(document.querySelectorAll('${RESULT_SEL}')).map((
 
 const SUBTOTAL_SEL = "#sc-subtotal-amount-activecart, #sc-subtotal-amount-buybox";
 const SUBTOTAL_JS = `(document.querySelector('${SUBTOTAL_SEL}')?.innerText || '').trim()`;
+const PROCEED_SEL = 'input[name="proceedToRetailCheckout"], [data-feature-id="proceed-to-checkout-action"] input, #sc-buy-box-ptc-button input';
+// The order review page shows "Order total: $107.23", or "Order total: JPY 22,412" when Amazon's currency converter
+// is on (then the converter box also shows "USD 139.28"). Read from text: the markup varies.
+const ORDER_TOTAL_RE = String.raw`/Order total:?\s*(?:[A-Z]{3}|\$)\s*[\d,]/i`;
+const ORDER_TOTAL_JS = String.raw`(() => {
+  const t = document.body?.innerText || '';
+  const total = t.match(/Order total:?\s*((?:[A-Z]{3}|\$)\s*[\d,]+(?:\.\d{1,2})?)/i)?.[1] || null;
+  const tax = t.match(/(?:Estimated tax to be collected|Estimated tax):?\s*((?:[A-Z]{3}|\$)\s*[\d,]+(?:\.\d{1,2})?)/i)?.[1] || null;
+  const usd = /^\$/.test(total || '') ? total : t.match(/USD\s*([\d,]+\.\d{2})/)?.[1] || null;
+  const button = t.match(/Place your order(?: in [A-Z]{3})?/i)?.[0] || (/Proceed to checkout/i.test(t) ? 'Proceed to checkout' : null);
+  return { total, tax, usd, button, url: location.href };
+})()`;
 const CHALLENGE_JS = `!!document.querySelector('#checkpointForm, form[action*=validateCaptcha]')`;
 // After Add to Cart Amazon either navigates (cart / smart wagon), shows an "Added to cart" sheet, or offers a warranty.
 const ADDED_JS =
@@ -93,6 +105,11 @@ export const AMAZON_SCRIPTS = {
   "amazon.titlePrice": `({ title: (document.querySelector("#productTitle")?.innerText || "").trim(), price: document.querySelector(".a-price .a-offscreen")?.textContent?.trim() || null })`,
   "amazon.subtotalReady": `!!document.querySelector('${SUBTOTAL_SEL}')`,
   "amazon.subtotal": SUBTOTAL_JS,
+  // B-READBACK: the cart's "Proceed to checkout" button. Not a purchase button: it only opens the order review page,
+  // where the user presses Place your order themselves. Returns false when the button isn't there.
+  "amazon.clickProceed": `(() => { const b = document.querySelector('${PROCEED_SEL}'); if (!b) return false; b.click(); return true; })()`,
+  "amazon.orderTotalReady": `${ORDER_TOTAL_RE}.test(document.body?.innerText || '') || /\\/ap\\/signin/.test(location.pathname) || ${CHALLENGE_JS}`,
+  "amazon.orderTotal": ORDER_TOTAL_JS,
 };
 
 type ScrapedReview = { id: string; rating: number | null; title: string; body: string; date: string; author: string | null; verified: boolean };
@@ -206,6 +223,9 @@ export function amazonFields(raw: RawDetail) {
   };
 }
 
+/** What the order review page says. total/tax as shown ("$107.23", "JPY 22,412"); usd is "139.28" or "$139.28". */
+export type OrderReview = { total: string | null; tax: string | null; usd: string | null; button: string | null; url: string };
+
 export type ReviewsResult = { reviews: RawReview[]; pages: number; via: "reviews_page" | "product_page"; gated: boolean };
 
 export const STEPS = {
@@ -217,6 +237,12 @@ const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 export class AmazonFlow {
   tabId?: number;
+  /** The tab search() uses, so product tabs are never navigated away to a results page. */
+  private searchTab?: number;
+  /** asin → its own product tab (A-SHOWPAGE: the 3 options stay open as tabs). */
+  readonly productTabs = new Map<string, number>();
+  /** asin → how getDetail read the page, so parallel calls don't share one lastExtract. */
+  readonly extracts = new Map<string, Omit<Extracted, "raw">>();
   /** C1b: asin → background tab that has the product page loaded and its elements embedded (undefined if preload failed). */
   private preloaded = new Map<string, Promise<number | undefined>>();
   private indexing: Promise<unknown> = Promise.resolve();
@@ -311,6 +337,9 @@ export class AmazonFlow {
   async search(query: string, viaUi = false): Promise<Result<AmazonResult[]>> {
     this.marks = {};
     await this.dropPreloads();
+    for (const tab of this.productTabs.values()) if (tab !== this.searchTab) await this.driver.closeTab(tab).catch(() => {});
+    this.productTabs.clear();
+    this.tabId = this.searchTab;
     if (viaUi) {
       const g = await this.goto("https://www.amazon.com/");
       if (!g.ok) return g;
@@ -329,6 +358,7 @@ export class AmazonFlow {
     const t1 = performance.now();
     await this.driver.waitFor(this.tabId!, "amazon.titlesReady", 8000);
     this.mark("wait titles", t1);
+    this.searchTab = this.tabId;
     let results = await this.driver.extract<AmazonResult[]>(this.tabId!, "amazon.results");
     if (results.length < 3) {
       await this.driver.waitFor(this.tabId!, "loaded", 5000);
@@ -357,14 +387,14 @@ export class AmazonFlow {
     const r = await this.driver.navigate(tabId, `https://www.amazon.com/dp/${asin}`, "commit");
     if (!r.ok) return tabId;
     await this.driver.waitFor(tabId, "amazon.loadedOrChallenge", 10_000);
-    const s = await this.driver.snapshot(tabId);
-    const moss = this.pickers.find((p) => p.name === "moss");
-    // A bot check is left for open() + step() to surface to the user, in the foreground.
-    if (s.ok && moss) {
+    // Embedding for Add to Cart runs in the background so the tab is usable (and getDetail can start) right away.
+    void this.driver.snapshot(tabId).then((s) => {
+      const moss = this.pickers.find((p) => p.name === "moss");
+      // A bot check is left for open() + step() to surface to the user, in the foreground.
+      if (!s.ok || !moss) return;
       const run = this.indexing.then(() => moss.pick(s.data, STEPS.addToCart));
       this.indexing = run.catch(() => {});
-      await run;
-    }
+    }).catch(() => {});
     return tabId;
   }
 
@@ -375,18 +405,40 @@ export class AmazonFlow {
     for (const tabId of tabs) if (tabId !== undefined && tabId !== this.tabId) await this.driver.closeTab(tabId);
   }
 
-  async open(asin: string): Promise<Result<{ url: string }>> {
-    this.marks = {};
+  /** The product's own tab, if it has one (opened by showOptions/preload). Doesn't touch this.tabId. */
+  private async tabFor(asin: string): Promise<number | undefined> {
+    const known = this.productTabs.get(asin);
+    if (known !== undefined) return known;
     const pre = this.preloaded.get(asin);
-    if (pre) {
-      const t0 = performance.now();
-      const tabId = await pre;
-      this.preloaded.delete(asin);
-      this.mark("preload wait", t0);
-      if (tabId !== undefined) {
-        this.tabId = tabId;
-        return ok({ url: `https://www.amazon.com/dp/${asin}` });
-      }
+    if (!pre) return undefined;
+    const t0 = performance.now();
+    const tabId = await pre;
+    this.mark("preload wait", t0);
+    if (this.preloaded.get(asin) === pre) this.preloaded.delete(asin);
+    if (tabId !== undefined) this.productTabs.set(asin, tabId);
+    return tabId;
+  }
+
+  /** A-SHOWPAGE: opens every option in its own tab and brings the first one to the front. */
+  async showOptions(asins: string[]) {
+    void this.preload(asins.filter((a) => !this.productTabs.has(a)));
+    const first = asins[0] ? await this.tabFor(asins[0]) : undefined;
+    if (first === undefined) return;
+    await this.driver.focus(first);
+    // The results page has done its job; leave only the option tabs. The next search opens a fresh one.
+    if (this.searchTab !== undefined) {
+      if (this.tabId === this.searchTab) this.tabId = first;
+      await this.driver.closeTab(this.searchTab).catch(() => {});
+      this.searchTab = undefined;
+    }
+  }
+
+  async open(asin: string): Promise<Result<{ url: string; tabId?: number }>> {
+    this.marks = {};
+    const tabId = await this.tabFor(asin);
+    if (tabId !== undefined) {
+      this.tabId = tabId;
+      return ok({ url: `https://www.amazon.com/dp/${asin}`, tabId });
     }
     return this.goto(`https://www.amazon.com/dp/${asin}`);
   }
@@ -495,12 +547,14 @@ export class AmazonFlow {
     try {
       const opened = await this.open(asin);
       if (!opened.ok) return opened;
-      await this.driver.waitFor(this.tabId!, "amazon.loadedOrChallenge", 10_000);
-      const g = await this.blockedGate();
+      // Several getDetail calls can run at once (one per option tab), so use this product's tab, not this.tabId.
+      const tab = ("tabId" in opened.data ? opened.data.tabId : undefined) ?? this.tabId!;
+      await this.driver.waitFor(tab, "amazon.loadedOrChallenge", 10_000);
+      const g = await this.blockedGate(tab);
       if (!g.ok) return g;
-      const tab = this.tabId!;
       const x = await extractWithRecipes("amazon:product", `https://www.amazon.com/dp/${asin}`, (name, arg) => this.driver.extract(tab, name, arg), this.recipes.cache, this.recipes.writer, AMAZON_PRODUCT_SEED);
       this.lastExtract = { via: x.via, claudeCalls: x.claudeCalls, ms: x.ms };
+      this.extracts.set(asin, this.lastExtract);
       this.marks["recipe"] = x.ms;
       console.log(`[recipe] amazon:product via ${x.via}: ${x.claudeCalls} Claude call(s), ${x.ms} ms`);
       const f = x.raw ? amazonFields(x.raw) : undefined;
@@ -545,5 +599,24 @@ export class AmazonFlow {
     // The user presses the final button themselves, so the cart comes to the front.
     await this.driver.focus(this.tabId!);
     return ok({ subtotal: await this.driver.extract<string>(this.tabId!, "amazon.subtotal") });
+  }
+
+  /**
+   * B-READBACK: from the cart, presses Proceed to checkout and reads the order total (with tax) on the review page.
+   * Stops there: Place your order is the user's. Any other page (sign-in, Prime upsell, address form) → error,
+   * and the caller reads the cart subtotal instead.
+   */
+  async reviewOrder(): Promise<Result<OrderReview>> {
+    const tab = this.tabId!;
+    const before = await this.driver.extract<string>(tab, "href");
+    if (!(await this.driver.extract<boolean>(tab, "amazon.clickProceed"))) return err("not_found", "no Proceed to checkout button");
+    const t0 = performance.now();
+    await this.driver.waitFor(tab, "amazon.orderTotalReady", 15_000, before);
+    this.mark("wait order total", t0);
+    const g = await this.blockedGate(tab);
+    if (!g.ok) return g;
+    await this.driver.focus(tab);
+    // Even without a total, the caller needs the page's real button label to say what to press.
+    return ok(await this.driver.extract<OrderReview>(tab, "amazon.orderTotal"));
   }
 }
