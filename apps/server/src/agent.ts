@@ -41,6 +41,8 @@ const QUIET_MS = 2500;
 const ACKS = ["One moment.", "Let me check.", "On it."];
 const STILL = ["Still working on it.", "Almost there.", "Hang on, still checking."];
 const DEFAULT_QUESTIONS = ["What's your budget?", "What matters most?"];
+/** Asked after the answers, so the shopper can add specifics in their own words. */
+const ANYTHING_ELSE = "Anything else you want to add?";
 /** Ends the questions early and searches with what we have. */
 const SKIP = /\b(just search|skip|search now|go ahead|that's (it|all))\b/i;
 const NO_PREFERENCE = /^(no|nope|nothing|none|no preference|anything|whatever|just search|doesn't matter|dont care|don't care)\b/i;
@@ -171,7 +173,8 @@ export function createAgent(
     // Record the answer; any question still left is asked right away, no model call needed.
     if (state.phase === "clarifying" && asking?.questions.length) {
       asking.answers.push({ question: asking.questions.shift()!, answer: said });
-      if (asking.questions.length && !SKIP.test(said)) {
+      if (SKIP.test(said)) asking.questions = [];
+      if (asking.questions.length) {
         await say(asking.questions[0]!, "question");
         return;
       }
@@ -357,7 +360,7 @@ export function createAgent(
     }
     if (/\busual\b/i.test(said) && (await recallUsual(said))) return;
     if (state.phase === "clarifying" && state.need) {
-      const answers = asking?.answers.map((a) => a.answer).join(". ") || said;
+      const answers = asking?.answers.map((a) => a.answer).filter((a) => !NO_PREFERENCE.test(a)).join(". ") || said;
       await shop(state.need.query, id, state.need.marketplaces, needFromAnswer(answers));
       return;
     }
@@ -370,13 +373,13 @@ export function createAgent(
 
   /**
    * Asks up to 2 short questions together in one turn: one at a time was too slow, three at once too long.
-   * The next user turn is the answer (phase "clarifying").
+   * The next user turn is the answer (phase "clarifying"), then "Anything else you want to add?" gets its own turn.
    */
   async function askQuestions(query: string, questions: string[], marketplaces: Marketplace[] = ["amazon", "target", "walmart"]) {
     if (!state) return;
     const need = Need.parse({ query: query.trim(), marketplaces });
     const together = questions.slice(0, 2).join(" ");
-    asking = { questions: [together], answers: [] };
+    asking = { questions: [together, ANYTHING_ELSE], answers: [] };
     publish({ ...state, phase: "clarifying", need, candidates: [], shortlist: [], cart: [] });
     await say(`Sure, ${need.query}. ${together}`, "question");
   }
