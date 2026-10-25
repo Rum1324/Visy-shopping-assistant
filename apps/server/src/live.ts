@@ -31,6 +31,7 @@ import { buildChain } from "./navigator/chain.ts";
 import type { FlowDriver } from "./navigator/driver/flow.ts";
 import { PlaywrightDriver } from "./navigator/driver/playwright.ts";
 import { AmazonFlow } from "./navigator/sites/amazon.ts";
+import { TargetFlow } from "./navigator/sites/target.ts";
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 /** A driver call can throw (tab closed, extension reloaded mid-call). Turn it into an error the agent can say. */
@@ -87,10 +88,18 @@ export function liveServices(opts: { driver?: () => FlowDriver | undefined } = {
   };
   const seen = new Map<string, Candidate>();
   let lastAdded: Candidate | undefined;
+  // C-TGT: live Target search + detail on the same driver, in its own tab. Cart/checkout stay on fixtures.
+  const targets = new WeakMap<FlowDriver, TargetFlow>();
+  const target = () => {
+    const { driver } = use();
+    if (!targets.has(driver)) targets.set(driver, new TargetFlow(driver, (m) => announce(m)));
+    return targets.get(driver)!;
+  };
 
   const navigator: Navigator = {
     async search(need, marketplace, emit) {
       announce = (message) => emit({ stage: "searching", marketplace, message, at: new Date().toISOString() });
+      if (marketplace === "target") return safe(target().search(need.query, emit, POOL_PER_MARKET));
       if (marketplace !== "amazon") return mocks.search(need, marketplace, emit);
       emit({ stage: "searching", marketplace: "amazon", message: "Searching Amazon now", at: new Date().toISOString() });
       const { flow } = use();
@@ -123,6 +132,7 @@ export function liveServices(opts: { driver?: () => FlowDriver | undefined } = {
     },
 
     async getDetail(candidate, emit) {
+      if (candidate.id.startsWith("target:")) return safe(target().getDetail(candidate, emit));
       if (!candidate.id.startsWith("amazon:")) return mocks.getDetail(candidate, emit);
       // C2 + C3: opens the product, reads details via a cached recipe and scrapes retailer reviews in parallel.
       const { flow, driver } = use();

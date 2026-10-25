@@ -49,6 +49,42 @@ export const SCRIPTS = {
   "amazon.titlePrice": (arg) => (({ title: (document.querySelector("#productTitle")?.innerText || "").trim(), price: document.querySelector(".a-price .a-offscreen")?.textContent?.trim() || null })),
   "amazon.subtotalReady": (arg) => (!!document.querySelector('#sc-subtotal-amount-activecart, #sc-subtotal-amount-buybox')),
   "amazon.subtotal": (arg) => ((document.querySelector('#sc-subtotal-amount-activecart, #sc-subtotal-amount-buybox')?.innerText || '').trim()),
+  "target.results": (arg) => (Array.from(document.querySelectorAll('[data-test="ListingPageProductListing"]')).map((c) => {
+  const t = (e) => (e ? e.textContent || '' : '').replace(/\s+/g, ' ').trim();
+  const a = c.querySelector('a[href*="/A-"]');
+  const href = a ? a.getAttribute('href') || '' : '';
+  const h3 = c.querySelector('h3');
+  const parts = h3 ? Array.from(h3.children).map(t).filter(Boolean) : [];
+  const lines = Array.from(c.querySelectorAll('[data-test="text-quill"], [data-test="cdui-marker-v2"]'))
+    .filter((e) => !e.closest('h3, [data-test="rating-stars"]') && !(e.getAttribute('data-test') === 'cdui-marker-v2' && e.querySelector('[data-test="text-quill"]')))
+    .map(t).filter(Boolean);
+  const aria = (c.querySelector('[data-test="product-listing-gallery-desktop-image-link"]')?.getAttribute('aria-label') || '').trim();
+  const label = aria.replace(/\s+Sponsored$/, '');
+  return {
+    tcin: (/\/A-(\d+)/.exec(href) || [])[1] || null,
+    path: href.split('?')[0].split('#')[0],
+    title: label || t(h3),
+    brand: parts.length > 1 ? parts[0] : null,
+    lines,
+    rating: c.querySelector('[data-test="rating-stars"]')?.getAttribute('aria-label') || null,
+    image: c.querySelector('img')?.getAttribute('src') || null,
+    // Card text runs together ("...may varySponsoredAdd to cart"), so match the "Sponsored" block, not a word.
+    sponsored: lines.some((l) => /^Sponsored$/i.test(l)) || /\sSponsored$/.test(aria),
+  };
+}).filter((r) => r.tcin && r.title)),
+  "target.resultsReady": (arg) => (!!document.querySelector('[data-test="ListingPageProductListing"] h3') || !!document.querySelector('[data-test="nlr-container"]') || /captcha|robot or human|access denied/i.test(document.title)),
+  "target.cardsReady": (arg) => (document.querySelectorAll('[data-test="ListingPageProductListing"] h3').length >= 20),
+  "target.detailReady": (arg) => (!!document.querySelector('[data-test="product-title"]') && !!document.querySelector('[data-test="product-price"], [data-test="price-cdui-row"]') || /captcha|robot or human|access denied/i.test(document.title)),
+  "target.fulfillment": (arg) => ([...new Set(Array.from((document.querySelector('[role="region"][aria-label="Fulfillment"]') || document).querySelectorAll('[data-test="text-quill"]')).map((e) => (e.textContent || '').replace(/\s+/g, ' ').trim())
+  .filter((s) => s.length < 120 && /^(Arrives|Get it|Ships free|Shipping|Delivery|Same Day|Pickup|Ready within|Order pickup|Drive Up|Only \d+ left|Out of stock|Sold out|Not available|Temporarily out)/i.test(s)))].slice(0, 6)),
+  "target.scrollReviews": (arg) => (void document.querySelector('[data-test="ReviewsDashboard"], [data-test="reviews-heading"]')?.scrollIntoView()),
+  "target.reviewsReady": (arg) => (!!document.querySelector('[data-test="review-card--text"]')),
+  "target.reviews": (arg) => (Array.from(document.querySelectorAll('[data-test="review-card--text"]')).map((b) => {
+  let c = b;
+  while (c.parentElement && !c.querySelector('[data-test="review-card--username"]')) c = c.parentElement;
+  const t = (h) => (c.querySelector('[data-test="review-card--' + h + '"]')?.textContent || '').replace(/\s+/g, ' ').trim();
+  return { title: t('title'), body: (b.innerText || b.textContent || '').trim(), date: t('reviewTime'), author: t('username') || null, rating: parseFloat(t('ratings')) || null, verified: !!c.querySelector('[data-test="review-card--verified-purchase"]'), syndicated: !!c.querySelector('[data-test="review-card--syndicated-badge"]') };
+}).filter((r) => r.body)),
   "recipe.replay": (arg) => (((f) => {
   const one = (s, root) => { if (!s) return null; try { return (root || document).querySelector(s.css); } catch { return null; } };
   const all = (s, root) => { if (!s) return []; try { return Array.from((root || document).querySelectorAll(s.css)); } catch { return []; } };
