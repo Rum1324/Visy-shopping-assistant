@@ -24,7 +24,7 @@ export const SYSTEM = `You are Visy, a voice shopping assistant for blind and lo
 
 Pick the tool that does what the user asked. The tools speak their own results aloud, so do not write text alongside a tool call. Write text only when a tool result asks you to answer, or when no tool fits; keep it to one or two short spoken sentences with no markdown.
 
-- New product request: first call ask_shopping_questions with 2 or 3 questions whose answers would change which product to pick: budget, the one feature that matters most, and size, who it's for, or an accessibility need. They are asked one per turn, so each is under 8 words with no list of examples ("What's your budget?", "What matters most to you?"). Skip them and call search with skipQuestions true only when the user already gave a budget and what matters, or says to just search.
+- New product request: first call ask_shopping_questions with the 2 questions whose answers would most change which product to pick (usually budget and the one feature that matters most; size, who it's for, or an accessibility need when that matters more). Both are spoken together in one turn, so each is under 6 words with no list of examples ("What's your budget?", "What matters most?"). Skip a question the user already answered. Skip them and call search with skipQuestions true only when the user already gave a budget and what matters, or says to just search.
 - phase clarifying: the user has answered your questions (listed in session_state). Call search with that query (add key words from the answers) and put the answers into budgetMaxCents, mustHaves, niceToHaves and accessibilityNotes. "No preference" still means search.
 - A price cap or "cheaper" on the current shortlist: filter_shortlist ("cheaper" with no option named means a maxPriceCents just below the most expensive option; "cheaper than option 2" means just below option 2). A question about a listed product, with or without a question mark: answer_about_product. "Add option 2", "get the second one": add_to_cart. The user saying yes to the checkout total: confirm_checkout_total. "The usual", "my regular": recall_usual. "Remember this": remember_as_usual. Unclear: ask_clarifying_question.
 - Options are numbered from 1 in the order they were read.
@@ -53,12 +53,12 @@ export const TOOLS: Anthropic.Tool[] = [
   {
     name: "ask_shopping_questions",
     description:
-      "Before a new product search, ask the shopper 2 or 3 short questions in one spoken turn. Their next turn is the answer; then call search.",
+      "Before a new product search, ask the shopper 1 or 2 short questions in one spoken turn. Their next turn is the answer; then call search.",
     input_schema: {
       type: "object",
       properties: {
         query: { type: "string", description: "What they want to shop for, e.g. 'picnic blanket'." },
-        questions: { type: "array", items: { type: "string" }, description: "2 or 3 spoken questions, each under 8 words, asked one per turn, e.g. 'What's your budget?'" },
+        questions: { type: "array", items: { type: "string" }, description: "1 or 2 spoken questions, each under 6 words, asked together, e.g. 'What's your budget?'" },
         marketplaces: { type: "array", items: { type: "string", enum: ["amazon", "target", "walmart"] } },
       },
       required: ["query", "questions"],
@@ -138,7 +138,7 @@ export const INPUTS = {
   }),
   ask_shopping_questions: z.object({
     query: z.string().min(1),
-    questions: z.array(z.string().min(1).max(200)).min(1).max(3),
+    questions: z.array(z.string().min(1).max(200)).min(1).max(3), // only the first 2 are asked
     marketplaces: z.array(z.enum(["amazon", "target", "walmart"])).min(1).optional(),
   }),
   filter_shortlist: z.object({ maxPriceCents: z.number().int().min(0).optional(), minRating: z.number().min(0).max(5).optional() }),

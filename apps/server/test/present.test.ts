@@ -6,6 +6,7 @@ import { overview, shortName, speakable, templateLine, type Option } from "../sr
 test("present: short names cut Amazon titles at the first comma or bar", () => {
   assert.equal(shortName("INIU Portable Charger, Slimmest 10000mAh 5V/3A Power Bank, USB C"), "INIU Portable Charger");
   assert.equal(shortName("scuddles Extra Large Picnic Blanket | 80 x 80-Inch Waterproof"), "scuddles Extra Large Picnic Blanket");
+  assert.equal(shortName("1 Gallon Insulated Water Bottle for Travel: 2-in-1 Straw Spout Lid"), "1 Gallon Insulated Water Bottle");
 });
 
 test("present: the overview is one short sentence per option, and each line compares price", () => {

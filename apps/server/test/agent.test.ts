@@ -183,12 +183,9 @@ for (const mode of ["keywords", "claude"] as const) {
     await agent.handleText("picnic blanket");
     assert.equal(agent.state?.phase, "clarifying");
     assert.equal(agent.state?.shortlist.length, 0);
-    assert.match(said.at(-1) ?? "", /budget/i);
-    await agent.handleText("under $20");
-    assert.equal(agent.state?.phase, "clarifying", "the second question comes on its own turn");
-    assert.match(said.at(-1) ?? "", /must have|waterproof/i);
-    assert.doesNotMatch(said.at(-1) ?? "", /budget/i);
-    await agent.handleText("waterproof");
+    // Two short questions, together in one turn.
+    assert.match(said.at(-1) ?? "", /budget\?.*(matters|waterproof)/i);
+    await agent.handleText("under $20, waterproof");
     assert.equal(agent.state?.phase, "presenting");
     assert.equal(agent.state?.need?.query, "picnic blanket");
     assert.equal(agent.state?.need?.budget?.max?.cents, 2000);
@@ -208,6 +205,22 @@ for (const mode of ["keywords", "claude"] as const) {
     assert.equal(agent.state?.shortlist.length, 3);
   });
 }
+
+test("a silent stretch while working is filled with what Visy is doing", async () => {
+  const services = mockServices({ latencyMs: 0 });
+  const search = services.navigator.search.bind(services.navigator);
+  services.navigator.search = async (need, marketplace, emit) => {
+    emit({ stage: "searching", marketplace, message: `Searching ${marketplace} now`, at: new Date().toISOString() });
+    // Longer than the spoken "I'll check …" line plus the 2.5 s of quiet allowed after it.
+    await new Promise((r) => setTimeout(r, 5500));
+    return search(need, marketplace, emit);
+  };
+  const { agent, said } = harness(null, services);
+  await agent.hello("demo-user");
+  await agent.handleText("picnic blanket");
+  assert.ok(said.some((s) => /^Searching \w+ now\.$/.test(s)), said.join(" | "));
+  assert.equal(agent.state?.phase, "presenting");
+});
 
 test("claude: a search with no questions asked yet is turned into the default questions", async () => {
   const fake = fakeClaude();

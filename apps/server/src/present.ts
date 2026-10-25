@@ -24,9 +24,11 @@ export function speakable(text: string): string {
 
 /** "INIU Portable Charger, Slimmest 10000mAh 5V/3A Power Bank, USB C…" → "INIU Portable Charger". */
 export function shortName(title: string): string {
-  const head = title.split(/\s*[,|(\[–—]\s*|\s+-\s+/)[0]!.trim();
-  const words = head.split(/\s+/);
-  return words.length > 6 ? words.slice(0, 6).join(" ") : head;
+  const head = title.split(/\s*[,:|(\[–—]\s*|\s+-\s+/)[0]!.trim();
+  const words = head.split(/\s+/).slice(0, 6);
+  // "1 Gallon Insulated Water Bottle for" → "1 Gallon Insulated Water Bottle"
+  while (words.length > 2 && /^(for|with|and|of|to|the|in|by|a)$/i.test(words.at(-1)!)) words.pop();
+  return words.join(" ");
 }
 
 const ROLE_LABEL: Record<string, string> = {
