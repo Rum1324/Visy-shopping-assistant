@@ -2,6 +2,8 @@ const statusEl = document.querySelector("#status");
 const welcomeLine = document.querySelector("#welcome-line");
 const options = document.querySelector("#options");
 const log = document.querySelector("#log");
+/** In-chat thinking turn: same DOM node is rewritten on each progress update. */
+let thinkingTurn = null;
 const form = document.querySelector("#composer");
 const text = document.querySelector("#text");
 const go = document.querySelector("#go");
@@ -119,13 +121,54 @@ function stopTalk() {
 
 function fillChars(el, phrase) {
   el.replaceChildren();
-  return [...phrase].map((c) => {
+  const chars = [];
+  for (const c of phrase) {
+    if (c === "\n") {
+      const br = document.createElement("br");
+      br.className = "ch nl on";
+      el.append(br);
+      continue;
+    }
     const span = document.createElement("span");
     span.className = c === " " ? "ch space" : "ch";
     span.textContent = c === " " ? "\u00a0" : c;
     el.append(span);
-    return span;
-  });
+    chars.push(span);
+  }
+  return chars;
+}
+
+function ensureThinkingTurn() {
+  if (thinkingTurn?.p?.isConnected) return thinkingTurn;
+  startChat();
+  const p = document.createElement("p");
+  p.className = "visy thinking";
+  if (lastSpeaker !== "Visy") {
+    const label = document.createElement("span");
+    label.className = "who";
+    label.textContent = "Visy :";
+    p.append(label);
+    lastSpeaker = "Visy";
+  }
+  const msg = document.createElement("span");
+  msg.className = "said";
+  p.append(msg);
+  log.append(p);
+  thinkingTurn = { p, msg };
+  return thinkingTurn;
+}
+
+function setThinking(message) {
+  const text = (message ?? "").trim();
+  if (!text) {
+    thinkingTurn?.p?.remove();
+    thinkingTurn = null;
+    return;
+  }
+  const turn = ensureThinkingTurn();
+  turn.msg.textContent = text;
+  log.append(turn.p);
+  log.scrollTop = log.scrollHeight;
 }
 
 function revealChars(chars, shown, n) {
@@ -188,18 +231,29 @@ function beginSay(id, phrase, onto) {
   pendingSay.set(id, {
     id,
     text: phrase,
-    el: onto === "welcome" ? welcomeLine : null,
+    onto,
+    el: onto === "welcome" ? welcomeLine : onto === "thinking" ? ensureThinkingTurn().msg : null,
     done: false,
   });
+  if (onto === "thinking") setThinking(phrase);
 }
 
 function finishSay(item, bytes) {
   if (!item || item.done) return;
-  const played = bytes && bytes.length > 1 ? playPcm(bytes, ttsRate) : null;
-  if (!played) return;
   item.done = true;
   pendingSay.delete(item.id);
+  const played = bytes && bytes.length > 1 ? playPcm(bytes, ttsRate) : null;
+  if (item.onto === "thinking") {
+    setThinking(item.text);
+    paintGo();
+    return;
+  }
   if (!item.el) item.el = addTurn("Visy");
+  if (!played) {
+    sparkOnly(item.el, item.text);
+    paintGo();
+    return;
+  }
   playWithAudio(item.el, item.text, played);
 }
 
@@ -312,7 +366,12 @@ async function onMessage(ev) {
   }
   const msg = JSON.parse(ev.data);
   if (msg.type === "agent.say") {
-    beginSay(msg.id, msg.text, chatting ? "chat" : "welcome");
+    if (msg.kind === "progress") {
+      beginSay(msg.id, msg.text, "thinking");
+    } else {
+      setThinking("");
+      beginSay(msg.id, msg.text, chatting ? "chat" : "welcome");
+    }
   } else if (msg.type === "transcript") {
     line("You", msg.text);
   } else if (msg.type === "tts.start") {
@@ -333,7 +392,10 @@ async function onMessage(ev) {
     if (chatting) stopTalk();
   } else if (msg.type === "session.snapshot") {
     setBusy(WORKING.has(msg.state.phase));
-    if (!WORKING.has(msg.state.phase)) maybeListen();
+    if (!WORKING.has(msg.state.phase)) {
+      setThinking("");
+      maybeListen();
+    }
     options.replaceChildren();
     for (const item of msg.state.shortlist ?? []) {
       const li = document.createElement("li");
@@ -343,6 +405,8 @@ async function onMessage(ev) {
     }
   } else if (msg.type === "progress") {
     setBusy(true);
+    // Text + speech come from agent.say kind=progress; keep the line if a bare progress arrives.
+    if (msg.event?.message) setThinking(msg.event.message);
   } else if (msg.type === "driver.request") {
     const res = await chrome.runtime.sendMessage({ type: "visy.driver", req: msg.req });
     send({
