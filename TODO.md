@@ -69,6 +69,6 @@ Line format: `[status] ID · task · owner · branch · since HH:MM PT`. Use one
 - [done] ENV · Shared server keys across worktrees · [PR #8](https://github.com/Rum1324/Visy-shopping-assistant/pull/8)
 - [done] C3 · Product detail extraction with `RecipeCache` · [PR #9](https://github.com/Rum1324/Visy-shopping-assistant/pull/9)
 - [done] D-APIFY · External reviews from Reddit, YouTube and articles via Apify · [PR #17](https://github.com/Rum1324/Visy-shopping-assistant/pull/17)
-- [done] UX-SALES · Say explicitly when a product is on sale or has a deal · yujielee · agent: On-sale mentions (for Sota) · [PR #14](https://github.com/Rum1324/Visy-shopping-assistant/pull/14)
+- [done] UX-SALES · Say explicitly when a product is on sale or has a deal · yujielee · agent: On-sale mentions (for Sota) · [PR #14](https://github.com/Rum1324/Visy-shopping-assistant/pull/14), follow-up [PR #22](https://github.com/Rum1324/Visy-shopping-assistant/pull/22)
 - [done] B-PREFS-TEST · Test that preferences are really stored in Convex: favorite marketplaces and brands, what the user cares about (price, quality, shipping speed) · yujielee · agent: Preferences in Convex (for Sota) · [PR #15](https://github.com/Rum1324/Visy-shopping-assistant/pull/15)
 - [done] UX-SPEED · Let the user adjust voice speed · yujielee · [PR #19](https://github.com/Rum1324/Visy-shopping-assistant/pull/19)
