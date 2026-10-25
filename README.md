@@ -6,7 +6,6 @@ A voice-first shopping assistant for visually impaired users. Chrome extension (
 
 - [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md): platform decision, system design, flow, browser agent, safety
 - [docs/HANDOFF.md](docs/HANDOFF.md): team tracks, data handoff rules, checkpoints
-- [docs/AB.md](docs/AB.md): Tracks A and B, in progress on `ab/extension-and-agent`
 - [packages/contracts](packages/contracts): the shared schemas (zod), fixtures, mocks and mock server. **Start here.**
 - [docs/IMPROVISATIONS.md](docs/IMPROVISATIONS.md): living log of departures from the skeleton. This project moves very fast. Improvise when the skeleton blocks the demo, write the change there, and push it so the next agent can catch up. See [AGENTS.md](AGENTS.md).
 
