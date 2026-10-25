@@ -4,6 +4,13 @@ A voice-first shopping assistant for blind and low-vision shoppers. Tell Visy wh
 
 Demo video: https://youtu.be/3mJRvwUcNzI · Devpost write-up: [docs/DEVPOST-SUBMISSION.md](docs/DEVPOST-SUBMISSION.md)
 
+## How we use Convex
+
+- Convex is Visy's memory: usual items, past purchases and stated preferences live in two indexed tables ([schema.ts](apps/server/convex/schema.ts)).
+- "Get the usual" runs the `prefs.list` query and "remember this" runs the `upsertFact` mutation ([prefs.ts](apps/server/convex/prefs.ts)).
+- Saved stores, brands and priorities load at session start and shape every later search.
+- Full evidence, features and the commit log for Cal Hacks 13.0: [hackathon.md](hackathon.md).
+
 ## How it works
 
 - **Chrome extension** (`apps/extension`): side panel with live captions and mic, plus the hands that read and click pages in a dedicated "Visy" tab group.
