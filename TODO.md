@@ -16,21 +16,41 @@ Line format: `[status] ID · task · owner · branch · since HH:MM PT`. Use one
 
 ## In progress
 
+- [working] B-READBACK · Checkout read-back: say the total after tax and name the real button (Proceed to checkout vs Place your order); drop "I will not place the order" · agent: Run latest demo (for Sota) · b/feedback · since 20:16 PT
+- [working] B-NARROW · Ask 2-3 clarifying questions, collect ~30 candidates per marketplace, narrow to 3 with a Jev-shaped picker (Claude Haiku stand-in), then review synthesis · merged in [PR #12](https://github.com/Rum1324/Visy-shopping-assistant/pull/12), waiting for Sota to check it in Chrome before done · agent: Run latest demo (for Sota) · b/narrow
 - [working] D-APIFY · External reviews from Reddit, YouTube and articles via Apify (`collectExternal`; needs an Apify token) · agent: Git remote list (for Pixl) · d/apify · since 19:12 PT
-- [working] B-NARROW · Ask 2-3 clarifying questions, collect ~30 candidates per marketplace, narrow to 3 with a Jev-shaped picker (Claude Haiku stand-in), then review synthesis · agent: Run latest demo (for Sota) · b/narrow · since 17:36 PT
 - [working] DOCS-ARCH · Architecture flow diagram · agent: Architecture flow diagram (for Sota) · branch unknown · since 16:40 PT
 
 ## Open
 
-- [open] A-STT · Investigate speech-to-text: it looks broken and the mic button is missing from the side panel. Lead: `5dd71f1` simplified the panel to one send/stop control and may have dropped push-to-talk. Check `apps/extension/sidepanel.*` and the server's Cartesia `audio.end` path in `voice.ts`
+- [working] A-STT · Investigate speech-to-text: it looks broken and the mic button is missing from the side panel. Lead: `5dd71f1` simplified the panel to one send/stop control and may have dropped push-to-talk. Check `apps/extension/sidepanel.*` and the server's Cartesia `audio.end` path in `voice.ts` · agent: Mic and conversation UI (for Sota) · claude/a-mic-b8c4a4 · since 20:33 PT
 - [open] LIVE-1 · Full live run on `main` in real Chrome: picnic blanket → shortlist → under $20 → review question → add → checkout read-back → yes, with no order placed
 - [open] C4 · Variants (size, color, quantity), filters, sort, and the checkout read-back flow on Amazon (`navigator/sites/amazon.ts`)
-- [open] C-TGT · Real Target search and detail flow (sample listings today)
-- [open] C-WMT · Real Walmart search and detail flow (sample listings today)
-- [open] B-PRELOAD · Agent calls C1b `flow.preload()` as soon as the shortlist is final (check whether the tool loop already does)
+- [working] C-TGT · Real Target search and detail flow (sample listings today) · agent: Target navigator (for Sota) · claude/c-target-9ad777 · since 20:33 PT
+- [working] C-WMT · Real Walmart search and detail flow (sample listings today) · agent: c-walmart (for Sota) · claude/c-walmart-2a1761 · since 20:33 PT
+- [working] B-PRELOAD · Agent calls C1b `flow.preload()` as soon as the shortlist is final (check whether the tool loop already does) · agent: Run latest demo (for Sota) · b/feedback · since 20:16 PT
 - [open] D-PAGEQA · Answer "what's on this page?" over the C5 `PageState` capture
 - [open] A-VOICE · Decide whether voice-only must work with no clicks at all (motor-impaired users)
 - [open] DEMO · Feature freeze and rehearsal (H+14); warm `RecipeCache` and picker memory before going on stage
+
+### From team testing (Slack, Oct 24)
+
+- [working] UX-LEN · Spoken replies are too long; each option takes too long to read. Decide how much to say per turn (Alexa as a benchmark) · Yuka, Sota · agent: Run latest demo (for Sota) · b/feedback · since 20:16 PT
+- [working] UX-FORMAT · Present the 3 options like a normal store: names and prices first, then pros and cons for each · yujielee · agent: Run latest demo (for Sota) · b/feedback · since 20:16 PT
+- [open] UX-OPT3 · Bug: the agent only presents up to Option 2, not all 3 · Yuka
+- [open] UX-PAUSE · Bug: after pausing voice, clicking the "type here" input resumes voice · yujielee
+- [working] UX-CUT · Text is cut mid-word (the caption shows "Picnic Blank / et"). Check whether it's caption wrapping or how TTS chunks the text · Yuka · agent: Caption word wrap (for Sota) · b/feedback · since 20:48 PT
+- [working] UX-ASK-FIRST · Ask clarifying questions before searching · Sota (shipped in B-NARROW / PR #12; now one question at a time) · agent: Run latest demo (for Sota) · b/feedback · since 20:16 PT
+- [open] UX-NARROW · Decide how to handle the 3 narrowing/filtering options · Yuka
+- [open] UX-ASK-END · End every turn by asking the user a question · Yuka
+- [working] UX-PROGRESS · Spoken progress when work takes over ~2 s, with varied lines ("searching Amazon now", "comparing results from Walmart"); "One moment" is too repetitive · Yuka, Sota, yujielee · agent: Run latest demo (for Sota) · b/feedback · since 20:36 PT
+- [working] UX-SALES · Say explicitly when a product is on sale or has a deal · yujielee · agent: On-sale mentions (for Sota) · claude/ux-sales-4e5428 · since 20:34 PT
+- [open] UX-SPEED · Let the user adjust voice speed · yujielee
+- [open] B-HISTORY · Use the conversation history as context for follow-up searches · Sota
+- [working] A-SHOWPAGE · When recommending, open the top pick's product page on screen instead of staying on the home tab · Sota (open all 3 options as tabs, focus option 1) · agent: Run latest demo (for Sota) · b/feedback · since 20:16 PT
+- [open] D-UNBIASED · Unbiased review summary: balance retailer reviews with outside sources (ties to D-APIFY) · Yuka
+- [working] B-PREFS-TEST · Test that preferences are really stored in Convex: favorite marketplaces and brands, what the user cares about (price, quality, shipping speed) · yujielee · agent: Preferences in Convex (for Sota) · claude/b-prefs-test-04a03d · since 20:33 PT
+
 
 ## Done
 

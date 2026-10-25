@@ -4,7 +4,7 @@ import { WebSocket } from "ws";
 import type { ServerMsg } from "@visy/contracts";
 import { start } from "../src/ws.ts";
 
-test("websocket picnic blanket reaches presenting without checkout", async () => {
+test("websocket picnic blanket, questions answered, reaches presenting without checkout", async () => {
   const wss = start({ port: 0, latencyMs: 0, disableVoice: true });
   await new Promise<void>((resolve) => wss.once("listening", () => resolve()));
   const addr = wss.address();
@@ -18,6 +18,12 @@ test("websocket picnic blanket reaches presenting without checkout", async () =>
   });
   ws.send(JSON.stringify({ type: "hello", protocol: 1, userId: "demo-user", client: "cli" }));
   ws.send(JSON.stringify({ type: "user.text", text: "picnic blanket" }));
+  // The agent asks its questions first; answer them.
+  const asked = Date.now() + 5000;
+  while (Date.now() < asked && !msgs.some((m) => m.type === "session.snapshot" && m.state.phase === "clarifying")) {
+    await new Promise((r) => setTimeout(r, 20));
+  }
+  ws.send(JSON.stringify({ type: "user.text", text: "just search" }));
   const deadline = Date.now() + 5000;
   while (Date.now() < deadline) {
     const snap = msgs.find((m) => m.type === "session.snapshot" && m.state.phase === "presenting");

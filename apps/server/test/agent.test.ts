@@ -28,7 +28,7 @@ const toolUse = (...calls: Call[]) =>
 const say = (text: string) => reply([{ type: "text", text, citations: null } as Anthropic.ContentBlock], "end_turn");
 
 /** Stands in for Claude: maps scripted phrasings to the tool calls a real model should make. */
-function fakeClaude(opts: { obeyInjection?: boolean } = {}) {
+function fakeClaude(opts: { obeyInjection?: boolean; clarify?: boolean } = {}) {
   const calls: string[] = [];
   const llm: Llm = {
     messages: {
@@ -37,7 +37,14 @@ function fakeClaude(opts: { obeyInjection?: boolean } = {}) {
         if (typeof last.content === "string") {
           const said: string = JSON.parse(last.content.split("User said: ")[1]!);
           const prices = [...last.content.matchAll(/"priceCents":(\d+)/g)].map((m) => Number(m[1]));
-          const call = route(said.toLowerCase(), prices);
+          let call = route(said.toLowerCase(), prices);
+          const asked = last.content.match(/asked questions about: (.+)/)?.[1];
+          if (asked) {
+            const cap = last.content.match(/\$\s*(\d+)/);
+            call = { name: "search", input: { query: asked, budgetMaxCents: cap ? Number(cap[1]) * 100 : undefined, mustHaves: ["waterproof"] } };
+          } else if (call?.name === "search" && opts.clarify) {
+            call = { name: "ask_shopping_questions", input: { query: said, questions: ["What's your budget?", "Does it need to be waterproof?"] } };
+          }
           if (!call) return say("Sorry, what would you like?");
           calls.push(call.name);
           return toolUse(call);
@@ -69,7 +76,7 @@ function route(said: string, prices: number[]): Call | null {
   return { name: "search", input: { query: said } };
 }
 
-function harness(llm: Llm | null, services: Services = mockServices({ latencyMs: 0 })) {
+function harness(llm: Llm | null, services: Services = mockServices({ latencyMs: 0 }), clarify = false) {
   const said: string[] = [];
   const sent: ServerMsg[] = [];
   const sink: AgentSink = {
@@ -79,7 +86,7 @@ function harness(llm: Llm | null, services: Services = mockServices({ latencyMs:
     },
     stopSpeaking() {},
   };
-  const agent = createAgent(services, sink, { llm });
+  const agent = createAgent(services, sink, { llm, clarify });
   return { agent, said, sent };
 }
 
@@ -132,14 +139,15 @@ for (const mode of ["keywords", "claude"] as const) {
     await agent.handleText("add option 1");
     assert.equal(agent.state?.phase, "checkout_review");
     assert.equal(sent.some((m) => m.type === "checkout.confirmRequired"), true);
-    assert.match(said.at(-1) ?? "", /will not place the order/i);
+    assert.match(said.at(-1) ?? "", /Place your order/i);
+    assert.doesNotMatch(said.at(-1) ?? "", /order (was|has been) placed/i);
 
     await agent.confirm({ cents: 1, currency: "USD" });
     assert.equal(agent.state?.phase, "checkout_review");
 
     await agent.confirm(fixtures.checkout.total);
     assert.equal(agent.state?.phase, "done");
-    assert.match(said.at(-1) ?? "", /will not press Place order/i);
+    assert.match(said.at(-1) ?? "", /saved that as your usual.*final button is yours/i);
   });
 
   test(`${mode}: a follow-up question is answered from reviews and does not check out`, async () => {
@@ -168,7 +176,7 @@ for (const mode of ["keywords", "claude"] as const) {
     await agent.handleText("add option 1");
     await agent.handleText("yes");
     assert.equal(agent.state?.phase, "done");
-    assert.match(said.at(-1) ?? "", /will not press Place order/i);
+    assert.match(said.at(-1) ?? "", /saved that as your usual.*final button is yours/i);
     assert.equal(agent.state?.cart[0]?.quantity, 1);
   });
 
@@ -181,7 +189,61 @@ for (const mode of ["keywords", "claude"] as const) {
     assert.equal(agent.state?.cart[0]?.quantity, 1);
     assert.notEqual(agent.state?.phase, "done");
   });
+
+  test(`${mode}: a new product gets questions first, then the answer shapes the search`, async () => {
+    const { agent, said } = harness(mode === "claude" ? fakeClaude({ clarify: true }).llm : null, undefined, true);
+    await agent.hello("demo-user");
+    await agent.handleText("picnic blanket");
+    assert.equal(agent.state?.phase, "clarifying");
+    assert.equal(agent.state?.shortlist.length, 0);
+    // Two short questions, together in one turn.
+    assert.match(said.at(-1) ?? "", /budget\?.*(matters|waterproof)/i);
+    await agent.handleText("under $20, waterproof");
+    assert.equal(agent.state?.phase, "presenting");
+    assert.equal(agent.state?.need?.query, "picnic blanket");
+    assert.equal(agent.state?.need?.budget?.max?.cents, 2000);
+    assert.ok(agent.state!.shortlist.length >= 1);
+    assert.ok(agent.state!.shortlist.every((item) => item.product.price.cents <= 2000));
+    assert.match(said.join(" "), /I found \d+ products/);
+    assert.match(said.at(-1) ?? "", /add one to your cart\?$/);
+    assert.equal(agent.state?.cart.length, 0);
+  });
+
+  test(`${mode}: "just search" ends the questions early`, async () => {
+    const { agent } = harness(mode === "claude" ? fakeClaude({ clarify: true }).llm : null, undefined, true);
+    await agent.hello("demo-user");
+    await agent.handleText("picnic blanket");
+    await agent.handleText("just search");
+    assert.equal(agent.state?.phase, "presenting");
+    assert.equal(agent.state?.shortlist.length, 3);
+  });
 }
+
+test("a silent stretch while working is filled with what Visy is doing", async () => {
+  const services = mockServices({ latencyMs: 0 });
+  const search = services.navigator.search.bind(services.navigator);
+  services.navigator.search = async (need, marketplace, emit) => {
+    emit({ stage: "searching", marketplace, message: `Searching ${marketplace} now`, at: new Date().toISOString() });
+    // Longer than the spoken "I'll check …" line plus the 2.5 s of quiet allowed after it.
+    await new Promise((r) => setTimeout(r, 5500));
+    return search(need, marketplace, emit);
+  };
+  const { agent, said } = harness(null, services);
+  await agent.hello("demo-user");
+  await agent.handleText("picnic blanket");
+  assert.ok(said.some((s) => /^Searching \w+ now\.$/.test(s)), said.join(" | "));
+  assert.equal(agent.state?.phase, "presenting");
+});
+
+test("claude: a search with no questions asked yet is turned into the default questions", async () => {
+  const fake = fakeClaude();
+  const { agent, said } = harness(fake.llm, undefined, true);
+  await agent.hello("demo-user");
+  await agent.handleText("picnic blanket");
+  assert.deepEqual(fake.calls, ["search"]);
+  assert.equal(agent.state?.phase, "clarifying");
+  assert.match(said.at(-1) ?? "", /budget/i);
+});
 
 test("claude: 'less than 20 bucks' filters the shortlist without a new search", async () => {
   const fake = fakeClaude();
@@ -244,7 +306,7 @@ test("claude: a review that says to check out cannot add to cart or confirm", as
   assert.equal(agent.state?.checkout, undefined);
   assert.notEqual(agent.state?.phase, "done");
   assert.equal(sent.some((m) => m.type === "checkout.confirmRequired"), false);
-  assert.doesNotMatch(said.join(" "), /will not press Place order/i);
+  assert.doesNotMatch(said.join(" "), /saved that as your usual/i);
 });
 
 test("claude: confirm_checkout_total refuses unless the user said yes", async () => {
@@ -256,6 +318,40 @@ test("claude: confirm_checkout_total refuses unless the user said yes", async ()
   await agent.handleText("sounds right to me");
   assert.equal(fake.calls.at(-1), "confirm_checkout_total");
   assert.equal(agent.state?.phase, "checkout_review");
+});
+
+test("claude failing after the 'One moment' ack still falls back to keyword routing", async () => {
+  const slowBroken: Llm = {
+    messages: {
+      async create() {
+        await new Promise((r) => setTimeout(r, 1000)); // past ACK_MS, so the ack has been said
+        throw new Error("overloaded");
+      },
+    },
+  };
+  const { agent, said } = harness(slowBroken);
+  await agent.hello("demo-user");
+  await agent.handleText("picnic blanket");
+  assert.ok(said.some((s) => /^(One moment|Let me check|On it)\.$/.test(s)), said.join(" | "));
+  assert.equal(agent.state?.shortlist.length, 3);
+});
+
+test("a progress line during a quiet tool still lets Claude answer from its result", async () => {
+  const services = mockServices({ latencyMs: 0 });
+  const search = services.reviewIndex.search.bind(services.reviewIndex);
+  let slow = true;
+  services.reviewIndex.search = async (productId, query, k) => {
+    if (slow) await new Promise((r) => setTimeout(r, 4000)); // long enough for a spoken progress line
+    slow = false;
+    return search(productId, query, k);
+  };
+  const fake = fakeClaude();
+  const { agent, said } = harness(fake.llm, services);
+  await agent.hello("demo-user");
+  await agent.handleText("picnic blanket");
+  await agent.handleText("is it waterproof");
+  assert.match(said.at(-1) ?? "", /waterproof|don't know/i);
+  assert.ok(said.length > 0);
 });
 
 test("claude errors fall back to keyword routing", async () => {

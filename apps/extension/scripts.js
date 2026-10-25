@@ -10,10 +10,11 @@ export const SCRIPTS = {
   title: (c.querySelector('h2')?.innerText || '').trim(),
   price: c.querySelector('.a-price .a-offscreen')?.textContent?.trim() || null,
   rating: c.querySelector('.a-icon-alt')?.textContent?.trim() || null,
+  reviews: (() => { const r = c.querySelector('[aria-label$="ratings"], [aria-label$="rating"], a[href*="customerReviews"] span'); return r ? (r.getAttribute('aria-label') || r.textContent || '').trim() || null : null; })(),
   sponsored: !!c.querySelector('.puis-sponsored-label-text, [aria-label*="Sponsored"]') || /^Sponsored/.test((c.innerText || '').trim()),
 })).filter((r) => r.asin && r.title)),
   "amazon.resultsReady": (arg) => (!!document.querySelector('[data-component-type="s-search-result"][data-asin]') || !!document.querySelector('#checkpointForm, form[action*=validateCaptcha]')),
-  "amazon.titlesReady": (arg) => (document.querySelectorAll('[data-component-type="s-search-result"][data-asin] h2').length >= 6 || document.readyState !== 'loading'),
+  "amazon.titlesReady": (arg) => (document.querySelectorAll('[data-component-type="s-search-result"][data-asin] h2').length >= 40 || document.readyState !== 'loading'),
   "amazon.loadedOrChallenge": (arg) => (document.readyState !== 'loading' || !!document.querySelector('#checkpointForm, form[action*=validateCaptcha]')),
   "amazon.added": (arg) => (location.href !== arg || /added to (your )?cart/i.test(document.body.innerText.slice(0, 20000)) || !!document.querySelector('#attachSiNoCoverage, #attach-warranty-pane, #NATC_SMART_WAGON_CONF_MSG_SUCCESS, #sw-atc-confirmation')),
   "amazon.warranty": (arg) => (!!document.querySelector('#attachSiNoCoverage, #attach-warranty-pane')),
@@ -48,6 +49,16 @@ export const SCRIPTS = {
   "amazon.titlePrice": (arg) => (({ title: (document.querySelector("#productTitle")?.innerText || "").trim(), price: document.querySelector(".a-price .a-offscreen")?.textContent?.trim() || null })),
   "amazon.subtotalReady": (arg) => (!!document.querySelector('#sc-subtotal-amount-activecart, #sc-subtotal-amount-buybox')),
   "amazon.subtotal": (arg) => ((document.querySelector('#sc-subtotal-amount-activecart, #sc-subtotal-amount-buybox')?.innerText || '').trim()),
+  "amazon.clickProceed": (arg) => ((() => { const b = document.querySelector('input[name="proceedToRetailCheckout"], [data-feature-id="proceed-to-checkout-action"] input, #sc-buy-box-ptc-button input'); if (!b) return false; b.click(); return true; })()),
+  "amazon.orderTotalReady": (arg) => (/Order total:?\s*(?:[A-Z]{3}|\$)\s*[\d,]/i.test(document.body?.innerText || '') || /\/ap\/signin/.test(location.pathname) || !!document.querySelector('#checkpointForm, form[action*=validateCaptcha]')),
+  "amazon.orderTotal": (arg) => ((() => {
+  const t = document.body?.innerText || '';
+  const total = t.match(/Order total:?\s*((?:[A-Z]{3}|\$)\s*[\d,]+(?:\.\d{1,2})?)/i)?.[1] || null;
+  const tax = t.match(/(?:Estimated tax to be collected|Estimated tax):?\s*((?:[A-Z]{3}|\$)\s*[\d,]+(?:\.\d{1,2})?)/i)?.[1] || null;
+  const usd = /^\$/.test(total || '') ? total : t.match(/USD\s*([\d,]+\.\d{2})/)?.[1] || null;
+  const button = t.match(/Place your order(?: in [A-Z]{3})?/i)?.[0] || (/Proceed to checkout/i.test(t) ? 'Proceed to checkout' : null);
+  return { total, tax, usd, button, url: location.href };
+})()),
   "recipe.replay": (arg) => (((f) => {
   const one = (s, root) => { if (!s) return null; try { return (root || document).querySelector(s.css); } catch { return null; } };
   const all = (s, root) => { if (!s) return []; try { return Array.from((root || document).querySelectorAll(s.css)); } catch { return []; } };

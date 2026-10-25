@@ -59,6 +59,8 @@ export interface Navigator {
   addToCart(productId: ProductId, quantity: number, emit: Emit): Promise<Result<CartLine>>;
   /** Navigates to the final review page and extracts it. MUST stop before placing the order. */
   openCheckout(marketplace: Marketplace, emit: Emit): Promise<Result<CheckoutReview>>;
+  /** Optional. Opens each shortlisted product in its own browser tab and brings the first to the front. */
+  openOptions?(ids: ProductId[], emit: Emit): Promise<void>;
 }
 
 /** Track D. */

@@ -7,17 +7,18 @@ import Anthropic from "@anthropic-ai/sdk";
 import { INPUTS, MODEL, SYSTEM, TIMEOUT_MS, TOOLS, turnMessage, untrusted, type Llm, type ToolName } from "./agent-tools.ts";
 import { apifyToken, prefetchApifySearch, reviewsFromHits } from "./intel/apify.ts";
 import { sourcesSentence } from "./intel/reviews.ts";
+import { haikuJev, narrowToThree } from "./narrow.ts";
+import { overview, pitchWriter, speakable, templateLine, type Option, type PitchWriter } from "./present.ts";
 import {
   CONTRACT_VERSION,
   Need,
   PreferenceFact,
   SessionState as SessionStateSchema,
   type Emit,
+  type JevClient,
   type Marketplace,
   type Money,
   type PageState,
-  type ProductCandidate,
-  type ProgressEvent,
   type Result,
   type ReviewSynthesis,
   type ServerMsg,
@@ -38,6 +39,17 @@ export type AgentSink = {
 
 const YES = /^(yes|confirm|that matches)\b/i;
 const ACK_MS = 800;
+/** UX-PROGRESS: after this much silence while working, say what we're doing. */
+const QUIET_MS = 2500;
+const ACKS = ["One moment.", "Let me check.", "On it."];
+const STILL = ["Still working on it.", "Almost there.", "Hang on, still checking."];
+const DEFAULT_QUESTIONS = ["What's your budget?", "What matters most?"];
+/** Ends the questions early and searches with what we have. */
+const SKIP = /\b(just search|skip|search now|go ahead|that's (it|all))\b/i;
+const NO_PREFERENCE = /^(no|nope|nothing|none|no preference|anything|whatever|just search|doesn't matter|dont care|don't care)\b/i;
+
+/** Need fields beyond query and marketplaces, from the search tool or a keyword answer. */
+type NeedExtra = Partial<Pick<Need, "budget" | "mustHaves" | "niceToHaves" | "accessibilityNotes" | "priorities">>;
 
 function defaultLlm(): Llm | null {
   if (!process.env.ANTHROPIC_API_KEY?.trim()) return null;
@@ -45,30 +57,69 @@ function defaultLlm(): Llm | null {
   return new Anthropic({ baseURL: process.env.VISY_ANTHROPIC_BASE_URL ?? "https://api.anthropic.com" });
 }
 
-/** `llm: null` forces keyword routing. Omit it to use Claude when ANTHROPIC_API_KEY is set. */
-export function createAgent(services: Services, sink: AgentSink, opts: { llm?: Llm | null } = {}) {
+/**
+ * `llm: null` forces keyword routing. Omit it to use Claude when ANTHROPIC_API_KEY is set.
+ * `jev` narrows the candidate pool to 3; omitted, it is the Haiku stand-in only when `llm` is also omitted (tests stay offline).
+ * `clarify: false` skips the questions before a search (VISY_CLARIFY=0 does the same).
+ */
+export function createAgent(
+  services: Services,
+  sink: AgentSink,
+  opts: { llm?: Llm | null; jev?: JevClient | null; pitch?: PitchWriter | null; clarify?: boolean } = {},
+) {
   const llm = opts.llm === undefined ? defaultLlm() : opts.llm;
+  const live = opts.llm === undefined && !!llm;
+  const jev = opts.jev !== undefined ? opts.jev : live ? haikuJev() : null;
+  const pitch = opts.pitch !== undefined ? opts.pitch : live ? pitchWriter() : null;
+  const clarify = opts.clarify ?? process.env.VISY_CLARIFY !== "0";
   let state: SessionState | null = null;
   let run = 0;
   let speechRate = 1;
   let spoken = 0;
   let turnAbort: AbortController | null = null;
   const recent: string[] = [];
+  /** Questions still to ask before searching, and the answers so far. */
+  let asking: { questions: string[]; answers: { question: string; answer: string }[] } | null = null;
+  /** UX-PROGRESS: roughly when the queued speech ends, the latest progress message, and whether a turn is running. */
+  let voiceUntil = 0;
+  let latest = "";
+  let latestSaid = "";
+  let busy = 0;
+  let ticker: ReturnType<typeof setInterval> | undefined;
+  let stillIdx = 0;
 
   function say(text: string, kind?: SayKind) {
-    spoken++;
-    return sink.say(text, kind);
+    // Acks and progress lines aren't answers: the Claude loop uses `spoken` to tell whether a turn or tool answered.
+    if (kind !== "progress") spoken++;
+    // ~0.33 s a word at 1x, plus synthesis latency. Only used to tell silence from speech.
+    const words = text.split(/\s+/).length;
+    voiceUntil = Math.max(voiceUntil, Date.now()) + 400 + (words * 330) / speechRate;
+    return sink.say(speakable(text), kind);
   }
 
   const emit: Emit = (event) => {
+    latest = event.message;
     sink.send({ type: "progress", event });
   };
 
-  /** Top progress bar. Spoken only when TTS is idle (ws skips progress audio while busy). Empty clears it. */
-  function think(message: string, stage: ProgressEvent["stage"] = "reviews") {
-    const text = message.trim();
-    emit({ stage, message: text, at: new Date().toISOString() });
-    if (text) void say(text, "progress");
+  /** While a turn runs, break any silence longer than QUIET_MS with what we're doing ("Reading Amazon reviews."). */
+  function tick() {
+    if (!busy || Date.now() < voiceUntil + QUIET_MS) return;
+    const line = latest && latest !== latestSaid ? `${latest.replace(/[.!]*$/, "")}.` : STILL[stillIdx++ % STILL.length]!;
+    latestSaid = latest;
+    void say(line, "progress");
+  }
+
+  async function working<T>(fn: () => Promise<T>): Promise<T> {
+    if (busy++ === 0) {
+      voiceUntil = Math.max(voiceUntil, Date.now());
+      ticker = setInterval(tick, 300);
+    }
+    try {
+      return await fn();
+    } finally {
+      if (--busy === 0) clearInterval(ticker);
+    }
   }
 
   function publish(next: SessionState) {
@@ -99,9 +150,14 @@ export function createAgent(services: Services, sink: AgentSink, opts: { llm?: L
     run++;
     turnAbort?.abort();
     sink.stopSpeaking();
+    voiceUntil = Date.now();
   }
 
-  async function handleText(text: string) {
+  function handleText(text: string) {
+    return working(() => turn(text));
+  }
+
+  async function turn(text: string) {
     const id = ++run;
     const said = text.trim();
     if (!said) return;
@@ -114,6 +170,14 @@ export function createAgent(services: Services, sink: AgentSink, opts: { llm?: L
     if (state.phase === "checkout_review" && state.checkout && YES.test(said)) {
       await confirm(state.checkout.total);
       return;
+    }
+    // Record the answer; any question still left is asked right away, no model call needed.
+    if (state.phase === "clarifying" && asking?.questions.length) {
+      asking.answers.push({ question: asking.questions.shift()!, answer: said });
+      if (asking.questions.length && !SKIP.test(said)) {
+        await say(asking.questions[0]!, "question");
+        return;
+      }
     }
     const handled = llm ? await routeWithClaude(llm, said, id) : false;
     recent.push(said);
@@ -130,9 +194,9 @@ export function createAgent(services: Services, sink: AgentSink, opts: { llm?: L
     const before = spoken;
     const turn = { said, id, tainted: false, fallback: "" };
     const ack = setTimeout(() => {
-      if (id === run && spoken === before) void sink.say("One moment.");
+      if (id === run && spoken === before) void say(ACKS[Math.floor(Math.random() * ACKS.length)]!, "progress");
     }, ACK_MS);
-    const messages: Anthropic.MessageParam[] = [{ role: "user", content: turnMessage(state, said, recent) }];
+    const messages: Anthropic.MessageParam[] = [{ role: "user", content: turnMessage(state, said, recent, asking?.answers) }];
     try {
       for (let step = 0; step < 4; step++) {
         const res = await llm.messages.create(
@@ -191,8 +255,21 @@ export function createAgent(services: Services, sink: AgentSink, opts: { llm?: L
     }
     switch (call.name as ToolName) {
       case "search":
-        await shop(input.query, turn.id, input.marketplaces);
+        // Questions come before the first search for a product, unless the user already answered them or said to just search.
+        if (clarify && state.phase !== "clarifying" && !input.skipQuestions) {
+          await askQuestions(input.query, DEFAULT_QUESTIONS, input.marketplaces);
+          return { content: "Asked the shopper questions before searching. Wait for their answer." };
+        }
+        await shop(input.query, turn.id, input.marketplaces, {
+          budget: input.budgetMaxCents != null ? { max: { cents: input.budgetMaxCents, currency: "USD" } } : undefined,
+          mustHaves: input.mustHaves,
+          niceToHaves: input.niceToHaves,
+          accessibilityNotes: input.accessibilityNotes,
+        });
         return { content: `Read ${state?.shortlist.length ?? 0} options aloud.` };
+      case "ask_shopping_questions":
+        await askQuestions(input.query, input.questions, input.marketplaces);
+        return { content: "Asked. Wait for the shopper's answer." };
       case "filter_shortlist":
         if (!state.shortlist.length) return fail("There is no shortlist yet. Search first.");
         if (input.maxPriceCents == null && input.minRating == null) return fail("Give maxPriceCents or minRating.");
@@ -280,7 +357,29 @@ export function createAgent(services: Services, sink: AgentSink, opts: { llm?: L
       return;
     }
     if (/\busual\b/i.test(said) && (await recallUsual(said))) return;
+    if (state.phase === "clarifying" && state.need) {
+      const answers = asking?.answers.map((a) => a.answer).join(". ") || said;
+      await shop(state.need.query, id, state.need.marketplaces, needFromAnswer(answers));
+      return;
+    }
+    if (clarify) {
+      await askQuestions(said, DEFAULT_QUESTIONS);
+      return;
+    }
     await shop(said, id);
+  }
+
+  /**
+   * Asks up to 2 short questions together in one turn: one at a time was too slow, three at once too long.
+   * The next user turn is the answer (phase "clarifying").
+   */
+  async function askQuestions(query: string, questions: string[], marketplaces: Marketplace[] = ["amazon", "target", "walmart"]) {
+    if (!state) return;
+    const need = Need.parse({ query: query.trim(), marketplaces });
+    const together = questions.slice(0, 2).join(" ");
+    asking = { questions: [together], answers: [] };
+    publish({ ...state, phase: "clarifying", need, candidates: [], shortlist: [], cart: [] });
+    await say(`Sure, ${need.query}. ${together}`, "question");
   }
 
   async function recallUsual(query: string) {
@@ -362,12 +461,14 @@ export function createAgent(services: Services, sink: AgentSink, opts: { llm?: L
       await saveUsual(line.productId, line.title, "You confirmed this cart. Visy did not place the order.");
     }
     publish({ ...state, phase: "done" });
-    await say("That matches the total I read back. I will not press Place order. That button is yours. I saved it as your usual.");
+    await say("Got it, I saved that as your usual. The final button is yours whenever you're ready.");
   }
 
-  async function shop(text: string, id: number, marketplaces: Marketplace[] = ["amazon", "target", "walmart"]) {
+  async function shop(text: string, id: number, marketplaces: Marketplace[] = ["amazon", "target", "walmart"], extra: NeedExtra = {}) {
     if (!state) return;
-    const need = Need.parse({ query: text.trim(), marketplaces });
+    const defined = Object.fromEntries(Object.entries(extra).filter(([, v]) => v !== undefined));
+    const need = Need.parse({ query: text.trim(), marketplaces, ...defined });
+    asking = null;
     publish({ ...state, phase: "searching", need, candidates: [], shortlist: [], cart: [] });
     const names = need.marketplaces.map((m) => m[0]!.toUpperCase() + m.slice(1));
     const where =
@@ -380,87 +481,116 @@ export function createAgent(services: Services, sink: AgentSink, opts: { llm?: L
     if (id !== run || !state) return;
     // Kick off Apify immediately (Reddit + YouTube + articles in parallel) beside marketplace search.
     const usingApify = Boolean(apifyToken());
-    think(
-      usingApify
-        ? "Using Apify to search Reddit, YouTube, and articles…"
-        : "Searching Reddit, YouTube, and articles for reviews…",
-      "reviews",
-    );
+    emit({
+      stage: "reviews",
+      message: usingApify
+        ? "Using Apify to search Reddit, YouTube, and articles"
+        : "Searching Reddit, YouTube, and articles for reviews",
+      at: new Date().toISOString(),
+    });
     const apifyHitsP = prefetchApifySearch(need.query, { mustHaves: need.mustHaves });
     const results = await Promise.all(need.marketplaces.map((m) => services.navigator.search(need, m, emit)));
     if (id !== run || !state) return;
+    results.forEach((r, i) => !r.ok && console.warn(`search ${need.marketplaces[i]} failed: ${r.error.code} ${r.error.message}`));
     const candidates = results.flatMap((r) => (r.ok ? r.data : []));
-    const picks = bestPerMarketplace(candidates);
-
-    async function prepareOption(candidate: ProductCandidate, rank: 1 | 2 | 3): Promise<ShortlistItem> {
-      const store = candidate.marketplace[0]!.toUpperCase() + candidate.marketplace.slice(1);
-      think(`Reading option ${rank} on ${store}…`, "reading_product");
-      const detail = await services.navigator.getDetail(candidate, emit);
-      const product = detail.ok ? detail.data : candidate;
-      let reviews: ShortlistItem["reviews"];
-      let visual: ShortlistItem["visual"];
-      if (detail.ok) {
-        if (usingApify) think(`Waiting on Apify for outside reviews on option ${rank}…`, "reviews");
-        else think(`Waiting on outside reviews for option ${rank}…`, "reviews");
-        const hits = await apifyHitsP;
-        const external = reviewsFromHits(detail.data.id, hits);
-        const by = external.reduce<Partial<Record<string, number>>>((acc, r) => {
-          acc[r.source] = (acc[r.source] ?? 0) + 1;
-          return acc;
-        }, {});
-        const bits = (["reddit", "youtube", "article"] as const)
-          .filter((s) => by[s])
-          .map((s) => (s === "article" ? "articles" : s === "youtube" ? "YouTube" : "Reddit"));
-        think(
-          bits.length
-            ? usingApify
-              ? `Got Apify results from ${bits.join(", ")}…`
-              : `Using outside reviews from ${bits.join(", ")}…`
-            : "Using retailer reviews only…",
-          "reviews",
-        );
-        think(`Summarizing option ${rank}…`, "reviews");
-        const pool = [...detail.data.retailerReviews, ...external];
-        const [, synth, vis] = await Promise.all([
-          pool.length ? services.reviewIndex.index(detail.data.id, pool) : undefined,
-          services.reviews.synthesize(detail.data, pool, need),
-          services.vision.describe(detail.data),
-        ]);
-        if (synth.ok) reviews = synth.data;
-        if (vis.ok) visual = vis.data;
-      }
-      return {
-        rank,
+    if (!candidates.length) {
+      publish({ ...state, phase: "idle" });
+      await say("I couldn't find any products for that. Try different words.");
+      return;
+    }
+    publish({ ...state, phase: "shortlisting", candidates });
+    // Narrowing runs while the count is read out.
+    const counted = say(
+      candidates.length > 3 ? `I found ${candidates.length} products. Picking the best three.` : `I found ${candidates.length} products.`,
+      "progress",
+    );
+    const t0 = performance.now();
+    const narrowed = await narrowToThree(jev, need, candidates);
+    console.log(`narrow: ${candidates.length} → ${narrowed.picks.length} via ${narrowed.via} in ${Math.round(performance.now() - t0)} ms`);
+    await counted;
+    if (id !== run || !state) return;
+    const picks = narrowed.picks;
+    // UX-FORMAT: names and prices of all three first, then one comparative line each as its details arrive.
+    const options: Option[] = picks.map((p, i) => ({ rank: i + 1, why: p.why, product: p.candidate }));
+    const ids = picks.map((p) => p.candidate.id);
+    // A-SHOWPAGE: every option opens in its own tab, the first comes to the front.
+    const tabs = services.navigator.openOptions ? picks.filter((p) => p.candidate.marketplace === "amazon").length : 0;
+    if (tabs) void services.navigator.openOptions!(ids, emit).catch(() => {});
+    await say(`${tabs ? `Opening the ${tabs === 1 ? "tab" : `${tabs} tabs`} now. ` : ""}${overview(options)}`);
+    // Details, reviews, photo and the spoken line for all three run at once; they are read in order.
+    // Outside reviews come from the Apify prefetch started above (shared hit pool per query).
+    const work = picks.map(({ candidate, why }, i) =>
+      (async () => {
+        const detail = await services.navigator.getDetail(candidate, emit);
+        const product = detail.ok ? detail.data : candidate;
+        let reviews: ShortlistItem["reviews"];
+        let visual: ShortlistItem["visual"];
+        if (detail.ok) {
+          const synthP = (async () => {
+            // Prefetched Apify hits when the token is set; otherwise collectExternal
+            // (mock fixtures in tests, or a second Apify pass that shares the cache).
+            const hits = await apifyHitsP;
+            let external = reviewsFromHits(detail.data.id, hits);
+            if (!external.length) {
+              const got = await services.reviews.collectExternal(detail.data, emit);
+              if (got.ok) external = got.data;
+            }
+            const by = external.reduce<Partial<Record<string, number>>>((acc, r) => {
+              acc[r.source] = (acc[r.source] ?? 0) + 1;
+              return acc;
+            }, {});
+            const bits = (["reddit", "youtube", "article"] as const)
+              .filter((s) => by[s])
+              .map((s) => (s === "article" ? "articles" : s === "youtube" ? "YouTube" : "Reddit"));
+            emit({
+              stage: "reviews",
+              marketplace: detail.data.marketplace,
+              message: bits.length
+                ? usingApify
+                  ? `Got Apify results from ${bits.join(", ")}`
+                  : `Using outside reviews from ${bits.join(", ")}`
+                : "Using retailer reviews only",
+              at: new Date().toISOString(),
+            });
+            const pool = [...detail.data.retailerReviews, ...external];
+            const [, synth] = await Promise.all([
+              pool.length ? services.reviewIndex.index(detail.data.id, pool) : undefined,
+              services.reviews.synthesize(detail.data, pool, need),
+            ]);
+            return synth;
+          })();
+          const [synth, vis] = await Promise.all([synthP, services.vision.describe(detail.data)]);
+          if (synth.ok) reviews = synth.data;
+          if (vis.ok) visual = vis.data;
+        }
+        const option: Option = { rank: i + 1, why, product, reviews };
+        const line = (pitch ? await pitch(need, option, options) : undefined) ?? templateLine(option, options);
+        return { candidate, why, product, reviews, visual, line };
+      })(),
+    );
+    const shortlist: ShortlistItem[] = [];
+    for (const job of work) {
+      const { candidate, why, product, reviews, visual, line } = await job;
+      if (id !== run || !state) return;
+      const item: ShortlistItem = {
+        rank: (shortlist.length + 1) as 1 | 2 | 3,
         product,
         reviews,
         visual,
-        whyPicked: reviews?.summary ?? `Available at ${candidate.marketplace}.`,
+        whyPicked: [why, reviews?.summary ?? `At ${candidate.marketplace}.`].filter(Boolean).join(". "),
       };
-    }
-
-    // Present option N while preparing N+1 so speech overlaps with the next detail/Apify synth.
-    const shortlist: ShortlistItem[] = [];
-    let nextPrep: Promise<ShortlistItem> | null = picks[0] ? prepareOption(picks[0], 1) : null;
-    for (let i = 0; i < picks.length; i++) {
-      if (id !== run || !state || !nextPrep) return;
-      const item = await nextPrep;
-      if (id !== run || !state) return;
       shortlist.push(item);
       publish({
         ...state,
         phase: shortlist.length === picks.length ? "presenting" : "shortlisting",
         candidates,
         shortlist: [...shortlist],
-        focusedProductId: item.product.id,
+        focusedProductId: shortlist[0]!.product.id,
       });
-      // Queue speech first so ttsBusy > 0 before next prepare's progress updates (silent while reading).
-      const speaking = say(formatOptionBlock(item));
-      const following = picks[i + 1];
-      nextPrep = following ? prepareOption(following, (i + 2) as 1 | 2 | 3) : null;
-      await speaking;
-      if (id !== run || !state) return;
+      await say(line);
     }
-    think("");
+    if (id !== run || !state) return;
+    await say("Want to hear more about one, or should I add one to your cart?", "question");
   }
 
   async function addToCart(index: number, id: number) {
@@ -484,8 +614,8 @@ export function createAgent(services: Services, sink: AgentSink, opts: { llm?: L
       await say("I couldn't open checkout.");
       return;
     }
-    const readBack = `${review.data.readBack} I will not place the order. Press Place your order when you are ready.`;
-    const checkout = { ...review.data, readBack };
+    const readBack = review.data.readBack;
+    const checkout = review.data;
     publish({ ...state, phase: "checkout_review", checkout });
     sink.send({ type: "checkout.confirmRequired", review: checkout });
     await say(readBack, "question");
@@ -540,6 +670,17 @@ async function saveUsual(productId: string, title: string, evidence: string) {
   };
 }
 
+/** Keyword routing's read of an answer to the questions: a dollar cap, and the rest as must-haves. */
+function needFromAnswer(said: string): NeedExtra {
+  const cap = said.match(/(?:under|less than|up to|below|max(?:imum)?|budget(?: is)?)\s*\$?\s*(\d+(?:\.\d+)?)|\$\s*(\d+(?:\.\d+)?)/i);
+  const dollars = cap ? Number(cap[1] ?? cap[2]) : undefined;
+  const rest = said.replace(cap?.[0] ?? "", "").replace(/^[\s,.]+|[\s,.]+$/g, "");
+  return {
+    budget: dollars != null ? { max: { cents: Math.round(dollars * 100), currency: "USD" } } : undefined,
+    mustHaves: rest && !NO_PREFERENCE.test(rest) ? [rest] : undefined,
+  };
+}
+
 /** Keep the first useful keywords from a noisy marketplace title. */
 export function shortTitle(title: string, maxWords = 6) {
   const stop = new Set(["with", "and", "the", "for", "in", "a", "an", "of", "to", "by"]);
@@ -568,10 +709,7 @@ export function formatShortlistRoster(items: Pick<ShortlistItem, "rank" | "produ
 }
 
 /** Pros / Cons / Sources lines (no option header). */
-export function formatProsConsSection(
-  marketplace: Marketplace,
-  reviews: ReviewSynthesis | undefined,
-) {
+export function formatProsConsSection(marketplace: Marketplace, reviews: ReviewSynthesis | undefined) {
   const lines: string[] = [];
   const pros = reviews?.pros ?? [];
   const cons = reviews?.cons ?? [];
@@ -591,29 +729,12 @@ export function formatProsConsSection(
 
 /**
  * One spoken option: name + price, then Pros / Cons / Sources.
- * Example:
- * Option 1: Waterproof Picnic Blanket XL, $27.99
- * Pros:
- * - Truly waterproof
- * Cons:
- * - Color duller than photos
- * Sources: Reviews from Amazon and Reddit.
+ * Kept for follow-up / tests; first pass uses present.ts overview + pitch lines.
  */
 export function formatOptionBlock(item: Pick<ShortlistItem, "rank" | "product" | "reviews">) {
   const head = formatOptionLine(item.rank, item.product.title, item.product.price.cents);
   const body = formatProsConsSection(item.product.marketplace, item.reviews);
   return body ? `${head}\n${body}` : head;
-}
-
-function bestPerMarketplace(candidates: ProductCandidate[]): ProductCandidate[] {
-  const best = new Map<string, ProductCandidate>();
-  for (const c of candidates) {
-    const prev = best.get(c.marketplace);
-    const s = (c.rating ?? 0) * 1000 - c.price.cents / 100;
-    const ps = prev ? (prev.rating ?? 0) * 1000 - prev.price.cents / 100 : -Infinity;
-    if (!prev || s > ps) best.set(c.marketplace, c);
-  }
-  return [...best.values()].sort((a, b) => (b.rating ?? 0) - (a.rating ?? 0)).slice(0, 3);
 }
 
 function optionIndex(text: string): number {

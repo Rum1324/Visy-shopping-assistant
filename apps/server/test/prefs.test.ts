@@ -51,10 +51,11 @@ test("remember this saves the focused product and a later usual recalls it", asy
   };
   const services = mockServices({ latencyMs: 0 });
   services.prefs = preferenceStore(memoryPrefsDb());
-  const agent = createAgent(services, sink);
+  const agent = createAgent(services, sink, { clarify: false });
   await agent.hello("demo-user");
   await agent.handleText("picnic blanket");
-  const title = agent.state?.shortlist.at(-1)?.product.title ?? "";
+  // Option 1's tab is the one in front, so it's the focused product.
+  const title = agent.state?.shortlist[0]?.product.title ?? "";
   assert.ok(title);
   await agent.handleText("remember this");
   assert.match(said.at(-1) ?? "", /saved that as your usual/i);

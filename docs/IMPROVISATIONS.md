@@ -4,21 +4,33 @@ Living log of changes that depart from the skeleton in `docs/ARCHITECTURE.md`, `
 
 If you improvise, add an entry in the same commit and push it. Say what changed, why the skeleton was not enough, and what other agents should do differently now.
 
-## 2026-10-24 — Stream options one-by-one; progress bar on top
-
-Shortlist is no longer a roster-then-pros dump. As soon as option N is ready, Visy speaks `formatOptionBlock` (name, price, Pros/Cons/Sources) while option N+1 prepares in the background (detail + Apify synth). The progress line lives in `#status` at the top of the side panel. Progress is spoken only when Cartesia is idle — while an option is being read, status text still updates but stays silent.
-
 ## 2026-10-24 — Progress lines name Apify
 
-When `APIFY_TOKEN` is set, the top progress bar says "Using Apify…" / "Waiting on Apify…" / "Got Apify results from …" so the demo calls out the API. Without a token, wording stays generic.
+When `APIFY_TOKEN` is set, progress messages say "Using Apify…" / "Got Apify results from …" so the demo calls out the API. Without a token, wording stays generic. Prefetch starts as soon as the shopper query is known, in parallel with marketplace search.
 
 ## 2026-10-24 — Progress TTS is calm + declarative
 
-`agent.say` with `kind: "progress"` is spoken only when TTS is idle. Cartesia was reading trailing `…` with rising question intonation. `speechForKind` in `voice.ts` strips trailing ellipses, ends with a period, and sets `generation_config.emotion` to `calm` for progress (`curious` for questions).
+`agent.say` with `kind: "progress"` is spoken only when TTS is idle (`ws.ts` skips progress audio while another say is queued). Cartesia was reading trailing `…` with rising question intonation. `speechForKind` in `voice.ts` strips trailing ellipses, ends with a period, and sets `generation_config.emotion` to `calm` for progress (`curious` for questions).
 
-## 2026-10-24 — Apify external reviews via one Google Search run (D-APIFY)
+## 2026-10-24 — Apify external reviews via parallel actors (D-APIFY)
 
-Outside reviews: `prefetchApifySearch` runs **three Apify actors in parallel** (Reddit lite search, YouTube search, one Google SERP for articles only) under `APIFY_BUDGET_MS` (default 25 s), started as soon as the shopper query is known. We deliberately do **not** chain full transcript/page scrapes after discovery — that is the slow path; search snippets (+ YouTube description/captions when the actor returns them) feed Claude. Options stream one-by-one while the next prepares.
+Outside reviews: `prefetchApifySearch` runs **three Apify actors in parallel** (Reddit lite search, YouTube search, one Google SERP for articles only) under `APIFY_BUDGET_MS` (default 25 s), started as soon as the shopper query is known. We deliberately do **not** chain full transcript/page scrapes after discovery — that is the slow path; search snippets (+ YouTube description/captions when the actor returns them) feed Claude. The shortlist still uses main's narrow + `present.ts` overview/pitch; Apify hits are shared across the three options via `reviewsFromHits`.
+
+## 2026-10-24 — Team feedback: one question per turn, option tabs, shorter options, real checkout total
+
+- **Questions one at a time (UX-ASK-FIRST).** The questions from `ask_shopping_questions` are asked one per turn, and the agent asks the next one itself with no model call. "Just search" or "skip" ends them early. The last answer goes to Claude with every question and answer in `session_state`.
+- **Option tabs (A-SHOWPAGE, B-PRELOAD).** After narrowing, the agent says "Opening the 3 tabs now", and `Navigator.openOptions` (new, optional, additive) opens each Amazon option in its own tab with option 1 in front. Each product keeps its tab (`AmazonFlow.productTabs`), so getDetail runs for all three at once and Add to Cart always uses the chosen option's tab. A new search closes the old option tabs. Search uses its own tab.
+- **How options are read (UX-FORMAT, UX-LEN).** First a one-line overview ("Best match: X, $45.99. Best value: …"), then one comparative sentence per option ("If you want to spend less, …, $6 cheaper"), written by Haiku in `present.ts`, with a template fallback. It ends with "Want to hear more about one, or should I add one to your cart?" The photo description and accessibility answers moved to follow-up questions.
+- **Checkout read-back (B-READBACK).** From the cart, the flow presses Proceed to checkout (not a purchase button) and reads the order total with tax on the review page: "Your Amazon total is $107.23, including $7.25 tax. Press Place your order when you're ready." If that page doesn't come up (sign-in, Prime upsell), it reads the cart subtotal before tax and says "Press Proceed to checkout". It never says "I will not place the order" any more. Visy still never presses that button.
+- **Sample listings** for Target and Walmart (always picnic blankets) are only offered when they match the search words.
+
+## 2026-10-24 — Questions first, then a ~30-product pool narrowed to 3 (B-NARROW)
+
+A new product request now gets 2–3 spoken questions first (budget, what matters, who it's for). The answer fills `Need.budget`, `mustHaves`, `niceToHaves` and `accessibilityNotes`, and only then do we search. `VISY_CLARIFY=0` turns the questions off. The Claude tool loop asks with `ask_shopping_questions`. If it calls `search` without asking first, the agent asks default questions instead.
+
+Search keeps the whole page as candidates (up to `VISY_POOL_PER_MARKET`, default 30). Amazon page 1 gives about 20 organic products after sponsored ones are dropped. `narrow.ts` picks 3 using the contracts' `JevClient.decide` shape: "best match", "best value" and "most trusted by buyers" run in parallel, and repeats are asked again without the products already picked. Real Jev isn't wired up, so `haikuJev()` stands in (Haiku 5.5, thinking off, about 1.4 s per call, about 2–3 s total). The rating heuristic fills in when there's no key or a call fails. To switch to real Jev, pass a real `JevClient` as `createAgent(..., { jev })`.
+
+Amazon result cards now also report the review count, so `npm run gen-indexer` regenerated `apps/extension/scripts.js`. Reload the extension.
 
 ## 2026-10-24 — Listen after the greeting
 
