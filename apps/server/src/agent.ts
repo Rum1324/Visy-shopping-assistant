@@ -8,6 +8,7 @@ import { INPUTS, MODEL, SYSTEM, TIMEOUT_MS, TOOLS, turnMessage, untrusted, type 
 import { apifyToken, prefetchApifySearch, reviewsFromHits } from "./intel/apify.ts";
 import { sourcesSentence } from "./intel/reviews.ts";
 import { haikuJev, narrowToThree } from "./narrow.ts";
+import { createProgress } from "./progress.ts";
 import { applySaved, confirmLine, favoriteStores, prefFact, savedBlock, stated, withFact, type PrefKind } from "./saved-prefs.ts";
 import { overview, pitchWriter, saleNote, speakable, templateLine, withSale, type Option, type PitchWriter } from "./present.ts";
 import {
@@ -39,11 +40,6 @@ export type AgentSink = {
 };
 
 const YES = /^(yes|confirm|that matches)\b/i;
-const ACK_MS = 800;
-/** UX-PROGRESS: after this much silence while working, say what we're doing. */
-const QUIET_MS = 2500;
-const ACKS = ["One moment.", "Let me check.", "On it."];
-const STILL = ["Still working on it.", "Almost there.", "Hang on, still checking."];
 const DEFAULT_QUESTIONS = ["What's your budget?", "What matters most?"];
 /** Ends the questions early and searches with what we have. */
 const SKIP = /\b(just search|skip|search now|go ahead|that's (it|all))\b/i;
@@ -83,47 +79,20 @@ export function createAgent(
   let saved: PreferenceFact[] = [];
   /** Questions still to ask before searching, and the answers so far. */
   let asking: { questions: string[]; answers: { question: string; answer: string }[] } | null = null;
-  /** UX-PROGRESS: roughly when the queued speech ends, the latest progress message, and whether a turn is running. */
-  let voiceUntil = 0;
-  let latest = "";
-  let latestSaid = "";
-  let busy = 0;
-  let ticker: ReturnType<typeof setInterval> | undefined;
-  let stillIdx = 0;
 
   function say(text: string, kind?: SayKind) {
     // Acks and progress lines aren't answers: the Claude loop uses `spoken` to tell whether a turn or tool answered.
     if (kind !== "progress") spoken++;
-    // ~0.33 s a word at 1x, plus synthesis latency. Only used to tell silence from speech.
-    const words = text.split(/\s+/).length;
-    voiceUntil = Math.max(voiceUntil, Date.now()) + 400 + (words * 330) / speechRate;
     return sink.say(speakable(text), kind);
   }
 
   const emit: Emit = (event) => {
-    latest = event.message;
     sink.send({ type: "progress", event });
   };
 
-  /** While a turn runs, break any silence longer than QUIET_MS with what we're doing ("Reading Amazon reviews."). */
-  function tick() {
-    if (!busy || Date.now() < voiceUntil + QUIET_MS) return;
-    const line = latest && latest !== latestSaid ? `${latest.replace(/[.!]*$/, "")}.` : STILL[stillIdx++ % STILL.length]!;
-    latestSaid = latest;
-    void say(line, "progress");
-  }
-
-  async function working<T>(fn: () => Promise<T>): Promise<T> {
-    if (busy++ === 0) {
-      voiceUntil = Math.max(voiceUntil, Date.now());
-      ticker = setInterval(tick, 300);
-    }
-    try {
-      return await fn();
-    } finally {
-      if (--busy === 0) clearInterval(ticker);
-    }
-  }
+  // UX-PROGRESS: progress.ts sees everything said and sent, and fills long silences with what is running.
+  const progress = createProgress(sink, { rate: () => speechRate });
+  sink = progress.sink;
 
   function publish(next: SessionState) {
     state = SessionStateSchema.parse({ ...next, updatedAt: new Date().toISOString() });
@@ -154,11 +123,10 @@ export function createAgent(
     run++;
     turnAbort?.abort();
     sink.stopSpeaking();
-    voiceUntil = Date.now();
   }
 
   function handleText(text: string) {
-    return working(() => turn(text));
+    return progress.during(() => turn(text));
   }
 
   async function turn(text: string) {
@@ -197,9 +165,6 @@ export function createAgent(
     turnAbort = ac;
     const before = spoken;
     const turn = { said, id, tainted: false, fallback: "" };
-    const ack = setTimeout(() => {
-      if (id === run && spoken === before) void say(ACKS[Math.floor(Math.random() * ACKS.length)]!, "progress");
-    }, ACK_MS);
     const messages: Anthropic.MessageParam[] = [
       { role: "user", content: [savedBlock(saved), turnMessage(state, said, recent, asking?.answers)].filter(Boolean).join("\n\n") },
     ];
@@ -222,6 +187,7 @@ export function createAgent(
         let allSpoke = true;
         for (const call of calls) {
           const s0 = spoken;
+          progress.tool(call.name);
           const out = await runTool(call, turn);
           if (id !== run) return true;
           if (spoken === s0) allSpoke = false;
@@ -239,7 +205,6 @@ export function createAgent(
       if (turn.fallback && spoken === before) await say(turn.fallback);
       return spoken > before;
     } finally {
-      clearTimeout(ack);
       if (turnAbort === ac) turnAbort = null;
     }
   }

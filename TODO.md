@@ -27,8 +27,8 @@ Line format: `[status] ID · task · owner · branch · since HH:MM PT`. Use one
 - [open] C4 · Variants (size, color, quantity), filters, sort, and the checkout read-back flow on Amazon (`navigator/sites/amazon.ts`)
 - [working] B-PRELOAD · Agent calls C1b `flow.preload()` as soon as the shortlist is final (check whether the tool loop already does) · agent: Run latest demo (for Sota) · b/feedback · since 20:16 PT
 - [open] C-WMT-CART · Walmart add to cart and cart read-back. Search and detail are live (PR #16); a Walmart add still goes to the mock and returns not_found
-- [open] C-TGT-CART · Target add to cart and cart read-back. Search and detail are live (PR #18); a Target add still goes to the mock and returns not_found
 - [open] D-PAGEQA · Answer "what's on this page?" over the C5 `PageState` capture
+- [working] C-TGT-CART · Target add to cart and cart read-back (needs PR #18) · agent: Target cart (for Sota) · claude/magical-austin-6f8bb6 · since 22:02 PT
 - [open] A-VOICE · Decide whether voice-only must work with no clicks at all (motor-impaired users)
 - [open] DEMO · Feature freeze and rehearsal (H+14); warm `RecipeCache` and picker memory before going on stage
 
@@ -42,9 +42,8 @@ Line format: `[status] ID · task · owner · branch · since HH:MM PT`. Use one
 - [working] UX-ASK-FIRST · Ask clarifying questions before searching · Sota (shipped in B-NARROW / PR #12; now one question at a time) · agent: Run latest demo (for Sota) · b/feedback · since 20:16 PT
 - [open] UX-NARROW · Decide how to handle the 3 narrowing/filtering options · Yuka
 - [open] UX-ASK-END · End every turn by asking the user a question · Yuka
-- [working] UX-PROGRESS · Spoken progress when work takes over ~2 s, with varied lines ("searching Amazon now", "comparing results from Walmart"); "One moment" is too repetitive · Yuka, Sota, yujielee · agent: Run latest demo (for Sota) · b/feedback · since 20:36 PT
 - [working] UX-SPEED · Let the user adjust voice speed · yujielee · agent: Voice speed adjustment (for Pixl) · cursor/ux-speed-c3e0 · since 21:55 PT
-- [open] B-HISTORY · Use the conversation history as context for follow-up searches · Sota
+- [working] B-HISTORY · Use the conversation history as context for follow-up searches · Sota · agent: Mic and conversation UI (for Sota) · claude/a-mic-b8c4a4 · since 22:06 PT
 - [working] A-SHOWPAGE · When recommending, open the top pick's product page on screen instead of staying on the home tab · Sota (open all 3 options as tabs, focus option 1) · agent: Run latest demo (for Sota) · b/feedback · since 20:16 PT
 - [open] D-UNBIASED · Unbiased review summary: balance retailer reviews with outside sources (ties to D-APIFY) · Yuka
 
@@ -52,6 +51,7 @@ Line format: `[status] ID · task · owner · branch · since HH:MM PT`. Use one
 ## Done
 
 - [done] C-TGT · Real Target search and detail flow · [PR #18](https://github.com/Rum1324/Visy-shopping-assistant/pull/18)
+- [done] UX-PROGRESS · Spoken progress after ~2 s of quiet, varied lines that fit the running tool ("Searching Amazon now", "Reading the reviews"), stops when the answer starts · first version in [PR #13](https://github.com/Rum1324/Visy-shopping-assistant/pull/13), `progress.ts` in [PR #21](https://github.com/Rum1324/Visy-shopping-assistant/pull/21)
 - [done] C-WMT · Real Walmart search and detail flow (live walmart.com via `__NEXT_DATA__`; add to cart not covered) · [PR #16](https://github.com/Rum1324/Visy-shopping-assistant/pull/16)
 - [done] B-INTEL · Track D review summary, accessibility answers and photo description feed the tool loop's product answers · [PR #11](https://github.com/Rum1324/Visy-shopping-assistant/pull/11)
 - [done] D-MAIN · Track D on `main`: review synthesis, Moss review Q&A, photo descriptions, wired into the tool loop · [PR #11](https://github.com/Rum1324/Visy-shopping-assistant/pull/11)
