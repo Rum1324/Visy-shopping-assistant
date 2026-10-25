@@ -8,6 +8,7 @@ import { INPUTS, MODEL, SYSTEM, TIMEOUT_MS, TOOLS, turnMessage, untrusted, type 
 import { apifyToken, prefetchApifySearch, reviewsFromHits } from "./intel/apify.ts";
 import { sourcesSentence } from "./intel/reviews.ts";
 import { haikuJev, narrowToThree } from "./narrow.ts";
+import { haikuRelevance, type RelevanceFilter } from "./relevance.ts";
 import { createProgress } from "./progress.ts";
 import { applySaved, confirmLine, favoriteStores, prefFact, savedBlock, stated, withFact, type PrefKind } from "./saved-prefs.ts";
 import { overview, pitchWriter, saleNote, speakable, templateLine, withSale, type Option, type PitchWriter } from "./present.ts";
@@ -59,16 +60,24 @@ function defaultLlm(): Llm | null {
 /**
  * `llm: null` forces keyword routing. Omit it to use Claude when ANTHROPIC_API_KEY is set.
  * `jev` narrows the candidate pool to 3; omitted, it is the Haiku stand-in only when `llm` is also omitted (tests stay offline).
+ * `relevance` drops keyword near-misses before narrowing; omitted, Haiku runs only when live (same as jev).
  * `clarify: false` skips the questions before a search (VISY_CLARIFY=0 does the same).
  */
 export function createAgent(
   services: Services,
   sink: AgentSink,
-  opts: { llm?: Llm | null; jev?: JevClient | null; pitch?: PitchWriter | null; clarify?: boolean } = {},
+  opts: {
+    llm?: Llm | null;
+    jev?: JevClient | null;
+    relevance?: RelevanceFilter | null;
+    pitch?: PitchWriter | null;
+    clarify?: boolean;
+  } = {},
 ) {
   const llm = opts.llm === undefined ? defaultLlm() : opts.llm;
   const live = opts.llm === undefined && !!llm;
   const jev = opts.jev !== undefined ? opts.jev : live ? haikuJev() : null;
+  const relevance = opts.relevance !== undefined ? opts.relevance : live ? haikuRelevance() : null;
   const pitch = opts.pitch !== undefined ? opts.pitch : live ? pitchWriter() : null;
   const clarify = opts.clarify ?? process.env.VISY_CLARIFY !== "0";
   let state: SessionState | null = null;
@@ -81,6 +90,10 @@ export function createAgent(
   let saved: PreferenceFact[] = [];
   /** Questions still to ask before searching, and the answers so far. */
   let asking: { questions: string[]; answers: { question: string; answer: string }[] } | null = null;
+  /** Bumped by every new search, so a cancelled search's late details don't land on a newer shortlist. */
+  let searches = 0;
+  /** Settles when the current search's details, reviews and photos are all in. */
+  let details: Promise<unknown> = Promise.resolve();
 
   function say(text: string, kind?: SayKind) {
     // Acks and progress lines aren't answers: the Claude loop uses `spoken` to tell whether a turn or tool answered.
@@ -125,6 +138,8 @@ export function createAgent(
     run++;
     turnAbort?.abort();
     sink.stopSpeaking();
+    // Cut off while reading the picks: they were already named, so the next turn is about them.
+    if (state?.phase === "shortlisting" && state.shortlist.length) publish({ ...state, phase: "presenting" });
   }
 
   function handleText(text: string) {
@@ -275,9 +290,13 @@ export function createAgent(
 
   async function answerAbout(question: string, index: number | undefined, turn: Turn): Promise<ToolOut> {
     if (!state?.shortlist.length) return fail("There is no shortlist yet. Search first.");
+    if (!(index ? state.shortlist.some((item) => item.rank === index) : true)) return fail(`There is no option ${index}.`);
+    publish({ ...state, phase: "qa" });
+    // Asked while the details were still loading: wait a little for reviews and the photo description.
+    await Promise.race([details, new Promise((r) => setTimeout(r, 8000).unref())]);
+    if (!state) return fail("No session.");
     const items = index ? state.shortlist.filter((item) => item.rank === index) : state.shortlist;
     if (!items.length) return fail(`There is no option ${index}.`);
-    publish({ ...state, phase: "qa" });
     const words = question.toLowerCase().split(/\W+/).filter((w) => w.length > 3);
     let best = 0;
     const data = [];
@@ -295,6 +314,9 @@ export function createAgent(
       data.push({
         option: item.rank,
         title: product.title,
+        brand: product.brand,
+        marketplace: product.marketplace,
+        price: `$${(product.price.cents / 100).toFixed(2)}`,
         sale: saleNote(product),
         description: "description" in product ? product.description.slice(0, 400) : undefined,
         bullets: "bullets" in product ? product.bullets.slice(0, 5) : undefined,
@@ -313,7 +335,7 @@ export function createAgent(
     if (!turn.fallback) turn.fallback = "I don't have a review that answers that.";
     if (state) publish({ ...state, phase: "presenting" });
     return {
-      content: `${untrusted("reviews", data)}\n\nAnswer the user's question from this data in one or two spoken sentences and say which option. If the data does not answer it, say you don't know. Every product has a few unhappy reviews: don't bring up a complaint only one or two reviews make unless the user asked about exactly that, and then say it's a few reviews next to the overall rating.`,
+      content: `${untrusted("reviews", data)}\n\nAnswer the user's question from this data in one or two spoken sentences and say which option (one short sentence per option when they asked about all of them). If the data does not answer it, say you don't know. Every product has a few unhappy reviews: don't bring up a complaint only one or two reviews make unless the user asked about exactly that, and then say it's a few reviews next to the overall rating.`,
     };
   }
 
@@ -327,7 +349,7 @@ export function createAgent(
       await refine(said, id);
       return;
     }
-    if (state.shortlist.length && /\?/ .test(said)) {
+    if (state.shortlist.length && (/\?/.test(said) || /^(is|are|does|do|did|how|what|which|describe|tell me)\b/i.test(said))) {
       await answerQuestion(said, id);
       return;
     }
@@ -357,6 +379,7 @@ export function createAgent(
     const need = Need.parse({ query: query.trim(), marketplaces });
     const together = questions.slice(0, 2).join(" ");
     asking = { questions: [together, ANYTHING_ELSE], answers: [] };
+    searches++;
     publish({ ...state, phase: "clarifying", need, candidates: [], shortlist: [], cart: [] });
     await say(`Sure, ${need.query}. ${together}`, "question");
   }
@@ -448,6 +471,7 @@ export function createAgent(
     const defined = Object.fromEntries(Object.entries(extra).filter(([, v]) => v !== undefined));
     const need = applySaved(Need.parse({ query: text.trim(), marketplaces, ...defined }), saved);
     asking = null;
+    const search = ++searches;
     publish({ ...state, phase: "searching", need, candidates: [], shortlist: [], cart: [] });
     const names = need.marketplaces.map((m) => m[0]!.toUpperCase() + m.slice(1));
     const where =
@@ -477,15 +501,33 @@ export function createAgent(
       await say("I couldn't find any products for that. Try different words.");
       return;
     }
-    publish({ ...state, phase: "shortlisting", candidates });
+    // B-RELEVANCE: keyword hits include near-misses ("avocado" → oil); Claude keeps real matches only.
+    emit({
+      stage: "shortlisting",
+      message: "Checking these match what you asked for",
+      at: new Date().toISOString(),
+    });
+    const tRel = performance.now();
+    const relevant = relevance ? await relevance(need, candidates) : candidates;
+    console.log(
+      `relevance: ${candidates.length} → ${relevant.length} in ${Math.round(performance.now() - tRel)} ms` +
+        (relevance ? "" : " (skipped)"),
+    );
+    if (id !== run || !state) return;
+    if (!relevant.length) {
+      publish({ ...state, phase: "idle", candidates });
+      await say("I found listings, but none looked like what you asked for. Try different words.");
+      return;
+    }
+    publish({ ...state, phase: "shortlisting", candidates: relevant });
     // Narrowing runs while the count is read out.
     const counted = say(
-      candidates.length > 3 ? `I found ${candidates.length} products. Picking the best three.` : `I found ${candidates.length} products.`,
+      relevant.length > 3 ? `I found ${relevant.length} products. Picking the best three.` : `I found ${relevant.length} products.`,
       "progress",
     );
     const t0 = performance.now();
-    const narrowed = await narrowToThree(jev, need, candidates);
-    console.log(`narrow: ${candidates.length} → ${narrowed.picks.length} via ${narrowed.via} in ${Math.round(performance.now() - t0)} ms`);
+    const narrowed = await narrowToThree(jev, need, relevant);
+    console.log(`narrow: ${relevant.length} → ${narrowed.picks.length} via ${narrowed.via} in ${Math.round(performance.now() - t0)} ms`);
     await counted;
     if (id !== run || !state) return;
     const picks = narrowed.picks;
@@ -495,8 +537,15 @@ export function createAgent(
     // A-SHOWPAGE: every option opens in its own tab, the first comes to the front.
     const tabs = services.navigator.openOptions ? picks.filter((p) => p.candidate.marketplace === "amazon").length : 0;
     if (tabs) void services.navigator.openOptions!(ids, emit).catch(() => {});
-    await say(`${tabs ? `Opening the ${tabs === 1 ? "tab" : `${tabs} tabs`} now. ` : ""}${overview(options)}`);
-    // Details, reviews, photo and the spoken line for all three run at once; they are read in order.
+    // The picks go into the session before they are named, so a follow-up that cuts the details off
+    // ("is the last one really $165?") is answered from them. Details fill in below as they arrive.
+    publish({
+      ...state,
+      candidates: relevant,
+      shortlist: picks.map((p, i) => ({ rank: i + 1, product: p.candidate, whyPicked: `${p.why}. At ${p.candidate.marketplace}.` })),
+      focusedProductId: picks[0]?.candidate.id,
+    });
+    // Details, reviews, photo and the spoken line for all three run at once, starting while the names are read; they are read in order.
     // Outside reviews come from the Apify prefetch started above (shared hit pool per query).
     const work = picks.map(({ candidate, why }, i) =>
       (async () => {
@@ -542,31 +591,27 @@ export function createAgent(
           if (synth.ok) reviews = synth.data;
           if (vis.ok) visual = vis.data;
         }
+        // Lands even if the user cut in, so their follow-up can use the reviews and the photo.
+        if (search === searches && state) {
+          const whyPicked = [why, reviews?.summary ?? `At ${candidate.marketplace}.`].filter(Boolean).join(". ");
+          publish({
+            ...state,
+            shortlist: state.shortlist.map((item) => (item.product.id === candidate.id ? { ...item, product, reviews, visual, whyPicked } : item)),
+          });
+        }
         const option: Option = { rank: i + 1, why, product, reviews };
         // UX-SALES: the sale sentence comes from page fields, not the pitch model, so it is never made up.
         const line = withSale((pitch ? await pitch(need, option, options) : undefined) ?? templateLine(option, options), product);
-        return { candidate, why, product, reviews, visual, line };
+        return line;
       })(),
     );
-    const shortlist: ShortlistItem[] = [];
-    for (const job of work) {
-      const { candidate, why, product, reviews, visual, line } = await job;
+    // allSettled also keeps a job that fails after the user cut in from crashing the server.
+    details = Promise.allSettled(work);
+    await say(`${tabs ? `Opening the ${tabs === 1 ? "tab" : `${tabs} tabs`} now. ` : ""}${overview(options)}`);
+    for (const [i, job] of work.entries()) {
+      const line = await job;
       if (id !== run || !state) return;
-      const item: ShortlistItem = {
-        rank: (shortlist.length + 1) as 1 | 2 | 3,
-        product,
-        reviews,
-        visual,
-        whyPicked: [why, reviews?.summary ?? `At ${candidate.marketplace}.`].filter(Boolean).join(". "),
-      };
-      shortlist.push(item);
-      publish({
-        ...state,
-        phase: shortlist.length === picks.length ? "presenting" : "shortlisting",
-        candidates,
-        shortlist: [...shortlist],
-        focusedProductId: shortlist[0]!.product.id,
-      });
+      publish({ ...state, phase: i === work.length - 1 ? "presenting" : "shortlisting" });
       await say(line);
     }
     if (id !== run || !state) return;
