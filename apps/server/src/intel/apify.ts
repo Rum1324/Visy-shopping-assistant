@@ -2,10 +2,10 @@
  * Track D3: outside reviews via Apify (Reddit + YouTube + article SERP), in parallel.
  * Dedicated full-page scrapers are richer but colder/slower; we use shallow search actors
  * and SERP snippets so Claude still gets multi-source text inside the time budget.
+ * Reddit comes from a site:reddit.com Google query: the Reddit scraper actor timed out on every live run.
  */
 import { type ProductDetail, type ProductId, type RawReview } from "@visy/contracts";
 
-const REDDIT_ACTOR = process.env.APIFY_REDDIT_ACTOR?.trim() || "trudax~reddit-scraper-lite";
 const YOUTUBE_ACTOR = process.env.APIFY_YOUTUBE_ACTOR?.trim() || "streamers~youtube-scraper";
 const SEARCH_ACTOR = process.env.APIFY_SEARCH_ACTOR?.trim() || "apify~google-search-scraper";
 const MAX_PER_SOURCE = 4;
@@ -14,6 +14,8 @@ const MAX_BODY = 700;
 /** Parallel shallow actors usually finish under this; override with APIFY_BUDGET_MS. */
 const DEFAULT_BUDGET_MS = 25_000;
 const CACHE_MS = 10 * 60_000;
+/** Google runs usually finish in 3-8 s but about a third hang until the budget; a second run started this late often wins. */
+const HEDGE_MS = 10_000;
 
 export type ApifyFetch = typeof fetch;
 
@@ -123,10 +125,15 @@ export function hitsToReviews(productId: string, hits: ExternalHit[]): RawReview
   }));
 }
 
-/** One Google query used only for article discovery (Reddit/YT come from dedicated actors). */
+/** One Google query used only for article discovery (Reddit has its own query, YouTube its own actor). */
 export function buildQueries(phrase: string) {
   const q = phrase.replace(/"/g, "");
   return `"${q}" review -site:amazon.com -site:walmart.com -site:target.com -site:reddit.com -site:youtube.com -site:youtu.be`;
+}
+
+/** Reddit threads through Google, unquoted so a long phrase still matches thread titles. */
+export function redditQuery(phrase: string) {
+  return `${phrase.replace(/"/g, "")} site:reddit.com`;
 }
 
 async function runActor(
@@ -177,22 +184,6 @@ async function runActor(
   }
 }
 
-function hitsFromReddit(items: unknown[]): ExternalHit[] {
-  const out: ExternalHit[] = [];
-  for (const raw of items) {
-    if (!raw || typeof raw !== "object") continue;
-    const r = raw as Record<string, unknown>;
-    const title = String(r.title ?? r.parsedTitle ?? "").trim();
-    const body = String(r.body ?? r.selftext ?? r.text ?? r.markdown ?? r.commentBody ?? "").trim();
-    const url = String(r.url ?? r.postUrl ?? r.link ?? "");
-    const text = clip([title, body].filter(Boolean).join(". ").replace(/\s+/g, " ").trim(), MAX_BODY);
-    if (text.length < 40) continue;
-    out.push({ source: "reddit", url: url || undefined, title: title || undefined, body: text });
-    if (out.length >= MAX_PER_SOURCE) break;
-  }
-  return out;
-}
-
 function hitsFromYoutube(items: unknown[]): ExternalHit[] {
   const out: ExternalHit[] = [];
   for (const raw of items) {
@@ -219,22 +210,24 @@ async function collectHits(
   signal?: AbortSignal,
 ): Promise<ExternalHit[]> {
   const q = `${phrase} review`;
-  console.log(`[apify] parallel Reddit + YouTube + articles for "${phrase}" (budget ${budgetMs} ms)`);
-  const [redditItems, ytItems, articleItems] = await Promise.all([
+  console.log(`[apify] parallel YouTube + Google (articles, Reddit) for "${phrase}" (budget ${budgetMs} ms)`);
+  const serp = (budget: number) =>
     runActor(
-      REDDIT_ACTOR,
+      SEARCH_ACTOR,
       {
-        searches: [q],
-        maxItems: 12,
-        maxPostCount: 8,
-        maxComments: 4,
-        skipComments: false,
+        // One run, one results page per line.
+        queries: [buildQueries(phrase), redditQuery(phrase)].join("\n"),
+        maxPagesPerQuery: 1,
+        resultsPerPage: 8,
+        languageCode: "en",
+        countryCode: "us",
       },
       token,
-      budgetMs,
+      budget,
       fetchImpl,
       signal,
-    ),
+    );
+  const [ytItems, serpItems] = await Promise.all([
     runActor(
       YOUTUBE_ACTOR,
       {
@@ -248,26 +241,9 @@ async function collectHits(
       fetchImpl,
       signal,
     ),
-    runActor(
-      SEARCH_ACTOR,
-      {
-        queries: buildQueries(phrase),
-        maxPagesPerQuery: 1,
-        resultsPerPage: 8,
-        languageCode: "en",
-        countryCode: "us",
-      },
-      token,
-      budgetMs,
-      fetchImpl,
-      signal,
-    ),
+    hedged(serp, budgetMs),
   ]);
-  const hits = [
-    ...hitsFromReddit(redditItems),
-    ...hitsFromYoutube(ytItems),
-    ...hitsFromSearchItems(articleItems).filter((h) => h.source === "article"),
-  ];
+  const hits = [...hitsFromYoutube(ytItems), ...hitsFromSearchItems(serpItems).filter((h) => h.source !== "youtube")];
   // Prefer diversity: cap total after merge.
   const counts: Partial<Record<ExternalHit["source"], number>> = {};
   const mixed: ExternalHit[] = [];
@@ -278,6 +254,26 @@ async function collectHits(
     if (mixed.length >= MAX_TOTAL) break;
   }
   return mixed;
+}
+
+/** Starts a second run after HEDGE_MS if the first hasn't returned rows; the first run with rows wins. */
+function hedged(run: (budgetMs: number) => Promise<unknown[]>, budgetMs: number): Promise<unknown[]> {
+  if (budgetMs < HEDGE_MS + 5_000) return run(budgetMs);
+  return new Promise((resolve) => {
+    let left = 2;
+    const done = (items: unknown[]) => {
+      left--;
+      if (items.length || !left) {
+        clearTimeout(timer);
+        resolve(items);
+      }
+    };
+    run(budgetMs).then(done);
+    const timer = setTimeout(() => {
+      console.log(`[apify] Google still running after ${HEDGE_MS} ms, starting a second run`);
+      run(budgetMs - HEDGE_MS).then(done);
+    }, HEDGE_MS);
+  });
 }
 
 /**

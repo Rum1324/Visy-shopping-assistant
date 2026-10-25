@@ -559,11 +559,11 @@ export function createAgent(
         let visual: ShortlistItem["visual"];
         if (detail.ok) {
           const synthP = (async () => {
-            // Prefetched Apify hits when the token is set; otherwise collectExternal
-            // (mock fixtures in tests, or a second Apify pass that shares the cache).
+            // Prefetched Apify hits when the token is set; otherwise collectExternal (mock fixtures in tests).
+            // No second Apify pass when the prefetch came back empty: it added another full budget of silence.
             const hits = await apifyHitsP;
             let external = reviewsFromHits(detail.data.id, hits);
-            if (!external.length) {
+            if (!external.length && !usingApify) {
               const got = await services.reviews.collectExternal(detail.data, emit);
               if (got.ok) external = got.data;
             }
