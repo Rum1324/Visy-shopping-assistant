@@ -45,6 +45,15 @@ function mentions(query: string, text: string): boolean {
   return words(query).some((word) => text.toLowerCase().includes(word));
 }
 
+/** Words around "the usual" that don't name the item: "I'm out of sugar, get the usual" names only "sugar". */
+const FILLER = new Set(
+  "the usual usuals regular my our get got out ran run running low need needs want please can could you visy hey and for some more again order reorder buy add cart just same one".split(" "),
+);
+
+function itemWords(query: string): string {
+  return words(query).filter((word) => !FILLER.has(word)).join(" ");
+}
+
 export function preferenceStore(db: PrefsDb): PreferenceStore {
   return {
     async getProfile(userId) {
@@ -91,6 +100,16 @@ function select(query: string, facts: Fact[], purchases: Purchase[], k: number) 
     return { facts: pickedFacts.slice(0, k), purchases: pickedPurchases.slice(0, k) };
   }
   const usual = facts.filter((fact) => fact.kind === "usual_item");
+  const item = itemWords(query);
+  if (item) {
+    // "The usual sugar": only usuals and past purchases that name sugar, newest first, never another usual item.
+    const named = usual.filter((fact) => mentions(item, `${fact.value} ${fact.detail ?? ""}`));
+    const namedIds = new Set(named.map((fact) => fact.value));
+    const bought = purchases
+      .filter((purchase) => namedIds.has(purchase.productId) || mentions(item, `${purchase.title} ${purchase.query}`))
+      .sort((a, b) => b.purchasedAt.localeCompare(a.purchasedAt));
+    return { facts: named.slice(0, k), purchases: bought.slice(0, k) };
+  }
   const ids = new Set(usual.map((fact) => fact.value));
   const linked = purchases.filter((purchase) => ids.has(purchase.productId));
   return {

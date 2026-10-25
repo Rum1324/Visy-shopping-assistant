@@ -4,6 +4,10 @@ Living log of changes that depart from the skeleton in `docs/ARCHITECTURE.md`, `
 
 If you improvise, add an entry in the same commit and push it. Say what changed, why the skeleton was not enough, and what other agents should do differently now.
 
+## 2026-10-25 — "The usual" names the item and goes to the cart (B-USUAL)
+
+"I'm out of sugar, get the usual" used to say the first saved usual (always seaweed) and stop, because any query with "usual" returned every usual item. Now `select()` in `prefs.ts` drops filler words ("get", "the", "usual", "out"…) and, when an item is named, returns only the usuals and purchases that mention it; with nothing named it still returns all usuals. `recallUsual` puts the item up as a one-item shortlist, opens its product page (`getDetail`, which the live Amazon cart needs), and asks "Want me to add it to your cart?"; the next turn's yes or "add it" goes straight to `addToCart` and the normal checkout read-back, no model call. `npm run seed-prefs` now also seeds a real Amazon sugar canister (`B01JA9KAOM`) for the demo video's cold open. Other agents: pass the item the user named as `recall_usual`'s query.
+
 ## 2026-10-25 — Claude relevance filter before narrowing (B-RELEVANCE)
 
 Marketplace keyword search returns near-misses (query "avocado" → avocado oil). After scraping Amazon/Target/Walmart, `haikuRelevance()` in `relevance.ts` sends titles to Haiku and keeps only products that *are* what the shopper asked for; then `narrowToThree` runs on that pool. Offline tests pass a `relevance` filter into `createAgent`. API failure fails open (keeps the pool); a deliberate empty keep list means "nothing matched" and Visy says so. Other agents: don't keyword-filter titles in site scrapers for this; the Claude gate is the cross-marketplace fix.

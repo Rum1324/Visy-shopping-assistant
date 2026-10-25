@@ -16,6 +16,7 @@ import {
   CONTRACT_VERSION,
   Need,
   PreferenceFact,
+  ProductCandidate,
   SessionState as SessionStateSchema,
   type Emit,
   type JevClient,
@@ -41,6 +42,15 @@ export type AgentSink = {
 };
 
 const YES = /^(yes|confirm|that matches)\b/i;
+/** A yes to "Want me to add it to your cart?" that isn't a bare "yes". */
+const ADD_IT = /^(yeah|yep|yup|sure|ok|okay|please|do it|go ahead)\b|\badd\b/i;
+/** Product page for a saved `${marketplace}:${nativeId}`, so a recalled usual can be opened and carted. */
+const PRODUCT_URL: Record<string, (native: string) => string> = {
+  amazon: (asin) => `https://www.amazon.com/dp/${asin}`,
+  target: (tcin) => `https://www.target.com/p/-/A-${tcin}`,
+  walmart: (id) => `https://www.walmart.com/ip/${id}`,
+};
+const STORE: Record<string, string> = { amazon: "Amazon", target: "Target", walmart: "Walmart" };
 /** The user named an amount (or dropped the cap) this turn, so a follow-up search may change the budget. */
 const SAYS_AMOUNT = /\d|\b(ten|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|hundred|thousand|grand)\b|\bno (budget|limit)\b|\bany price\b/i;
 const DEFAULT_QUESTIONS = ["What's your budget?", "What matters most?"];
@@ -96,6 +106,9 @@ export function createAgent(
   let searches = 0;
   /** Settles when the current search's details, reviews and photos are all in. */
   let details: Promise<unknown> = Promise.resolve();
+  /** The recalled usual, put up as option 1. `offered`: the last thing said was "Want me to add it?", so a yes adds it. */
+  let usualId: string | undefined;
+  let offered = false;
 
   function say(text: string, kind?: SayKind) {
     // Acks and progress lines aren't answers: the Claude loop uses `spoken` to tell whether a turn or tool answered.
@@ -160,6 +173,13 @@ export function createAgent(
     // The checkout gate stays a fixed rule, before Claude sees the turn.
     if (state.phase === "checkout_review" && state.checkout && YES.test(said)) {
       await confirm(state.checkout.total);
+      return;
+    }
+    // "Want me to add it to your cart?" after the usual: yes or "add it" goes straight to the cart, no model call.
+    const usualOffer = offered;
+    offered = false;
+    if (usualOffer && state.shortlist[0]?.product.id === usualId && (YES.test(said) || ADD_IT.test(said))) {
+      await addToCart(0, id);
       return;
     }
     // Record the answer; any question still left is asked right away, no model call needed.
@@ -280,7 +300,9 @@ export function createAgent(
         await confirm(state.checkout.total);
         return { content: "Confirmed the total. The order was not placed." };
       case "recall_usual":
-        return (await recallUsual(input.query)) ? { content: "Told the user their usual." } : { content: "No usual item is saved for that." };
+        return (await recallUsual(input.query))
+          ? { content: "Told the user their usual and asked whether to add it. Wait for their answer." }
+          : { content: "No usual item is saved for that." };
       case "remember_as_usual":
         await remember(turn.said, input.index);
         return { content: "Done." };
@@ -388,20 +410,51 @@ export function createAgent(
     await say(`Sure, ${need.query}. ${together}`, "question");
   }
 
+  /** Says the saved usual, puts it up as option 1 and offers to add it, so "yes" or "add it" goes to the cart and checkout read-back. */
   async function recallUsual(query: string) {
     if (!state) return false;
     const recalled = await services.prefs.recall(state.userId, query);
-    const purchase = recalled.ok ? recalled.data.purchases[0] : undefined;
-    if (purchase) {
-      await say(`Your usual is ${purchase.title}, $${(purchase.price.cents / 100).toFixed(2)} on ${purchase.marketplace}.`);
+    if (!recalled.ok) return false;
+    const purchase = recalled.data.purchases[0];
+    const fact = recalled.data.facts.find((item) => item.kind === "usual_item");
+    const id = purchase?.productId ?? fact?.value;
+    const title = purchase?.title ?? fact?.detail ?? fact?.value;
+    if (!id || !title) return false;
+    const [market, native] = [id.slice(0, id.indexOf(":")), id.slice(id.indexOf(":") + 1)];
+    const url = PRODUCT_URL[market]?.(native);
+    const price = purchase ? `, $${(purchase.price.cents / 100).toFixed(2)}` : "";
+    if (!url) {
+      await say(`Your usual is ${title}${price}.`);
       return true;
     }
-    const fact = recalled.ok ? recalled.data.facts.find((item) => item.kind === "usual_item") : undefined;
-    if (fact) {
-      await say(`Your usual is ${fact.detail ?? fact.value}.`);
-      return true;
-    }
-    return false;
+    const marketplace = market as Marketplace;
+    const candidate = ProductCandidate.parse({
+      id,
+      marketplace,
+      url,
+      title,
+      price: purchase?.price ?? { cents: 0, currency: "USD" },
+      // A saved row, not a scrape. getDetail below swaps in the live page.
+      source: { via: "fixture", confidence: 0.9, fetchedAt: new Date().toISOString() },
+    });
+    const search = ++searches;
+    usualId = id;
+    publish({
+      ...state,
+      phase: "presenting",
+      need: Need.parse({ query: title, marketplaces: [marketplace] }),
+      candidates: [candidate],
+      shortlist: [{ rank: 1, product: candidate, whyPicked: "Your usual." }],
+      focusedProductId: id,
+    });
+    // Opens the product page and reads today's price while the user answers. The live Amazon cart needs this page first.
+    details = services.navigator.getDetail(candidate, emit).then((res) => {
+      if (!res.ok || search !== searches || !state) return;
+      publish({ ...state, candidates: [res.data], shortlist: state.shortlist.map((item) => (item.product.id === id ? { ...item, product: res.data } : item)) });
+    });
+    await say(`Your usual is ${title}${price} on ${STORE[market] ?? market}. Want me to add it to your cart?`, "question");
+    offered = true;
+    return true;
   }
 
   async function refine(text: string, id: number) {
@@ -630,6 +683,9 @@ export function createAgent(
       return;
     }
     publish({ ...state, phase: "carting", focusedProductId: item.product.id });
+    // The usual's product page may still be opening (recallUsual).
+    if (item.product.id === usualId) await details;
+    if (id !== run || !state) return;
     const line = await services.navigator.addToCart(item.product.id, state.need?.quantity ?? 1, emit);
     if (id !== run || !state || !line.ok) {
       if (state) publish({ ...state, phase: "presenting" });

@@ -112,8 +112,13 @@ export const TOOLS: Anthropic.Tool[] = [
   },
   {
     name: "recall_usual",
-    description: "Look up the user's usual item for a request like 'the usual seaweed'.",
-    input_schema: { type: "object", properties: { query: { type: "string" } }, required: ["query"] },
+    description:
+      "Look up the user's usual item ('I'm out of sugar, get the usual', 'the usual seaweed'), say it and ask whether to add it to the cart. A yes next turn adds it.",
+    input_schema: {
+      type: "object",
+      properties: { query: { type: "string", description: "The item the user named, e.g. 'sugar'. 'the usual' if they named none." } },
+      required: ["query"],
+    },
   },
   {
     name: "remember_as_usual",

@@ -7,6 +7,7 @@ import { mockServices } from "@visy/contracts/mocks";
 import { createAgent, type AgentSink } from "../src/agent.ts";
 import type { Llm } from "../src/agent-tools.ts";
 import { Cartesia, speechForKind } from "../src/voice.ts";
+import { memoryPrefsDb, preferenceStore } from "../src/prefs.ts";
 
 type Call = { name: string; input: Record<string, unknown> };
 
@@ -130,6 +131,28 @@ for (const mode of ["keywords", "claude"] as const) {
     assert.match(said.join(" "), /Seaweed/);
     assert.notEqual(agent.state?.phase, "done");
     assert.equal(agent.state?.checkout, undefined);
+  });
+
+  test(`${mode}: "out of picnic blankets, get the usual" offers it, a yes reads back checkout, and no order is placed`, async () => {
+    const services = mockServices({ latencyMs: 0 });
+    services.prefs = preferenceStore(memoryPrefsDb());
+    const [item] = fixtures.candidates;
+    const when = "2026-10-01T17:00:00Z";
+    await services.prefs.recordPurchase("demo-user", { productId: item!.id, title: item!.title, marketplace: "amazon", price: item!.price, query: "picnic blanket", purchasedAt: when });
+    await services.prefs.upsertFact("demo-user", { id: `usual-${item!.id}`, kind: "usual_item", value: item!.id, detail: item!.title, evidence: "Seeded.", confidence: 0.9, updatedAt: when });
+    await services.prefs.upsertFact("demo-user", { id: "usual-other", kind: "usual_item", value: "amazon:B0SEAWEED1", detail: "Roasted Seaweed Snacks", evidence: "Seeded.", confidence: 0.9, updatedAt: when });
+    const { agent, said, sent } = harness(mode === "claude" ? fakeClaude().llm : null, services);
+    await agent.hello("demo-user");
+    await agent.handleText("I'm out of picnic blankets, get the usual");
+    assert.match(said.at(-1) ?? "", /Your usual is Extra Large Waterproof Picnic Blanket.*\$27\.99 on Amazon\. Want me to add it to your cart\?/);
+    assert.equal(agent.state?.shortlist.length, 1);
+    await agent.handleText(mode === "claude" ? "sure, add it" : "yes");
+    assert.equal(agent.state?.phase, "checkout_review");
+    assert.equal(agent.state?.cart[0]?.productId, item!.id);
+    assert.equal(sent.some((m) => m.type === "checkout.confirmRequired"), true);
+    await agent.handleText("yes");
+    assert.equal(agent.state?.phase, "done");
+    assert.match(said.at(-1) ?? "", /final button is yours/i);
   });
 
   test(`${mode}: checkout confirm checks the total and still refuses to press Place order`, async () => {
