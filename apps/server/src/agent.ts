@@ -22,6 +22,7 @@ import {
   type Services,
   type ShortlistItem,
 } from "@visy/contracts";
+import { createProgress } from "./progress.ts";
 
 export type SayKind = "answer" | "progress" | "question";
 
@@ -34,7 +35,6 @@ export type AgentSink = {
 };
 
 const YES = /^(yes|confirm|that matches)\b/i;
-const ACK_MS = 800;
 const DEFAULT_QUESTIONS = ["What's your budget?", "Is there anything it must have?"];
 const NO_PREFERENCE = /^(no|nope|nothing|none|no preference|anything|whatever|just search|doesn't matter|dont care|don't care)\b/i;
 
@@ -80,6 +80,10 @@ export function createAgent(
     state = SessionStateSchema.parse({ ...next, updatedAt: new Date().toISOString() });
     sink.send({ type: "session.snapshot", state });
   }
+
+  // UX-PROGRESS: progress.ts watches everything said and sent, and fills long silences with lines about what is running.
+  const progress = createProgress(sink);
+  sink = progress.sink;
 
   async function hello(userId: string, displayName?: string) {
     const profile = await services.prefs.getProfile(userId);
@@ -134,9 +138,7 @@ export function createAgent(
     turnAbort = ac;
     const before = spoken;
     const turn = { said, id, tainted: false, fallback: "" };
-    const ack = setTimeout(() => {
-      if (id === run && spoken === before) void sink.say("One moment.");
-    }, ACK_MS);
+    const ack = progress.start(() => id === run);
     const messages: Anthropic.MessageParam[] = [{ role: "user", content: turnMessage(state, said, recent) }];
     try {
       for (let step = 0; step < 4; step++) {
@@ -157,6 +159,7 @@ export function createAgent(
         let allSpoke = true;
         for (const call of calls) {
           const s0 = spoken;
+          ack.tool(call.name);
           const out = await runTool(call, turn);
           if (id !== run) return true;
           if (spoken === s0) allSpoke = false;
@@ -174,7 +177,7 @@ export function createAgent(
       if (turn.fallback && spoken === before) await say(turn.fallback);
       return spoken > before;
     } finally {
-      clearTimeout(ack);
+      ack.stop();
       if (turnAbort === ac) turnAbort = null;
     }
   }
@@ -412,7 +415,7 @@ export function createAgent(
         : process.env.NAV === "amazon"
           ? "I'll check Amazon. Target and Walmart stay on sample listings."
           : "I'll check Amazon, Target, and Walmart.";
-    await say(where);
+    await say(where, "progress");
     if (id !== run || !state) return;
     const results = await Promise.all(need.marketplaces.map((m) => services.navigator.search(need, m, emit)));
     if (id !== run || !state) return;
