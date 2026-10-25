@@ -28,6 +28,7 @@ Line format: `[status] ID · task · owner · branch · since HH:MM PT`. Use one
 - [open] C4 · Variants (size, color, quantity), filters, sort, and the checkout read-back flow on Amazon (`navigator/sites/amazon.ts`)
 - [working] C-TGT · Real Target search and detail flow (sample listings today) · agent: Target navigator (for Sota) · claude/c-target-9ad777 · since 20:33 PT
 - [working] B-PRELOAD · Agent calls C1b `flow.preload()` as soon as the shortlist is final (check whether the tool loop already does) · agent: Run latest demo (for Sota) · b/feedback · since 20:16 PT
+- [open] C-WMT-CART · Walmart add to cart and cart read-back. Search and detail are live (PR #16); a Walmart add still goes to the mock and returns not_found
 - [open] D-PAGEQA · Answer "what's on this page?" over the C5 `PageState` capture
 - [open] A-VOICE · Decide whether voice-only must work with no clicks at all (motor-impaired users)
 - [open] DEMO · Feature freeze and rehearsal (H+14); warm `RecipeCache` and picker memory before going on stage
