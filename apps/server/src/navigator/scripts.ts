@@ -2,6 +2,7 @@ import { CAPTCHA_PROBE_JS } from "./driver/blocked.ts";
 import { RECIPE_SCRIPTS } from "./recipes.ts";
 import { AMAZON_SCRIPTS } from "./sites/amazon.ts";
 import { TARGET_SCRIPTS } from "./sites/target.ts";
+import { WALMART_SCRIPTS } from "./sites/walmart.ts";
 
 /**
  * Named in-page scripts. Each is a JS expression over `arg` (one JSON value, null when not given).
@@ -17,6 +18,7 @@ export const PAGE_SCRIPTS = {
   blockProbe: CAPTCHA_PROBE_JS,
   ...AMAZON_SCRIPTS,
   ...TARGET_SCRIPTS,
+  ...WALMART_SCRIPTS,
   ...RECIPE_SCRIPTS,
 } satisfies Record<string, string>;
 

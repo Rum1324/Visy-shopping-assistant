@@ -96,6 +96,9 @@ Fields read on replay: price, rating, review count, Prime, delivery, stock, 27â€
 | `npm run demo -- "picnic blanket"` | keys + headed Chrome | Live run: search, top 3, open #1, Add to Cart, cart subtotal. Stops before checkout |
 | `npm run reviews -- "picnic blanket"` | headed Chrome, signed-in profile | C2: getDetail review count, a sample, timings. No cart actions |
 | `npm run detail -- "picnic blanket"` | headed Chrome (+ Anthropic key for the first visit) | C3: detail fields and Claude calls per visit; the second visit should say `0 Claude call(s)` |
+| `npm run intel` | Anthropic key | Fixture synthesis (+ optional image URL). With `--amazon "picnic blanket"`: live detail, Apify `collectExternal` (needs `APIFY_TOKEN`), synthesis, Moss Q&A, vision |
+
+**D3 Apify.** Set `APIFY_TOKEN` in `apps/server/.env`. `collectExternal` runs one Google Search Scraper sync job (Reddit + YouTube + article queries), soft-capped by `APIFY_BUDGET_MS` (default 12 s). Without the token it returns `[]` and retailer reviews alone feed synthesis.
 
 Speed claim for the demo:
 

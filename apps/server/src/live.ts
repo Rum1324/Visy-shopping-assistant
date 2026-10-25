@@ -1,6 +1,6 @@
 /**
  * Real Amazon search/cart behind Services.navigator.
- * Real Target search/detail too (navigator/sites/target.ts); Walmart stays on fixtures.
+ * Target and Walmart are live too (navigator/sites/target.ts, navigator/sites/walmart.ts): search and detail.
  * Set NAV=amazon. A bot check is handed to the human; we never solve it.
  *
  * Called from apps/server/src/ws.ts start() when NAV=amazon. `driver()` returns the connected extension's
@@ -32,6 +32,7 @@ import type { FlowDriver } from "./navigator/driver/flow.ts";
 import { PlaywrightDriver } from "./navigator/driver/playwright.ts";
 import { AmazonFlow } from "./navigator/sites/amazon.ts";
 import { TargetFlow } from "./navigator/sites/target.ts";
+import { WalmartFlow } from "./navigator/sites/walmart.ts";
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 /** A driver call can throw (tab closed, extension reloaded mid-call). Turn it into an error the agent can say. */
@@ -95,13 +96,25 @@ export function liveServices(opts: { driver?: () => FlowDriver | undefined } = {
     if (!targets.has(driver)) targets.set(driver, new TargetFlow(driver, (m) => announce(m)));
     return targets.get(driver)!;
   };
+  // C-WMT: Walmart search + detail on the same driver as Amazon, in its own background tabs.
+  let walmart: { driver: FlowDriver; flow: WalmartFlow } | undefined;
+  const useWalmart = () => {
+    const { driver } = use();
+    if (walmart?.driver !== driver) walmart = { driver, flow: new WalmartFlow(driver) };
+    return walmart.flow;
+  };
 
   const navigator: Navigator = {
     async search(need, marketplace, emit) {
+      if (marketplace === "walmart") {
+        const found = await safe(useWalmart().search(need.query, emit, POOL_PER_MARKET));
+        if (found.ok) for (const c of found.data) seen.set(c.id, c);
+        return found;
+      }
       announce = (message) => emit({ stage: "searching", marketplace, message, at: new Date().toISOString() });
       if (marketplace === "target") return safe(target().search(need.query, emit, POOL_PER_MARKET));
       if (marketplace !== "amazon") {
-        // Walmart is sample listings (picnic blankets). Only offer them when they match the search,
+        // Any other marketplace is sample listings (picnic blankets). Only offer them when they match the search,
         // so "power bank" doesn't come back with blankets.
         const sample = await mocks.search(need, marketplace, emit);
         const words = need.query.toLowerCase().split(/\W+/).filter((w) => w.length > 3);
@@ -139,6 +152,7 @@ export function liveServices(opts: { driver?: () => FlowDriver | undefined } = {
 
     async getDetail(candidate, emit) {
       if (candidate.id.startsWith("target:")) return safe(target().getDetail(candidate, emit));
+      if (candidate.id.startsWith("walmart:")) return safe(useWalmart().getDetail(candidate, emit));
       if (!candidate.id.startsWith("amazon:")) return mocks.getDetail(candidate, emit);
       // C2 + C3: opens the product, reads details via a cached recipe and scrapes retailer reviews in parallel.
       const { flow, driver } = use();
