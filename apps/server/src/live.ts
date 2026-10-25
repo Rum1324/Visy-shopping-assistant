@@ -1,6 +1,7 @@
 /**
  * Real Amazon search/cart behind Services.navigator.
- * Walmart is live too (navigator/sites/walmart.ts). Target stays on fixtures until its flow exists.
+ * Target and Walmart are live too (navigator/sites/target.ts, navigator/sites/walmart.ts): search and detail,
+ * and Target add to cart + cart read-back.
  * Set NAV=amazon. A bot check is handed to the human; we never solve it.
  *
  * Called from apps/server/src/ws.ts start() when NAV=amazon. `driver()` returns the connected extension's
@@ -31,6 +32,7 @@ import { buildChain } from "./navigator/chain.ts";
 import type { FlowDriver } from "./navigator/driver/flow.ts";
 import { PlaywrightDriver } from "./navigator/driver/playwright.ts";
 import { AmazonFlow } from "./navigator/sites/amazon.ts";
+import { TargetFlow } from "./navigator/sites/target.ts";
 import { WalmartFlow } from "./navigator/sites/walmart.ts";
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
@@ -97,6 +99,13 @@ export function liveServices(opts: { driver?: () => FlowDriver | undefined } = {
   };
   const seen = new Map<string, Candidate>();
   let lastAdded: Candidate | undefined;
+  // C-TGT: live Target search + detail on the same driver, in its own tab. C-TGT-CART: add to cart + cart read-back too.
+  const targets = new WeakMap<FlowDriver, TargetFlow>();
+  const target = () => {
+    const { driver } = use();
+    if (!targets.has(driver)) targets.set(driver, new TargetFlow(driver, (m) => announce(m), undefined, chain));
+    return targets.get(driver)!;
+  };
   // C-WMT: Walmart search + detail on the same driver as Amazon, in its own background tabs.
   let walmart: { driver: FlowDriver; flow: WalmartFlow } | undefined;
   const useWalmart = () => {
@@ -113,8 +122,9 @@ export function liveServices(opts: { driver?: () => FlowDriver | undefined } = {
         return found;
       }
       announce = (message) => emit({ stage: "searching", marketplace, message, at: new Date().toISOString() });
+      if (marketplace === "target") return safe(target().search(need.query, emit, POOL_PER_MARKET));
       if (marketplace !== "amazon") {
-        // Target and Walmart are sample listings (picnic blankets). Only offer them when they match the search,
+        // Any other marketplace is sample listings (picnic blankets). Only offer them when they match the search,
         // so "power bank" doesn't come back with blankets.
         const sample = await mocks.search(need, marketplace, emit);
         const words = need.query.toLowerCase().split(/\W+/).filter((w) => w.length > 3);
@@ -152,6 +162,7 @@ export function liveServices(opts: { driver?: () => FlowDriver | undefined } = {
     },
 
     async getDetail(candidate, emit) {
+      if (candidate.id.startsWith("target:")) return safe(target().getDetail(candidate, emit));
       if (candidate.id.startsWith("walmart:")) return safe(useWalmart().getDetail(candidate, emit));
       if (!candidate.id.startsWith("amazon:")) return mocks.getDetail(candidate, emit);
       // C2 + C3: opens the product, reads details via a cached recipe and scrapes retailer reviews in parallel.
@@ -182,6 +193,7 @@ export function liveServices(opts: { driver?: () => FlowDriver | undefined } = {
     },
 
     async addToCart(id, quantity, emit) {
+      if (id.startsWith("target:")) return safe(target().addToCart(id, emit));
       if (!id.startsWith("amazon:")) return mocks.addToCart(id, quantity, emit);
       const product = seen.get(id);
       if (!product) return err("not_found", `No Amazon product ${id}`);
@@ -197,6 +209,7 @@ export function liveServices(opts: { driver?: () => FlowDriver | undefined } = {
     },
 
     async openCheckout(marketplace, emit) {
+      if (marketplace === "target") return safe(target().checkout(emit));
       if (marketplace !== "amazon") return mocks.openCheckout(marketplace, emit);
       emit({ stage: "checkout", marketplace: "amazon", message: "Opening your Amazon cart", at: new Date().toISOString() });
       const { flow } = use();

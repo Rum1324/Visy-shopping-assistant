@@ -27,6 +27,7 @@ Pick the tool that does what the user asked. The tools speak their own results a
 
 - New product request: first call ask_shopping_questions with the 2 questions whose answers would most change which product to pick (usually budget and the one feature that matters most; size, who it's for, or an accessibility need when that matters more). Both are spoken together in one turn, so each is under 6 words with no list of examples ("What's your budget?", "What matters most?"). Skip a question the user already answered. Skip them and call search with skipQuestions true only when the user already gave a budget and what matters, or says to just search.
 - phase clarifying: the user has answered your questions (listed in session_state). Call search with that query (add key words from the answers) and put the answers into budgetMaxCents, mustHaves, niceToHaves and accessibilityNotes. "No preference" still means search.
+- A change to the last search ("make it black", "actually a bigger one"), even when it interrupts you: call search right away with skipQuestions true and the changed query, and keep the last search's budget and needs from session_state unless the user changed them. Don't ask the questions again.
 - A price cap or "cheaper" on the current shortlist: filter_shortlist ("cheaper" with no option named means a maxPriceCents just below the most expensive option; "cheaper than option 2" means just below option 2). A question about a listed product, with or without a question mark: answer_about_product. "Add option 2", "get the second one": add_to_cart. The user saying yes to the checkout total: confirm_checkout_total. "The usual", "my regular": recall_usual. "Remember this": remember_as_usual. Unclear: ask_clarifying_question.
 - A lasting preference about how they shop ("I always shop at Target", "Anker is my favorite brand", "fast shipping matters most to me", "never show me Brand X"): remember_preference, one call per preference. If the same turn also asks for a product, call remember_preference and search (or ask_shopping_questions) together in one response. A budget, size or feature for this one search is not a lasting preference; put it in search instead. <saved_preferences> is what the user told you before: searches already use it, so don't ask about it again.
 - Options are numbered from 1 in the order they were read.
@@ -182,11 +183,23 @@ const clip = (s: string, n: number) => (s.length > n ? `${s.slice(0, n)}…` : s
 const dollars = (cents: number) => `$${(cents / 100).toFixed(2)}`;
 
 /** The per-turn user message: session facts we own, then listing text as untrusted data, then the user's words. */
+/** B-HISTORY: what the last search was for, so a follow-up ("make it black") keeps the answers. */
+function needFacts(need: NonNullable<SessionState["need"]>): string {
+  const parts = [
+    need.budget?.max ? `budget under ${dollars(need.budget.max.cents)}` : "",
+    need.mustHaves.length ? `must have: ${need.mustHaves.join(", ")}` : "",
+    need.niceToHaves.length ? `nice to have: ${need.niceToHaves.join(", ")}` : "",
+    need.accessibilityNotes.length ? `accessibility: ${need.accessibilityNotes.join(", ")}` : "",
+  ].filter(Boolean);
+  return parts.length ? `last search needs: ${parts.join("; ")}` : "";
+}
+
 export function turnMessage(state: SessionState, said: string, recent: string[], answers?: { question: string; answer: string }[]): string {
   const focused = state.shortlist.find((item) => item.product.id === state.focusedProductId);
   const facts = [
     `phase: ${state.phase}`,
     state.need ? `${state.phase === "clarifying" ? "asked questions about" : "last search"}: ${state.need.query}` : "no search yet",
+    state.need && state.phase !== "clarifying" ? needFacts(state.need) : "",
     state.shortlist.length ? `shortlist has ${state.shortlist.length} options` : "shortlist is empty",
     focused ? `focused option: ${focused.rank}` : "",
     state.cart.length ? `cart lines: ${state.cart.length}` : "",
