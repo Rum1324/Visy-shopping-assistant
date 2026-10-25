@@ -9,6 +9,7 @@ import {
   type Result,
 } from "@visy/contracts";
 import type { FlowDriver } from "../driver/flow.ts";
+import { walmartSearchUrl, type PriceRange } from "./search-urls.ts";
 
 /**
  * C-WMT: live walmart.com search and product detail. Walmart is a Next.js site: every search and product page ships
@@ -282,7 +283,7 @@ export class WalmartFlow {
     this.productTabs.clear();
   }
 
-  async search(query: string, emit: Emit, limit = 30): Promise<Result<ProductCandidate[]>> {
+  async search(query: string, emit: Emit, limit = 30, price: PriceRange = {}): Promise<Result<ProductCandidate[]>> {
     emit({ stage: "searching", marketplace: "walmart", message: "Searching Walmart now", at: at() });
     await this.closeProductTabs();
     if (this.tabId === undefined) {
@@ -290,7 +291,7 @@ export class WalmartFlow {
       if (!t.ok) return t;
       this.tabId = t.data.tabId;
     }
-    const l = await this.load(this.tabId, `https://www.walmart.com/search?q=${encodeURIComponent(query)}`, emit);
+    const l = await this.load(this.tabId, walmartSearchUrl(query, price), emit);
     if (!l.ok) {
       this.tabId = undefined; // the tab may be gone; open a fresh one next time
       return l;

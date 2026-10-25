@@ -5,22 +5,33 @@
  */
 import Anthropic from "@anthropic-ai/sdk";
 import { INPUTS, MODEL, SYSTEM, TIMEOUT_MS, TOOLS, turnMessage, untrusted, type Llm, type ToolName } from "./agent-tools.ts";
+import {
+  apifyToken,
+  enrichWithReddit,
+  enrichWithYoutube,
+  prefetchProductHits,
+  reviewsFromHits,
+  type ExternalHit,
+} from "./intel/apify.ts";
 import { sourcesSentence } from "./intel/reviews.ts";
-import { haikuJev, narrowToThree } from "./narrow.ts";
+import { haikuJev, narrowWithReviews } from "./narrow.ts";
 import { haikuRelevance, type RelevanceFilter } from "./relevance.ts";
 import { createProgress } from "./progress.ts";
 import { applySaved, confirmLine, favoriteStores, prefFact, savedBlock, stated, withFact, type PrefKind } from "./saved-prefs.ts";
-import { overview, pitchWriter, saleNote, speakable, templateLine, withSale, type Option, type PitchWriter } from "./present.ts";
+import { cleanListingTitle, overview, pitchWriter, saleNote, speakable, templateLine, withSale, type Option, type PitchWriter } from "./present.ts";
 import {
   CONTRACT_VERSION,
   Need,
   PreferenceFact,
   SessionState as SessionStateSchema,
+  ok,
   type Emit,
   type JevClient,
   type Marketplace,
   type Money,
+  type ProductDetail,
   type PageState,
+  type ProductCandidate,
   type Result,
   type ReviewSynthesis,
   type ServerMsg,
@@ -40,6 +51,12 @@ export type AgentSink = {
 };
 
 const YES = /^(yes|confirm|that matches)\b/i;
+/** Follow-ups that should use Apify external synthesis (Reddit / YouTube / articles), not the retailer pitch. */
+const WANTS_EXTERNAL =
+  /\b(external|reddit|youtube|outside|article|blog|forum|more (info|about|detail)|tell me more|what else|online reviews?)\b/i;
+/** How long a follow-up waits for background Apify (Google often takes 30–70 s). */
+/** Cap while waiting for Google+synth on the asked option (matches APIFY_PRODUCT_BUDGET_MS). YouTube stays background. */
+const EXTERNAL_WAIT_MS = 90_000;
 /** The user named an amount (or dropped the cap) this turn, so a follow-up search may change the budget. */
 const SAYS_AMOUNT = /\d|\b(ten|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|hundred|thousand|grand)\b|\bno (budget|limit)\b|\bany price\b/i;
 const DEFAULT_QUESTIONS = ["What's your budget?", "What matters most?"];
@@ -95,6 +112,14 @@ export function createAgent(
   let searches = 0;
   /** Settles when the current search's details, reviews and photos are all in. */
   let details: Promise<unknown> = Promise.resolve();
+  /** Per shortlist product: settles when that option's outside-review synthesis is on the shortlist. */
+  let externalReadyById = new Map<string, Promise<unknown>>();
+
+  function waitExternal(ids: string[], ms: number) {
+    const waits = ids.map((id) => externalReadyById.get(id)).filter(Boolean) as Promise<unknown>[];
+    if (!waits.length) return Promise.resolve();
+    return Promise.race([Promise.all(waits), new Promise((r) => setTimeout(r, ms).unref())]);
+  }
 
   function say(text: string, kind?: SayKind) {
     // Acks and progress lines aren't answers: the Claude loop uses `spoken` to tell whether a turn or tool answered.
@@ -295,8 +320,14 @@ export function createAgent(
     if (!state?.shortlist.length) return fail("There is no shortlist yet. Search first.");
     if (!(index ? state.shortlist.some((item) => item.rank === index) : true)) return fail(`There is no option ${index}.`);
     publish({ ...state, phase: "qa" });
-    // Asked while the details were still loading: wait a little for reviews and the photo description.
+    const externalAsk = WANTS_EXTERNAL.test(question);
+    // Details first; for external / "more info" wait only on the options asked about (not all three).
     await Promise.race([details, new Promise((r) => setTimeout(r, 8000).unref())]);
+    if (!state) return fail("No session.");
+    const waitedIds = (index ? state.shortlist.filter((item) => item.rank === index) : state.shortlist).map((item) => item.product.id);
+    if (!waitedIds.length) return fail(`There is no option ${index}.`);
+    if (externalAsk) await waitExternal(waitedIds, EXTERNAL_WAIT_MS);
+    // Re-read shortlist after the wait — publish() replaces items, so a pre-wait snapshot never gets externalReviews.
     if (!state) return fail("No session.");
     const items = index ? state.shortlist.filter((item) => item.rank === index) : state.shortlist;
     if (!items.length) return fail(`There is no option ${index}.`);
@@ -314,6 +345,7 @@ export function createAgent(
         }
       }
       const product = item.product;
+      const external = item.externalReviews;
       data.push({
         option: item.rank,
         title: product.title,
@@ -321,24 +353,45 @@ export function createAgent(
         marketplace: product.marketplace,
         price: `$${(product.price.cents / 100).toFixed(2)}`,
         sale: saleNote(product),
-        description: "description" in product ? product.description.slice(0, 400) : undefined,
-        bullets: "bullets" in product ? product.bullets.slice(0, 5) : undefined,
-        rating: product.rating,
-        reviewCount: product.reviewCount,
-        reviewSummary: item.reviews?.summary,
-        cons: item.reviews?.cons,
-        reviewWarnings: item.reviews?.warnings,
+        // External asks: omit Amazon rating/description so the answer can't fall back to retailer blurbs.
+        ...(externalAsk
+          ? {}
+          : {
+              description: "description" in product ? product.description.slice(0, 400) : undefined,
+              bullets: "bullets" in product ? product.bullets.slice(0, 5) : undefined,
+              rating: product.rating,
+              reviewCount: product.reviewCount,
+            }),
+        reviewSummary: externalAsk ? external?.summary : item.reviews?.summary,
+        cons: externalAsk ? external?.cons : item.reviews?.cons,
+        pros: externalAsk ? external?.pros : item.reviews?.pros,
+        // Omit snippet/format warnings on external asks — Claude was reading them aloud as if Reddit were missing.
+        reviewWarnings: externalAsk
+          ? (external?.warnings ?? []).filter((w) => !/snippet|full (review )?pages?|not full retailer/i.test(w))
+          : item.reviews?.warnings,
+        externalSources: external?.sourceCounts,
+        externalReady: Boolean(external),
+        externalSourceLine: externalAsk && external ? sourcesSentence(external.sourceCounts ?? {}, product.marketplace) : undefined,
         // Track D: accessibility answers from the synthesis and what the photo shows.
-        accessibility: item.reviews?.accessibility.filter((a) => a.sentiment !== "unknown").map((a) => ({ question: a.question, answer: a.answer })),
-        looks: item.visual ? `${item.visual.short} ${item.visual.detailed}` : undefined,
-        reviews,
+        accessibility: (externalAsk ? external : item.reviews)?.accessibility
+          .filter((a) => a.sentiment !== "unknown")
+          .map((a) => ({ question: a.question, answer: a.answer })),
+        looks: externalAsk ? undefined : item.visual ? `${item.visual.short} ${item.visual.detailed}` : undefined,
+        reviews: externalAsk ? undefined : reviews,
       });
     }
     turn.tainted = true;
-    if (!turn.fallback) turn.fallback = "I don't have a review that answers that.";
+    if (!turn.fallback) {
+      turn.fallback = externalAsk
+        ? "I don't have outside reviews for that yet."
+        : "I don't have a review that answers that.";
+    }
     if (state) publish({ ...state, phase: "presenting" });
+    const guide = externalAsk
+      ? `The user asked for outside / more detail. Use ONLY reviewSummary, pros, cons, and externalSourceLine — those come from Reddit/YouTube/articles. Do not cite Amazon/Target/Walmart star ratings or review counts. Lead with what outside reviewers said; name the option; end with externalSourceLine when present. If externalReady is false, say you could not get outside reviews yet. Never mention snippets or "not full retailer reviews".`
+      : `Answer the user's question from this data in one or two spoken sentences and say which option (one short sentence per option when they asked about all of them). If the data does not answer it, say you don't know. Every product has a few unhappy reviews: don't bring up a complaint only one or two reviews make unless the user asked about exactly that, and then say it's a few reviews next to the overall rating.`;
     return {
-      content: `${untrusted("reviews", data)}\n\nAnswer the user's question from this data in one or two spoken sentences and say which option (one short sentence per option when they asked about all of them). If the data does not answer it, say you don't know. Every product has a few unhappy reviews: don't bring up a complaint only one or two reviews make unless the user asked about exactly that, and then say it's a few reviews next to the overall rating.`,
+      content: `${untrusted("reviews", data)}\n\n${guide}`,
     };
   }
 
@@ -431,10 +484,51 @@ export function createAgent(
   async function answerQuestion(text: string, id: number) {
     if (!state) return;
     publish({ ...state, phase: "qa" });
+    const externalAsk = WANTS_EXTERNAL.test(text);
+    const named = /(?:option|number)\s*[123]\b|\b(first|second|third)\b/i.test(text) ? state.shortlist[optionIndex(text)] : undefined;
+    const externalTargetId =
+      (named ?? state.shortlist.find((item) => item.product.id === state?.focusedProductId) ?? state.shortlist[0])?.product
+        .id;
+    // External / "more info": wait on that option only. Ordinary questions don't block on Apify.
+    if (externalAsk && externalTargetId) {
+      await waitExternal([externalTargetId], EXTERNAL_WAIT_MS);
+    }
+    if (id !== run || !state) return;
+    if (externalAsk) {
+      // Must re-read after wait — shortlist items are replaced when externalReviews are published.
+      const fresh =
+        state.shortlist.find((item) => item.product.id === externalTargetId) ??
+        state.shortlist.find((item) => item.product.id === state?.focusedProductId) ??
+        state.shortlist[0];
+      const ext = fresh?.externalReviews;
+      if (!ext) {
+        await say("I couldn't get outside reviews for that yet. Ask me again in a moment.");
+      } else {
+        const about = state.shortlist.length > 1 && fresh ? `For option ${fresh.rank}, ` : "";
+        const pros = (ext.pros ?? []).slice(0, 3);
+        const cons = (ext.cons ?? []).slice(0, 2);
+        const findings = [
+          ext.summary,
+          pros.length ? `Pros: ${pros.join("; ")}.` : "",
+          cons.length ? `Cons: ${cons.join("; ")}.` : "",
+          sourcesSentence(ext.sourceCounts ?? {}, fresh?.product.marketplace ?? "amazon"),
+        ]
+          .filter(Boolean)
+          .join(" ");
+        // Prefer concrete findings; only fall back to meta warnings when there is nothing else.
+        const spoken =
+          findings.trim() ||
+          (ext.warnings ?? []).find((w) => !/snippet/i.test(w)) ||
+          "I don't have outside reviews for that yet.";
+        await say(`${about}${spoken}`.slice(0, 520));
+      }
+      if (id !== run || !state) return;
+      publish({ ...state, phase: "presenting" });
+      return;
+    }
     // D2: Moss ranks by meaning within a product, so each product's top hit is its best answer even with no shared words.
     // Across products: most word overlap wins; with none, the focused product's hit.
     // "does option 2 …" / "is the second one …" asks about that product only.
-    const named = /(?:option|number)\s*[123]\b|\b(first|second|third)\b/i.test(text) ? state.shortlist[optionIndex(text)] : undefined;
     const words = text.toLowerCase().split(/\W+/).filter((w) => w.length > 3);
     const hits = await Promise.all(
       (named ? [named] : state.shortlist).map(async (item) => {
@@ -475,6 +569,7 @@ export function createAgent(
     const need = applySaved(Need.parse({ query: text.trim(), marketplaces, ...defined }), saved);
     asking = null;
     const search = ++searches;
+    const before = state;
     publish({ ...state, phase: "searching", need, candidates: [], shortlist: [], cart: [] });
     const names = need.marketplaces.map((m) => m[0]!.toUpperCase() + m.slice(1));
     const where =
@@ -485,10 +580,19 @@ export function createAgent(
           : "I'll check Amazon, Target, and Walmart.";
     await say(where);
     if (id !== run || !state) return;
+    const usingApify = Boolean(apifyToken());
     const results = await Promise.all(need.marketplaces.map((m) => services.navigator.search(need, m, emit)));
     if (id !== run || !state) return;
     results.forEach((r, i) => !r.ok && console.warn(`search ${need.marketplaces[i]} failed: ${r.error.code} ${r.error.message}`));
     const candidates = results.flatMap((r) => (r.ok ? r.data : []));
+    // Sites filter by price now, so a budget nothing meets comes back empty. Say so plainly and keep the last picks,
+    // instead of reading "try different words" or the same three again.
+    const keepLast = () => publish({ ...state!, phase: before.shortlist.length ? "presenting" : "idle", candidates: before.candidates, shortlist: before.shortlist, cart: before.cart, focusedProductId: before.focusedProductId });
+    if (!candidates.length && need.budget && (need.budget.min || need.budget.max)) {
+      keepLast();
+      await say(nothingInRange(need));
+      return;
+    }
     if (!candidates.length) {
       publish({ ...state, phase: "idle" });
       await say("I couldn't find any products for that. Try different words.");
@@ -512,15 +616,29 @@ export function createAgent(
       await say("I found listings, but none looked like what you asked for. Try different words.");
       return;
     }
+    if (!relevant.some((c) => inRange(need, c))) {
+      keepLast();
+      await say(nothingInRange(need));
+      return;
+    }
     publish({ ...state, phase: "shortlisting", candidates: relevant });
+    let reading = false;
     // Narrowing runs while the count is read out.
     const counted = say(
       relevant.length > 3 ? `I found ${relevant.length} products. Picking the best three.` : `I found ${relevant.length} products.`,
       "progress",
     );
     const t0 = performance.now();
-    const narrowed = await narrowToThree(jev, need, relevant);
-    console.log(`narrow: ${relevant.length} → ${narrowed.picks.length} via ${narrowed.via} in ${Math.round(performance.now() - t0)} ms`);
+    // B-REVIEWS-FIRST: ~6 finalists' pages (features + retailer reviews) are read before the final 3 are chosen.
+    const narrowed = await narrowWithReviews(jev, need, relevant, (c) => {
+      if (!reading) emit({ stage: "reviews", message: "Reading reviews for the top picks", at: new Date().toISOString() });
+      reading = true;
+      return services.navigator.getDetail(c, emit, { quick: true });
+    });
+    console.log(
+      `narrow: ${relevant.length} → ${narrowed.picks.length} via ${narrowed.via}, chose from ${narrowed.chose} in ${Math.round(performance.now() - t0)} ms` +
+        ` (direct ${narrowed.ms.direct} ms + reviews-first ${narrowed.ms.extra} ms)`,
+    );
     await counted;
     if (id !== run || !state) return;
     const picks = narrowed.picks;
@@ -529,7 +647,8 @@ export function createAgent(
     const ids = picks.map((p) => p.candidate.id);
     // A-SHOWPAGE: every option opens in its own tab, the first comes to the front.
     const tabs = services.navigator.openOptions ? picks.filter((p) => p.candidate.marketplace === "amazon").length : 0;
-    if (tabs) void services.navigator.openOptions!(ids, emit).catch(() => {});
+    // Also called when only finalists were on Amazon, so their pages' tabs close and only the options stay.
+    if (tabs || narrowed.details.size > picks.length) void services.navigator.openOptions?.(ids, emit).catch(() => {});
     // The picks go into the session before they are named, so a follow-up that cuts the details off
     // ("is the last one really $165?") is answered from them. Details fill in below as they arrive.
     publish({
@@ -538,27 +657,208 @@ export function createAgent(
       shortlist: picks.map((p, i) => ({ rank: i + 1, product: p.candidate, whyPicked: `${p.why}. At ${p.candidate.marketplace}.` })),
       focusedProductId: picks[0]?.candidate.id,
     });
-    // Details, reviews, photo and the spoken line for all three run at once, starting while the names are read; they are read in order.
+    // Spoken shortlist = retailer only. Apify starts immediately with cleaned search titles (parallel with
+    // speaking + getDetail). Each option synthesizes as soon as *its* detail + Google hits are ready.
+    type DetailSlot = { resolve: (d: ProductDetail | undefined) => void; promise: Promise<ProductDetail | undefined> };
+    const detailSlot = new Map<string, DetailSlot>();
+    for (const { candidate } of picks) {
+      let resolve!: (d: ProductDetail | undefined) => void;
+      const promise = new Promise<ProductDetail | undefined>((r) => {
+        resolve = r;
+      });
+      detailSlot.set(candidate.id, { resolve, promise });
+    }
+    if (usingApify) {
+      // Keep this over 6 words so progress.ts won't speak it over the real answer lines.
+      emit({
+        stage: "reviews",
+        message: "Gathering outside reviews from Reddit and YouTube",
+        at: new Date().toISOString(),
+      });
+    }
+    const apifyProducts = picks.map(({ candidate }) => ({
+      id: candidate.id,
+      title: cleanListingTitle(candidate.title),
+      brand: candidate.brand,
+    }));
+    /** Per-option Google hits — three concurrent Apify calls (no hedge, so we stay under the 5-run cap). */
+    type HitsDeferred = { resolve: (h: ExternalHit[]) => void; promise: Promise<ExternalHit[]> };
+    const googleDeferred = new Map<string, HitsDeferred>();
+    const fullDeferred = new Map<string, HitsDeferred>();
+    for (const p of apifyProducts) {
+      let gResolve!: (h: ExternalHit[]) => void;
+      let fResolve!: (h: ExternalHit[]) => void;
+      const gPromise = new Promise<ExternalHit[]>((r) => {
+        gResolve = r;
+      });
+      const fPromise = new Promise<ExternalHit[]>((r) => {
+        fResolve = r;
+      });
+      googleDeferred.set(p.id, { promise: gPromise, resolve: gResolve });
+      fullDeferred.set(p.id, { promise: fPromise, resolve: fResolve });
+    }
+
+    void (async () => {
+      if (!usingApify) {
+        for (const p of apifyProducts) {
+          googleDeferred.get(p.id)?.resolve([]);
+          fullDeferred.get(p.id)?.resolve([]);
+        }
+        return;
+      }
+      const gathered = new Map<string, ExternalHit[]>();
+      try {
+        emit({
+          stage: "reviews",
+          message: "Gathering outside reviews from Reddit and YouTube",
+          at: new Date().toISOString(),
+        });
+        // One Google actor call per option, in parallel — each option unlocks as soon as its own call returns.
+        await Promise.all(
+          apifyProducts.map(async (p) => {
+            try {
+              const m = await prefetchProductHits([p], { youtube: false, hedge: false });
+              if (search !== searches) return;
+              const hits = m.get(p.id) ?? [];
+              gathered.set(p.id, hits);
+              googleDeferred.get(p.id)?.resolve(hits);
+            } catch (e) {
+              console.warn(`[apify] option scrape failed for ${p.id}: ${(e as Error).message}`);
+              googleDeferred.get(p.id)?.resolve([]);
+              gathered.set(p.id, []);
+            }
+          }),
+        );
+        if (search !== searches) return;
+        // Sequential: Reddit threads then YouTube — stay under Apify's concurrent-run cap; Q&A already unlocked on Google.
+        emit({
+          stage: "reviews",
+          message: "Reading Reddit threads for the shortlist in the background",
+          at: new Date().toISOString(),
+        });
+        const withReddit = await enrichWithReddit(apifyProducts, gathered);
+        if (search !== searches) return;
+        emit({
+          stage: "reviews",
+          message: "Gathering YouTube review transcripts in the background",
+          at: new Date().toISOString(),
+        });
+        const enriched = await enrichWithYoutube(apifyProducts, withReddit);
+        if (search !== searches) return;
+        for (const p of apifyProducts) fullDeferred.get(p.id)?.resolve(enriched.get(p.id) ?? []);
+      } catch (e) {
+        console.warn(`[apify] shortlist scrape failed: ${(e as Error).message}`);
+        for (const p of apifyProducts) {
+          googleDeferred.get(p.id)?.resolve(gathered.get(p.id) ?? []);
+          fullDeferred.get(p.id)?.resolve(gathered.get(p.id) ?? []);
+        }
+      }
+    })();
+
+    async function applyExternal(product: ProductDetail, rank: number, hits: ExternalHit[]) {
+      let external = reviewsFromHits(product.id, hits, "apify-own");
+      if (!external.length) {
+        const got = await services.reviews.collectExternal(product, emit);
+        if (got.ok) external = got.data;
+      }
+      emit({
+        stage: "reviews",
+        marketplace: product.marketplace,
+        // Over 6 words so progress TTS keeps saying "Reading the reviews" instead of this status.
+        message: external.length
+          ? `Got outside reviews ready for option ${rank} now`
+          : `Still no useful outside reviews for option ${rank}`,
+        at: new Date().toISOString(),
+      });
+      if (!external.length || search !== searches || !state) return;
+      const indexed = [...product.retailerReviews, ...external];
+      const [, synth] = await Promise.all([
+        services.reviewIndex.index(product.id, indexed),
+        services.reviews.synthesize(product, external, need),
+      ]);
+      if (!synth.ok || search !== searches || !state) return;
+      publish({
+        ...state,
+        shortlist: state.shortlist.map((item) =>
+          item.product.id === product.id ? { ...item, externalReviews: synth.data } : item,
+        ),
+      });
+    }
+
+    // Ready = Google hits synthesized. YouTube enrich may refresh externalReviews later; don't block Q&A on it
+    // (it only starts after all three Google runs, and often adds 30–60 s of "Reading the reviews").
+    externalReadyById = new Map(
+      picks.map(({ candidate }, i) => {
+        let unlock!: () => void;
+        const ready = new Promise<void>((r) => {
+          unlock = r;
+        });
+        void (async () => {
+          let product: ProductDetail | undefined;
+          let hits: ExternalHit[] = [];
+          try {
+            [product, hits] = await Promise.all([
+              detailSlot.get(candidate.id)!.promise,
+              googleDeferred.get(candidate.id)?.promise ?? Promise.resolve([]),
+            ]);
+            if (product && search === searches) await applyExternal(product, i + 1, hits);
+          } finally {
+            unlock();
+          }
+          try {
+            const extra = await (fullDeferred.get(candidate.id)?.promise ?? Promise.resolve([]));
+            if (!product || search !== searches || !state) return;
+            if (extra.length > hits.length) await applyExternal(product, i + 1, extra);
+          } catch (e) {
+            console.warn(`[apify] YouTube refresh failed for ${candidate.id}: ${(e as Error).message}`);
+          }
+        })();
+        return [candidate.id, ready] as const;
+      }),
+    );
+
     const work = picks.map(({ candidate, why }, i) =>
       (async () => {
-        const detail = await services.navigator.getDetail(candidate, emit);
-        const product = detail.ok ? detail.data : candidate;
+        // Finalists' pages were already read (or are still loading) while picking; never fetch twice. That read was
+        // quick, so the reviews it skipped (Amazon's review pages) load now, beside the outside reviews.
+        const early = narrowed.details.get(candidate.id);
+        const moreP = early && services.navigator.moreReviews ? services.navigator.moreReviews(candidate.id, emit) : undefined;
+        let product: ProductDetail | typeof candidate = candidate;
         let reviews: ShortlistItem["reviews"];
         let visual: ShortlistItem["visual"];
-        if (detail.ok) {
-          const synthP = (async () => {
-            // Outside reviews: one "<product> review" Google search for this option (intel/apify.ts), capped at APIFY_BUDGET_MS.
-            const external = await services.reviews.collectExternal(detail.data, emit);
-            const pool = [...detail.data.retailerReviews, ...(external.ok ? external.data : [])];
-            const [, synth] = await Promise.all([
-              pool.length ? services.reviewIndex.index(detail.data.id, pool) : undefined,
-              services.reviews.synthesize(detail.data, pool, need),
+        try {
+          let detail = await (early ?? services.navigator.getDetail(candidate, emit));
+          const more = await moreP?.catch(() => undefined);
+          if (detail.ok && more?.ok && more.data.length) {
+            const have = new Set(detail.data.retailerReviews.map((r) => r.body));
+            detail = ok({
+              ...detail.data,
+              retailerReviews: [...detail.data.retailerReviews, ...more.data.filter((r) => !have.has(r.body))],
+            });
+          }
+          product = detail.ok ? detail.data : candidate;
+          if (detail.ok) {
+            detailSlot.get(candidate.id)?.resolve(detail.data);
+            // Don't emit retailer progress — it was wiping the Apify status bar while options are spoken.
+            const retailer = detail.data.retailerReviews;
+            const [synth, vis] = await Promise.all([
+              (async () => {
+                const [, s] = await Promise.all([
+                  retailer.length ? services.reviewIndex.index(detail.data.id, retailer) : undefined,
+                  services.reviews.synthesize(detail.data, retailer, need),
+                ]);
+                return s;
+              })(),
+              services.vision.describe(detail.data),
             ]);
-            return synth;
-          })();
-          const [synth, vis] = await Promise.all([synthP, services.vision.describe(detail.data)]);
-          if (synth.ok) reviews = synth.data;
-          if (vis.ok) visual = vis.data;
+            if (synth.ok) reviews = synth.data;
+            if (vis.ok) visual = vis.data;
+          } else {
+            detailSlot.get(candidate.id)?.resolve(undefined);
+          }
+        } catch (e) {
+          detailSlot.get(candidate.id)?.resolve(undefined);
+          throw e;
         }
         // Lands even if the user cut in, so their follow-up can use the reviews and the photo.
         if (search === searches && state) {
@@ -683,6 +983,20 @@ async function saveUsual(productId: string, title: string, evidence: string) {
  * The cap the user stated holds across follow-up searches: "premium" or "more expensive" with no amount
  * can't raise it (that moves the floor instead). It changes only when the user names a new amount.
  */
+const inRange = (need: Need, c: ProductCandidate) =>
+  (need.budget?.max == null || c.price.cents <= need.budget.max.cents) && (need.budget?.min == null || c.price.cents >= need.budget.min.cents);
+
+const wholeDollars = (cents: number) => `$${cents % 100 ? (cents / 100).toFixed(2) : (cents / 100).toLocaleString("en-US")}`;
+
+/** "I didn't find any water bottle over $2,000." Said instead of reading picks outside the budget. */
+export function nothingInRange(need: Need) {
+  const min = need.budget?.min?.cents;
+  const max = need.budget?.max?.cents;
+  const range =
+    min != null && max != null ? `between ${wholeDollars(min)} and ${wholeDollars(max)}` : min != null ? `over ${wholeDollars(min)}` : `under ${wholeDollars(max ?? 0)}`;
+  return `I didn't find any ${need.query} ${range}. Want to try a different price?`;
+}
+
 function searchBudget(input: { budgetMinCents?: number; budgetMaxCents?: number }, last: Need | undefined, said: string): Need["budget"] {
   const lastMax = last?.budget?.max?.cents;
   const max = input.budgetMaxCents != null && lastMax != null && !SAYS_AMOUNT.test(said) ? lastMax : input.budgetMaxCents;
@@ -708,7 +1022,7 @@ function needFromAnswer(said: string): NeedExtra {
 /** Keep the first useful keywords from a noisy marketplace title. */
 export function shortTitle(title: string, maxWords = 6) {
   const stop = new Set(["with", "and", "the", "for", "in", "a", "an", "of", "to", "by"]);
-  const words = title
+  const words = cleanListingTitle(title)
     .replace(/\(.*?\)/g, " ")
     .split(/[,|–—•]/)[0]!
     .replace(/[^\w\s.'/&+-]/g, " ")
