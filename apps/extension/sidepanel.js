@@ -8,6 +8,16 @@ const go = document.querySelector("#go");
 const checkout = document.querySelector("#checkout");
 const checkoutText = document.querySelector("#checkout-text");
 const confirmBtn = document.querySelector("#confirm");
+const settingsOpenBtn = document.querySelector("#settings-open");
+const settingsBackBtn = document.querySelector("#settings-back");
+const settingsEl = document.querySelector("#settings");
+const speechRateInput = document.querySelector("#speech-rate");
+const speechRateValue = document.querySelector("#speech-rate-value");
+
+const SPEED_KEY = "visy.speechRate";
+/** Cartesia generation_config.speed range (server clamps the same). */
+const SPEED_MIN = 0.6;
+const SPEED_MAX = 1.5;
 
 let ws = null;
 let checkoutTotal = null;
@@ -34,6 +44,7 @@ let micStream = null;
 let micCtx = null;
 let micNode = null;
 const MIC_RATE = 16000;
+let speechRate = loadSpeechRate();
 
 boot();
 
@@ -65,6 +76,11 @@ function showWelcome() {
 async function boot() {
   userName = (await getDisplayName()) || "You";
   audioCtx ??= new AudioContext({ sampleRate: 24000 });
+  paintSpeechRate();
+  settingsOpenBtn.addEventListener("click", openSettings);
+  settingsBackBtn.addEventListener("click", closeSettings);
+  speechRateInput.addEventListener("input", onSpeechRateInput);
+  speechRateInput.addEventListener("change", onSpeechRateCommit);
   document.addEventListener(
     "pointerdown",
     () => {
@@ -79,6 +95,68 @@ async function boot() {
   connect();
 }
 
+function loadSpeechRate() {
+  try {
+    const raw = Number(localStorage.getItem(SPEED_KEY));
+    if (Number.isFinite(raw)) return clampSpeed(raw);
+  } catch {
+    /* ignore */
+  }
+  return 1;
+}
+
+function clampSpeed(n) {
+  const stepped = Math.round(n * 10) / 10;
+  return Math.min(SPEED_MAX, Math.max(SPEED_MIN, stepped));
+}
+
+function formatSpeed(n) {
+  return `${n.toFixed(1)}×`;
+}
+
+function paintSpeechRate() {
+  speechRateInput.value = String(speechRate);
+  speechRateValue.textContent = formatSpeed(speechRate);
+  speechRateInput.setAttribute("aria-valuetext", formatSpeed(speechRate));
+}
+
+function onSpeechRateInput() {
+  speechRate = clampSpeed(Number(speechRateInput.value));
+  paintSpeechRate();
+}
+
+function onSpeechRateCommit() {
+  speechRate = clampSpeed(Number(speechRateInput.value));
+  paintSpeechRate();
+  try {
+    localStorage.setItem(SPEED_KEY, String(speechRate));
+  } catch {
+    /* ignore */
+  }
+  pushSpeechRate();
+}
+
+function pushSpeechRate() {
+  send({ type: "settings.update", speechRate });
+}
+
+function openSettings() {
+  document.body.classList.add("settings-open");
+  settingsEl.hidden = false;
+  settingsOpenBtn.setAttribute("aria-expanded", "true");
+  pauseAll();
+  stopListening({ flush: false });
+  speechRateInput.focus();
+}
+
+function closeSettings() {
+  document.body.classList.remove("settings-open");
+  settingsEl.hidden = true;
+  settingsOpenBtn.setAttribute("aria-expanded", "false");
+  settingsOpenBtn.focus();
+  if (paused) resumeAll();
+}
+
 function helloWithName() {
   send({
     type: "hello",
@@ -87,6 +165,7 @@ function helloWithName() {
     client: "extension",
     displayName: userName !== "You" ? userName : undefined,
   });
+  pushSpeechRate();
 }
 
 function stopVoice() {
