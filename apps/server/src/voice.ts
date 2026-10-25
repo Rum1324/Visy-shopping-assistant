@@ -49,6 +49,7 @@ export class Cartesia {
     // Back-compat: speak(text, speed, signal)
     const normalized: SpeakOpts =
       typeof opts === "number" ? { speed: opts, signal } : { ...opts, signal: opts.signal ?? signal };
+    // Cartesia Sonic only accepts 0.6–1.5. Speeds above that are WSOLA time-compressed in the side panel (pitch kept).
     const generation_config: { speed: number; emotion?: CartesiaEmotion } = {
       speed: clamp(normalized.speed ?? 1, 0.6, 1.5),
     };
