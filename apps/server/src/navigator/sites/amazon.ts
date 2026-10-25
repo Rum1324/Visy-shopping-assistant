@@ -16,14 +16,17 @@ import { strictPicker, type FindStep } from "../pickers/common.ts";
 import type { MemoryPicker } from "../pickers/memory.ts";
 import { ClaudeRecipeWriter, extractWithRecipes, RecipeCache, type Extracted, type RawDetail, type RecipeFields, type RecipeWriter } from "../recipes.ts";
 
-export type AmazonResult = { asin: string; title: string; price: string | null; rating: string | null; reviews?: string | null; sponsored: boolean };
+export type AmazonResult = { asin: string; title: string; price: string | null; listPrice?: string | null; deal?: string | null; rating: string | null; reviews?: string | null; sponsored: boolean };
 
 // Tier 0: deterministic extraction, no AI. Amazon's result cards are stable enough for a hackathon.
 const RESULT_SEL = '[data-component-type="s-search-result"][data-asin]';
 const RESULTS_JS = `Array.from(document.querySelectorAll('${RESULT_SEL}')).map((c) => ({
   asin: c.getAttribute('data-asin'),
   title: (c.querySelector('h2')?.innerText || '').trim(),
-  price: c.querySelector('.a-price .a-offscreen')?.textContent?.trim() || null,
+  price: (c.querySelector('.a-price:not(.a-text-price) .a-offscreen') || c.querySelector('.a-price .a-offscreen'))?.textContent?.trim() || null,
+  // UX-SALES: the struck-through "List:" / "Typical:" price, and a deal badge or coupon tile ("Coupon price $28.51").
+  listPrice: c.querySelector('.a-text-price[data-a-strike="true"] .a-offscreen')?.textContent?.trim() || null,
+  deal: [...c.querySelectorAll('.a-badge-text, [class*="coupon-tile-text"], .s-coupon-unclipped')].map((e) => (e.innerText || '').replace(/\\s+/g, ' ').trim()).find((t) => /deal|coupon|sale|% off/i.test(t))?.slice(0, 80) || null,
   rating: c.querySelector('.a-icon-alt')?.textContent?.trim() || null,
   reviews: (() => { const r = c.querySelector('[aria-label$="ratings"], [aria-label$="rating"], a[href*="customerReviews"] span'); return r ? (r.getAttribute('aria-label') || r.textContent || '').trim() || null : null; })(),
   sponsored: !!c.querySelector('.puis-sponsored-label-text, [aria-label*="Sponsored"]') || /^Sponsored/.test((c.innerText || '').trim()),
@@ -151,7 +154,7 @@ export const AMAZON_PRODUCT_SEED: RecipeFields = {
   title: { css: "#productTitle", attr: null },
   price: { css: "#corePriceDisplay_desktop_feature_div #apex-pricetopay-accessibility-label, #corePriceDisplay_desktop_feature_div .priceToPay .a-offscreen, #corePrice_feature_div .a-price .a-offscreen", attr: null },
   listPrice: { css: "#corePriceDisplay_desktop_feature_div .basisPrice .a-offscreen", attr: null },
-  deal: { css: "#dealBadge_feature_div .a-badge-text, #dealBadgeSupportingText", attr: null },
+  deal: { css: "#dealBadge_feature_div .a-badge-text, #dealBadgeSupportingText, #promoPriceBlockMessage_feature_div .ct-coupon-tile-wrapper", attr: null },
   prime: { css: "#rightCol .a-icon-prime, #deliveryBlockMessage .a-icon-prime", attr: null },
   rating: { css: "#acrPopover", attr: "title" },
   reviewCount: { css: "#acrCustomerReviewText", attr: "aria-label" },

@@ -35,6 +35,44 @@ const ROLE_LABEL: Record<string, string> = {
   "most trusted by buyers": "Most trusted",
 };
 
+type Priced = Pick<ProductCandidate, "price" | "listPrice" | "deal">;
+
+/** UX-SALES: a strike-through price above the current price. A "Typical" price equal to it is not a sale. */
+const wasPrice = (p: Priced) => (p.listPrice && p.listPrice.cents > p.price.cents ? p.listPrice.cents : undefined);
+
+/** The deal badge or coupon as one plain sentence. The label is page text, so it is only matched and clipped. */
+function dealSentence(label: string, membership?: string): string | undefined {
+  const text = label.replace(/\s+/g, " ").replace(/\bTerms\b.*$/i, "").trim().slice(0, 60);
+  if (!text) return undefined;
+  const who = membership && !text.toLowerCase().includes(membership.toLowerCase()) ? ` for ${membership} members` : "";
+  if (/coupon/i.test(text)) {
+    const couponPrice = /coupon price:?\s*(\$\d[\d,]*(?:\.\d{2})?)/i.exec(text)?.[1];
+    if (couponPrice) return `With the coupon it's ${couponPrice}${who}.`;
+    const amount = /(\d+%|\$\d[\d,]*(?:\.\d{2})?)/.exec(text)?.[1];
+    return amount ? `There's a ${amount} coupon${who}.` : `There's a coupon${who}.`;
+  }
+  if (/^(on )?sale$/i.test(text)) return `It's on sale${who}.`;
+  const bare = text.replace(/[.!]+$/, "");
+  // "Limited time deal" → "It's a limited time deal." Anything else ("Rollback", "20% off") is read as shown.
+  if (/^[a-z ]*\bdeal\b/i.test(bare)) return `It's a ${bare[0]!.toLowerCase()}${bare.slice(1)}${who}.`;
+  return `Deal: ${bare}${who}.`;
+}
+
+/**
+ * UX-SALES: "On sale: $18.99, down from $24.99." and/or "There's a 20% coupon." Only from what the page showed
+ * (a strike-through price above the current one, or a deal or coupon badge); undefined otherwise, never guessed.
+ */
+export function saleNote(p: Priced): string | undefined {
+  const was = wasPrice(p);
+  const parts = [was ? `On sale: ${dollars(p.price.cents)}, down from ${dollars(was)}.` : undefined];
+  // A bare "Sale" badge adds nothing once the strike price was said.
+  if (p.deal?.label && !(was && /^(on )?sale$/i.test(p.deal.label.trim()))) parts.push(dealSentence(p.deal.label, p.deal.requiresMembership));
+  return parts.filter(Boolean).join(" ") || undefined;
+}
+
+/** Appends the sale sentence, if any, to an option's spoken line. */
+export const withSale = (line: string, p: Priced) => [line, saleNote(p)].filter(Boolean).join(" ");
+
 /** "Best match: INIU Portable Charger, $19.99. Best value: …" */
 export function overview(options: Option[]): string {
   return options

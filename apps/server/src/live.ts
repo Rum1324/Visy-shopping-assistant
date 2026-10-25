@@ -62,6 +62,15 @@ function ratingOf(text: string | null): number | undefined {
   return n >= 0 && n <= 5 ? n : undefined;
 }
 
+/** UX-SALES: only what the card shows. A strike price at or below the current price is not a sale. */
+export function saleOf(row: { listPrice?: string | null; deal?: string | null }, cents: number) {
+  const list = parseDollars(row.listPrice);
+  return {
+    ...(list != null && list > cents ? { listPrice: { cents: list, currency: "USD" as const } } : {}),
+    ...(row.deal ? { deal: { label: row.deal, requiresMembership: /prime/i.test(row.deal) ? "Prime" : undefined } } : {}),
+  };
+}
+
 export function liveServices(opts: { driver?: () => FlowDriver | undefined } = {}): Services {
   const mocks = mockNavigator({ latencyMs: 0 });
   const chain = buildChain();
@@ -113,6 +122,7 @@ export function liveServices(opts: { driver?: () => FlowDriver | undefined } = {
           url: `https://www.amazon.com/dp/${row.asin}`,
           title: row.title,
           price: { cents, currency: "USD" },
+          ...saleOf(row, cents),
           rating: ratingOf(row.rating),
           reviewCount: countOf(row.reviews),
           inStock: true,
