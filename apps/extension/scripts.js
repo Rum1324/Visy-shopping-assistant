@@ -90,7 +90,7 @@ export const SCRIPTS = {
   const p = hits.find((h) => String(h.tcin) === String(arg)) || hits[0];
   if (!p) return null;
   const it = p.item, pd = it.product_description || {}, ii = (it.enrichment || {}).image_info || {};
-  const strip = (s) => String(s || '').replace(/<br\s*\/?>/gi, ' ').replace(/<[^>]+>/g, '').replace(/&amp;/g, '&').replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/\s+/g, ' ').trim();
+  const strip = (s) => String(s || '').replace(/<br\s*\/?>/gi, ' ').replace(/<[^>]+>/g, '').replace(/&#(\d+);/g, (_, n) => String.fromCharCode(+n)).replace(/&quot;/g, '"').replace(/&amp;/g, '&').replace(/\s+/g, ' ').trim();
   return {
     title: strip(pd.title) || null,
     brand: (it.primary_brand || {}).name || null,

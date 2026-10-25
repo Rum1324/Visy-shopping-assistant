@@ -85,7 +85,7 @@ const NEXT_ITEM_JS = `(() => {
   const p = hits.find((h) => String(h.tcin) === String(arg)) || hits[0];
   if (!p) return null;
   const it = p.item, pd = it.product_description || {}, ii = (it.enrichment || {}).image_info || {};
-  const strip = (s) => String(s || '').replace(/<br\\s*\\/?>/gi, ' ').replace(/<[^>]+>/g, '').replace(/&amp;/g, '&').replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/\\s+/g, ' ').trim();
+  const strip = (s) => String(s || '').replace(/<br\\s*\\/?>/gi, ' ').replace(/<[^>]+>/g, '').replace(/&#(\\d+);/g, (_, n) => String.fromCharCode(+n)).replace(/&quot;/g, '"').replace(/&amp;/g, '&').replace(/\\s+/g, ' ').trim();
   return {
     title: strip(pd.title) || null,
     brand: (it.primary_brand || {}).name || null,
@@ -219,6 +219,8 @@ export type NextItem = { title: string | null; brand: string | null; bullets: st
 
 type ScrapedReview = { id?: string; title: string; body: string; date: string; author: string | null; rating: number | null; verified: boolean | null; syndicated: boolean };
 
+/** Page JSON text keeps HTML entities ("70&#34;x80&#34;"). */
+const decode = (s: string) => s.replace(/&#(\d+);/g, (_, n) => String.fromCharCode(Number(n))).replace(/&quot;/g, '"').replace(/&amp;/g, "&");
 const hash = (s: string) => {
   let h = 5381;
   for (let i = 0; i < s.length; i++) h = ((h << 5) + h + s.charCodeAt(i)) | 0;
@@ -242,8 +244,8 @@ export function toTargetReviews(tcin: string, url: string, scraped: ScrapedRevie
       url,
       author: r.author ?? undefined,
       rating: r.rating ?? undefined,
-      title: r.title || undefined,
-      body: r.body.slice(0, 4000),
+      title: r.title ? decode(r.title) : undefined,
+      body: decode(r.body).slice(0, 4000),
       date: targetReviewDate(r.date),
       verifiedPurchase: r.verified ?? undefined,
       untrusted: true,

@@ -120,7 +120,7 @@ test("target.nextItem reads title, brand, highlights, description, images and sp
   assert.equal(item!.title, "Tirrinia Extra Large Picnic Blanket, Waterproof Lightweight Portable Outdoor Mat for Family Camping, Park, Beach, ( US Unique Print, 70''X80'')");
   assert.equal(item!.brand, "Tirrinia");
   assert.equal(item!.bullets.length, 2);
-  assert.equal(item!.description, "Tirrinia Extra-Large Picnic Blanket – Adventure-Ready Comfort Your Essential Outdoor Companion");
+  assert.equal(item!.description, "Tirrinia Extra-Large Picnic Blanket – Adventure-Ready Comfort Your Essential Outdoor Companion, our 70\" x 80\" picnic blanket");
   assert.deepEqual(item!.images.length, 2);
   assert.deepEqual(item!.specs, [["Dimensions (Overall)", "80 inches (L), 70 inches (W)"], ["Weight", "2 pounds"], ["Material", "Polyester"]]);
 });
