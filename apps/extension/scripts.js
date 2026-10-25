@@ -74,9 +74,32 @@ export const SCRIPTS = {
 }).filter((r) => r.tcin && r.title)),
   "target.resultsReady": (arg) => (!!document.querySelector('[data-test="ListingPageProductListing"] h3') || !!document.querySelector('[data-test="nlr-container"]') || /captcha|robot or human|access denied/i.test(document.title)),
   "target.cardsReady": (arg) => (document.querySelectorAll('[data-test="ListingPageProductListing"] h3').length >= 20),
-  "target.detailReady": (arg) => (!!document.querySelector('[data-test="product-title"]') && !!document.querySelector('[data-test="product-price"], [data-test="price-cdui-row"]') || /captcha|robot or human|access denied/i.test(document.title)),
+  "target.detailReady": (arg) => (!!document.getElementById('__NEXT_DATA__') || !!document.querySelector('[data-test="product-title"]') || /captcha|robot or human|access denied/i.test(document.title)),
+  "target.priceReady": (arg) => (!!document.querySelector('[data-test="product-price"]') || /captcha|robot or human|access denied/i.test(document.title)),
   "target.fulfillment": (arg) => ([...new Set(Array.from((document.querySelector('[role="region"][aria-label="Fulfillment"]') || document).querySelectorAll('[data-test="text-quill"]')).map((e) => (e.textContent || '').replace(/\s+/g, ' ').trim())
   .filter((s) => s.length < 120 && /^(Arrives|Get it|Ships free|Shipping|Delivery|Same Day|Pickup|Ready within|Order pickup|Drive Up|Only \d+ left|Out of stock|Sold out|Not available|Temporarily out)/i.test(s)))].slice(0, 6)),
+  "target.nextItem": (arg) => ((() => {
+  let d; try { d = JSON.parse(document.getElementById('__NEXT_DATA__')?.textContent || 'null'); } catch { return null; }
+  const hits = [];
+  const walk = (o, depth) => {
+    if (!o || typeof o !== 'object' || depth > 18 || hits.length > 4) return;
+    if (o.tcin && o.item && o.item.product_description) hits.push(o);
+    for (const k in o) walk(o[k], depth + 1);
+  };
+  walk(d, 0);
+  const p = hits.find((h) => String(h.tcin) === String(arg)) || hits[0];
+  if (!p) return null;
+  const it = p.item, pd = it.product_description || {}, ii = (it.enrichment || {}).image_info || {};
+  const strip = (s) => String(s || '').replace(/<br\s*\/?>/gi, ' ').replace(/<[^>]+>/g, '').replace(/&amp;/g, '&').replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/\s+/g, ' ').trim();
+  return {
+    title: strip(pd.title) || null,
+    brand: (it.primary_brand || {}).name || null,
+    bullets: ((pd.soft_bullets || {}).bullets || []).map(strip).filter(Boolean).slice(0, 12),
+    description: strip(pd.downstream_description).slice(0, 3000) || null,
+    images: [ii.primary_image].concat(ii.alternate_images || []).map((i) => i && i.url).filter(Boolean).slice(0, 8),
+    specs: (pd.bullet_descriptions || []).map((b) => strip(b).split(/:\s*/)).filter((kv) => kv.length > 1 && kv[1]).map((kv) => [kv[0], kv.slice(1).join(': ')]).slice(0, 40),
+  };
+})()),
   "target.nextReviews": (arg) => ((() => {
   let d; try { d = JSON.parse(document.getElementById('__NEXT_DATA__')?.textContent || 'null'); } catch { return []; }
   const hits = [];

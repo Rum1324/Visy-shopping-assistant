@@ -71,6 +71,30 @@ const NEXT_REVIEWS_JS = `(() => {
   const p = hits.find((h) => String(h.tcin) === String(arg)) || hits[0];
   return (p ? p.ratings_and_reviews.most_recent : []).map((r) => ({ id: String(r.id || ''), title: r.title || '', body: r.text || '', date: r.rating?.submitted_at || '', author: r.author?.nickname || null, rating: r.rating?.value ?? null, verified: null, syndicated: false })).filter((r) => r.body);
 })()`;
+// Same JSON, product.item: title, brand, highlights, description, images, specs. No price: Target fetches that
+// client-side and renders it only when visible, so a background tab may never show one. arg = the tcin to match.
+const NEXT_ITEM_JS = `(() => {
+  let d; try { d = JSON.parse(document.getElementById('__NEXT_DATA__')?.textContent || 'null'); } catch { return null; }
+  const hits = [];
+  const walk = (o, depth) => {
+    if (!o || typeof o !== 'object' || depth > 18 || hits.length > 4) return;
+    if (o.tcin && o.item && o.item.product_description) hits.push(o);
+    for (const k in o) walk(o[k], depth + 1);
+  };
+  walk(d, 0);
+  const p = hits.find((h) => String(h.tcin) === String(arg)) || hits[0];
+  if (!p) return null;
+  const it = p.item, pd = it.product_description || {}, ii = (it.enrichment || {}).image_info || {};
+  const strip = (s) => String(s || '').replace(/<br\\s*\\/?>/gi, ' ').replace(/<[^>]+>/g, '').replace(/&amp;/g, '&').replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/\\s+/g, ' ').trim();
+  return {
+    title: strip(pd.title) || null,
+    brand: (it.primary_brand || {}).name || null,
+    bullets: ((pd.soft_bullets || {}).bullets || []).map(strip).filter(Boolean).slice(0, 12),
+    description: strip(pd.downstream_description).slice(0, 3000) || null,
+    images: [ii.primary_image].concat(ii.alternate_images || []).map((i) => i && i.url).filter(Boolean).slice(0, 8),
+    specs: (pd.bullet_descriptions || []).map((b) => strip(b).split(/:\\s*/)).filter((kv) => kv.length > 1 && kv[1]).map((kv) => [kv[0], kv.slice(1).join(': ')]).slice(0, 40),
+  };
+})()`;
 
 /** Named page scripts (navigator/scripts.ts); the extension runs them by name. Whatever they return is UNTRUSTED. */
 export const TARGET_SCRIPTS = {
@@ -79,8 +103,11 @@ export const TARGET_SCRIPTS = {
   "target.resultsReady": `!!document.querySelector('${CARD_SEL} h3') || !!document.querySelector('[data-test="nlr-container"]') || ${CHALLENGE_JS}`,
   // The first page has ~24-30 cards; they stream in after the first one.
   "target.cardsReady": `document.querySelectorAll('${CARD_SEL} h3').length >= 20`,
-  "target.detailReady": `!!document.querySelector('[data-test="product-title"]') && !!document.querySelector('[data-test="product-price"], [data-test="price-cdui-row"]') || ${CHALLENGE_JS}`,
+  // The title and the page JSON are server-rendered; price, rating and delivery render later (only when visible).
+  "target.detailReady": `!!document.getElementById('__NEXT_DATA__') || !!document.querySelector('[data-test="product-title"]') || ${CHALLENGE_JS}`,
+  "target.priceReady": `!!document.querySelector('[data-test="product-price"]') || ${CHALLENGE_JS}`,
   "target.fulfillment": FULFILLMENT_JS,
+  "target.nextItem": NEXT_ITEM_JS,
   "target.nextReviews": NEXT_REVIEWS_JS,
   // Fallback: review cards load when their section scrolls into view (foreground tab only). Scrolling only, never a click.
   "target.scrollReviews": `void document.querySelector('[data-test="ReviewsDashboard"], [data-test="reviews-heading"]')?.scrollIntoView()`,
@@ -187,6 +214,9 @@ export function targetFields(raw: RawDetail, fulfillment: string[] = []) {
   };
 }
 
+/** target.nextItem: the product's server-rendered JSON (untrusted page data). */
+export type NextItem = { title: string | null; brand: string | null; bullets: string[]; description: string | null; images: string[]; specs: [string, string][] };
+
 type ScrapedReview = { id?: string; title: string; body: string; date: string; author: string | null; rating: number | null; verified: boolean | null; syndicated: boolean };
 
 const hash = (s: string) => {
@@ -288,7 +318,12 @@ export class TargetFlow {
     return candidates.length ? ok(candidates) : err("parse_failed", rows.length ? "Target results had no priced organic products" : "no Target result cards found");
   }
 
-  /** Navigator.getDetail for Target: seed recipe first (no AI), Claude-written recipe on a miss, then the ~8 newest reviews. */
+  /**
+   * Navigator.getDetail for Target. The page JSON gives title, brand, highlights, description, images, specs and
+   * reviews with no rendering. Price, deal, rating and delivery come from the rendered page via the seed recipe when
+   * Target has drawn them (a background tab often never does); otherwise the search card's values stand.
+   * Claude writes a recipe only if neither the JSON nor the page has a title.
+   */
   async getDetail(candidate: ProductCandidate, emit: Emit = () => {}): Promise<Result<ProductDetail>> {
     this.marks = {};
     const tcin = candidate.id.replace(/^target:A-/, "");
@@ -296,25 +331,29 @@ export class TargetFlow {
     const g = await this.goto(candidate.url);
     if (!g.ok) return g;
     const t0 = performance.now();
-    await this.driver.waitFor(this.tabId!, "target.detailReady", 15_000);
+    await this.driver.waitFor(this.tabId!, "target.detailReady", 10_000);
     this.mark("wait detail", t0);
     const b = await this.blockedGate();
     if (!b.ok) return b;
     const tab = this.tabId!;
-    const run = <T>(name: "recipe.replay" | "recipe.outline", arg: unknown) => this.driver.extract<T>(tab, name, arg);
+    const json = await this.driver.extract<NextItem | null>(tab, "target.nextItem", tcin).catch(() => null);
     const t1 = performance.now();
+    await this.driver.waitFor(tab, "target.priceReady", json?.title ? 2500 : 6000);
+    this.mark("wait price", t1);
+    const run = <T>(name: "recipe.replay" | "recipe.outline", arg: unknown) => this.driver.extract<T>(tab, name, arg);
+    const t2 = performance.now();
     let raw = await run<RawDetail>("recipe.replay", TARGET_PRODUCT_SEED).catch(() => null);
-    let via = "seed";
-    if (!raw?.title || !raw.price) {
+    let via = raw?.price ? "seed" : json?.title ? "json" : "seed";
+    if (!raw?.title && !json?.title) {
+      console.log(`[recipe] target seed missed on ${candidate.url}`);
       const x = await extractWithRecipes("target:product", candidate.url, run, this.recipes.cache, this.recipes.writer);
       raw = x.raw;
       via = x.via;
     }
-    this.mark("recipe", t1);
-    console.log(`[recipe] target:product via ${via}`);
+    this.mark("recipe", t2);
     const fulfillment = await this.driver.extract<string[]>(tab, "target.fulfillment").catch(() => []);
     emit({ stage: "reviews", message: "Reading Target reviews", marketplace: "target", at: at() });
-    const t2 = performance.now();
+    const t3 = performance.now();
     let scraped = await this.driver.extract<ScrapedReview[]>(tab, "target.nextReviews", tcin).catch(() => []);
     if (!scraped.length) {
       await this.driver.extract(tab, "target.scrollReviews").catch(() => {});
@@ -322,24 +361,26 @@ export class TargetFlow {
       scraped = await this.driver.extract<ScrapedReview[]>(tab, "target.reviews").catch(() => []);
     }
     const reviews = toTargetReviews(tcin, candidate.url, scraped);
-    this.mark("reviews", t2);
+    this.mark("reviews", t3);
     const f = raw ? targetFields(raw, fulfillment) : undefined;
+    console.log(`target detail ${candidate.id}: via ${via}, page price ${f?.price ? "yes" : "no (search price)"}, ${reviews.length} reviews`, this.marks);
+    const bullets = f?.bullets.length ? f.bullets : (json?.bullets ?? []);
     return ok({
       ...candidate,
-      title: f?.title || candidate.title,
-      brand: f?.brand ?? candidate.brand,
+      title: json?.title || f?.title || candidate.title,
+      brand: json?.brand?.replace(/[™®]/g, "").trim() || f?.brand || candidate.brand,
       price: f?.price ?? candidate.price,
       listPrice: f?.price ? f.listPrice : candidate.listPrice,
-      deal: f?.deal ?? candidate.deal,
+      deal: f?.price ? f.deal : candidate.deal,
       rating: f?.rating ?? candidate.rating,
       reviewCount: f?.reviewCount ?? candidate.reviewCount,
-      imageUrls: f?.imageUrls.length ? f.imageUrls : candidate.imageUrls,
+      imageUrls: json?.images.length ? json.images : f?.imageUrls.length ? f.imageUrls : candidate.imageUrls,
       shipping: f?.shipping ?? candidate.shipping,
       inStock: f?.inStock ?? candidate.inStock,
-      source: raw ? { via: via === "claude" ? "claude" : "recipe", confidence: 0.9, fetchedAt: at() } : candidate.source,
-      description: f?.description || f?.bullets.join(" ") || candidate.snippet || candidate.title,
-      bullets: f?.bullets ?? [],
-      specs: {},
+      source: raw || json ? { via: via === "claude" ? "claude" : "recipe", confidence: 0.9, fetchedAt: at() } : candidate.source,
+      description: json?.description || f?.description || bullets.join(" ") || candidate.snippet || candidate.title,
+      bullets,
+      specs: Object.fromEntries((json?.specs ?? []).map(([k, v]) => [k.slice(0, 80), v.slice(0, 300)])),
       banners: f?.banners ?? [],
       variants: [],
       retailerReviews: reviews,

@@ -5,9 +5,10 @@ import { chromium } from "playwright";
 import { DriverRequest, type ServerMsg } from "@visy/contracts";
 import { liveServices } from "../src/live.ts";
 import { ExtensionDriver } from "../src/navigator/driver/extension.ts";
-import type { RawDetail } from "../src/navigator/recipes.ts";
+import type { FlowDriver } from "../src/navigator/driver/flow.ts";
+import { RecipeCache, type RawDetail } from "../src/navigator/recipes.ts";
 import { scriptCall, type ScriptName } from "../src/navigator/scripts.ts";
-import { TARGET_PRODUCT_SEED, targetCandidate, targetFields, toTargetReviews, type TargetRow } from "../src/navigator/sites/target.ts";
+import { TARGET_PRODUCT_SEED, TargetFlow, targetCandidate, targetFields, toTargetReviews, type NextItem, type TargetRow } from "../src/navigator/sites/target.ts";
 
 const fixture = (f: string) => readFileSync(new URL(`./fixtures/${f}`, import.meta.url), "utf8");
 
@@ -112,6 +113,45 @@ test("target.nextReviews reads the page JSON (background tabs never render revie
   assert.equal(reviews[1]!.title, "Very large and easy to repackage after use");
   assert.equal(reviews[0]!.verifiedPurchase, undefined);
   assert.equal(any.length, 1, "no tcin match → first product's reviews");
+});
+
+test("target.nextItem reads title, brand, highlights, description, images and specs from the page JSON", { skip: !browser && "no Chromium for Playwright" }, async () => {
+  const [item] = await run<NextItem>(fixture("target-product.html"), ["target.nextItem", "91558607"]);
+  assert.equal(item!.title, "Tirrinia Extra Large Picnic Blanket, Waterproof Lightweight Portable Outdoor Mat for Family Camping, Park, Beach, ( US Unique Print, 70''X80'')");
+  assert.equal(item!.brand, "Tirrinia");
+  assert.equal(item!.bullets.length, 2);
+  assert.equal(item!.description, "Tirrinia Extra-Large Picnic Blanket – Adventure-Ready Comfort Your Essential Outdoor Companion");
+  assert.deepEqual(item!.images.length, 2);
+  assert.deepEqual(item!.specs, [["Dimensions (Overall)", "80 inches (L), 70 inches (W)"], ["Weight", "2 pounds"], ["Material", "Polyester"]]);
+});
+
+test("TargetFlow.getDetail in a background tab: no rendered price → search price stands, JSON fills the rest, no Claude call", async () => {
+  const candidate = targetCandidate({ tcin: "91558607", path: "/p/x/-/A-91558607", title: "Tirrinia Picnic Blanket", brand: "Tirrinia", lines: ["$29.99 reg $39.99", "Sale", "Shipping arrives Thu, Oct 29", "Ships free - exclusions apply"], rating: "Average customer rating is 4.8 out of 5 stars with 20 reviews.", image: null, sponsored: false })!;
+  const item: NextItem = { title: "Tirrinia Extra Large Picnic Blanket", brand: "Tirrinia", bullets: ["EXTRA LARGE", "MULTIPLE USE"], description: "Adventure-ready comfort", images: ["https://target.scene7.com/is/image/Target/GUEST_a"], specs: [["Weight", "2 pounds"]] };
+  const json = [{ id: "r1", title: "Great", body: "Waterproof and big.", date: "2026-07-05T10:19:28.094Z", author: "A", rating: 5, verified: null, syndicated: false }];
+  const unrendered = { title: "Tirrinia Extra Large Picnic Blanket", price: null, listPrice: null, deal: null, prime: null, rating: null, reviewCount: null, brand: null, availability: null, delivery: null, bullets: [], description: null, banners: [], images: [], specs: [], variants: [] };
+  const values: Record<string, unknown> = { "target.nextItem": item, "recipe.replay": unrendered, "target.fulfillment": [], "target.nextReviews": json, blockProbe: "" };
+  const driver = {
+    openTab: async () => ({ ok: true, data: { tabId: 3 } }),
+    navigate: async (_t: number, url: string) => ({ ok: true, data: { url } }),
+    waitFor: async (_t: number, name: string) => name !== "target.priceReady",
+    extract: async (_t: number, name: string) => values[name],
+    isBlocked: async () => false,
+    focus: async () => {},
+  } as unknown as FlowDriver;
+  const writer = { calls: 0, write: async () => { writer.calls++; return { ok: false, error: { code: "internal", message: "no", retryable: false } } as never; } };
+  const flow = new TargetFlow(driver, () => {}, { cache: new RecipeCache("/nonexistent/recipes.json"), writer });
+  const r = await flow.getDetail(candidate);
+  assert.ok(r.ok, JSON.stringify(r));
+  assert.equal(writer.calls, 0);
+  assert.equal(r.data.title, "Tirrinia Extra Large Picnic Blanket");
+  assert.deepEqual([r.data.price.cents, r.data.listPrice?.cents, r.data.deal?.label], [2999, 3999, "Sale"]);
+  assert.deepEqual([r.data.rating, r.data.reviewCount], [4.8, 20]);
+  assert.deepEqual(r.data.shipping, { eta: "Shipping arrives Thu, Oct 29", free: true });
+  assert.deepEqual(r.data.bullets, ["EXTRA LARGE", "MULTIPLE USE"]);
+  assert.equal(r.data.description, "Adventure-ready comfort");
+  assert.deepEqual(r.data.specs, { Weight: "2 pounds" });
+  assert.deepEqual(r.data.retailerReviews.map((x) => x.id), ["target:91558607:r1"]);
 });
 
 test("NAV=amazon routes Target search to live target.com in a background tab", async () => {
