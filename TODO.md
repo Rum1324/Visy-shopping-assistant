@@ -22,14 +22,14 @@ Line format: `[status] ID · task · owner · branch · since HH:MM PT`. Use one
 
 ## Open
 
-- [working] A-STT · Investigate speech-to-text: it looks broken and the mic button is missing from the side panel. Lead: `5dd71f1` simplified the panel to one send/stop control and may have dropped push-to-talk. Check `apps/extension/sidepanel.*` and the server's Cartesia `audio.end` path in `voice.ts` · agent: Mic and conversation UI (for Sota) · claude/a-mic-b8c4a4 · since 20:33 PT
+- [done] A-STT · Hands-free voice: mic on by default, live transcript in the input box (Cartesia /stt/turns), listen/stop tones, mute stops the track, barge-in · [PR #20](https://github.com/Rum1324/Visy-shopping-assistant/pull/20)
 - [open] LIVE-1 · Full live run on `main` in real Chrome: picnic blanket → shortlist → under $20 → review question → add → checkout read-back → yes, with no order placed
 - [open] C4 · Variants (size, color, quantity), filters, sort, and the checkout read-back flow on Amazon (`navigator/sites/amazon.ts`)
 - [working] B-PRELOAD · Agent calls C1b `flow.preload()` as soon as the shortlist is final (check whether the tool loop already does) · agent: Run latest demo (for Sota) · b/feedback · since 20:16 PT
 - [working] C-WMT-CART · Walmart add to cart and cart read-back. Search and detail are live (PR #16); a Walmart add still goes to the mock and returns not_found · agent: Multi-item cart tests (for Sota) · claude/multi-cart · since 23:02 PT
 - [open] D-PAGEQA · Answer "what's on this page?" over the C5 `PageState` capture
 - [working] C-MULTI · Several items (and quantities) in one cart, and choosing a color/size variant before adding, on Amazon, Walmart and Target; covers the variant + quantity part of C4 · agent: Multi-item cart tests (for Sota) · claude/multi-cart · since 23:02 PT
-- [open] A-VOICE · Decide whether voice-only must work with no clicks at all (motor-impaired users)
+- [done] A-VOICE · Yes: voice-only works with no clicks (mic on by default; only Chrome's one-time Allow, which mic.html asks for on open) · [PR #20](https://github.com/Rum1324/Visy-shopping-assistant/pull/20)
 - [open] DEMO · Feature freeze and rehearsal (H+14); warm `RecipeCache` and picker memory before going on stage
 
 ### From team testing (Slack, Oct 24)
@@ -37,18 +37,18 @@ Line format: `[status] ID · task · owner · branch · since HH:MM PT`. Use one
 - [working] UX-LEN · Spoken replies are too long; each option takes too long to read. Decide how much to say per turn (Alexa as a benchmark) · Yuka, Sota · agent: Run latest demo (for Sota) · b/feedback · since 20:16 PT
 - [working] UX-FORMAT · Present the 3 options like a normal store: names and prices first, then pros and cons for each · yujielee · agent: Run latest demo (for Sota) · b/feedback · since 20:16 PT
 - [open] UX-OPT3 · Bug: the agent only presents up to Option 2, not all 3 · Yuka
-- [working] UX-PAUSE · Bug: after pausing voice, clicking the "type here" input resumes voice · yujielee · agent: Pause voice input bug (for yujielee) · cursor/ux-pause · since 23:04 PT
 - [working] UX-CUT · Text is cut mid-word (the caption shows "Picnic Blank / et"). Check whether it's caption wrapping or how TTS chunks the text · Yuka · agent: Caption word wrap (for Sota) · b/feedback · since 20:48 PT
 - [working] UX-ASK-FIRST · Ask clarifying questions before searching · Sota (shipped in B-NARROW / PR #12; now one question at a time) · agent: Run latest demo (for Sota) · b/feedback · since 20:16 PT
 - [open] UX-NARROW · Decide how to handle the 3 narrowing/filtering options · Yuka
 - [open] UX-ASK-END · End every turn by asking the user a question · Yuka
 - [working] UX-PROGRESS · Spoken progress when work takes over ~2 s, with varied lines ("searching Amazon now", "comparing results from Walmart"); "One moment" is too repetitive · Yuka, Sota, yujielee · agent: Run latest demo (for Sota) · b/feedback · since 20:36 PT
-- [open] B-HISTORY · Use the conversation history as context for follow-up searches · Sota
+- [done] B-HISTORY · Follow-up searches ("make it black") keep the last search's budget and needs · [PR #20](https://github.com/Rum1324/Visy-shopping-assistant/pull/20)
 - [working] A-SHOWPAGE · When recommending, open the top pick's product page on screen instead of staying on the home tab · Sota (open all 3 options as tabs, focus option 1) · agent: Run latest demo (for Sota) · b/feedback · since 20:16 PT
 
 
 ## Done
 
+- [done] UX-PAUSE · Bug: after pausing voice, clicking the "type here" input resumes voice (audioCtx unlock ignored while paused) · yujielee · agent: Pause voice input bug (for yujielee) · PR pending
 - [done] C-TGT-CART · Target add to cart (Shipping, picker-chain Add to cart) and cart read-back with est. tax and total · [PR #24](https://github.com/Rum1324/Visy-shopping-assistant/pull/24)
 - [done] C-TGT · Real Target search and detail flow · [PR #18](https://github.com/Rum1324/Visy-shopping-assistant/pull/18)
 - [done] UX-PITCH · Bug: spoken option lines included the pitch model's self-corrections ("wait, correction: …") and wrong price math; the prompt now gets computed differences and a guard falls back to the template · agent: Clean pitch lines (for Sota) · [PR #25](https://github.com/Rum1324/Visy-shopping-assistant/pull/25)
@@ -69,6 +69,6 @@ Line format: `[status] ID · task · owner · branch · since HH:MM PT`. Use one
 - [done] ENV · Shared server keys across worktrees · [PR #8](https://github.com/Rum1324/Visy-shopping-assistant/pull/8)
 - [done] C3 · Product detail extraction with `RecipeCache` · [PR #9](https://github.com/Rum1324/Visy-shopping-assistant/pull/9)
 - [done] D-APIFY · External reviews from Reddit, YouTube and articles via Apify · [PR #17](https://github.com/Rum1324/Visy-shopping-assistant/pull/17)
-- [done] UX-SALES · Say explicitly when a product is on sale or has a deal · yujielee · agent: On-sale mentions (for Sota) · [PR #14](https://github.com/Rum1324/Visy-shopping-assistant/pull/14)
+- [done] UX-SALES · Say explicitly when a product is on sale or has a deal · yujielee · agent: On-sale mentions (for Sota) · [PR #14](https://github.com/Rum1324/Visy-shopping-assistant/pull/14), follow-up [PR #22](https://github.com/Rum1324/Visy-shopping-assistant/pull/22)
 - [done] B-PREFS-TEST · Test that preferences are really stored in Convex: favorite marketplaces and brands, what the user cares about (price, quality, shipping speed) · yujielee · agent: Preferences in Convex (for Sota) · [PR #15](https://github.com/Rum1324/Visy-shopping-assistant/pull/15)
 - [done] UX-SPEED · Let the user adjust voice speed · yujielee · [PR #19](https://github.com/Rum1324/Visy-shopping-assistant/pull/19)

@@ -6,7 +6,7 @@ If you improvise, add an entry in the same commit and push it. Say what changed,
 
 ## 2026-10-24 — Pause stays paused when focusing the text box (UX-PAUSE)
 
-`pauseAll()` suspends `audioCtx` and sets `paused`. The side panel also resumes `audioCtx` on any `pointerdown` and on `#text` focus (Chrome autoplay unlock). That un-paused the speakers while leaving `paused === true`, so caption reveal stayed frozen (voice with no on-screen text). Fix: only call `audioCtx.resume()` from those unlock paths and from `playPcm` when `!paused`. Explicit Resume / submit still go through `resumeAll()`.
+`pauseAll()` suspends `audioCtx` and sets `paused`. The side panel also resumes `audioCtx` on any `pointerdown` and on `#text` focus (Chrome autoplay unlock). That un-paused the speakers while leaving `paused === true`, so caption reveal stayed frozen (voice with no on-screen text). Fix: only call `audioCtx.resume()` from those unlock paths and from `playPcm` when `!paused`. After A-STT, `pointerdown` still resumes `micCtx`/`toneCtx` and calls `maybeListen()` (gated on `!paused`). Explicit Resume / submit still go through `resumeAll()`.
 
 ## 2026-10-24 — Drop loaded-language reviews before synthesis (D-UNBIASED)
 
