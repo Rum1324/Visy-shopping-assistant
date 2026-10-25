@@ -53,7 +53,7 @@ function dealSentence(label: string, membership?: string): string | undefined {
     const amount = /(\d+%|\$\d[\d,]*(?:\.\d{2})?)/.exec(text)?.[1];
     return amount ? `There's a ${amount} coupon${who}.` : `There's a coupon${who}.`;
   }
-  if (/^(on )?sale$/i.test(text)) return `It's on sale${who}.`;
+  if (/^((on )?sale|reduced price)$/i.test(text)) return `It's on sale${who}.`;
   const bare = text.replace(/[.!]+$/, "");
   // "Limited time deal" → "It's a limited time deal." Anything else ("Rollback", "20% off") is read as shown.
   if (/^[a-z ]*\bdeal\b/i.test(bare)) return `It's a ${bare[0]!.toLowerCase()}${bare.slice(1)}${who}.`;
@@ -67,8 +67,9 @@ function dealSentence(label: string, membership?: string): string | undefined {
 export function saleNote(p: Priced): string | undefined {
   const was = wasPrice(p);
   const parts = [was ? `On sale: ${dollars(p.price.cents)}, down from ${dollars(was)}.` : undefined];
-  // A bare "Sale" badge adds nothing once the strike price was said.
-  if (p.deal?.label && !(was && /^(on )?sale$/i.test(p.deal.label.trim()))) parts.push(dealSentence(p.deal.label, p.deal.requiresMembership));
+  // Once the strike price was said, a bare "Sale" / "Reduced price" badge or a "save $5.06" adds nothing.
+  const label = was ? p.deal?.label.replace(/,?\s*save \$[\d,.]+$/i, "").trim() : p.deal?.label;
+  if (label && !(was && /^((on )?sale|reduced price)$/i.test(label))) parts.push(dealSentence(label, p.deal?.requiresMembership));
   return parts.filter(Boolean).join(" ") || undefined;
 }
 

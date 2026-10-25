@@ -39,6 +39,11 @@ test("sales: coupons and deal badges become one short sentence", () => {
   // A bare "Sale" badge next to a strike price is not said twice.
   assert.equal(saleNote(priced(1899, 2499, "Sale")), "On sale: $18.99, down from $24.99.");
   assert.equal(saleNote(priced(1899, undefined, "Sale")), "It's on sale.");
+  // Walmart (C-WMT): badge text, plus the savings line on detail pages.
+  assert.equal(saleNote(priced(2062, 2568, "Rollback, save $5.06")), "On sale: $20.62, down from $25.68. Deal: Rollback.");
+  assert.equal(saleNote(priced(2062, 2568, "Reduced price")), "On sale: $20.62, down from $25.68.");
+  assert.equal(saleNote(priced(2062, undefined, "Reduced price")), "It's on sale.");
+  assert.equal(saleNote(priced(2062, undefined, "Clearance")), "Deal: Clearance.");
 });
 
 test("sales: each option's spoken line ends with the sale sentence", () => {
