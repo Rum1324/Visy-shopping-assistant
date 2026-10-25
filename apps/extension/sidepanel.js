@@ -8,6 +8,7 @@ const go = document.querySelector("#go");
 const checkout = document.querySelector("#checkout");
 const checkoutText = document.querySelector("#checkout-text");
 const confirmBtn = document.querySelector("#confirm");
+const micBtn = document.querySelector("#mic");
 const settingsOpenBtn = document.querySelector("#settings-open");
 const settingsBackBtn = document.querySelector("#settings-back");
 const settingsEl = document.querySelector("#settings");
@@ -25,7 +26,8 @@ let ws = null;
 let checkoutTotal = null;
 let busy = false;
 let chatting = false;
-const WORKING = new Set(["clarifying", "searching", "shortlisting"]);
+// "clarifying" is Visy waiting for the user's answer, so it is not working.
+const WORKING = new Set(["searching", "shortlisting", "carting"]);
 const talk = { timer: 0, utter: null, shown: 0, chars: [], token: 0, raf: 0 };
 const pendingSay = new Map();
 const revealTimers = new Set();
@@ -40,11 +42,22 @@ let ttsId = "";
 let audioCtx = null;
 let nextTime = 0;
 let playingCount = 0;
-let listening = false;
-let capturingMic = false;
+let micOn = true; // A-STT: hands-free by default; the mic button mutes
+let capturingMic = false; // streaming a turn to the server right now
 let micStream = null;
 let micCtx = null;
 let micNode = null;
+let micLevel = 0;
+let preroll = []; // the last second of mic audio while Visy is quiet, so the start of a turn isn't cut off
+let prerollSamples = 0;
+const PREROLL_SAMPLES = 16000; // 1 s at MIC_RATE
+let listenTimer = 0;
+let listenBackoffUntil = 0;
+let toneCtx = null;
+let dictating = false; // the input box is showing live words, not something the user typed
+let owesChime = true; // play the listen tone once each time it becomes the user's turn
+let chimeTimer = 0;
+let lastFinal = { text: "", at: 0 };
 const MIC_RATE = 16000;
 let speechRate = loadSpeechRate();
 
@@ -66,7 +79,7 @@ function showWelcome() {
   chatting = false;
   paused = false;
   window.visyHold?.(false);
-  stopListening({ flush: false });
+  stopListening();
   document.body.classList.remove("chatting");
   options.replaceChildren();
   log.replaceChildren();
@@ -87,10 +100,19 @@ async function boot() {
     "pointerdown",
     () => {
       void audioCtx?.resume?.();
-      void ensureMic();
+      void micCtx?.resume?.();
+      void toneCtx?.resume?.();
+      maybeListen();
     },
     true,
   );
+  micBtn.addEventListener("click", () => setMicOn(!micOn));
+  text.addEventListener("input", () => {
+    dictating = false;
+    text.classList.remove("dictating");
+  });
+  paintMic();
+  requestAnimationFrame(paintLevel);
   text.addEventListener("focus", () => {
     void audioCtx?.resume?.();
   });
@@ -172,6 +194,7 @@ function helloWithName() {
 
 function stopVoice() {
   nextTime = 0;
+  playingCount = 0; // a closed context never fires onended
   try {
     audioCtx?.close();
   } catch {
@@ -254,10 +277,12 @@ function playWithAudio(el, phrase, played) {
   const chars = fillChars(el, phrase);
   const shown = { value: 0 };
   const { ctx, start, duration } = played;
+  let raf = 0;
   const tick = () => {
+    revealTimers.delete(raf); // finished frames must not keep isPlaying() true
     if (paused) {
-      const id = requestAnimationFrame(tick);
-      revealTimers.add(id);
+      raf = requestAnimationFrame(tick);
+      revealTimers.add(raf);
       return;
     }
     if (ctx.state === "closed") return;
@@ -267,10 +292,11 @@ function playWithAudio(el, phrase, played) {
     if (shown.value >= chars.length || elapsed >= duration) {
       revealChars(chars, shown, chars.length);
       paintGo();
+      maybeListen();
       return;
     }
-    const id = requestAnimationFrame(tick);
-    revealTimers.add(id);
+    raf = requestAnimationFrame(tick);
+    revealTimers.add(raf);
   };
   const delay = Math.max(0, start - ctx.currentTime);
   const wait = setTimeout(() => {
@@ -320,9 +346,11 @@ function finishSay(item, bytes) {
   }
   const played = bytes && bytes.length > 1 ? playPcm(bytes, ttsRate) : null;
   if (!item.el) item.el = addTurn("Visy");
+  // TTS failed: show the words anyway, and don't leave the mic waiting on audio that never comes.
   if (!played) {
     sparkOnly(item.el, item.text);
     paintGo();
+    maybeListen();
     return;
   }
   playWithAudio(item.el, item.text, played);
@@ -341,7 +369,7 @@ async function getDisplayName() {
 }
 
 function isPlaying() {
-  return Boolean(busy || pendingSay.size || revealTimers.size || listening || playingCount);
+  return Boolean(busy || pendingSay.size || revealTimers.size || playingCount);
 }
 
 function paintGo() {
@@ -355,8 +383,8 @@ function paintGo() {
 function pauseAll() {
   if (paused) return;
   paused = true;
+  stopListening();
   void audioCtx?.suspend?.();
-  void micCtx?.suspend?.();
   window.visyHold?.(true);
   paintGo();
 }
@@ -365,7 +393,6 @@ function resumeAll() {
   if (!paused) return;
   paused = false;
   void audioCtx?.resume?.();
-  void micCtx?.resume?.();
   window.visyHold?.(false);
   paintGo();
   maybeListen();
@@ -390,8 +417,11 @@ function connect() {
   ws.onopen = () => {
     showLink(null);
     helloWithName();
+    maybeListen();
   };
   ws.onclose = () => {
+    capturingMic = false;
+    paintMic();
     showLink("Reconnecting…");
     setTimeout(connect, 1000);
   };
@@ -445,7 +475,9 @@ async function onMessage(ev) {
       beginSay(msg.id, msg.text, chatting ? "chat" : "welcome");
     }
   } else if (msg.type === "transcript") {
-    line("You", msg.text);
+    if (!msg.final) showHeard(msg.text);
+    else if (capturingMic) turnHeard(msg.text);
+    else line("You", msg.text);
   } else if (msg.type === "tts.start") {
     ttsOn = true;
     ttsId = msg.id;
@@ -461,7 +493,8 @@ async function onMessage(ev) {
     ttsOn = false;
     ttsId = "";
     ttsChunks = [];
-    if (chatting) stopTalk();
+    stopTalk(); // barge-in: Visy goes quiet the moment the server cancels its turn
+    maybeListen();
   } else if (msg.type === "session.snapshot") {
     setBusy(WORKING.has(msg.state.phase));
     if (!WORKING.has(msg.state.phase)) {
@@ -492,7 +525,15 @@ async function onMessage(ev) {
     checkoutTotal = msg.review.total;
     sparkOnly(checkoutText, msg.review.readBack);
   } else if (msg.type === "error") {
-    beginSay(`err-${Date.now()}`, msg.error.message);
+    // Shown, not queued as speech: a pending say with no audio would keep the mic closed.
+    if (capturingMic) {
+      capturingMic = false;
+      listenBackoffUntil = Date.now() + 3000;
+      showHeard("");
+      paintMic();
+    }
+    sparkOnly(addTurn("Visy"), msg.error.message);
+    maybeListen();
   }
   if (msg.type === "session.snapshot" && msg.state.phase !== "checkout_review") {
     checkout.hidden = true;
@@ -520,9 +561,10 @@ form.addEventListener("submit", (ev) => {
     return;
   }
   if (paused) resumeAll();
-  stopListening({ flush: false });
   if (busy) send({ type: "user.interrupt" });
   startChat();
+  lastFinal = { text: value, at: Date.now() };
+  owesChime = true;
   line(userName, value);
   send({ type: "user.text", text: value });
   text.value = "";
@@ -542,7 +584,6 @@ function concat(chunks) {
 
 function playPcm(bytes, rate) {
   if (bytes.length < 2) return null;
-  stopListening({ flush: false });
   audioCtx ??= new AudioContext({ sampleRate: rate });
   if (audioCtx.state === "suspended") void audioCtx.resume();
   const samples = new Int16Array(bytes.buffer, bytes.byteOffset, Math.floor(bytes.byteLength / 2));
@@ -633,18 +674,105 @@ function timeCompress(input, factor) {
 }
 
 let askingMic = false;
+let micOpening = null;
 
-async function ensureMic() {
-  if (micStream) return true;
+/** Opens the mic once and keeps it open while unmuted. Frames go to the server only while capturingMic. */
+function ensureMic() {
+  if (micStream && micCtx) return Promise.resolve(true);
+  micOpening ??= openMic().finally(() => {
+    micOpening = null;
+  });
+  return micOpening;
+}
+
+async function openMic() {
+  let stream;
   try {
-    micStream = await navigator.mediaDevices.getUserMedia({
-      audio: { channelCount: 1, echoCancellation: true, noiseSuppression: true },
+    stream = await navigator.mediaDevices.getUserMedia({
+      audio: { channelCount: 1, echoCancellation: true, noiseSuppression: true, autoGainControl: true },
     });
-    return true;
   } catch {
     void askMicTab();
     return false;
   }
+  if (!micOn) {
+    for (const t of stream.getTracks()) t.stop();
+    return false;
+  }
+  let ctx;
+  let src;
+  try {
+    ctx = new AudioContext({ sampleRate: MIC_RATE });
+    src = ctx.createMediaStreamSource(stream);
+  } catch {
+    void ctx?.close();
+    ctx = new AudioContext();
+    src = ctx.createMediaStreamSource(stream);
+  }
+  const proc = ctx.createScriptProcessor(2048, 1, 1);
+  const sink = ctx.createGain();
+  sink.gain.value = 0;
+  src.connect(proc);
+  proc.connect(sink);
+  sink.connect(ctx.destination);
+  const inRate = ctx.sampleRate;
+  proc.onaudioprocess = (ev) => {
+    const input = downsample(ev.inputBuffer.getChannelData(0), inRate, MIC_RATE);
+    micLevel = Math.max(rmsOf(input), micLevel * 0.85);
+    const pcm = floatToS16(input);
+    if (capturingMic) {
+      if (ws?.readyState === WebSocket.OPEN) ws.send(pcm.buffer);
+    } else if (playingCount === 0 && !paused) {
+      preroll.push(pcm);
+      prerollSamples += pcm.length;
+      while (prerollSamples > PREROLL_SAMPLES) prerollSamples -= preroll.shift().length;
+    } else {
+      clearPreroll(); // never send Visy's own voice
+    }
+  };
+  micStream = stream;
+  micCtx = ctx;
+  micNode = proc;
+  void ctx.resume();
+  return true;
+}
+
+function clearPreroll() {
+  preroll = [];
+  prerollSamples = 0;
+}
+
+/** Muted means the track is stopped: the browser captures nothing and the mic light goes off. */
+function closeMic() {
+  if (micNode) {
+    micNode.onaudioprocess = null;
+    try {
+      micNode.disconnect();
+    } catch {
+      /* ignore */
+    }
+  }
+  for (const t of micStream?.getTracks() ?? []) t.stop();
+  void micCtx?.close();
+  micNode = null;
+  micStream = null;
+  micCtx = null;
+  micLevel = 0;
+  clearPreroll();
+}
+
+function setMicOn(next) {
+  micOn = next;
+  if (!micOn) {
+    stopListening();
+    closeMic();
+    tone("mute");
+  } else {
+    listenBackoffUntil = 0;
+    owesChime = true; // chimes as soon as the mic is open and Visy is quiet
+    void ensureMic().then((ok) => ok && maybeListen());
+  }
+  paintMic();
 }
 
 async function askMicTab() {
@@ -660,85 +788,137 @@ async function askMicTab() {
 chrome.runtime.onMessage.addListener((msg) => {
   if (msg?.type !== "visy.mic.granted") return;
   askingMic = false;
-  void ensureMic().then((ok) => {
-    if (ok) maybeListen();
-  });
+  if (micOn) void ensureMic().then((ok) => ok && maybeListen());
 });
 
+function canListen() {
+  return micOn && !capturingMic && !paused && ws?.readyState === WebSocket.OPEN;
+}
+
+/**
+ * Hands-free: while unmuted the mic streams the whole time, Visy's own speech included
+ * (echo cancellation plus the server's echo check keep Visy from hearing itself). Cartesia
+ * finds the turns, so the user can talk over Visy to interrupt it.
+ */
 function maybeListen() {
-  if (paused || busy || ttsOn || pendingSay.size || playingCount > 0) return;
-  void startListening();
+  clearTimeout(listenTimer);
+  if (canListen()) listenTimer = setTimeout(() => void startListening(), Math.max(0, listenBackoffUntil - Date.now()));
+  maybeChime();
 }
 
 async function startListening() {
-  if (listening || paused || busy || ttsOn || pendingSay.size || playingCount > 0) return;
+  if (!canListen()) return;
   if (!(await ensureMic())) return;
-  if (listening || paused || busy) return;
-  listening = true;
+  if (!canListen()) return;
+  void micCtx?.resume?.();
   capturingMic = true;
-  micCtx = new AudioContext({ sampleRate: MIC_RATE });
-  const src = micCtx.createMediaStreamSource(micStream);
-  const proc = micCtx.createScriptProcessor(4096, 1, 1);
-  const mute = micCtx.createGain();
-  mute.gain.value = 0;
-  src.connect(proc);
-  proc.connect(mute);
-  mute.connect(micCtx.destination);
-  micNode = proc;
-  const inRate = micCtx.sampleRate;
   send({ type: "audio.start", format: { encoding: "pcm_s16le", sampleRate: MIC_RATE } });
-  let heard = false;
-  let silence = 0;
-  proc.onaudioprocess = (ev) => {
-    if (!capturingMic || paused) return;
-    const input = downsample(ev.inputBuffer.getChannelData(0), inRate, MIC_RATE);
-    if (ws?.readyState === WebSocket.OPEN) ws.send(floatToS16(input).buffer);
-    const rms = rmsOf(input);
-    const dt = input.length / MIC_RATE;
-    if (rms > 0.018) {
-      heard = true;
-      silence = 0;
-    } else if (heard) {
-      silence += dt;
-      if (silence > 0.75) endUtterance();
-    }
-  };
-  paintGo();
+  for (const b of preroll) ws.send(b.buffer);
+  clearPreroll();
+  paintMic();
+  maybeChime();
 }
 
-function endUtterance() {
+function quietTurn() {
+  return micOn && capturingMic && !paused && !busy && !ttsOn && !pendingSay.size && playingCount === 0 && !dictating;
+}
+
+/** Rising tone = your turn: Visy has finished talking and working. */
+function maybeChime() {
+  clearTimeout(chimeTimer);
+  if (!owesChime || !quietTurn()) return;
+  chimeTimer = setTimeout(() => {
+    if (!owesChime || !quietTurn()) return;
+    owesChime = false;
+    tone("listen");
+  }, 300);
+}
+
+/** Stop streaming (mute, pause, reset). The server drops anything unfinished. */
+function stopListening() {
+  clearTimeout(listenTimer);
   if (!capturingMic) return;
-  stopListening({ flush: true });
+  capturingMic = false;
+  send({ type: "audio.end" });
+  showHeard("");
+  paintMic();
+}
+
+/** Cartesia decided the user finished their turn. The mic keeps streaming for the next one. */
+function turnHeard(said) {
+  if (said === lastFinal.text && Date.now() - lastFinal.at < 8000) return; // the agent echoes it back
+  lastFinal = { text: said, at: Date.now() };
+  tone("done");
+  showHeard("");
   if (!chatting) startChat();
+  line(userName, said);
+  owesChime = true;
   setBusy(true);
 }
 
-function stopListening({ flush = false } = {}) {
-  const was = capturingMic;
-  capturingMic = false;
-  listening = false;
-  if (micNode) {
-    try {
-      micNode.disconnect();
-    } catch {
-      /* ignore */
-    }
-    micNode.onaudioprocess = null;
-    micNode = null;
-  }
-  if (micCtx) {
-    void micCtx.close();
-    micCtx = null;
-  }
-  if (was && flush) send({ type: "audio.end" });
-  paintGo();
+/** Live words go in the input box, like dictation. Never overwrites something the user typed. */
+function showHeard(partial) {
+  if (!dictating && text.value.trim()) return;
+  dictating = Boolean(partial);
+  text.value = partial;
+  text.classList.toggle("dictating", dictating);
+  if (partial) text.scrollLeft = text.scrollWidth;
 }
 
+function paintMic() {
+  text.placeholder = !micOn ? "muted, type here" : capturingMic ? "listening…" : "type here";
+  micBtn.classList.toggle("muted", !micOn);
+  micBtn.classList.toggle("listening", micOn && capturingMic);
+  micBtn.setAttribute("aria-pressed", String(!micOn));
+  const label = !micOn ? "Microphone muted. Press to unmute." : capturingMic ? "Listening. Press to mute." : "Microphone on. Press to mute.";
+  micBtn.setAttribute("aria-label", label);
+  micBtn.title = !micOn ? "Unmute" : "Mute";
+}
+
+function paintLevel() {
+  const v = capturingMic ? Math.min(1, micLevel * 9) : 0;
+  micBtn.style.setProperty("--level", v.toFixed(3));
+  micLevel *= 0.92;
+  requestAnimationFrame(paintLevel);
+}
+
+/** Sound cues for users who can't see the screen: rising = listening, falling = got it, low = muted. */
+function tone(kind) {
+  try {
+    toneCtx ??= new AudioContext();
+    void toneCtx.resume();
+    const notes = kind === "listen" ? [660, 990] : kind === "done" ? [880, 587] : [392];
+    const t0 = toneCtx.currentTime + 0.01;
+    notes.forEach((freq, i) => {
+      const at = t0 + i * 0.09;
+      const osc = toneCtx.createOscillator();
+      const gain = toneCtx.createGain();
+      osc.type = "sine";
+      osc.frequency.value = freq;
+      gain.gain.setValueAtTime(0.0001, at);
+      gain.gain.exponentialRampToValueAtTime(0.14, at + 0.015);
+      gain.gain.exponentialRampToValueAtTime(0.0001, at + 0.16);
+      osc.connect(gain).connect(toneCtx.destination);
+      osc.start(at);
+      osc.stop(at + 0.18);
+    });
+  } catch {
+    /* no audio device */
+  }
+}
+
+/** Box-filter downsample so a 48 kHz fallback context doesn't alias into the speech band. */
 function downsample(input, from, to) {
   if (from === to) return input;
   const ratio = from / to;
   const out = new Float32Array(Math.max(1, Math.floor(input.length / ratio)));
-  for (let i = 0; i < out.length; i++) out[i] = input[Math.min(input.length - 1, Math.floor(i * ratio))] ?? 0;
+  for (let i = 0; i < out.length; i++) {
+    const a = Math.floor(i * ratio);
+    const b = Math.min(input.length, Math.floor((i + 1) * ratio));
+    let sum = 0;
+    for (let j = a; j < b; j++) sum += input[j] ?? 0;
+    out[i] = sum / Math.max(1, b - a);
+  }
   return out;
 }
 

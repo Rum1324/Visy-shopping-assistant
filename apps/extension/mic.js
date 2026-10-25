@@ -1,7 +1,7 @@
 const allow = document.querySelector("#allow");
 const err = document.querySelector("#err");
 
-allow.addEventListener("click", async () => {
+async function ask() {
   err.textContent = "";
   try {
     const stream = await navigator.mediaDevices.getUserMedia({
@@ -13,4 +13,8 @@ allow.addEventListener("click", async () => {
   } catch {
     err.textContent = "Allow the microphone in the Chrome prompt, then try again.";
   }
-});
+}
+
+allow.addEventListener("click", ask);
+// Ask on open, so the only click left is Chrome's own Allow (A-VOICE).
+void ask();
