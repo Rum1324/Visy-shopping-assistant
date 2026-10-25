@@ -46,7 +46,7 @@ Line format: `[status] ID · task · owner · branch · since HH:MM PT`. Use one
 - [working] UX-SPEED · Let the user adjust voice speed · yujielee · agent: Voice speed adjustment (for Pixl) · cursor/ux-speed-c3e0 · since 21:55 PT
 - [working] B-HISTORY · Use the conversation history as context for follow-up searches · Sota · agent: Mic and conversation UI (for Sota) · claude/a-mic-b8c4a4 · since 22:06 PT
 - [working] A-SHOWPAGE · When recommending, open the top pick's product page on screen instead of staying on the home tab · Sota (open all 3 options as tabs, focus option 1) · agent: Run latest demo (for Sota) · b/feedback · since 20:16 PT
-- [open] D-UNBIASED · Unbiased review summary: balance retailer reviews with outside sources (ties to D-APIFY) · Yuka
+- [working] D-UNBIASED · Unbiased review summary: balance retailer reviews with outside sources (ties to D-APIFY) · agent: Unbiased review summary (for Pixl) · d/unbiased · since 22:15 PT
 
 
 ## Done
