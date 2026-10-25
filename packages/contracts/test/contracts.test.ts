@@ -23,6 +23,8 @@ describe("wire protocol", () => {
       { type: "session.snapshot", state: fixtures.session },
       { type: "driver.request", id: "d1", req: { op: "snapshot", tabId: 101 } },
       { type: "checkout.confirmRequired", review: fixtures.checkout },
+      { type: "settings.changed", speechRate: 1.4 },
+      { type: "settings.changed", micMuted: true },
     ];
     for (const m of client) expect(ClientMsg.safeParse(m).success).toBe(true);
     for (const m of server) expect(ServerMsg.safeParse(m).success).toBe(true);

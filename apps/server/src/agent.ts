@@ -20,6 +20,8 @@ import { createProgress } from "./progress.ts";
 import { isPlantSearch } from "./navigator/sites/nearlynatural.ts";
 import { applySaved, confirmLine, favoriteStores, prefFact, savedBlock, stated, withFact, type PrefKind } from "./saved-prefs.ts";
 import { cleanListingTitle, overview, pitchWriter, saleNote, speakable, templateLine, withSale, type Option, type PitchWriter } from "./present.ts";
+import { applySpeechRate, parseSpeechRateCommand, speechRateAsk, speechRateConfirm } from "./speech-rate.ts";
+import { micMuteConfirm, parseMicMuteCommand } from "./mic-mute.ts";
 import {
   CONTRACT_VERSION,
   Need,
@@ -194,6 +196,25 @@ export function createAgent(
       return;
     }
     sink.send({ type: "transcript", text: said, final: true });
+    // Mic mute: fixed rule before Claude (same as the side-panel mic button).
+    const muteCmd = parseMicMuteCommand(said);
+    if (muteCmd) {
+      await say(micMuteConfirm(muteCmd.muted));
+      sink.send({ type: "settings.changed", micMuted: muteCmd.muted });
+      return;
+    }
+    // Voice speed: fixed rule before Claude, so "speak faster" never becomes a product search.
+    const speedCmd = parseSpeechRateCommand(said);
+    if (speedCmd) {
+      if (speedCmd.kind === "ask") {
+        await say(speechRateAsk(speechRate), "question");
+        return;
+      }
+      speechRate = applySpeechRate(speechRate, speedCmd);
+      sink.send({ type: "settings.changed", speechRate });
+      await say(speechRateConfirm(speechRate));
+      return;
+    }
     // The checkout gate stays a fixed rule, before Claude sees the turn.
     if (state.phase === "checkout_review" && state.checkout && YES.test(said)) {
       await confirm(state.checkout.total);
@@ -332,6 +353,24 @@ export function createAgent(
         return { content: "Done." };
       case "remember_preference":
         return rememberPreference(input.kind, input.value, turn.said);
+      case "set_speech_rate": {
+        if (input.reset) speechRate = applySpeechRate(speechRate, { kind: "reset" });
+        else if (input.rate != null) speechRate = applySpeechRate(speechRate, { kind: "absolute", rate: input.rate });
+        else if (input.delta != null) speechRate = applySpeechRate(speechRate, { kind: "delta", delta: input.delta });
+        else {
+          await say(speechRateAsk(speechRate), "question");
+          return { content: "Asked how to change speed." };
+        }
+        sink.send({ type: "settings.changed", speechRate });
+        await say(speechRateConfirm(speechRate));
+        return { content: "Updated voice speed and confirmed aloud." };
+      }
+      case "set_mic_muted": {
+        const muted = Boolean(input.muted);
+        await say(micMuteConfirm(muted));
+        sink.send({ type: "settings.changed", micMuted: muted });
+        return { content: muted ? "Muted the mic." : "Unmuted the mic." };
+      }
       case "ask_clarifying_question":
         await say(input.text, "question");
         return { content: "Asked." };
@@ -1035,7 +1074,7 @@ async function saveUsual(productId: string, title: string, evidence: string) {
     handleText,
     confirm,
     setSpeech(patch: { speechRate?: number }) {
-      if (patch.speechRate != null) speechRate = patch.speechRate;
+      if (patch.speechRate != null) speechRate = applySpeechRate(speechRate, { kind: "absolute", rate: patch.speechRate });
     },
     get speechRate() {
       return speechRate;

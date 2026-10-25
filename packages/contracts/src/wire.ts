@@ -65,6 +65,14 @@ export const ServerMsg = z.discriminatedUnion("type", [
   z.object({ type: z.literal("session.snapshot"), state: SessionState }),
   z.object({ type: z.literal("driver.request"), id: z.string(), req: DriverRequest }),
   z.object({ type: z.literal("checkout.confirmRequired"), review: CheckoutReview }),
+  /** Server applied a settings change (voice/text). Client should update UI / localStorage / mic. */
+  z.object({
+    type: z.literal("settings.changed"),
+    speechRate: z.number().min(0.5).max(3).optional(),
+    verbosity: z.enum(["brief", "normal", "detailed"]).optional(),
+    /** True = mute mic (same as the side-panel mic button). */
+    micMuted: z.boolean().optional(),
+  }),
   z.object({ type: z.literal("error"), error: AppError }),
 ]);
 export type ServerMsg = z.infer<typeof ServerMsg>;

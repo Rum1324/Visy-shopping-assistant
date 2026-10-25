@@ -53,6 +53,8 @@ const TOOL: Record<ToolName, Activity> = {
   recall_usual: "memory",
   remember_as_usual: "saving",
   remember_preference: "saving",
+  set_speech_rate: "saving",
+  set_mic_muted: "saving",
   ask_clarifying_question: "thinking",
 };
 

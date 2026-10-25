@@ -18,6 +18,7 @@ body {
 body.settings-open #welcome,
 body.settings-open #chat,
 body.settings-open #composer,
+body.settings-open #mute-prompt,
 body.settings-open #status {
   display: none !important;
 }
@@ -138,6 +139,17 @@ body.chatting #chat { display: flex; }
 #log .visy { color: #f5f5f0; }
 #checkout { flex-shrink: 0; padding: 12px; background: #1c1c1c; border-radius: 12px; }
 #checkout p { margin: 0 0 8px; font-size: 1.1rem; }
+.mute-prompt {
+  flex-shrink: 0;
+  margin: 0 0 8px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid #ff8a8a;
+  background: rgba(255, 138, 138, 0.12);
+  color: #ffb4b4;
+  font-size: 0.95rem;
+}
+.mute-prompt[hidden] { display: none; }
 #composer { flex-shrink: 0; display: flex; gap: 8px; align-items: center; }
 input, button {
   font: inherit;
