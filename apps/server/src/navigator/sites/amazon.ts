@@ -32,14 +32,16 @@ const RESULTS_JS = `Array.from(document.querySelectorAll('${RESULT_SEL}')).map((
 const SUBTOTAL_SEL = "#sc-subtotal-amount-activecart, #sc-subtotal-amount-buybox";
 const SUBTOTAL_JS = `(document.querySelector('${SUBTOTAL_SEL}')?.innerText || '').trim()`;
 const PROCEED_SEL = 'input[name="proceedToRetailCheckout"], [data-feature-id="proceed-to-checkout-action"] input, #sc-buy-box-ptc-button input';
-// The order review page shows "Order total: $107.23" and "Estimated tax to be collected: $7.25". Read from text: the markup varies.
-const ORDER_TOTAL_RE = String.raw`/Order total:?\s*\$\s*[\d,]+\.\d{2}/i`;
+// The order review page shows "Order total: $107.23", or "Order total: JPY 22,412" when Amazon's currency converter
+// is on (then the converter box also shows "USD 139.28"). Read from text: the markup varies.
+const ORDER_TOTAL_RE = String.raw`/Order total:?\s*(?:[A-Z]{3}|\$)\s*[\d,]/i`;
 const ORDER_TOTAL_JS = String.raw`(() => {
   const t = document.body?.innerText || '';
-  const total = t.match(/Order total:?\s*(\$\s*[\d,]+\.\d{2})/i)?.[1] || null;
-  const tax = t.match(/(?:Estimated tax to be collected|Estimated tax|Tax):?\s*(\$\s*[\d,]+\.\d{2})/i)?.[1] || null;
-  const button = /Place your order/i.test(t) ? 'Place your order' : null;
-  return { total, tax, button, url: location.href };
+  const total = t.match(/Order total:?\s*((?:[A-Z]{3}|\$)\s*[\d,]+(?:\.\d{1,2})?)/i)?.[1] || null;
+  const tax = t.match(/(?:Estimated tax to be collected|Estimated tax):?\s*((?:[A-Z]{3}|\$)\s*[\d,]+(?:\.\d{1,2})?)/i)?.[1] || null;
+  const usd = /^\$/.test(total || '') ? total : t.match(/USD\s*([\d,]+\.\d{2})/)?.[1] || null;
+  const button = t.match(/Place your order(?: in [A-Z]{3})?/i)?.[0] || (/Proceed to checkout/i.test(t) ? 'Proceed to checkout' : null);
+  return { total, tax, usd, button, url: location.href };
 })()`;
 const CHALLENGE_JS = `!!document.querySelector('#checkpointForm, form[action*=validateCaptcha]')`;
 // After Add to Cart Amazon either navigates (cart / smart wagon), shows an "Added to cart" sheet, or offers a warranty.
@@ -220,6 +222,9 @@ export function amazonFields(raw: RawDetail) {
     variants: raw.variants.map((v) => ({ name: clean(v.name), options: v.options.map((o) => clean(o.replace(/^Click to select /i, ""))) })),
   };
 }
+
+/** What the order review page says. total/tax as shown ("$107.23", "JPY 22,412"); usd is "139.28" or "$139.28". */
+export type OrderReview = { total: string | null; tax: string | null; usd: string | null; button: string | null; url: string };
 
 export type ReviewsResult = { reviews: RawReview[]; pages: number; via: "reviews_page" | "product_page"; gated: boolean };
 
@@ -601,7 +606,7 @@ export class AmazonFlow {
    * Stops there: Place your order is the user's. Any other page (sign-in, Prime upsell, address form) → error,
    * and the caller reads the cart subtotal instead.
    */
-  async reviewOrder(): Promise<Result<{ total: string; tax: string | null; button: string | null; url: string }>> {
+  async reviewOrder(): Promise<Result<OrderReview>> {
     const tab = this.tabId!;
     const before = await this.driver.extract<string>(tab, "href");
     if (!(await this.driver.extract<boolean>(tab, "amazon.clickProceed"))) return err("not_found", "no Proceed to checkout button");
@@ -611,7 +616,7 @@ export class AmazonFlow {
     const g = await this.blockedGate(tab);
     if (!g.ok) return g;
     await this.driver.focus(tab);
-    const o = await this.driver.extract<{ total: string | null; tax: string | null; button: string | null; url: string }>(tab, "amazon.orderTotal");
-    return o.total ? ok({ total: o.total, tax: o.tax, button: o.button, url: o.url }) : err("parse_failed", `no order total on ${o.url}`);
+    // Even without a total, the caller needs the page's real button label to say what to press.
+    return ok(await this.driver.extract<OrderReview>(tab, "amazon.orderTotal"));
   }
 }

@@ -186,29 +186,34 @@ export function liveServices(opts: { driver?: () => FlowDriver | undefined } = {
       // B-READBACK: go one step further to the order review page for the total with tax. Never press its final button.
       emit({ stage: "checkout", marketplace: "amazon", message: "Opening checkout", at: new Date().toISOString() });
       const order = await safe(flow.reviewOrder());
-      const total = order.ok ? parseDollars(order.data.total) : undefined;
-      if (order.ok && total != null) {
-        const tax = parseDollars(order.data.tax);
+      if (!order.ok) console.warn("checkout review failed, reading the cart instead:", order.error.message);
+      const o = order.ok ? order.data : undefined;
+      // Say the button that is really on the screen ("Place your order in JPY" when Amazon's converter is on).
+      const button = o?.button ?? "Proceed to checkout";
+      const usdCents = parseDollars(o?.usd);
+      if (o?.total && usdCents != null) {
+        const charged = /^\$/.test(o.total) ? "" : `, charged as ${o.total}`;
+        const tax = /^\$/.test(o.tax ?? "") ? parseDollars(o.tax) : undefined;
         return ok({
           marketplace: "amazon" as Marketplace,
-          url: order.data.url,
+          url: o.url,
           lines,
           subtotal: { cents, currency: "USD" as const },
           ...(tax != null ? { tax: { cents: tax, currency: "USD" as const } } : {}),
-          total: { cents: total, currency: "USD" as const },
-          readBack:
-            `Your Amazon total is ${usd(total)}${tax != null ? `, including ${usd(tax)} tax` : " with tax"}. ` +
-            `Press ${order.data.button ?? "Place your order"} when you're ready.`,
+          total: { cents: usdCents, currency: "USD" as const },
+          readBack: `Your Amazon total is ${usd(usdCents)}${tax != null ? `, including ${usd(tax)} tax` : " with tax"}${charged}. Press ${button} when you're ready.`,
         });
       }
-      if (!order.ok) console.warn("checkout review failed, reading the cart instead:", order.error.message);
+      if (o && !o.total) console.warn(`checkout review: no order total on ${o.url}`);
       return ok({
         marketplace: "amazon" as Marketplace,
-        url: "https://www.amazon.com/gp/cart/view.html",
+        url: o?.url ?? "https://www.amazon.com/gp/cart/view.html",
         lines,
         subtotal: { cents, currency: "USD" as const },
         total: { cents, currency: "USD" as const },
-        readBack: `Your Amazon cart subtotal is ${usd(cents)} before tax. Press Proceed to checkout when you're ready.`,
+        readBack: o?.total
+          ? `Your Amazon total is ${o.total} with tax. Press ${button} when you're ready.`
+          : `Your Amazon cart subtotal is ${usd(cents)} before tax. Press ${button} when you're ready.`,
       });
     },
 
