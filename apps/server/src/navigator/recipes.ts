@@ -200,7 +200,7 @@ You get a pruned HTML outline of one page of a page type. Your selectors will be
 - Each field is { css, attr }. attr null means "read the element's text"; otherwise the attribute to read (e.g. "src", "data-old-hires", "title").
 - Single fields (title, price, listPrice, deal, prime, rating, reviewCount, brand, availability, delivery, description) read the FIRST match, so make the selector specific to the main product (buy box / center column), not carousels or other offers.
 - price: the current price as text like "$12.99" (Amazon: the .a-offscreen inside the main price block). listPrice: the strike-through "List:" / "Typical:" price.
-- deal: a deal or coupon badge's text. prime: any element that exists only when the item ships with Prime (its presence is the answer).
+- deal: a deal badge ("Limited time deal") or coupon text ("Save 20% with coupon", "Coupon price $28.51") for the main product. prime: any element that exists only when the item ships with Prime (its presence is the answer).
 - rating: text like "4.5 out of 5 stars". reviewCount: text like "12,345 ratings".
 - bullets, banners, images match ALL elements. images: product image elements with the attribute holding the URL (prefer the large-image attribute). banners: notices like "A newer model is available" or "Only 2 left in stock".
 - specRows matches every row of the spec / product details tables; specKey and specValue are selectors INSIDE a row.
