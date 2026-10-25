@@ -15,9 +15,11 @@ const speechRateInput = document.querySelector("#speech-rate");
 const speechRateValue = document.querySelector("#speech-rate-value");
 
 const SPEED_KEY = "visy.speechRate";
-/** Cartesia generation_config.speed range (server clamps the same). */
+/** UI / wire range. Cartesia only goes to 1.5; above that we use AudioBufferSourceNode.playbackRate. */
 const SPEED_MIN = 0.6;
-const SPEED_MAX = 1.5;
+const SPEED_MAX = 3;
+const CARTESIA_SPEED_MIN = 0.6;
+const CARTESIA_SPEED_MAX = 1.5;
 
 let ws = null;
 let checkoutTotal = null;
@@ -533,16 +535,21 @@ function playPcm(bytes, rate) {
   for (let i = 0; i < samples.length; i++) ch[i] = (samples[i] ?? 0) / 32768;
   const src = audioCtx.createBufferSource();
   src.buffer = buffer;
+  // Cartesia clamps to 0.6–1.5; multiply the rest on playback so 3× is reachable.
+  const cartesiaSpeed = Math.min(CARTESIA_SPEED_MAX, Math.max(CARTESIA_SPEED_MIN, speechRate));
+  const playbackRate = Math.max(0.5, speechRate / cartesiaSpeed);
+  src.playbackRate.value = playbackRate;
   src.connect(audioCtx.destination);
   const start = Math.max(audioCtx.currentTime, nextTime);
+  const duration = buffer.duration / playbackRate;
   src.start(start);
-  nextTime = start + buffer.duration;
+  nextTime = start + duration;
   playingCount += 1;
   src.onended = () => {
     playingCount = Math.max(0, playingCount - 1);
     maybeListen();
   };
-  return { ctx: audioCtx, start, duration: buffer.duration };
+  return { ctx: audioCtx, start, duration };
 }
 
 let askingMic = false;

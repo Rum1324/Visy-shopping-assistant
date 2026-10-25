@@ -25,8 +25,8 @@ export type PurchaseRecord = z.infer<typeof PurchaseRecord>;
 
 export const UserProfile = z.object({
   userId: z.string(),
-  /** TTS speed multiplier. Many screen-reader users prefer 1.5x or faster. */
-  speechRate: z.number().min(0.5).max(2.5).default(1),
+  /** TTS speed multiplier. Many screen-reader users prefer 1.5x or faster (up to 3x). */
+  speechRate: z.number().min(0.5).max(3).default(1),
   verbosity: z.enum(["brief", "normal", "detailed"]).default("normal"),
   facts: z.array(PreferenceFact).default([]),
   purchases: z.array(PurchaseRecord).default([]),
