@@ -9,7 +9,7 @@ test("present: short names cut Amazon titles at the first comma or bar", () => {
   assert.equal(shortName("1 Gallon Insulated Water Bottle for Travel: 2-in-1 Straw Spout Lid"), "1 Gallon Insulated Water Bottle");
 });
 
-test("present: the overview is one short sentence per option, and each line compares price", () => {
+test("present: the overview is one short sentence per option, and the option lines don't repeat prices", () => {
   const [a, b, c] = fixtures.candidates;
   const options: Option[] = [
     { rank: 1, why: "best match", product: a! },
@@ -20,7 +20,12 @@ test("present: the overview is one short sentence per option, and each line comp
   assert.match(text, /^Best match: .+, \$\d+\.\d{2}\. Best value: .+ Most trusted: .+\.$/);
   assert.ok(text.split(" ").length < 45);
   assert.match(templateLine(options[1]!, options), /^If you want to spend less/);
-  assert.match(templateLine(options[0]!, options), /more than the cheapest|cheapest of the three/);
+  // UX-LEN: the overview already read every price, so the per-option lines stay short and price-free.
+  for (const o of options) {
+    const line = templateLine(o, options);
+    assert.doesNotMatch(line, /\$\d/, line);
+    assert.ok(line.split(/\s+/).length <= 30, line);
+  }
 });
 
 test("present: all-caps brand names are spoken as words, short acronyms stay", () => {
@@ -48,11 +53,10 @@ test("present: a self-correcting or miscounted pitch falls back to the template 
   const pitch = pitchWriter(client as any, "test-model");
   const line = async (o: Option) => (await pitch(fixtures.need, o, options)) ?? templateLine(o, options);
 
-  // The model gets the differences already computed.
-  reply = "If you want the closest fit, the Extra Large Waterproof Picnic Blanket, $8.00 more than the best value pick at $19.99.";
+  // A short line is spoken as is. The model isn't handed price comparisons any more (UX-LEN: prices were just read).
+  reply = "If you want the closest fit, the Extra Large Waterproof Picnic Blanket folds into its own bag.";
   assert.equal(await line(options[0]!), reply);
-  assert.match(prompt, /\$8\.00 more than the best value pick at \$19\.99/);
-  assert.match(prompt, /\$2\.99 more than the most trusted pick at \$25\.00/);
+  assert.doesNotMatch(prompt, /more than the|priceComparison/);
   // A clean extra note after the sentence is dropped, not spoken.
   const first = reply;
   reply = `${first} Note that it is heavier than the others.`;
@@ -62,6 +66,8 @@ test("present: a self-correcting or miscounted pitch falls back to the template 
     "If you want the closest fit, it is $2.99 more than the best value option at $25.00... wait, correction: it is $8.00 more than the best value pick at $19.99.",
     "Corrected sentence: If you want the closest fit, the Extra Large Waterproof Picnic Blanket is $8.00 more than the best value pick.",
     "If you want the closest fit, the Extra Large Waterproof Picnic Blanket, $11.11 more than the best value pick.", // wrong math
+    // Live run (water bottles): a long line that also compared the pick with itself.
+    "If you want a big bottle for long days out, try the Extra Large Waterproof Picnic Blanket, a best match pick that keeps you dry, priced at $27.99, the same as the best match pick.",
   ];
   for (const text of selfCorrecting) {
     reply = text;

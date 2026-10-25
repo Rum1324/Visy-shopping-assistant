@@ -17,6 +17,7 @@ import { pickWithChain, type ChainPick } from "../chain.ts";
 import type { FindStep } from "../pickers/common.ts";
 import type { MemoryPicker } from "../pickers/memory.ts";
 import { ClaudeRecipeWriter, extractWithRecipes, RecipeCache, type RawDetail, type RecipeFields, type RecipeWriter } from "../recipes.ts";
+import { targetSearchUrl, type PriceRange } from "./search-urls.ts";
 
 /**
  * C-TGT: live target.com search and product detail, same shape as AmazonFlow (sites/amazon.ts).
@@ -397,10 +398,10 @@ export class TargetFlow {
   }
 
   /** Organic, priced results in page order, up to `max`. Sponsored cards are dropped. */
-  async search(query: string, emit: Emit = () => {}, max = 30): Promise<Result<ProductCandidate[]>> {
+  async search(query: string, emit: Emit = () => {}, max = 30, price: PriceRange = {}): Promise<Result<ProductCandidate[]>> {
     this.marks = {};
     emit({ stage: "searching", marketplace: "target", message: "Searching Target now", at: at() });
-    const g = await this.goto(`https://www.target.com/s?searchTerm=${encodeURIComponent(query)}`);
+    const g = await this.goto(targetSearchUrl(query, price));
     if (!g.ok) return g;
     const t0 = performance.now();
     await this.driver.waitFor(this.tabId!, "target.resultsReady", 15_000);
