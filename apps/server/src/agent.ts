@@ -41,6 +41,8 @@ export type AgentSink = {
 };
 
 const YES = /^(yes|confirm|that matches)\b/i;
+/** The user named an amount (or dropped the cap) this turn, so a follow-up search may change the budget. */
+const SAYS_AMOUNT = /\d|\b(ten|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|hundred|thousand|grand)\b|\bno (budget|limit)\b|\bany price\b/i;
 const DEFAULT_QUESTIONS = ["What's your budget?", "What matters most?"];
 /** Asked after the answers, so the shopper can add specifics in their own words. */
 const ANYTHING_ELSE = "Anything else you want to add?";
@@ -250,7 +252,7 @@ export function createAgent(
           return { content: "Asked the shopper questions before searching. Wait for their answer." };
         }
         await shop(input.query, turn.id, input.marketplaces, {
-          budget: input.budgetMaxCents != null ? { max: { cents: input.budgetMaxCents, currency: "USD" } } : undefined,
+          budget: searchBudget(input, state.need, turn.said),
           mustHaves: input.mustHaves,
           niceToHaves: input.niceToHaves,
           accessibilityNotes: input.accessibilityNotes,
@@ -707,6 +709,21 @@ async function saveUsual(productId: string, title: string, evidence: string) {
     get state() {
       return state;
     },
+  };
+}
+
+/**
+ * The cap the user stated holds across follow-up searches: "premium" or "more expensive" with no amount
+ * can't raise it (that moves the floor instead). It changes only when the user names a new amount.
+ */
+function searchBudget(input: { budgetMinCents?: number; budgetMaxCents?: number }, last: Need | undefined, said: string): Need["budget"] {
+  const lastMax = last?.budget?.max?.cents;
+  const max = input.budgetMaxCents != null && lastMax != null && !SAYS_AMOUNT.test(said) ? lastMax : input.budgetMaxCents;
+  const min = input.budgetMinCents != null && (max == null || input.budgetMinCents < max) ? input.budgetMinCents : undefined;
+  if (min == null && max == null) return undefined;
+  return {
+    ...(min != null ? { min: { cents: min, currency: "USD" as const } } : {}),
+    ...(max != null ? { max: { cents: max, currency: "USD" as const } } : {}),
   };
 }
 

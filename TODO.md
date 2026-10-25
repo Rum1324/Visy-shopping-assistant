@@ -19,6 +19,7 @@ Line format: `[status] ID · task · owner · branch · since HH:MM PT`. Use one
 - [working] B-READBACK · Checkout read-back: say the total after tax and name the real button (Proceed to checkout vs Place your order); drop "I will not place the order" · agent: Run latest demo (for Sota) · b/feedback · since 20:16 PT
 - [working] B-NARROW · Ask 2-3 clarifying questions, collect ~30 candidates per marketplace, narrow to 3 with a Jev-shaped picker (Claude Haiku stand-in), then review synthesis · merged in [PR #12](https://github.com/Rum1324/Visy-shopping-assistant/pull/12), waiting for Sota to check it in Chrome before done · agent: Run latest demo (for Sota) · b/narrow
 - [working] DOCS-ARCH · Architecture flow diagram · agent: Architecture flow diagram (for Sota) · branch unknown · since 16:40 PT
+- [working] D-APIFY-FAST · Outside reviews: Reddit actor times out on every run and a 0-hit prefetch triggers a second 25 s Apify pass; get Reddit via the fast Google actor and drop the retry · agent: Context and Apify check (for Sota) · claude/apify-reviews · since 02:00 PT
 
 ## Open
 
@@ -39,6 +40,7 @@ Line format: `[status] ID · task · owner · branch · since HH:MM PT`. Use one
 - [working] UX-FORMAT · Present the 3 options like a normal store: names and prices first, then pros and cons for each · yujielee · agent: Run latest demo (for Sota) · b/feedback · since 20:16 PT
 - [open] UX-OPT3 · Bug: the agent only presents up to Option 2, not all 3 · Yuka
 - [done] UX-FOLLOWUP · Bug: a question that cuts off the picks ("is the last one really $165?", "describe them") got "I don't have any results yet" and a new search; the picks now go into the session before they're read, and late details still land · Sota · agent: Fix presented results context (for Sota) · [PR #27](https://github.com/Rum1324/Visy-shopping-assistant/pull/27)
+- [done] UX-BUDGET · Bug: after a $100 budget, "a little more expensive, the premium ones" searched up to $150 and read $119.99 picks. A follow-up search now keeps the stated cap unless the user names a new amount; "premium" sets a price floor (`budgetMinCents`) instead · Sota · agent: Run latest demo (for Sota) · pushed straight to `main`
 - [working] UX-CUT · Text is cut mid-word (the caption shows "Picnic Blank / et"). Check whether it's caption wrapping or how TTS chunks the text · Yuka · agent: Caption word wrap (for Sota) · b/feedback · since 20:48 PT
 - [working] UX-ASK-FIRST · Ask clarifying questions before searching · Sota (shipped in B-NARROW / PR #12; now one question at a time) · agent: Run latest demo (for Sota) · b/feedback · since 20:16 PT
 - [open] UX-NARROW · Decide how to handle the 3 narrowing/filtering options · Yuka

@@ -28,6 +28,8 @@ Pick the tool that does what the user asked. The tools speak their own results a
 - New product request: first call ask_shopping_questions with the 2 questions whose answers would most change which product to pick (usually budget and the one feature that matters most; size, who it's for, or an accessibility need when that matters more). Both are spoken together in one turn, so each is under 6 words with no list of examples ("What's your budget?", "What matters most?"). Skip a question the user already answered. Skip them and call search with skipQuestions true only when the user already gave a budget and what matters, or says to just search.
 - phase clarifying: the user has answered your questions (listed in session_state). Call search with that query (add key words from the answers) and put the answers into budgetMaxCents, mustHaves, niceToHaves and accessibilityNotes. "No preference" still means search.
 - A change to the last search ("make it black", "actually a bigger one"), even when it interrupts you: call search right away with skipQuestions true and the changed query, and keep the last search's budget and needs from session_state unless the user changed them. Don't ask the questions again.
+- Never raise or invent a budget the user did not say. "More expensive", "premium" or "nicer" with no new amount is a floor, not a new cap: search again with budgetMinCents a little above the last shortlist's top price and the same budgetMaxCents. Change budgetMaxCents only when the user names a new amount.
+- A question about the search itself (the budget, the stores, why these picks): answer from session_state in one short sentence, no tool.
 - A price cap or "cheaper" on the current shortlist: filter_shortlist ("cheaper" with no option named means a maxPriceCents just below the most expensive option; "cheaper than option 2" means just below option 2). A question about a listed product, with or without a question mark: answer_about_product. "Add option 2", "get the second one": add_to_cart. The user saying yes to the checkout total: confirm_checkout_total. "The usual", "my regular": recall_usual. "Remember this": remember_as_usual. Unclear: ask_clarifying_question.
 - A lasting preference about how they shop ("I always shop at Target", "Anker is my favorite brand", "fast shipping matters most to me", "never show me Brand X"): remember_preference, one call per preference. If the same turn also asks for a product, call remember_preference and search (or ask_shopping_questions) together in one response. A budget, size or feature for this one search is not a lasting preference; put it in search instead. <saved_preferences> is what the user told you before: searches already use it, so don't ask about it again.
 - Options are numbered from 1 in the order they were read; "the last one" is the highest number. When a shortlist is listed, the user has already heard those options, even if they cut you off: a question about them (a price, what they look like, which is best) goes to answer_about_product. Never say there are no results, and never search again or re-ask the questions unless the user asks for a different product.
@@ -45,6 +47,7 @@ export const TOOLS: Anthropic.Tool[] = [
         query: { type: "string", description: "What to shop for, in plain words, e.g. 'waterproof picnic blanket'." },
         marketplaces: { type: "array", items: { type: "string", enum: ["amazon", "target", "walmart"] } },
         budgetMaxCents: { type: "integer", description: "Most the shopper wants to spend, in cents. '30 bucks' is 3000." },
+        budgetMinCents: { type: "integer", description: "Lowest price to show, in cents, for 'more premium' or 'nicer' follow-ups." },
         mustHaves: { type: "array", items: { type: "string" }, description: "Features the shopper requires, e.g. 'waterproof backing'." },
         niceToHaves: { type: "array", items: { type: "string" } },
         accessibilityNotes: { type: "array", items: { type: "string" }, description: "E.g. 'easy to fold one-handed', 'tactile buttons'." },
@@ -151,6 +154,7 @@ export const INPUTS = {
     query: z.string().min(1),
     marketplaces: z.array(z.enum(["amazon", "target", "walmart"])).min(1).optional(),
     budgetMaxCents: z.number().int().min(0).optional(),
+    budgetMinCents: z.number().int().min(0).optional(),
     mustHaves: z.array(z.string()).optional(),
     niceToHaves: z.array(z.string()).optional(),
     accessibilityNotes: z.array(z.string()).optional(),
@@ -186,7 +190,8 @@ const dollars = (cents: number) => `$${(cents / 100).toFixed(2)}`;
 /** B-HISTORY: what the last search was for, so a follow-up ("make it black") keeps the answers. */
 function needFacts(need: NonNullable<SessionState["need"]>): string {
   const parts = [
-    need.budget?.max ? `budget under ${dollars(need.budget.max.cents)}` : "",
+    need.budget?.max ? `budget under ${dollars(need.budget.max.cents)} (the user's own cap)` : "",
+    need.budget?.min ? `price at least ${dollars(need.budget.min.cents)}` : "",
     need.mustHaves.length ? `must have: ${need.mustHaves.join(", ")}` : "",
     need.niceToHaves.length ? `nice to have: ${need.niceToHaves.join(", ")}` : "",
     need.accessibilityNotes.length ? `accessibility: ${need.accessibilityNotes.join(", ")}` : "",

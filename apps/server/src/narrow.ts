@@ -87,6 +87,7 @@ function describe(need: Need, pool: ProductCandidate[]) {
   const want = [
     `query: ${need.query}`,
     need.budget?.max ? `budget: up to ${dollars(need.budget.max.cents)}` : "",
+    need.budget?.min ? `price at least: ${dollars(need.budget.min.cents)}` : "",
     need.mustHaves.length ? `must have: ${need.mustHaves.join("; ")}` : "",
     need.niceToHaves.length ? `nice to have: ${need.niceToHaves.join("; ")}` : "",
     need.priorities.length ? `priorities: ${need.priorities.join(", ")}` : "",
