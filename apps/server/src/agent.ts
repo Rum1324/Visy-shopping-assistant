@@ -17,6 +17,7 @@ import { sourcesSentence } from "./intel/reviews.ts";
 import { haikuJev, narrowWithReviews } from "./narrow.ts";
 import { haikuRelevance, type RelevanceFilter } from "./relevance.ts";
 import { createProgress } from "./progress.ts";
+import { isPlantSearch } from "./navigator/sites/nearlynatural.ts";
 import { applySaved, confirmLine, favoriteStores, prefFact, savedBlock, stated, withFact, type PrefKind } from "./saved-prefs.ts";
 import { cleanListingTitle, overview, pitchWriter, saleNote, speakable, templateLine, withSale, type Option, type PitchWriter } from "./present.ts";
 import {
@@ -618,17 +619,20 @@ export function createAgent(
   async function shop(text: string, id: number, marketplaces: Marketplace[] = favoriteStores(saved) ?? ["amazon", "target", "walmart"], extra: NeedExtra = {}) {
     if (!state) return;
     const defined = Object.fromEntries(Object.entries(extra).filter(([, v]) => v !== undefined));
-    const need = applySaved(Need.parse({ query: text.trim(), marketplaces, ...defined }), saved);
+    let need = applySaved(Need.parse({ query: text.trim(), marketplaces, ...defined }), saved);
+    // C-PLANT: a plant search across all three big stores also checks Nearly Natural, a shop that only sells fake plants.
+    const plantShop = need.marketplaces.length >= 3 && !need.marketplaces.includes("nearlynatural") && isPlantSearch(need);
+    if (plantShop) need = { ...need, marketplaces: [...need.marketplaces, "nearlynatural"] };
     asking = null;
     const search = ++searches;
     const before = state;
     publish({ ...state, phase: "searching", need, candidates: [], shortlist: [], cart: [] });
-    const names = need.marketplaces.map((m) => m[0]!.toUpperCase() + m.slice(1));
+    const names = need.marketplaces.map((m) => (m === "nearlynatural" ? "Nearly Natural" : m[0]!.toUpperCase() + m.slice(1)));
     const where =
       names.length < 3
         ? `I'll check ${names.join(" and ")}${need.marketplaces.join() === favoriteStores(saved)?.join() ? ", your favorite store" : ""}.`
-        : process.env.NAV === "amazon"
-          ? "I'll check Amazon, Target, and Walmart."
+        : plantShop
+          ? "I'll check Amazon, Target, and Walmart, plus Nearly Natural, a shop that only sells fake plants."
           : "I'll check Amazon, Target, and Walmart.";
     await say(where);
     if (id !== run || !state) return;
@@ -693,7 +697,10 @@ export function createAgent(
     );
     await counted;
     if (id !== run || !state) return;
-    const picks = narrowed.picks;
+    let picks = narrowed.picks;
+    // C-PLANT: Nearly Natural listings carry no star ratings, so they'd lose every pick; the specialty shop gets the last slot.
+    const specialty = plantShop && !picks.some((p) => p.candidate.marketplace === "nearlynatural") && relevant.find((c) => c.marketplace === "nearlynatural" && inRange(need, c));
+    if (specialty) picks = [...picks.slice(0, 2), { candidate: specialty, why: "from a shop that only sells fake plants" }];
     // UX-FORMAT: names and prices of all three first, then one comparative line each as its details arrive.
     const options: Option[] = picks.map((p, i) => ({ rank: i + 1, why: p.why, product: p.candidate }));
     const ids = picks.map((p) => p.candidate.id);
@@ -953,6 +960,11 @@ export function createAgent(
     const line = await services.navigator.addToCart(item.product.id, state.need?.quantity ?? 1, emit);
     if (id !== run || !state || !line.ok) {
       if (state) publish({ ...state, phase: "presenting" });
+      // C-PLANT: no cart for Nearly Natural; live.ts brought its page up instead.
+      if (item.product.marketplace === "nearlynatural" && id === run) {
+        await say("I can't add to a Nearly Natural cart, so I opened its page. Press Add to Cart there when you're ready.");
+        return;
+      }
       await say("I couldn't add that to the cart.");
       return;
     }

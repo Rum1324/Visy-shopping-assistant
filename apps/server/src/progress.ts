@@ -74,7 +74,7 @@ const PHASE: Partial<Record<SessionState["phase"], Activity>> = {
 };
 
 const words = (text: string) => text.trim().split(/\s+/).length;
-const cap = (m: string) => m[0]!.toUpperCase() + m.slice(1);
+const cap = (m: string) => (m === "nearlynatural" ? "Nearly Natural" : m[0]!.toUpperCase() + m.slice(1));
 const bare = (line: string) => line.trim().replace(/[.!…]+$/, "");
 
 /** The lines that fit what is running, most specific first. `message` is the latest progress event's own line. */

@@ -28,6 +28,7 @@ const NAMES: Record<Marketplace, string> = {
   bestbuy: "Best Buy",
   ebay: "eBay",
   other: "the store",
+  nearlynatural: "Nearly Natural",
 };
 const progress = (stage: ProgressEvent["stage"], message: string, marketplace?: Marketplace): ProgressEvent => ({
   stage,

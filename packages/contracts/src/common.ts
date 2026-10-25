@@ -3,7 +3,7 @@ import { z } from "zod";
 /** Bump when a breaking change is unavoidable. Additive (optional) fields do not bump it. */
 export const CONTRACT_VERSION = 1;
 
-export const Marketplace = z.enum(["amazon", "target", "walmart", "bestbuy", "ebay", "other"]);
+export const Marketplace = z.enum(["amazon", "target", "walmart", "bestbuy", "ebay", "other", "nearlynatural"]);
 export type Marketplace = z.infer<typeof Marketplace>;
 
 /** Money is always integer cents. Never floats. */
