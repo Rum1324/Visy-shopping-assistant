@@ -37,12 +37,22 @@ const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 const safe = <T>(p: Promise<Result<T>>): Promise<Result<T>> =>
   p.catch((e) => err("internal", `Amazon flow failed: ${e instanceof Error ? e.message : e}`, true));
 
+const POOL_PER_MARKET = Number(process.env.VISY_POOL_PER_MARKET ?? 30);
+
 export function parseDollars(price: string | null | undefined): number | undefined {
   if (!price) return;
   const match = price.replace(/,/g, "").match(/(\d+)(?:\.(\d{1,2}))?/);
   if (!match) return;
   const frac = (match[2] ?? "").padEnd(2, "0").slice(0, 2);
   return Number(match[1]) * 100 + Number(frac);
+}
+
+/** "12,345 ratings", "(1.2K)", "3" → count. */
+export function countOf(text: string | null | undefined): number | undefined {
+  const match = text?.replace(/,/g, "").match(/(\d+(?:\.\d+)?)\s*([KM])?/i);
+  if (!match) return;
+  const mult = match[2]?.toUpperCase() === "M" ? 1e6 : match[2] ? 1e3 : 1;
+  return Math.round(Number(match[1]) * mult);
 }
 
 function ratingOf(text: string | null): number | undefined {
@@ -98,13 +108,17 @@ export function liveServices(opts: { driver?: () => FlowDriver | undefined } = {
           title: row.title,
           price: { cents, currency: "USD" },
           rating: ratingOf(row.rating),
+          reviewCount: countOf(row.reviews),
           inStock: true,
           source: { via: "recipe", confidence: 0.9, fetchedAt: new Date().toISOString() },
         });
         seen.set(candidate.id, candidate);
         candidates.push(candidate);
-        if (candidates.length >= 6) break;
+        // The whole pool goes to narrowing (narrow.ts); only the final 3 get opened.
+        if (candidates.length >= POOL_PER_MARKET) break;
       }
+      const sponsored = found.data.filter((r) => r.sponsored).length;
+      console.log(`amazon search: ${found.data.length} cards, ${sponsored} sponsored → ${candidates.length} candidates`);
       return candidates.length ? ok(candidates) : err("parse_failed", "Amazon results had no priced organic products");
     },
 

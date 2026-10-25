@@ -28,7 +28,7 @@ const toolUse = (...calls: Call[]) =>
 const say = (text: string) => reply([{ type: "text", text, citations: null } as Anthropic.ContentBlock], "end_turn");
 
 /** Stands in for Claude: maps scripted phrasings to the tool calls a real model should make. */
-function fakeClaude(opts: { obeyInjection?: boolean } = {}) {
+function fakeClaude(opts: { obeyInjection?: boolean; clarify?: boolean } = {}) {
   const calls: string[] = [];
   const llm: Llm = {
     messages: {
@@ -37,7 +37,14 @@ function fakeClaude(opts: { obeyInjection?: boolean } = {}) {
         if (typeof last.content === "string") {
           const said: string = JSON.parse(last.content.split("User said: ")[1]!);
           const prices = [...last.content.matchAll(/"priceCents":(\d+)/g)].map((m) => Number(m[1]));
-          const call = route(said.toLowerCase(), prices);
+          let call = route(said.toLowerCase(), prices);
+          const asked = last.content.match(/asked questions about: (.+)/)?.[1];
+          if (asked) {
+            const cap = said.match(/\$\s*(\d+)/);
+            call = { name: "search", input: { query: asked, budgetMaxCents: cap ? Number(cap[1]) * 100 : undefined, mustHaves: ["waterproof"] } };
+          } else if (call?.name === "search" && opts.clarify) {
+            call = { name: "ask_shopping_questions", input: { query: said, questions: ["What's your budget?", "Does it need to be waterproof?"] } };
+          }
           if (!call) return say("Sorry, what would you like?");
           calls.push(call.name);
           return toolUse(call);
@@ -69,7 +76,7 @@ function route(said: string, prices: number[]): Call | null {
   return { name: "search", input: { query: said } };
 }
 
-function harness(llm: Llm | null, services: Services = mockServices({ latencyMs: 0 })) {
+function harness(llm: Llm | null, services: Services = mockServices({ latencyMs: 0 }), clarify = false) {
   const said: string[] = [];
   const sent: ServerMsg[] = [];
   const sink: AgentSink = {
@@ -79,7 +86,7 @@ function harness(llm: Llm | null, services: Services = mockServices({ latencyMs:
     },
     stopSpeaking() {},
   };
-  const agent = createAgent(services, sink, { llm });
+  const agent = createAgent(services, sink, { llm, clarify });
   return { agent, said, sent };
 }
 
@@ -168,7 +175,34 @@ for (const mode of ["keywords", "claude"] as const) {
     assert.equal(agent.state?.cart[0]?.quantity, 1);
     assert.notEqual(agent.state?.phase, "done");
   });
+
+  test(`${mode}: a new product gets questions first, then the answer shapes the search`, async () => {
+    const { agent, said } = harness(mode === "claude" ? fakeClaude({ clarify: true }).llm : null, undefined, true);
+    await agent.hello("demo-user");
+    await agent.handleText("picnic blanket");
+    assert.equal(agent.state?.phase, "clarifying");
+    assert.equal(agent.state?.shortlist.length, 0);
+    assert.match(said.at(-1) ?? "", /budget/i);
+    await agent.handleText("under $20, waterproof");
+    assert.equal(agent.state?.phase, "presenting");
+    assert.equal(agent.state?.need?.query, "picnic blanket");
+    assert.equal(agent.state?.need?.budget?.max?.cents, 2000);
+    assert.ok(agent.state!.shortlist.length >= 1);
+    assert.ok(agent.state!.shortlist.every((item) => item.product.price.cents <= 2000));
+    assert.match(said.join(" "), /I found \d+ products/);
+    assert.equal(agent.state?.cart.length, 0);
+  });
 }
+
+test("claude: a search with no questions asked yet is turned into the default questions", async () => {
+  const fake = fakeClaude();
+  const { agent, said } = harness(fake.llm, undefined, true);
+  await agent.hello("demo-user");
+  await agent.handleText("picnic blanket");
+  assert.deepEqual(fake.calls, ["search"]);
+  assert.equal(agent.state?.phase, "clarifying");
+  assert.match(said.at(-1) ?? "", /budget/i);
+});
 
 test("claude: 'less than 20 bucks' filters the shortlist without a new search", async () => {
   const fake = fakeClaude();

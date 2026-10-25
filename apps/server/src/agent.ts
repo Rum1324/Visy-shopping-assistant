@@ -5,16 +5,17 @@
  */
 import Anthropic from "@anthropic-ai/sdk";
 import { INPUTS, MODEL, SYSTEM, TIMEOUT_MS, TOOLS, turnMessage, untrusted, type Llm, type ToolName } from "./agent-tools.ts";
+import { haikuJev, narrowToThree } from "./narrow.ts";
 import {
   CONTRACT_VERSION,
   Need,
   PreferenceFact,
   SessionState as SessionStateSchema,
   type Emit,
+  type JevClient,
   type Marketplace,
   type Money,
   type PageState,
-  type ProductCandidate,
   type Result,
   type ServerMsg,
   type SessionState,
@@ -34,6 +35,11 @@ export type AgentSink = {
 
 const YES = /^(yes|confirm|that matches)\b/i;
 const ACK_MS = 800;
+const DEFAULT_QUESTIONS = ["What's your budget?", "Is there anything it must have?"];
+const NO_PREFERENCE = /^(no|nope|nothing|none|no preference|anything|whatever|just search|doesn't matter|dont care|don't care)\b/i;
+
+/** Need fields beyond query and marketplaces, from the search tool or a keyword answer. */
+type NeedExtra = Partial<Pick<Need, "budget" | "mustHaves" | "niceToHaves" | "accessibilityNotes" | "priorities">>;
 
 function defaultLlm(): Llm | null {
   if (!process.env.ANTHROPIC_API_KEY?.trim()) return null;
@@ -41,9 +47,19 @@ function defaultLlm(): Llm | null {
   return new Anthropic({ baseURL: process.env.VISY_ANTHROPIC_BASE_URL ?? "https://api.anthropic.com" });
 }
 
-/** `llm: null` forces keyword routing. Omit it to use Claude when ANTHROPIC_API_KEY is set. */
-export function createAgent(services: Services, sink: AgentSink, opts: { llm?: Llm | null } = {}) {
+/**
+ * `llm: null` forces keyword routing. Omit it to use Claude when ANTHROPIC_API_KEY is set.
+ * `jev` narrows the candidate pool to 3; omitted, it is the Haiku stand-in only when `llm` is also omitted (tests stay offline).
+ * `clarify: false` skips the questions before a search (VISY_CLARIFY=0 does the same).
+ */
+export function createAgent(
+  services: Services,
+  sink: AgentSink,
+  opts: { llm?: Llm | null; jev?: JevClient | null; clarify?: boolean } = {},
+) {
   const llm = opts.llm === undefined ? defaultLlm() : opts.llm;
+  const jev = opts.jev !== undefined ? opts.jev : opts.llm === undefined && llm ? haikuJev() : null;
+  const clarify = opts.clarify ?? process.env.VISY_CLARIFY !== "0";
   let state: SessionState | null = null;
   let run = 0;
   let speechRate = 1;
@@ -180,8 +196,21 @@ export function createAgent(services: Services, sink: AgentSink, opts: { llm?: L
     }
     switch (call.name as ToolName) {
       case "search":
-        await shop(input.query, turn.id, input.marketplaces);
+        // Questions come before the first search for a product, unless the user already answered them or said to just search.
+        if (clarify && state.phase !== "clarifying" && !input.skipQuestions) {
+          await askQuestions(input.query, DEFAULT_QUESTIONS, input.marketplaces);
+          return { content: "Asked the shopper questions before searching. Wait for their answer." };
+        }
+        await shop(input.query, turn.id, input.marketplaces, {
+          budget: input.budgetMaxCents != null ? { max: { cents: input.budgetMaxCents, currency: "USD" } } : undefined,
+          mustHaves: input.mustHaves,
+          niceToHaves: input.niceToHaves,
+          accessibilityNotes: input.accessibilityNotes,
+        });
         return { content: `Read ${state?.shortlist.length ?? 0} options aloud.` };
+      case "ask_shopping_questions":
+        await askQuestions(input.query, input.questions, input.marketplaces);
+        return { content: "Asked. Wait for the shopper's answer." };
       case "filter_shortlist":
         if (!state.shortlist.length) return fail("There is no shortlist yet. Search first.");
         if (input.maxPriceCents == null && input.minRating == null) return fail("Give maxPriceCents or minRating.");
@@ -269,7 +298,23 @@ export function createAgent(services: Services, sink: AgentSink, opts: { llm?: L
       return;
     }
     if (/\busual\b/i.test(said) && (await recallUsual(said))) return;
+    if (state.phase === "clarifying" && state.need) {
+      await shop(state.need.query, id, state.need.marketplaces, needFromAnswer(said));
+      return;
+    }
+    if (clarify) {
+      await askQuestions(said, DEFAULT_QUESTIONS);
+      return;
+    }
     await shop(said, id);
+  }
+
+  /** One spoken turn with 2-3 questions. The next user turn is their answer (phase "clarifying"). */
+  async function askQuestions(query: string, questions: string[], marketplaces: Marketplace[] = ["amazon", "target", "walmart"]) {
+    if (!state) return;
+    const need = Need.parse({ query: query.trim(), marketplaces });
+    publish({ ...state, phase: "clarifying", need, candidates: [], shortlist: [], cart: [] });
+    await say(`Before I search for ${need.query}: ${questions.slice(0, 3).join(" ")}`, "question");
   }
 
   async function recallUsual(query: string) {
@@ -355,9 +400,10 @@ export function createAgent(services: Services, sink: AgentSink, opts: { llm?: L
     await say("That matches the total I read back. I will not press Place order. That button is yours. I saved it as your usual.");
   }
 
-  async function shop(text: string, id: number, marketplaces: Marketplace[] = ["amazon", "target", "walmart"]) {
+  async function shop(text: string, id: number, marketplaces: Marketplace[] = ["amazon", "target", "walmart"], extra: NeedExtra = {}) {
     if (!state) return;
-    const need = Need.parse({ query: text.trim(), marketplaces });
+    const defined = Object.fromEntries(Object.entries(extra).filter(([, v]) => v !== undefined));
+    const need = Need.parse({ query: text.trim(), marketplaces, ...defined });
     publish({ ...state, phase: "searching", need, candidates: [], shortlist: [], cart: [] });
     const names = need.marketplaces.map((m) => m[0]!.toUpperCase() + m.slice(1));
     const where =
@@ -370,10 +416,27 @@ export function createAgent(services: Services, sink: AgentSink, opts: { llm?: L
     if (id !== run || !state) return;
     const results = await Promise.all(need.marketplaces.map((m) => services.navigator.search(need, m, emit)));
     if (id !== run || !state) return;
+    results.forEach((r, i) => !r.ok && console.warn(`search ${need.marketplaces[i]} failed: ${r.error.code} ${r.error.message}`));
     const candidates = results.flatMap((r) => (r.ok ? r.data : []));
-    const picks = bestPerMarketplace(candidates);
+    if (!candidates.length) {
+      publish({ ...state, phase: "idle" });
+      await say("I couldn't find any products for that. Try different words.");
+      return;
+    }
+    publish({ ...state, phase: "shortlisting", candidates });
+    // Narrowing runs while the count is read out.
+    const counted = say(
+      candidates.length > 3 ? `I found ${candidates.length} products. Picking the best three.` : `I found ${candidates.length} products.`,
+      "progress",
+    );
+    const t0 = performance.now();
+    const narrowed = await narrowToThree(jev, need, candidates);
+    console.log(`narrow: ${candidates.length} → ${narrowed.picks.length} via ${narrowed.via} in ${Math.round(performance.now() - t0)} ms`);
+    await counted;
+    if (id !== run || !state) return;
+    const picks = narrowed.picks;
     const shortlist: ShortlistItem[] = [];
-    for (const candidate of picks) {
+    for (const { candidate, why } of picks) {
       if (id !== run || !state) return;
       const detail = await services.navigator.getDetail(candidate, emit);
       const product = detail.ok ? detail.data : candidate;
@@ -399,7 +462,7 @@ export function createAgent(services: Services, sink: AgentSink, opts: { llm?: L
         product,
         reviews,
         visual,
-        whyPicked: reviews?.summary ?? `Available at ${candidate.marketplace}.`,
+        whyPicked: [why, reviews?.summary ?? `At ${candidate.marketplace}.`].filter(Boolean).join(". "),
       };
       shortlist.push(item);
       publish({
@@ -411,7 +474,7 @@ export function createAgent(services: Services, sink: AgentSink, opts: { llm?: L
       });
       const price = `$${(product.price.cents / 100).toFixed(2)}`;
       const access = reviews?.accessibility?.find((a) => a.sentiment !== "unknown");
-      await say(`Option ${item.rank}: ${product.title}, ${price}. ${visual?.short ?? ""} ${reviews?.summary ?? ""}${access ? ` ${access.answer}` : ""}`);
+      await say(`Option ${item.rank}${why ? `, ${why}` : ""}: ${product.title}, ${price}. ${visual?.short ?? ""} ${reviews?.summary ?? ""}${access ? ` ${access.answer}` : ""}`);
     }
   }
 
@@ -492,15 +555,15 @@ async function saveUsual(productId: string, title: string, evidence: string) {
   };
 }
 
-function bestPerMarketplace(candidates: ProductCandidate[]): ProductCandidate[] {
-  const best = new Map<string, ProductCandidate>();
-  for (const c of candidates) {
-    const prev = best.get(c.marketplace);
-    const s = (c.rating ?? 0) * 1000 - c.price.cents / 100;
-    const ps = prev ? (prev.rating ?? 0) * 1000 - prev.price.cents / 100 : -Infinity;
-    if (!prev || s > ps) best.set(c.marketplace, c);
-  }
-  return [...best.values()].sort((a, b) => (b.rating ?? 0) - (a.rating ?? 0)).slice(0, 3);
+/** Keyword routing's read of an answer to the questions: a dollar cap, and the rest as must-haves. */
+function needFromAnswer(said: string): NeedExtra {
+  const cap = said.match(/(?:under|less than|up to|below|max(?:imum)?|budget(?: is)?)\s*\$?\s*(\d+(?:\.\d+)?)|\$\s*(\d+(?:\.\d+)?)/i);
+  const dollars = cap ? Number(cap[1] ?? cap[2]) : undefined;
+  const rest = said.replace(cap?.[0] ?? "", "").replace(/^[\s,.]+|[\s,.]+$/g, "");
+  return {
+    budget: dollars != null ? { max: { cents: Math.round(dollars * 100), currency: "USD" } } : undefined,
+    mustHaves: rest && !NO_PREFERENCE.test(rest) ? [rest] : undefined,
+  };
 }
 
 function optionIndex(text: string): number {

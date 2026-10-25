@@ -16,7 +16,7 @@ import { strictPicker, type FindStep } from "../pickers/common.ts";
 import type { MemoryPicker } from "../pickers/memory.ts";
 import { ClaudeRecipeWriter, extractWithRecipes, RecipeCache, type Extracted, type RawDetail, type RecipeFields, type RecipeWriter } from "../recipes.ts";
 
-export type AmazonResult = { asin: string; title: string; price: string | null; rating: string | null; sponsored: boolean };
+export type AmazonResult = { asin: string; title: string; price: string | null; rating: string | null; reviews?: string | null; sponsored: boolean };
 
 // Tier 0: deterministic extraction, no AI. Amazon's result cards are stable enough for a hackathon.
 const RESULT_SEL = '[data-component-type="s-search-result"][data-asin]';
@@ -25,6 +25,7 @@ const RESULTS_JS = `Array.from(document.querySelectorAll('${RESULT_SEL}')).map((
   title: (c.querySelector('h2')?.innerText || '').trim(),
   price: c.querySelector('.a-price .a-offscreen')?.textContent?.trim() || null,
   rating: c.querySelector('.a-icon-alt')?.textContent?.trim() || null,
+  reviews: (() => { const r = c.querySelector('[aria-label$="ratings"], [aria-label$="rating"], a[href*="customerReviews"] span'); return r ? (r.getAttribute('aria-label') || r.textContent || '').trim() || null : null; })(),
   sponsored: !!c.querySelector('.puis-sponsored-label-text, [aria-label*="Sponsored"]') || /^Sponsored/.test((c.innerText || '').trim()),
 })).filter((r) => r.asin && r.title)`;
 
@@ -73,7 +74,8 @@ const DETAIL_JS = `({
 export const AMAZON_SCRIPTS = {
   "amazon.results": RESULTS_JS,
   "amazon.resultsReady": `!!document.querySelector('${RESULT_SEL}') || ${CHALLENGE_JS}`,
-  "amazon.titlesReady": `document.querySelectorAll('${RESULT_SEL} h2').length >= 6 || document.readyState !== 'loading'`,
+  // The candidate pool is ~30 per marketplace (narrow.ts), so wait for the whole results page, not the first few cards.
+  "amazon.titlesReady": `document.querySelectorAll('${RESULT_SEL} h2').length >= 40 || document.readyState !== 'loading'`,
   "amazon.loadedOrChallenge": `document.readyState !== 'loading' || ${CHALLENGE_JS}`,
   "amazon.added": ADDED_JS,
   "amazon.warranty": WARRANTY_JS,
@@ -323,7 +325,7 @@ export class AmazonFlow {
     this.mark("wait results", t0);
     const g = await this.blockedGate();
     if (!g.ok) return g;
-    // The page streams in: cards can exist before their titles are parsed. Wait for 6 titled cards or DOM ready.
+    // The page streams in: cards can exist before their titles are parsed. Wait for 40 titled cards or DOM ready.
     const t1 = performance.now();
     await this.driver.waitFor(this.tabId!, "amazon.titlesReady", 8000);
     this.mark("wait titles", t1);
