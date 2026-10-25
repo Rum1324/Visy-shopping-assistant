@@ -26,7 +26,7 @@ Line format: `[status] ID · task · owner · branch · since HH:MM PT`. Use one
 - [open] A-STT · Investigate speech-to-text: it looks broken and the mic button is missing from the side panel. Lead: `5dd71f1` simplified the panel to one send/stop control and may have dropped push-to-talk. Check `apps/extension/sidepanel.*` and the server's Cartesia `audio.end` path in `voice.ts`
 - [open] LIVE-1 · Full live run on `main` in real Chrome: picnic blanket → shortlist → under $20 → review question → add → checkout read-back → yes, with no order placed
 - [open] C4 · Variants (size, color, quantity), filters, sort, and the checkout read-back flow on Amazon (`navigator/sites/amazon.ts`)
-- [open] C-TGT · Real Target search and detail flow (sample listings today)
+- [working] C-TGT · Real Target search and detail flow (sample listings today) · agent: Target navigator (for Sota) · claude/c-target-9ad777 · since 20:33 PT
 - [working] C-WMT · Real Walmart search and detail flow (sample listings today) · agent: c-walmart (for Sota) · claude/c-walmart-2a1761 · since 20:33 PT
 - [working] B-PRELOAD · Agent calls C1b `flow.preload()` as soon as the shortlist is final (check whether the tool loop already does) · agent: Run latest demo (for Sota) · b/feedback · since 20:16 PT
 - [open] D-PAGEQA · Answer "what's on this page?" over the C5 `PageState` capture
