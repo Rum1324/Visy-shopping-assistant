@@ -1,18 +1,34 @@
-# Visy: the fastest browser agent specialized for shopping
+# Visy: Shop at the speed of your voice
 
-A voice-first shopping assistant for visually impaired users. Chrome extension (eyes, hands and voice) plus a TypeScript server (Claude agent, Jev and Moss browser pickers, Cartesia voice, review synthesis).
+A voice-first shopping assistant for blind and low-vision shoppers. Tell Visy what you need: it asks a few questions, searches Amazon, Target and Walmart in your own signed-in Chrome, and reads you three picks (best match, best value, most trusted). Ask what a product looks like or what reviewers say. Visy adds your pick to the cart and stops at checkout. **You press the final button.**
 
-> **Hackathon project:** speed over polish. Don't over-engineer for cleanliness or extensibility. See [CLAUDE.md](CLAUDE.md); the safety rules still apply.
+Demo video: https://youtu.be/3mJRvwUcNzI · Devpost write-up: [docs/DEVPOST-SUBMISSION.md](docs/DEVPOST-SUBMISSION.md)
 
-- [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md): platform decision, system design, flow, browser agent, safety
-- [docs/HANDOFF.md](docs/HANDOFF.md): team tracks, data handoff rules, checkpoints
-- [packages/contracts](packages/contracts): the shared schemas (zod), fixtures, mocks and mock server. **Start here.**
-- [docs/IMPROVISATIONS.md](docs/IMPROVISATIONS.md): living log of departures from the skeleton. This project moves very fast. Improvise when the skeleton blocks the demo, write the change there, and push it so the next agent can catch up. See [AGENTS.md](AGENTS.md).
+## How it works
+
+- **Chrome extension** (`apps/extension`): side panel with live captions and mic, plus the hands that read and click pages in a dedicated "Visy" tab group.
+- **Server brain** (`apps/server`): Claude Haiku 5.5 runs the conversation, picks the top 3 and summarizes reviews. **Moss** picks most clicks in ~4 ms, so Claude is a fallback, not the first step. **Cartesia** handles speech in and out, **Apify** fetches Reddit, YouTube and article reviews, and **Convex** remembers your preferences and "the usual".
+- **Safety in code:** Visy never clicks purchase buttons, treats page and review text as untrusted data, and hands CAPTCHAs to you.
+
+## Run it
+
+Requires Node 22+.
 
 ```bash
 npm install
-npm test             # contracts + fixtures + mock flow
-npm run mock-server  # fake server on ws://localhost:8787 speaking the real protocol
+npm test             # contracts, safety rules, picker bench
+npm run server       # real server (needs Anthropic, Moss, Cartesia, Convex keys)
+npm run mock-server  # fake server on ws://localhost:8787, no keys needed
 ```
 
-Requires Node 22+.
+Then load `apps/extension` as an unpacked extension in `chrome://extensions` and open the Visy side panel.
+
+## For contributors
+
+> **Hackathon project:** speed over polish. See [CLAUDE.md](CLAUDE.md); the safety rules still apply.
+
+- [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md): system design, browser agent, safety
+- [docs/HANDOFF.md](docs/HANDOFF.md): team tracks and handoff rules
+- [packages/contracts](packages/contracts): shared schemas (zod), fixtures, mocks and mock server. **Start here.**
+- [docs/IMPROVISATIONS.md](docs/IMPROVISATIONS.md): log of departures from the plan. See [AGENTS.md](AGENTS.md).
+- [apps/server/README.md](apps/server/README.md): benches, demos and measured speedups
