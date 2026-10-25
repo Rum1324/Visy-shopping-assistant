@@ -190,12 +190,14 @@ export function createAgent(
     ];
     try {
       for (let step = 0; step < 4; step++) {
+        const t0 = performance.now();
         const res = await llm.messages.create(
           { model: MODEL, max_tokens: 1024, system: SYSTEM, tools: TOOLS, output_config: { effort: "low" }, messages },
           { signal: ac.signal, timeout: TIMEOUT_MS, maxRetries: 0 },
         );
         if (id !== run || !state) return true;
         const calls = res.content.filter((b): b is Anthropic.ToolUseBlock => b.type === "tool_use");
+        console.log(`router: ${MODEL} step ${step + 1} → ${calls.map((c) => c.name).join(", ") || "text"} in ${Math.round(performance.now() - t0)} ms`);
         if (!calls.length) {
           const text = res.content.map((b) => (b.type === "text" ? b.text : "")).join(" ").trim();
           if (text) await say(text);
