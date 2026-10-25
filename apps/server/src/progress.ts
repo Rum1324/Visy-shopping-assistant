@@ -8,6 +8,7 @@
 import type { Marketplace, ProgressEvent, SessionState } from "@visy/contracts";
 import type { AgentSink, SayKind } from "./agent.ts";
 import type { ToolName } from "./agent-tools.ts";
+import { currentShops, storeName } from "./navigator/sites/shopify.ts";
 
 export const QUIET_MS = 2000;
 export const GAP_MS = 4500;
@@ -74,7 +75,8 @@ const PHASE: Partial<Record<SessionState["phase"], Activity>> = {
 };
 
 const words = (text: string) => text.trim().split(/\s+/).length;
-const cap = (m: string) => (m === "nearlynatural" ? "Nearly Natural" : m[0]!.toUpperCase() + m.slice(1));
+const cap = (m: string) =>
+  m === "shopify" ? currentShops().map((s) => s.name).join(" and ") || "a specialty shop" : storeName({ id: "", marketplace: m });
 const bare = (line: string) => line.trim().replace(/[.!…]+$/, "");
 
 /** The lines that fit what is running, most specific first. `message` is the latest progress event's own line. */

@@ -17,7 +17,7 @@ import { sourcesSentence } from "./intel/reviews.ts";
 import { haikuJev, narrowWithReviews } from "./narrow.ts";
 import { haikuRelevance, type RelevanceFilter } from "./relevance.ts";
 import { createProgress } from "./progress.ts";
-import { isPlantSearch } from "./navigator/sites/nearlynatural.ts";
+import { pickShops, rememberShops, shopOf, shopsPhrase, storeName, type Shop } from "./navigator/sites/shopify.ts";
 import { applySaved, confirmLine, favoriteStores, prefFact, savedBlock, stated, withFact, type PrefKind } from "./saved-prefs.ts";
 import { cleanListingTitle, overview, pitchWriter, saleNote, speakable, templateLine, withSale, type Option, type PitchWriter } from "./present.ts";
 import {
@@ -100,6 +100,8 @@ export function createAgent(
     relevance?: RelevanceFilter | null;
     pitch?: PitchWriter | null;
     clarify?: boolean;
+    /** C-SHOPS: specialty Shopify shops for a need; omitted, live only (tests stay offline). */
+    shops?: ((need: Need) => Promise<Shop[]>) | null;
   } = {},
 ) {
   const llm = opts.llm === undefined ? defaultLlm() : opts.llm;
@@ -107,6 +109,7 @@ export function createAgent(
   const jev = opts.jev !== undefined ? opts.jev : live ? haikuJev() : null;
   const relevance = opts.relevance !== undefined ? opts.relevance : live ? haikuRelevance() : null;
   const pitch = opts.pitch !== undefined ? opts.pitch : live ? pitchWriter() : null;
+  const shopPicker = opts.shops !== undefined ? opts.shops : live ? (need: Need) => pickShops(need) : null;
   const clarify = opts.clarify ?? process.env.VISY_CLARIFY !== "0";
   let state: SessionState | null = null;
   let run = 0;
@@ -620,22 +623,36 @@ export function createAgent(
     if (!state) return;
     const defined = Object.fromEntries(Object.entries(extra).filter(([, v]) => v !== undefined));
     let need = applySaved(Need.parse({ query: text.trim(), marketplaces, ...defined }), saved);
-    // C-PLANT: a plant search across all three big stores also checks Nearly Natural, a shop that only sells fake plants.
-    const plantShop = need.marketplaces.length >= 3 && !need.marketplaces.includes("nearlynatural") && isPlantSearch(need);
-    if (plantShop) need = { ...need, marketplaces: [...need.marketplaces, "nearlynatural"] };
+    // C-SHOPS: a search across all three big stores also checks 1–2 specialty Shopify shops: Nearly Natural for plants
+    // (C-PLANT), Claude-picked and live-checked otherwise. The pick runs while the first line is spoken.
+    const picking = shopPicker && need.marketplaces.length >= 3 && !need.marketplaces.includes("shopify") ? shopPicker(need).catch(() => [] as Shop[]) : undefined;
+    const wait = <T,>(p: Promise<T>, ms: number, fallback: T) => Promise.race([p, new Promise<T>((r) => setTimeout(() => r(fallback), ms))]);
+    // Plant (or cached) picks come back at once and go in the same sentence; others get their own short line.
+    let shops = picking ? await wait(picking, 250, undefined as Shop[] | undefined) : [];
     asking = null;
     const search = ++searches;
     const before = state;
     publish({ ...state, phase: "searching", need, candidates: [], shortlist: [], cart: [] });
-    const names = need.marketplaces.map((m) => (m === "nearlynatural" ? "Nearly Natural" : m[0]!.toUpperCase() + m.slice(1)));
+    const names = need.marketplaces.map((m) => storeName({ id: "", marketplace: m }));
     const where =
       names.length < 3
         ? `I'll check ${names.join(" and ")}${need.marketplaces.join() === favoriteStores(saved)?.join() ? ", your favorite store" : ""}.`
-        : plantShop
-          ? "I'll check Amazon, Target, and Walmart, plus Nearly Natural, a shop that only sells fake plants."
+        : shops?.length
+          ? `I'll check Amazon, Target, and Walmart, ${shopsPhrase(shops)}.`
           : "I'll check Amazon, Target, and Walmart.";
     await say(where);
     if (id !== run || !state) return;
+    if (picking && !shops) {
+      shops = await wait(picking, 4000, []);
+      if (id !== run || !state) return;
+      if (shops.length) await say(`Also checking ${shopsPhrase(shops).replace(/^plus /, "")}.`);
+      if (id !== run || !state) return;
+    }
+    if (shops?.length) {
+      rememberShops(shops);
+      need = { ...need, marketplaces: [...need.marketplaces, "shopify"] };
+    }
+    const specialtyShops = shops ?? [];
     const usingApify = Boolean(apifyToken());
     const results = await Promise.all(need.marketplaces.map((m) => services.navigator.search(need, m, emit)));
     if (id !== run || !state) return;
@@ -698,9 +715,10 @@ export function createAgent(
     await counted;
     if (id !== run || !state) return;
     let picks = narrowed.picks;
-    // C-PLANT: Nearly Natural listings carry no star ratings, so they'd lose every pick; the specialty shop gets the last slot.
-    const specialty = plantShop && !picks.some((p) => p.candidate.marketplace === "nearlynatural") && relevant.find((c) => c.marketplace === "nearlynatural" && inRange(need, c));
-    if (specialty) picks = [...picks.slice(0, 2), { candidate: specialty, why: "from a shop that only sells fake plants" }];
+    // C-PLANT / C-SHOPS: shop listings carry no star ratings, so they'd lose every pick. When a specialty shop had a
+    // relevant in-budget item, it gets the last slot.
+    const specialty = specialtyShops.length && !picks.some((p) => p.candidate.marketplace === "shopify") && relevant.find((c) => c.marketplace === "shopify" && inRange(need, c));
+    if (specialty) picks = [...picks.slice(0, 2), { candidate: specialty, why: `from ${shopOf(specialty.id)?.about ?? "a specialty shop"}` }];
     // UX-FORMAT: names and prices of all three first, then one comparative line each as its details arrive.
     const options: Option[] = picks.map((p, i) => ({ rank: i + 1, why: p.why, product: p.candidate }));
     const ids = picks.map((p) => p.candidate.id);
@@ -713,7 +731,7 @@ export function createAgent(
     publish({
       ...state,
       candidates: relevant,
-      shortlist: picks.map((p, i) => ({ rank: i + 1, product: p.candidate, whyPicked: `${p.why}. At ${p.candidate.marketplace}.` })),
+      shortlist: picks.map((p, i) => ({ rank: i + 1, product: p.candidate, whyPicked: `${p.why}. At ${storeName(p.candidate)}.` })),
       focusedProductId: picks[0]?.candidate.id,
     });
     // Spoken shortlist = retailer only. Apify starts immediately with cleaned search titles (parallel with
@@ -921,7 +939,7 @@ export function createAgent(
         }
         // Lands even if the user cut in, so their follow-up can use the reviews and the photo.
         if (search === searches && state) {
-          const whyPicked = [why, reviews?.summary ?? `At ${candidate.marketplace}.`].filter(Boolean).join(". ");
+          const whyPicked = [why, reviews?.summary ?? `At ${storeName(candidate)}.`].filter(Boolean).join(". ");
           publish({
             ...state,
             shortlist: state.shortlist.map((item) => (item.product.id === candidate.id ? { ...item, product, reviews, visual, whyPicked } : item)),
@@ -960,9 +978,9 @@ export function createAgent(
     const line = await services.navigator.addToCart(item.product.id, state.need?.quantity ?? 1, emit);
     if (id !== run || !state || !line.ok) {
       if (state) publish({ ...state, phase: "presenting" });
-      // C-PLANT: no cart for Nearly Natural; live.ts brought its page up instead.
-      if (item.product.marketplace === "nearlynatural" && id === run) {
-        await say("I can't add to a Nearly Natural cart, so I opened its page. Press Add to Cart there when you're ready.");
+      // C-SHOPS: no cart for specialty shops; live.ts brought its page up instead.
+      if (item.product.marketplace === "shopify" && id === run) {
+        await say(`I can't add to a ${storeName(item.product)} cart, so I opened its page. Press Add to Cart there when you're ready.`);
         return;
       }
       await say("I couldn't add that to the cart.");

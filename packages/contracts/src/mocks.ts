@@ -29,6 +29,7 @@ const NAMES: Record<Marketplace, string> = {
   ebay: "eBay",
   other: "the store",
   nearlynatural: "Nearly Natural",
+  shopify: "a specialty shop",
 };
 const progress = (stage: ProgressEvent["stage"], message: string, marketplace?: Marketplace): ProgressEvent => ({
   stage,
