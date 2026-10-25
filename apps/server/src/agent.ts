@@ -8,6 +8,7 @@ import { INPUTS, MODEL, SYSTEM, TIMEOUT_MS, TOOLS, turnMessage, untrusted, type 
 import { apifyToken, prefetchApifySearch, reviewsFromHits } from "./intel/apify.ts";
 import { sourcesSentence } from "./intel/reviews.ts";
 import { haikuJev, narrowToThree } from "./narrow.ts";
+import { haikuRelevance, type RelevanceFilter } from "./relevance.ts";
 import { createProgress } from "./progress.ts";
 import { applySaved, confirmLine, favoriteStores, prefFact, savedBlock, stated, withFact, type PrefKind } from "./saved-prefs.ts";
 import { overview, pitchWriter, saleNote, speakable, templateLine, withSale, type Option, type PitchWriter } from "./present.ts";
@@ -59,16 +60,24 @@ function defaultLlm(): Llm | null {
 /**
  * `llm: null` forces keyword routing. Omit it to use Claude when ANTHROPIC_API_KEY is set.
  * `jev` narrows the candidate pool to 3; omitted, it is the Haiku stand-in only when `llm` is also omitted (tests stay offline).
+ * `relevance` drops keyword near-misses before narrowing; omitted, Haiku runs only when live (same as jev).
  * `clarify: false` skips the questions before a search (VISY_CLARIFY=0 does the same).
  */
 export function createAgent(
   services: Services,
   sink: AgentSink,
-  opts: { llm?: Llm | null; jev?: JevClient | null; pitch?: PitchWriter | null; clarify?: boolean } = {},
+  opts: {
+    llm?: Llm | null;
+    jev?: JevClient | null;
+    relevance?: RelevanceFilter | null;
+    pitch?: PitchWriter | null;
+    clarify?: boolean;
+  } = {},
 ) {
   const llm = opts.llm === undefined ? defaultLlm() : opts.llm;
   const live = opts.llm === undefined && !!llm;
   const jev = opts.jev !== undefined ? opts.jev : live ? haikuJev() : null;
+  const relevance = opts.relevance !== undefined ? opts.relevance : live ? haikuRelevance() : null;
   const pitch = opts.pitch !== undefined ? opts.pitch : live ? pitchWriter() : null;
   const clarify = opts.clarify ?? process.env.VISY_CLARIFY !== "0";
   let state: SessionState | null = null;
@@ -477,15 +486,33 @@ export function createAgent(
       await say("I couldn't find any products for that. Try different words.");
       return;
     }
-    publish({ ...state, phase: "shortlisting", candidates });
+    // B-RELEVANCE: keyword hits include near-misses ("avocado" → oil); Claude keeps real matches only.
+    emit({
+      stage: "shortlisting",
+      message: "Checking these match what you asked for",
+      at: new Date().toISOString(),
+    });
+    const tRel = performance.now();
+    const relevant = relevance ? await relevance(need, candidates) : candidates;
+    console.log(
+      `relevance: ${candidates.length} → ${relevant.length} in ${Math.round(performance.now() - tRel)} ms` +
+        (relevance ? "" : " (skipped)"),
+    );
+    if (id !== run || !state) return;
+    if (!relevant.length) {
+      publish({ ...state, phase: "idle", candidates });
+      await say("I found listings, but none looked like what you asked for. Try different words.");
+      return;
+    }
+    publish({ ...state, phase: "shortlisting", candidates: relevant });
     // Narrowing runs while the count is read out.
     const counted = say(
-      candidates.length > 3 ? `I found ${candidates.length} products. Picking the best three.` : `I found ${candidates.length} products.`,
+      relevant.length > 3 ? `I found ${relevant.length} products. Picking the best three.` : `I found ${relevant.length} products.`,
       "progress",
     );
     const t0 = performance.now();
-    const narrowed = await narrowToThree(jev, need, candidates);
-    console.log(`narrow: ${candidates.length} → ${narrowed.picks.length} via ${narrowed.via} in ${Math.round(performance.now() - t0)} ms`);
+    const narrowed = await narrowToThree(jev, need, relevant);
+    console.log(`narrow: ${relevant.length} → ${narrowed.picks.length} via ${narrowed.via} in ${Math.round(performance.now() - t0)} ms`);
     await counted;
     if (id !== run || !state) return;
     const picks = narrowed.picks;
@@ -563,7 +590,7 @@ export function createAgent(
       publish({
         ...state,
         phase: shortlist.length === picks.length ? "presenting" : "shortlisting",
-        candidates,
+        candidates: relevant,
         shortlist: [...shortlist],
         focusedProductId: shortlist[0]!.product.id,
       });

@@ -34,6 +34,7 @@ Line format: `[status] ID · task · owner · branch · since HH:MM PT`. Use one
 
 ### From team testing (Slack, Oct 24)
 
+- [working] B-RELEVANCE · Keyword search returns related-but-wrong products (e.g. "avocado" → avocado oil); pass scraped candidates through Claude and keep only real matches before narrowing · yujielee · agent: Relevance filter (for Pixl) · cursor/b-relevance · since 01:08 PT
 - [working] UX-LEN · Spoken replies are too long; each option takes too long to read. Decide how much to say per turn (Alexa as a benchmark) · Yuka, Sota · agent: Run latest demo (for Sota) · b/feedback · since 20:16 PT
 - [working] UX-FORMAT · Present the 3 options like a normal store: names and prices first, then pros and cons for each · yujielee · agent: Run latest demo (for Sota) · b/feedback · since 20:16 PT
 - [open] UX-OPT3 · Bug: the agent only presents up to Option 2, not all 3 · Yuka

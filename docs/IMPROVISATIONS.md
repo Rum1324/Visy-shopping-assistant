@@ -4,6 +4,10 @@ Living log of changes that depart from the skeleton in `docs/ARCHITECTURE.md`, `
 
 If you improvise, add an entry in the same commit and push it. Say what changed, why the skeleton was not enough, and what other agents should do differently now.
 
+## 2026-10-25 — Claude relevance filter before narrowing (B-RELEVANCE)
+
+Marketplace keyword search returns near-misses (query "avocado" → avocado oil). After scraping Amazon/Target/Walmart, `haikuRelevance()` in `relevance.ts` sends titles to Haiku and keeps only products that *are* what the shopper asked for; then `narrowToThree` runs on that pool. Offline tests pass a `relevance` filter into `createAgent`. API failure fails open (keeps the pool); a deliberate empty keep list means "nothing matched" and Visy says so. Other agents: don't keyword-filter titles in site scrapers for this; the Claude gate is the cross-marketplace fix.
+
 ## 2026-10-24 — Pause stays paused when focusing the text box (UX-PAUSE)
 
 `pauseAll()` suspends `audioCtx` and sets `paused`. The side panel also resumes `audioCtx` on any `pointerdown` and on `#text` focus (Chrome autoplay unlock). That un-paused the speakers while leaving `paused === true`, so caption reveal stayed frozen (voice with no on-screen text). Fix: only call `audioCtx.resume()` from those unlock paths and from `playPcm` when `!paused`. After A-STT, `pointerdown` still resumes `micCtx`/`toneCtx` and calls `maybeListen()` (gated on `!paused`). Explicit Resume / submit still go through `resumeAll()`.
