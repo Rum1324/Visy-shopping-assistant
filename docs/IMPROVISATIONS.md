@@ -4,6 +4,14 @@ Living log of changes that depart from the skeleton in `docs/ARCHITECTURE.md`, `
 
 If you improvise, add an entry in the same commit and push it. Say what changed, why the skeleton was not enough, and what other agents should do differently now.
 
+## 2026-10-24 — Questions first, then a ~30-product pool narrowed to 3 (B-NARROW)
+
+A new product request now gets 2–3 spoken questions first (budget, what matters, who it's for). The answer fills `Need.budget`, `mustHaves`, `niceToHaves` and `accessibilityNotes`, and only then do we search. `VISY_CLARIFY=0` turns the questions off. The Claude tool loop asks with `ask_shopping_questions`. If it calls `search` without asking first, the agent asks default questions instead.
+
+Search keeps the whole page as candidates (up to `VISY_POOL_PER_MARKET`, default 30). Amazon page 1 gives about 20 organic products after sponsored ones are dropped. `narrow.ts` picks 3 using the contracts' `JevClient.decide` shape: "best match", "best value" and "most trusted by buyers" run in parallel, and repeats are asked again without the products already picked. Real Jev isn't wired up, so `haikuJev()` stands in (Haiku 5.5, thinking off, about 1.4 s per call, about 2–3 s total). The rating heuristic fills in when there's no key or a call fails. To switch to real Jev, pass a real `JevClient` as `createAgent(..., { jev })`.
+
+Amazon result cards now also report the review count, so `npm run gen-indexer` regenerated `apps/extension/scripts.js`. Reload the extension.
+
 ## 2026-10-24 — Listen after the greeting
 
 When the Cartesia welcome clip ends, the side panel opens the mic (`audio.start` / PCM / `audio.end`) and Cartesia STT turns the utterance into `handleText`. It listens again after Visy finishes speaking.
