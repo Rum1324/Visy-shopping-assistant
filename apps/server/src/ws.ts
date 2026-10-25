@@ -88,10 +88,10 @@ export function start(
       return job;
     }
 
-    async function speak(text: string, _kind: SayKind, gen: number) {
+    async function speak(text: string, kind: SayKind = "answer", gen: number) {
       if (gen !== generation) return;
       const id = `say-${++sayId}`;
-      send({ type: "agent.say", id, text });
+      send({ type: "agent.say", id, text, kind });
       if (!cartesia.enabled || gen !== generation) return;
       const ac = new AbortController();
       aborters.add(ac);
