@@ -25,6 +25,7 @@ Line format: `[status] ID · task · owner · branch · since HH:MM PT`. Use one
 - [working] B-PRICE-FILTER · Put the budget into each site's search URL (Amazon, Walmart, Target price filters) and say plainly when nothing is in range instead of re-reading the same picks · agent: Price filters (for Sota) · claude/price-filters-808483 · since 02:50 PT
 - [done] B-USUAL · "I'm out of sugar, get the usual": recall picks the item named (keyword match, not the first saved usual), "add it" goes through to cart and checkout read-back, and a real Amazon sugar product (B01JA9KAOM) is seeded in Convex · agent: Demo video plan (for Sota) · pushed straight to `main`
 - [working] C-PLANT · Nearly Natural (Shopify fake-plant shop) as a 4th store for plant searches: search + detail from Shopify JSON, no cart · agent: Plant shop for demo (for Sota) · b/feedback · since 04:43 PT
+- [working] C-SHOPS · Any search also checks 1–2 specialty Shopify shops Claude suggests (verified live via /search/suggest.json); Nearly Natural stays the plant pick · agent: Specialty Shopify shops (for Sota) · claude/any-shop-e3422f · since 05:10 PT
 
 ## Open
 
