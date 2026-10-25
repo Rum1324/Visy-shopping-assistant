@@ -31,6 +31,16 @@
       </section>
     </div>
     <form id="composer">
+      <button type="button" id="mic" class="mic" aria-pressed="false" aria-label="Microphone on. Press to mute." title="Mute">
+        <svg class="icon-mic" viewBox="0 0 24 24" aria-hidden="true">
+          <rect x="9" y="3.5" width="6" height="11" rx="3" fill="none" stroke="currentColor" stroke-width="1.8" />
+          <path d="M6 11.5a6 6 0 0 0 12 0M12 17.5v3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+        </svg>
+        <svg class="icon-muted" viewBox="0 0 24 24" aria-hidden="true">
+          <rect x="9" y="3.5" width="6" height="11" rx="3" fill="none" stroke="currentColor" stroke-width="1.8" />
+          <path d="M6 11.5a6 6 0 0 0 12 0M12 17.5v3M4.5 4.5l15 15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+        </svg>
+      </button>
       <label class="sr" for="text">Type to Visy</label>
       <input id="text" name="text" autocomplete="off" placeholder="type here" />
       <button type="submit" id="go" class="go" aria-label="Send" title="Send">

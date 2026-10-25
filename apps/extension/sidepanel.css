@@ -127,6 +127,37 @@ button { cursor: pointer; }
 .go .icon-stop { display: none; }
 .go.busy .icon-send { display: none; }
 .go.busy .icon-stop { display: block; }
+/* A-STT mic: blue pulse + level ring while listening, slashed and red when muted. */
+.mic {
+  --level: 0;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 1.5px solid #5abeff;
+  border-radius: 50%;
+  background: transparent;
+  color: #5abeff;
+  display: grid;
+  place-items: center;
+  flex: none;
+  transition: box-shadow 80ms linear, background 160ms;
+}
+.mic svg { width: 20px; height: 20px; }
+.mic .icon-muted { display: none; }
+.mic.listening {
+  background: rgba(90, 190, 255, 0.16);
+  box-shadow: 0 0 0 calc(2px + var(--level) * 10px) rgba(90, 190, 255, 0.35), 0 0 18px rgba(90, 190, 255, 0.45);
+  animation: mic-pulse 1.6s ease-in-out infinite;
+}
+.mic.muted { border-color: #ff8a8a; color: #ff8a8a; }
+.mic.muted .icon-mic { display: none; }
+.mic.muted .icon-muted { display: block; }
+@keyframes mic-pulse {
+  0%, 100% { border-color: #5abeff; }
+  50% { border-color: #d7f0ff; }
+}
+@media (prefers-reduced-motion: reduce) { .mic.listening { animation: none; } }
+#text.dictating { color: #9fd8ff; font-style: italic; border-color: #5abeff; }
 button:focus, input:focus { outline: 3px solid #f5d90a; outline-offset: 2px; }
 .go:focus { outline-offset: 2px; }
 .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }

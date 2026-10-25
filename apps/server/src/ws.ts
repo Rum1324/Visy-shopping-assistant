@@ -2,6 +2,7 @@
  * Track A voice gateway + Track B websocket.
  * Mic audio comes in as binary PCM. Cartesia runs here. The extension never sees the key.
  */
+import { AsyncLocalStorage } from "node:async_hooks";
 import { pathToFileURL } from "node:url";
 import { WebSocketServer } from "ws";
 import { ClientMsg, ServerMsg, type ServerMsg as ServerMsgT } from "@visy/contracts";
@@ -17,6 +18,11 @@ import { mossReviewIndex } from "./intel/review-index.ts";
 import { Cartesia } from "./voice.ts";
 
 const TTS_RATE = 24000;
+const STOP_WORDS = /^\s*(stop|wait|cancel|hold on|pause|no)\b/i;
+const words = (t: string) => t.toLowerCase().match(/[a-z0-9']+/g) ?? [];
+const pairs = (w: string[]) => w.slice(1).map((x, i) => `${w[i]} ${x}`);
+/** Which turn (epoch) a piece of agent work belongs to, so a cancelled turn can't speak later. */
+const turnScope = new AsyncLocalStorage<number>();
 
 /** One per connected client. `capturePage()` returns the user's open tab as a PageState (C5). */
 export type Connection = { driver: ExtensionDriver; capturePage: CapturePage };
@@ -45,18 +51,47 @@ export function start(
     let generation = 0;
     let queue: Promise<void> = Promise.resolve();
     const aborters = new Set<AbortController>();
-    let capturing = false;
-    let sampleRate = 16000;
-    let pcm: Buffer[] = [];
+    // A-STT: one live Cartesia turns session while the panel streams the mic (audio.start → audio.end).
+    let stt: ReturnType<Cartesia["listen"]> | null = null;
+    let sttWarned = false;
+    let sttFailures = 0;
+    let working = 0; // agent turns in flight
+    let speakingUntil = 0; // when the panel finishes playing what we sent
+    let spoken: string[] = []; // words Visy is saying now, to tell its echo from the user
     let turn: Promise<void> = Promise.resolve();
+    let epoch = 0; // bumped by every interrupt
     const enqueue = (fn: () => Promise<void>) => {
-      turn = turn.then(fn, fn);
+      const mine = epoch;
+      // A snapshot after every turn tells the panel the turn is over, so it can play the listen tone.
+      const run = () =>
+        turnScope.run(mine, async () => {
+          if (mine !== epoch) return;
+          working++;
+          try {
+            await fn();
+          } finally {
+            working--;
+            if (mine === epoch && agent.state) send({ type: "session.snapshot", state: agent.state });
+          }
+        });
+      turn = turn.then(run, run);
     };
+    /**
+     * Barge-in or stop. The agent only checks for cancellation between steps, so a cancelled turn can
+     * still be awaiting a page or a model call. Don't make the next turn wait behind it, and drop
+     * anything it says once it wakes up.
+     */
+    function interruptTurn() {
+      epoch++;
+      turn = Promise.resolve();
+      agent.interrupt();
+    }
 
     const driver = new ExtensionDriver(send);
     const capturePage = pageCapture(driver);
     ws.on("close", () => {
       driver.dispose();
+      stt?.close();
       const i = extensions.indexOf(driver);
       if (i >= 0) extensions.splice(i, 1);
     });
@@ -79,6 +114,8 @@ export function start(
     }
 
     function say(text: string, kind: SayKind = "answer") {
+      const scope = turnScope.getStore();
+      if (scope !== undefined && scope !== epoch) return Promise.resolve(); // a cancelled turn
       const gen = generation;
       const job = queue.then(() => speak(text, kind, gen));
       queue = job.then(
@@ -101,6 +138,7 @@ export function start(
         if (gen !== generation || ws.readyState !== ws.OPEN) return;
         ws.send(audio);
         send({ type: "tts.end", id });
+        noteSpoken(text, audio.length / 2 / TTS_RATE);
       } catch (e) {
         if (ac.signal.aborted || gen !== generation) return;
         console.warn("tts failed:", e instanceof Error ? e.message : e);
@@ -115,12 +153,13 @@ export function start(
       for (const ac of aborters) ac.abort();
       aborters.clear();
       queue = Promise.resolve();
+      speakingUntil = 0;
       send({ type: "tts.stop" });
     }
 
     ws.on("message", (raw, isBinary) => {
       if (isBinary) {
-        if (capturing) pcm.push(Buffer.from(raw as Buffer));
+        stt?.send(Buffer.from(raw as Buffer));
         return;
       }
       let json: unknown;
@@ -146,22 +185,16 @@ export function start(
         return;
       }
       if (msg.type === "user.interrupt") {
-        capturing = false;
-        pcm = [];
-        agent.interrupt();
+        interruptTurn();
         return;
       }
       if (msg.type === "audio.start") {
-        capturing = true;
-        pcm = [];
-        sampleRate = msg.format.sampleRate;
+        startHearing(msg.format.sampleRate);
         return;
       }
       if (msg.type === "audio.end") {
-        capturing = false;
-        const audio = Buffer.concat(pcm);
-        pcm = [];
-        enqueue(() => hear(audio, sampleRate));
+        // The panel stopped capture (muted or paused). An unfinished turn is dropped.
+        stopHearing();
         return;
       }
       if (msg.type === "settings.update") {
@@ -177,26 +210,78 @@ export function start(
       }
     });
 
-    async function hear(audio: Buffer, rate: number) {
+    function stopHearing() {
+      stt?.close();
+      stt = null;
+    }
+
+    function noteSpoken(text: string, seconds: number) {
+      const now = Date.now();
+      if (speakingUntil < now) spoken = [];
+      spoken.push(...words(text));
+      speakingUntil = Math.max(now, speakingUntil) + seconds * 1000;
+    }
+
+    /**
+     * Visy hearing itself through the speakers: the heard words follow what it is saying right now,
+     * pair by pair. A user reusing a few of Visy's words ("the first one") doesn't match its phrasing.
+     */
+    function isEcho(heard: string) {
+      if (Date.now() > speakingUntil + 1500) return false;
+      const w = words(heard);
+      if (w.length < 2) return w.length === 0 || spoken.includes(w[0]!);
+      const said = new Set(pairs(spoken));
+      return pairs(w).filter((p) => said.has(p)).length / (w.length - 1) >= 0.7;
+    }
+
+    /**
+     * Hands-free: the panel streams the mic the whole time it is unmuted, Visy's speech included,
+     * and Cartesia finds the turns. Real words while Visy talks or works cancel that turn (barge-in),
+     * like the OpenAI and Gemini realtime voice modes. Partials go out as `transcript` final:false.
+     */
+    function startHearing(rate: number) {
+      stopHearing();
       if (!cartesia.enabled) {
-        await say("Voice needs a Cartesia key on the server. You can type instead.");
+        if (!sttWarned) void say("Voice needs a Cartesia key on the server. You can type instead.");
+        sttWarned = true;
         return;
       }
-      try {
-        const text = await cartesia.transcribe(audio, rate);
-        if (!text) {
-          await say("I didn't catch that. Try again, or type it.");
-          return;
-        }
-        await agent.handleText(text);
-      } catch (e) {
-        console.warn("stt failed:", e instanceof Error ? e.message : e);
-        send({
-          type: "error",
-          error: { code: "internal", message: "Speech recognition failed", retryable: true },
-        });
-        await say("Speech recognition failed. Try again, or type it.");
-      }
+      let bargedIn = false;
+      const session = cartesia.listen(rate, {
+        start: () => {
+          bargedIn = false;
+        },
+        update: (text) => {
+          if (stt !== session || isEcho(text)) return;
+          sttFailures = 0;
+          send({ type: "transcript", text, final: false });
+          const busy = working > 0 || Date.now() < speakingUntil;
+          if (busy && !bargedIn && (words(text).length >= 2 || STOP_WORDS.test(text))) {
+            bargedIn = true;
+            interruptTurn();
+          }
+        },
+        end: (text) => {
+          if (stt !== session || !text || isEcho(text)) return;
+          sttFailures = 0;
+          send({ type: "transcript", text, final: true });
+          enqueue(() => agent.handleText(text));
+        },
+        error: (e) => {
+          if (stt !== session) return;
+          stt = null;
+          console.warn("stt failed:", e.message);
+          // Cartesia drops idle sockets now and then: reconnect quietly a few times before telling the user.
+          if (++sttFailures <= 3) {
+            setTimeout(() => !stt && ws.readyState === ws.OPEN && startHearing(rate), 400 * sttFailures);
+            return;
+          }
+          send({ type: "error", error: { code: "internal", message: "Speech recognition failed", retryable: true } });
+          if (!sttWarned) void say("Speech recognition failed. You can type instead.");
+          sttWarned = true;
+        },
+      });
+      stt = session;
     }
   });
 
