@@ -154,24 +154,20 @@ test("collectViaApify returns [] without a token", async () => {
   }
 });
 
-test("prefetchApifySearch fans out to Reddit, YouTube, and article search", async () => {
+test("prefetchApifySearch gets YouTube from its actor and articles plus Reddit from one Google run", async () => {
   resetApifyCache();
   const actors = new Set<string>();
-  const fetchImpl: typeof fetch = async (input) => {
+  let serpBody = "";
+  const fetchImpl: typeof fetch = async (input, init) => {
     const url = String(input);
     actors.add(url);
-    if (url.includes("reddit")) {
-      return new Response(
-        JSON.stringify([{ title: "BIFL picnic", body: "Had mine two summers, backing still waterproof after washes.", url: "https://www.reddit.com/r/x" }]),
-        { status: 200, headers: { "Content-Type": "application/json" } },
-      );
-    }
     if (url.includes("youtube")) {
       return new Response(
         JSON.stringify([{ title: "Picnic blanket review", description: "Shows folding along the pre-creased lines in ten seconds.", url: "https://www.youtube.com/watch?v=a" }]),
         { status: 200, headers: { "Content-Type": "application/json" } },
       );
     }
+    serpBody = String(init?.body ?? "");
     return new Response(
       JSON.stringify([
         {
@@ -183,14 +179,26 @@ test("prefetchApifySearch fans out to Reddit, YouTube, and article search", asyn
             },
           ],
         },
+        {
+          organicResults: [
+            {
+              title: "BIFL picnic blanket?",
+              url: "https://www.reddit.com/r/BuyItForLife/comments/abc/picnic/",
+              description: "Had mine two summers, backing still waterproof after washes.",
+            },
+          ],
+        },
       ]),
       { status: 200, headers: { "Content-Type": "application/json" } },
     );
   };
   const hits = await prefetchApifySearch("picnic blanket", { token: "test-token", fetchImpl, budgetMs: 5_000 });
-  assert.ok([...actors].some((u) => u.includes("reddit")));
+  // The Reddit scraper actor timed out on every live run, so Reddit comes from Google.
+  assert.ok(![...actors].some((u) => u.includes("reddit")));
   assert.ok([...actors].some((u) => u.includes("youtube")));
   assert.ok([...actors].some((u) => u.includes("google-search")));
+  const queries = String(JSON.parse(serpBody).queries).split("\n");
+  assert.deepEqual(queries, [buildQueries("picnic blanket"), "picnic blanket site:reddit.com"]);
   assert.deepEqual(
     hits.map((h) => h.source).sort(),
     ["article", "reddit", "youtube"],
