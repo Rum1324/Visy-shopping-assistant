@@ -6,6 +6,7 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { INPUTS, MODEL, SYSTEM, TIMEOUT_MS, TOOLS, turnMessage, untrusted, type Llm, type ToolName } from "./agent-tools.ts";
 import { haikuJev, narrowToThree } from "./narrow.ts";
+import { applySaved, confirmLine, favoriteStores, prefFact, savedBlock, stated, withFact, type PrefKind } from "./saved-prefs.ts";
 import {
   CONTRACT_VERSION,
   Need,
@@ -66,6 +67,8 @@ export function createAgent(
   let spoken = 0;
   let turnAbort: AbortController | null = null;
   const recent: string[] = [];
+  /** The user's saved preference facts, loaded on hello and kept current by remember_preference. */
+  let saved: PreferenceFact[] = [];
 
   function say(text: string, kind?: SayKind) {
     spoken++;
@@ -84,6 +87,7 @@ export function createAgent(
   async function hello(userId: string, displayName?: string) {
     const profile = await services.prefs.getProfile(userId);
     if (profile.ok) speechRate = profile.data.speechRate;
+    saved = profile.ok ? stated(profile.data.facts) : [];
     publish(
       SessionStateSchema.parse({
         sessionId: `s-${Date.now()}`,
@@ -137,7 +141,7 @@ export function createAgent(
     const ack = setTimeout(() => {
       if (id === run && spoken === before) void sink.say("One moment.");
     }, ACK_MS);
-    const messages: Anthropic.MessageParam[] = [{ role: "user", content: turnMessage(state, said, recent) }];
+    const messages: Anthropic.MessageParam[] = [{ role: "user", content: [savedBlock(saved), turnMessage(state, said, recent)].filter(Boolean).join("\n\n") }];
     try {
       for (let step = 0; step < 4; step++) {
         const res = await llm.messages.create(
@@ -191,7 +195,7 @@ export function createAgent(
     const input = parsed.data as Record<string, any>;
     if (!state) return fail("No session.");
     // Review and page text entered this turn: nothing that changes the cart or saved preferences may follow it.
-    if (turn.tainted && ["add_to_cart", "confirm_checkout_total", "remember_as_usual"].includes(call.name)) {
+    if (turn.tainted && ["add_to_cart", "confirm_checkout_total", "remember_as_usual", "remember_preference"].includes(call.name)) {
       return fail("Refused: review text was read this turn, so cart and memory actions need a fresh request from the user.");
     }
     switch (call.name as ToolName) {
@@ -232,6 +236,8 @@ export function createAgent(
       case "remember_as_usual":
         await remember(turn.said, input.index);
         return { content: "Done." };
+      case "remember_preference":
+        return rememberPreference(input.kind, input.value, turn.said);
       case "ask_clarifying_question":
         await say(input.text, "question");
         return { content: "Asked." };
@@ -310,7 +316,7 @@ export function createAgent(
   }
 
   /** One spoken turn with 2-3 questions. The next user turn is their answer (phase "clarifying"). */
-  async function askQuestions(query: string, questions: string[], marketplaces: Marketplace[] = ["amazon", "target", "walmart"]) {
+  async function askQuestions(query: string, questions: string[], marketplaces: Marketplace[] = favoriteStores(saved) ?? ["amazon", "target", "walmart"]) {
     if (!state) return;
     const need = Need.parse({ query: query.trim(), marketplaces });
     publish({ ...state, phase: "clarifying", need, candidates: [], shortlist: [], cart: [] });
@@ -400,15 +406,15 @@ export function createAgent(
     await say("That matches the total I read back. I will not press Place order. That button is yours. I saved it as your usual.");
   }
 
-  async function shop(text: string, id: number, marketplaces: Marketplace[] = ["amazon", "target", "walmart"], extra: NeedExtra = {}) {
+  async function shop(text: string, id: number, marketplaces: Marketplace[] = favoriteStores(saved) ?? ["amazon", "target", "walmart"], extra: NeedExtra = {}) {
     if (!state) return;
     const defined = Object.fromEntries(Object.entries(extra).filter(([, v]) => v !== undefined));
-    const need = Need.parse({ query: text.trim(), marketplaces, ...defined });
+    const need = applySaved(Need.parse({ query: text.trim(), marketplaces, ...defined }), saved);
     publish({ ...state, phase: "searching", need, candidates: [], shortlist: [], cart: [] });
     const names = need.marketplaces.map((m) => m[0]!.toUpperCase() + m.slice(1));
     const where =
       names.length < 3
-        ? `I'll check ${names.join(" and ")}.`
+        ? `I'll check ${names.join(" and ")}${need.marketplaces.join() === favoriteStores(saved)?.join() ? ", your favorite store" : ""}.`
         : process.env.NAV === "amazon"
           ? "I'll check Amazon. Target and Walmart stay on sample listings."
           : "I'll check Amazon, Target, and Walmart.";
@@ -504,6 +510,21 @@ export function createAgent(
     publish({ ...state, phase: "checkout_review", checkout });
     sink.send({ type: "checkout.confirmRequired", review: checkout });
     await say(readBack, "question");
+  }
+
+  async function rememberPreference(kind: PrefKind, value: string, evidence: string): Promise<ToolOut> {
+    if (!state) return fail("No session.");
+    const fact = prefFact(kind, value, evidence);
+    if (typeof fact === "string") return fail(fact);
+    const res = await services.prefs.upsertFact(state.userId, fact);
+    if (!res.ok) {
+      console.warn("remember_preference failed:", res.error.message);
+      await say("I couldn't save that preference.");
+      return { content: "Saving failed. The user was told." };
+    }
+    saved = withFact(saved, fact);
+    await say(confirmLine(fact));
+    return { content: "Saved and confirmed aloud." };
   }
 
 async function remember(evidence: string, index?: number) {
