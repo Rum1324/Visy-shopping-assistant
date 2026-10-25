@@ -43,7 +43,7 @@ Line format: `[status] ID · task · owner · branch · since HH:MM PT`. Use one
 - [open] UX-NARROW · Decide how to handle the 3 narrowing/filtering options · Yuka
 - [open] UX-ASK-END · End every turn by asking the user a question · Yuka
 - [working] UX-PROGRESS · Spoken progress when work takes over ~2 s, with varied lines ("searching Amazon now", "comparing results from Walmart"); "One moment" is too repetitive · Yuka, Sota, yujielee · agent: Run latest demo (for Sota) · b/feedback · since 20:36 PT
-- [working] UX-SPEED · Let the user adjust voice speed · yujielee · agent: Voice speed adjustment (for Pixl) · cursor/ux-speed-c3e0 · since 21:55 PT
+- [done] UX-SPEED · Let the user adjust voice speed · yujielee · [PR #19](https://github.com/Rum1324/Visy-shopping-assistant/pull/19)
 - [open] B-HISTORY · Use the conversation history as context for follow-up searches · Sota
 - [working] A-SHOWPAGE · When recommending, open the top pick's product page on screen instead of staying on the home tab · Sota (open all 3 options as tabs, focus option 1) · agent: Run latest demo (for Sota) · b/feedback · since 20:16 PT
 - [open] D-UNBIASED · Unbiased review summary: balance retailer reviews with outside sources (ties to D-APIFY) · Yuka
