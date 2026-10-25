@@ -4,6 +4,18 @@ Living log of changes that depart from the skeleton in `docs/ARCHITECTURE.md`, `
 
 If you improvise, add an entry in the same commit and push it. Say what changed, why the skeleton was not enough, and what other agents should do differently now.
 
+## 2026-10-25 — Ctrl+M mute hotkey
+
+Side panel: `Ctrl+M` / `Cmd+M` toggles the mic (same as the button / voice mute). While muted, a banner and input placeholder say "Muted. Press Ctrl+M to unmute." Works only while the side panel is focused (not a Chrome global command).
+
+## 2026-10-25 — Voice/text mute and voice-speed (UX-SPEED-VOICE)
+
+Users can say/type mic mute (`mute`, `stop listening`) and unmute (`unmute`, `start listening` — type when muted), same as the mic button. Parsed in `mic-mute.ts` before Claude; `set_mic_muted` tool as backup. Server confirms, then `settings.changed.micMuted` so the side panel calls `setMicOn`. Same pattern as voice speed (`speak faster`, `change the voice speed`, `set_speech_rate` → `settings.changed.speechRate`). Other agents: never refuse mute/speed in free text; don't match "mute colors" / "faster shipping".
+
+## 2026-10-25 — Voice/text voice-speed commands (UX-SPEED-VOICE)
+
+UX-SPEED only had a Settings slider. Users can say or type speed commands (`speak faster`, `slow down`, `change the voice speed`, `set voice speed to 1.5`, `2x`). Parsed in `speech-rate.ts` before Claude; vague "change voice speed" asks faster/slower/a number. Also `set_speech_rate` tool so Claude never invents "I can't change voice speed / use your screen reader". Server applies the rate, confirms, and sends additive `settings.changed` for slider + `localStorage` + WSOLA. Other agents: don't match "faster shipping"; never refuse TTS speed in free text.
+
 ## 2026-10-25 — "The usual" names the item and goes to the cart (B-USUAL)
 
 "I'm out of sugar, get the usual" used to say the first saved usual (always seaweed) and stop, because any query with "usual" returned every usual item. Now `select()` in `prefs.ts` drops filler words ("get", "the", "usual", "out"…) and, when an item is named, returns only the usuals and purchases that mention it; with nothing named it still returns all usuals. `recallUsual` puts the item up as a one-item shortlist, opens its product page (`getDetail`, which the live Amazon cart needs), and asks "Want me to add it to your cart?"; the next turn's yes or "add it" goes straight to `addToCart` and the normal checkout read-back, no model call. `npm run seed-prefs` now also seeds a real Amazon sugar canister (`B01JA9KAOM`) for the demo video's cold open. Other agents: pass the item the user named as `recall_usual`'s query.

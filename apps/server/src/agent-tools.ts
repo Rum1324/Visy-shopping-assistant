@@ -32,6 +32,8 @@ Pick the tool that does what the user asked. The tools speak their own results a
 - A question about the search itself (the budget, the stores, why these picks): answer from session_state in one short sentence, no tool.
 - A price cap or "cheaper" on the current shortlist: filter_shortlist ("cheaper" with no option named means a maxPriceCents just below the most expensive option; "cheaper than option 2" means just below option 2). A question about a listed product, with or without a question mark: answer_about_product. "Add option 2", "get the second one": add_to_cart. The user saying yes to the checkout total: confirm_checkout_total. "The usual", "my regular": recall_usual. "Remember this": remember_as_usual. Unclear: ask_clarifying_question.
 - A lasting preference about how they shop ("I always shop at Target", "Anker is my favorite brand", "fast shipping matters most to me", "never show me Brand X"): remember_preference, one call per preference. If the same turn also asks for a product, call remember_preference and search (or ask_shopping_questions) together in one response. A budget, size or feature for this one search is not a lasting preference; put it in search instead. <saved_preferences> is what the user told you before: searches already use it, so don't ask about it again.
+- Change how fast you speak ("speak faster", "slow down", "change the voice speed", "set speed to 1.5"): set_speech_rate. You can change Visy's TTS speed. Never say you cannot, and never send them to device or screen-reader settings.
+- Mute or unmute the microphone ("mute", "unmute", "stop listening", "start listening"): set_mic_muted. Same as the mic button. Never say you cannot mute.
 - Options are numbered from 1 in the order they were read; "the last one" is the highest number. When a shortlist is listed, the user has already heard those options, even if they cut you off: a question about them (a price, what they look like, which is best) goes to answer_about_product. Never say there are no results, and never search again or re-ask the questions unless the user asks for a different product.
 - Say an option is on sale or has a deal or coupon only when its listing has a "sale" field; never guess one.
 - You can never place an order. The user presses Place your order themselves. Never claim an order was placed.
@@ -146,6 +148,31 @@ export const TOOLS: Anthropic.Tool[] = [
     },
   },
   {
+    name: "set_speech_rate",
+    description:
+      "Change how fast Visy speaks (TTS). Use for speak faster/slower, change voice speed, or a number like 1.5x. Never refuse — Visy can do this. Omit rate/delta/reset to ask the user how.",
+    input_schema: {
+      type: "object",
+      properties: {
+        rate: { type: "number", description: "Absolute speed from 0.6 to 3 when they name a number." },
+        delta: { type: "number", description: "Relative change: about 0.2 for faster, -0.2 for slower, ±0.5 for much." },
+        reset: { type: "boolean", description: "True for normal/default speed (1x)." },
+      },
+    },
+  },
+  {
+    name: "set_mic_muted",
+    description:
+      "Mute or unmute the user's microphone (same as the side-panel mic button). Use for mute, unmute, stop listening, start listening. Never refuse.",
+    input_schema: {
+      type: "object",
+      properties: {
+        muted: { type: "boolean", description: "True to mute, false to unmute." },
+      },
+      required: ["muted"],
+    },
+  },
+  {
     name: "ask_clarifying_question",
     description: "Ask the user one short question when the request is unclear.",
     input_schema: { type: "object", properties: { text: { type: "string" } }, required: ["text"] },
@@ -177,6 +204,12 @@ export const INPUTS = {
   recall_usual: z.object({ query: z.string().min(1) }),
   remember_as_usual: z.object({ index: Index.optional() }),
   remember_preference: z.object({ kind: z.enum(PREF_KINDS), value: z.string().min(1).max(60) }),
+  set_speech_rate: z.object({
+    rate: z.number().min(0.5).max(3).optional(),
+    delta: z.number().min(-2.5).max(2.5).optional(),
+    reset: z.boolean().optional(),
+  }),
+  set_mic_muted: z.object({ muted: z.boolean() }),
   ask_clarifying_question: z.object({ text: z.string().min(1).max(300) }),
 } as const;
 

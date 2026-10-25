@@ -59,6 +59,7 @@ Line format: `[status] ID · task · owner · branch · since HH:MM PT`. Use one
 
 ## Done
 
+- [done] C-SHOPS · Any search also checks 1–2 specialty Shopify shops Claude suggests (verified live via /search/suggest.json); Nearly Natural stays the plant pick · [PR #33](https://github.com/Rum1324/Visy-shopping-assistant/pull/33)
 - [done] UX-PAUSE · Bug: after pausing voice, clicking the "type here" input resumes voice (audioCtx unlock ignored while paused) · yujielee · agent: Pause voice input bug (for yujielee) · [PR #26](https://github.com/Rum1324/Visy-shopping-assistant/pull/26)
 - [done] C-TGT-CART · Target add to cart (Shipping, picker-chain Add to cart) and cart read-back with est. tax and total · [PR #24](https://github.com/Rum1324/Visy-shopping-assistant/pull/24)
 - [done] C-TGT · Real Target search and detail flow · [PR #18](https://github.com/Rum1324/Visy-shopping-assistant/pull/18)
@@ -83,4 +84,4 @@ Line format: `[status] ID · task · owner · branch · since HH:MM PT`. Use one
 - [done] UX-SALES · Say explicitly when a product is on sale or has a deal · yujielee · agent: On-sale mentions (for Sota) · [PR #14](https://github.com/Rum1324/Visy-shopping-assistant/pull/14), follow-up [PR #22](https://github.com/Rum1324/Visy-shopping-assistant/pull/22)
 - [done] B-PREFS-TEST · Test that preferences are really stored in Convex: favorite marketplaces and brands, what the user cares about (price, quality, shipping speed) · yujielee · agent: Preferences in Convex (for Sota) · [PR #15](https://github.com/Rum1324/Visy-shopping-assistant/pull/15)
 - [done] UX-SPEED · Let the user adjust voice speed · yujielee · [PR #19](https://github.com/Rum1324/Visy-shopping-assistant/pull/19)
-- [working] UX-SPEED-VOICE · Change voice speed by saying/typing it ("speak faster", "set speed to 1.5") · agent: Voice speed by prompt (for Pixl) · cursor/ux-speed-voice · since 04:38 PT
+- [working] UX-SPEED-VOICE · Voice/text + Ctrl+M for mute; voice/text for speech rate · agent: Voice speed by prompt (for Pixl) · cursor/ux-voice-controls · since 04:38 PT

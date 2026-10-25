@@ -14,6 +14,7 @@ const settingsBackBtn = document.querySelector("#settings-back");
 const settingsEl = document.querySelector("#settings");
 const speechRateInput = document.querySelector("#speech-rate");
 const speechRateValue = document.querySelector("#speech-rate-value");
+const mutePrompt = document.querySelector("#mute-prompt");
 
 const SPEED_KEY = "visy.speechRate";
 /** UI / wire range. Cartesia only goes to 1.5; above that we WSOLA time-compress (keeps pitch). */
@@ -108,6 +109,7 @@ async function boot() {
     true,
   );
   micBtn.addEventListener("click", () => setMicOn(!micOn));
+  document.addEventListener("keydown", onMuteHotkey);
   text.addEventListener("input", () => {
     dictating = false;
     text.classList.remove("dictating");
@@ -163,6 +165,17 @@ function onSpeechRateCommit() {
 
 function pushSpeechRate() {
   send({ type: "settings.update", speechRate });
+}
+
+/** Voice/text changed speed on the server — keep slider, localStorage, and WSOLA in sync. */
+function applySpeechRateFromServer(rate) {
+  speechRate = clampSpeed(Number(rate));
+  paintSpeechRate();
+  try {
+    localStorage.setItem(SPEED_KEY, String(speechRate));
+  } catch {
+    /* ignore */
+  }
 }
 
 function openSettings() {
@@ -529,6 +542,9 @@ async function onMessage(ev) {
     checkout.hidden = false;
     checkoutTotal = msg.review.total;
     sparkOnly(checkoutText, msg.review.readBack);
+  } else if (msg.type === "settings.changed") {
+    if (msg.speechRate != null) applySpeechRateFromServer(msg.speechRate);
+    if (msg.micMuted != null) setMicOn(!msg.micMuted);
   } else if (msg.type === "error") {
     // Shown, not queued as speech: a pending say with no audio would keep the mic closed.
     if (capturingMic) {
@@ -767,6 +783,14 @@ function closeMic() {
   clearPreroll();
 }
 
+function onMuteHotkey(ev) {
+  if (!(ev.ctrlKey || ev.metaKey) || ev.altKey || ev.shiftKey) return;
+  if (ev.key.toLowerCase() !== "m") return;
+  // Side panel only — don't steal Ctrl+M from a page the user is typing into elsewhere.
+  ev.preventDefault();
+  setMicOn(!micOn);
+}
+
 function setMicOn(next) {
   micOn = next;
   if (!micOn) {
@@ -872,13 +896,22 @@ function showHeard(partial) {
 }
 
 function paintMic() {
-  text.placeholder = !micOn ? "muted, type here" : capturingMic ? "listening…" : "type here";
+  text.placeholder = !micOn ? "muted — Ctrl+M to unmute" : capturingMic ? "listening…" : "type here";
   micBtn.classList.toggle("muted", !micOn);
   micBtn.classList.toggle("listening", micOn && capturingMic);
   micBtn.setAttribute("aria-pressed", String(!micOn));
-  const label = !micOn ? "Microphone muted. Press to unmute." : capturingMic ? "Listening. Press to mute." : "Microphone on. Press to mute.";
+  const label = !micOn
+    ? "Microphone muted. Press Ctrl+M to unmute."
+    : capturingMic
+      ? "Listening. Press Ctrl+M to mute."
+      : "Microphone on. Press Ctrl+M to mute.";
   micBtn.setAttribute("aria-label", label);
-  micBtn.title = !micOn ? "Unmute" : "Mute";
+  micBtn.title = !micOn ? "Unmute (Ctrl+M)" : "Mute (Ctrl+M)";
+  // Persistent prompt while muted (hotkey, voice, or mic button).
+  if (mutePrompt) {
+    mutePrompt.hidden = micOn;
+    if (!micOn) mutePrompt.textContent = "Muted. Press Ctrl+M to unmute.";
+  }
 }
 
 function paintLevel() {

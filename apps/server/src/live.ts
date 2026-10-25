@@ -35,7 +35,7 @@ import { PlaywrightDriver } from "./navigator/driver/playwright.ts";
 import { AmazonFlow } from "./navigator/sites/amazon.ts";
 import { TargetFlow } from "./navigator/sites/target.ts";
 import { WalmartFlow } from "./navigator/sites/walmart.ts";
-import { NearlyNaturalFlow } from "./navigator/sites/nearlynatural.ts";
+import { pickShops, shopOf, ShopifyFlow } from "./navigator/sites/shopify.ts";
 import { priceRange } from "./navigator/sites/search-urls.ts";
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
@@ -118,13 +118,15 @@ export function liveServices(opts: { driver?: () => FlowDriver | undefined } = {
     if (walmart?.driver !== driver) walmart = { driver, flow: new WalmartFlow(driver) };
     return walmart.flow;
   };
-  // C-PLANT: Nearly Natural (fake plants) over Shopify's search JSON. No browser tab, no cart.
-  const nearly = new NearlyNaturalFlow();
+  // C-SHOPS: specialty Shopify shops (Nearly Natural for plants, Claude-picked otherwise) over Shopify's search JSON.
+  // No browser tab, no cart.
+  const shopify = new ShopifyFlow();
 
   const navigator: Navigator = {
     async search(need, marketplace, emit) {
-      if (marketplace === "nearlynatural") {
-        const found = await safe(nearly.search(need.query, emit, priceRange(need)));
+      if (marketplace === "shopify") {
+        // Same cached pick the agent named out loud before searching.
+        const found = await safe(shopify.search(await pickShops(need), need.query, emit, priceRange(need)));
         if (found.ok) for (const c of found.data) seen.set(c.id, c);
         return found;
       }
@@ -176,7 +178,7 @@ export function liveServices(opts: { driver?: () => FlowDriver | undefined } = {
     async getDetail(candidate, emit, opts) {
       if (candidate.id.startsWith("target:")) return safe(target().getDetail(candidate, emit));
       if (candidate.id.startsWith("walmart:")) return safe(useWalmart().getDetail(candidate, emit));
-      if (candidate.id.startsWith("nearlynatural:")) return safe(nearly.getDetail(candidate, emit));
+      if (candidate.id.startsWith("shopify:")) return safe(shopify.getDetail(candidate, emit));
       if (!candidate.id.startsWith("amazon:")) return mocks.getDetail(candidate, emit);
       // C2 + C3: opens the product, reads details via a cached recipe and scrapes retailer reviews in parallel.
       const { flow, driver } = use();
@@ -210,13 +212,13 @@ export function liveServices(opts: { driver?: () => FlowDriver | undefined } = {
 
     async addToCart(id, quantity, emit) {
       if (id.startsWith("target:")) return safe(target().addToCart(id, emit));
-      if (id.startsWith("nearlynatural:")) {
+      if (id.startsWith("shopify:")) {
         // No cart here: bring its page up so the shopper adds it themselves.
         const url = seen.get(id)?.url;
         const { driver } = use();
         const tab = url ? await driver.openTab(url) : undefined;
         if (tab?.ok) await driver.focus(tab.data.tabId).catch(() => {});
-        return err("not_found", "Nearly Natural has no cart support; its page is open for the shopper");
+        return err("not_found", `${shopOf(id)?.name ?? "That shop"} has no cart support; its page is open for the shopper`);
       }
       if (!id.startsWith("amazon:")) return mocks.addToCart(id, quantity, emit);
       const product = seen.get(id);
