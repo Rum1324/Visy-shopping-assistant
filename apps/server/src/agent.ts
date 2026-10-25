@@ -5,7 +5,7 @@
  */
 import Anthropic from "@anthropic-ai/sdk";
 import { INPUTS, MODEL, SYSTEM, TIMEOUT_MS, TOOLS, turnMessage, untrusted, type Llm, type ToolName } from "./agent-tools.ts";
-import { prefetchApifySearch, reviewsFromHits } from "./intel/apify.ts";
+import { apifyToken, prefetchApifySearch, reviewsFromHits } from "./intel/apify.ts";
 import { sourcesSentence } from "./intel/reviews.ts";
 import {
   CONTRACT_VERSION,
@@ -379,7 +379,13 @@ export function createAgent(services: Services, sink: AgentSink, opts: { llm?: L
     await say(where);
     if (id !== run || !state) return;
     // Kick off Apify immediately (Reddit + YouTube + articles in parallel) beside marketplace search.
-    think("Searching Reddit, YouTube, and articles for reviews…", "reviews");
+    const usingApify = Boolean(apifyToken());
+    think(
+      usingApify
+        ? "Using Apify to search Reddit, YouTube, and articles…"
+        : "Searching Reddit, YouTube, and articles for reviews…",
+      "reviews",
+    );
     const apifyHitsP = prefetchApifySearch(need.query, { mustHaves: need.mustHaves });
     const results = await Promise.all(need.marketplaces.map((m) => services.navigator.search(need, m, emit)));
     if (id !== run || !state) return;
@@ -397,7 +403,8 @@ export function createAgent(services: Services, sink: AgentSink, opts: { llm?: L
       let visual: ShortlistItem["visual"];
       if (detail.ok) {
         const synthP = (async () => {
-          think(`Waiting on outside reviews for option ${rank}…`, "reviews");
+          if (usingApify) think(`Waiting on Apify for outside reviews on option ${rank}…`, "reviews");
+          else think(`Waiting on outside reviews for option ${rank}…`, "reviews");
           const hits = await apifyHitsP;
           const external = reviewsFromHits(detail.data.id, hits);
           const by = external.reduce<Partial<Record<string, number>>>((acc, r) => {
@@ -408,7 +415,11 @@ export function createAgent(services: Services, sink: AgentSink, opts: { llm?: L
             .filter((s) => by[s])
             .map((s) => (s === "article" ? "articles" : s === "youtube" ? "YouTube" : "Reddit"));
           think(
-            bits.length ? `Using outside reviews from ${bits.join(", ")}…` : "Using retailer reviews only…",
+            bits.length
+              ? usingApify
+                ? `Got Apify results from ${bits.join(", ")}…`
+                : `Using outside reviews from ${bits.join(", ")}…`
+              : "Using retailer reviews only…",
             "reviews",
           );
           think(`Summarizing option ${rank}…`, "reviews");

@@ -4,6 +4,10 @@ Living log of changes that depart from the skeleton in `docs/ARCHITECTURE.md`, `
 
 If you improvise, add an entry in the same commit and push it. Say what changed, why the skeleton was not enough, and what other agents should do differently now.
 
+## 2026-10-24 — Progress lines name Apify
+
+When `APIFY_TOKEN` is set, the spoken thinking bar says "Using Apify…" / "Waiting on Apify…" / "Got Apify results from …" so the demo calls out the API. Without a token, wording stays generic.
+
 ## 2026-10-24 — Progress TTS is calm + declarative
 
 `agent.say` with `kind: "progress"` still speaks (in-chat thinking bar). Cartesia was reading trailing `…` with rising question intonation. `speechForKind` in `voice.ts` strips trailing ellipses, ends with a period, and sets `generation_config.emotion` to `calm` for progress (`curious` for questions). Captions keep the original ellipsis text.

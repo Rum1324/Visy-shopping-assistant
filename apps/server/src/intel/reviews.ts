@@ -128,7 +128,7 @@ export function claudeReviewService(client = intelClient()): ReviewService {
       emit({
         stage: "reviews",
         marketplace: product.marketplace,
-        message: "Checking Reddit, YouTube, and articles",
+        message: "Using Apify to check Reddit, YouTube, and articles",
         at: new Date().toISOString(),
       });
       const t0 = performance.now();
@@ -145,8 +145,8 @@ export function claudeReviewService(client = intelClient()): ReviewService {
         stage: "reviews",
         marketplace: product.marketplace,
         message: parts.length
-          ? `Found ${external.length} external mentions (${parts.join(", ")}) in ${ms} ms`
-          : `No useful external mentions in ${ms} ms`,
+          ? `Apify found ${external.length} external mentions (${parts.join(", ")}) in ${ms} ms`
+          : `Apify found no useful external mentions in ${ms} ms`,
         at: new Date().toISOString(),
       });
       return ok(external);
