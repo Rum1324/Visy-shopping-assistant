@@ -1,8 +1,9 @@
 /**
- * UX-PROGRESS: short spoken lines while a turn is still working, in place of a fixed "One moment.".
+ * UX-PROGRESS: short spoken lines while a turn is still working ("Searching Amazon now", "Reading the reviews").
  * Wraps the agent's sink, so it sees what is said, each phase change and each progress event without more hooks in agent.ts.
- * Speaks only after ~2 s with nothing said, at most one line every 4.5 s, never the same line twice in a row,
- * and stops for the turn once anything other than a progress line is said (the real answer has started).
+ * Speaks only after ~2 s with nothing said, at most one line every 4.5 s, never the same line twice in a row, at most
+ * 6 words a line, and stops for the turn once the real answer starts. Lines go out as kind "progress", so they never
+ * count as an answer in the Claude loop and ws.ts skips them while other speech is playing.
  */
 import type { Marketplace, ProgressEvent, SessionState } from "@visy/contracts";
 import type { AgentSink, SayKind } from "./agent.ts";
@@ -11,10 +12,22 @@ import type { ToolName } from "./agent-tools.ts";
 export const QUIET_MS = 2000;
 export const GAP_MS = 4500;
 const TICK_MS = 250;
-/** Rough spoken length per word, so "quiet" starts after a queued line has been heard, not when it was sent. */
-const WORD_MS = 350;
+const MAX_WORDS = 6;
+/** A navigator asking the user to act (bot check, press and hold). Said at once, as is, never dropped. */
+const NOTICE = /\b(bypass|captcha|bot check|press and hold)\b/i;
 
-export type Activity = "thinking" | "searching" | "comparing" | "product" | "reviews" | "photo" | "cart" | "checkout" | "memory" | "saving";
+export type Activity =
+  | "thinking"
+  | "searching"
+  | "comparing"
+  | "product"
+  | "reviews"
+  | "photo"
+  | "cart"
+  | "checkout"
+  | "memory"
+  | "saving"
+  | "blocked";
 
 const LINES: Record<Exclude<Activity, "searching">, string[]> = {
   thinking: ["One sec", "Let me check", "Working on it", "Just a moment"],
@@ -26,6 +39,8 @@ const LINES: Record<Exclude<Activity, "searching">, string[]> = {
   checkout: ["Opening your cart", "Checking the total", "Getting the total"],
   memory: ["Checking your usuals", "Looking up your usual"],
   saving: ["Saving that now", "Saving it"],
+  // One line only: said once, then quiet while the user solves the check.
+  blocked: ["Still waiting on the check"],
 };
 
 const TOOL: Record<ToolName, Activity> = {
@@ -37,6 +52,7 @@ const TOOL: Record<ToolName, Activity> = {
   confirm_checkout_total: "saving",
   recall_usual: "memory",
   remember_as_usual: "saving",
+  remember_preference: "saving",
   ask_clarifying_question: "thinking",
 };
 
@@ -59,6 +75,7 @@ const PHASE: Partial<Record<SessionState["phase"], Activity>> = {
 
 const words = (text: string) => text.trim().split(/\s+/).length;
 const cap = (m: string) => m[0]!.toUpperCase() + m.slice(1);
+const bare = (line: string) => line.trim().replace(/[.!…]+$/, "");
 
 /** The lines that fit what is running, most specific first. `message` is the latest progress event's own line. */
 export function linesFor(activity: Activity, stores: Marketplace[] = [], message?: string): string[] {
@@ -72,13 +89,13 @@ export function linesFor(activity: Activity, stores: Marketplace[] = [], message
     ].filter(Boolean);
   }
   const lines = LINES[activity];
-  return message && words(message) <= 6 && !lines.includes(message) ? [message, ...lines] : lines;
+  const own = message ? bare(message) : "";
+  return own && words(own) <= MAX_WORDS && !lines.includes(own) ? [own, ...lines] : lines;
 }
 
-/** First line not heard recently; never the line just said. */
-export function pickLine(lines: string[], recent: string[]): string {
-  const last = recent.at(-1);
-  return lines.find((l) => !recent.includes(l)) ?? lines.find((l) => l !== last) ?? lines[0]!;
+/** First line not heard recently. Undefined when the only fitting line is the one just said. */
+export function pickLine(lines: string[], recent: string[]): string | undefined {
+  return lines.find((l) => !recent.includes(l)) ?? lines.find((l) => l !== recent.at(-1));
 }
 
 export function activityForTool(name: string): Activity {
@@ -86,85 +103,108 @@ export function activityForTool(name: string): Activity {
 }
 
 /**
- * Returns a sink to hand the agent in place of `sink`, and `start(live)` for each turn.
- * `live()` false (the user interrupted) silences the turn. The handle's `tool(name)` notes the tool now running; `stop()` ends the turn.
+ * `sink` goes to the agent in place of the real one. `during(fn)` runs one user turn with progress lines on;
+ * `tool(name)` notes the Claude tool now running. `rate()` is the speech rate, for how long a queued line takes to say.
  */
-export function createProgress(sink: AgentSink, opts: { now?: () => number } = {}) {
+export function createProgress(real: AgentSink, opts: { rate?: () => number; now?: () => number } = {}) {
   const now = opts.now ?? Date.now;
+  const rate = opts.rate ?? (() => 1);
   const recent: string[] = [];
+  const notices = new Set<string>();
   let busyUntil = 0;
   let phase: SessionState["phase"] | undefined;
   let activity: Activity = "thinking";
   let stores: Marketplace[] = [];
   let message: string | undefined;
-  let turn: { live: () => boolean; lastLineAt: number; answered: boolean; timer: ReturnType<typeof setInterval> } | null = null;
+  let turn: { lastLineAt: number; answered: boolean } | null = null;
 
   function note(next: Activity, msg?: string) {
     activity = next;
     message = msg;
   }
 
-  function heard(text: string, kind?: SayKind) {
-    busyUntil = Math.max(busyUntil, now()) + words(text) * WORD_MS;
-    if (turn && kind !== "progress") turn.answered = true;
+  /** Roughly when queued speech ends (~0.33 s a word at 1x plus synthesis), so quiet is counted after it is heard. */
+  function heard(text: string) {
+    busyUntil = Math.max(busyUntil, now()) + 400 + (words(text) * 330) / rate();
   }
 
-  const wrapped: AgentSink = {
+  function onEvent(e: ProgressEvent) {
+    if (NOTICE.test(e.message)) {
+      note("blocked");
+      if (!notices.has(e.message)) {
+        notices.add(e.message);
+        heard(e.message);
+        void real.say(e.message, "answer");
+      }
+      return;
+    }
+    const a = STAGE[e.stage];
+    if (a === "searching" && e.marketplace && !stores.includes(e.marketplace)) stores.push(e.marketplace);
+    if (a) note(a, a === "searching" ? undefined : e.message);
+  }
+
+  const sink: AgentSink = {
     send(msg) {
-      if (msg.type === "progress") {
-        const a = STAGE[msg.event.stage];
-        if (a === "searching" && msg.event.marketplace && !stores.includes(msg.event.marketplace)) stores.push(msg.event.marketplace);
-        if (a) note(a, a === "searching" ? undefined : msg.event.message);
-      } else if (msg.type === "session.snapshot" && msg.state.phase !== phase) {
+      if (msg.type === "progress") onEvent(msg.event);
+      else if (msg.type === "session.snapshot" && msg.state.phase !== phase) {
         phase = msg.state.phase;
         // Snapshots repeat the phase as options fill in; only a change says something new is running.
         const a = PHASE[phase];
         if (a && a !== activity) note(a);
       }
-      sink.send(msg);
+      real.send(msg);
     },
-    say(text, kind) {
-      heard(text, kind);
-      return sink.say(text, kind);
+    say(text, kind?: SayKind) {
+      heard(text);
+      // "I'll check Amazon …" opens a search; anything else that is not progress is the real answer.
+      if (turn && kind !== "progress" && phase !== "searching") turn.answered = true;
+      return real.say(text, kind);
     },
     stopSpeaking() {
       busyUntil = now();
-      sink.stopSpeaking();
+      // Interrupted: this turn has nothing more worth saying.
+      if (turn) turn.answered = true;
+      real.stopSpeaking();
     },
-    capturePage: sink.capturePage && ((o) => sink.capturePage!(o)),
+    capturePage: real.capturePage && ((o) => real.capturePage!(o)),
   };
 
   function tick() {
-    if (!turn || turn.answered || !turn.live()) return;
+    if (!turn || turn.answered) return;
     const t = now();
     if (t - busyUntil < QUIET_MS || t - turn.lastLineAt < GAP_MS) return;
     const line = pickLine(linesFor(activity, stores, message), recent);
+    if (!line) return;
     turn.lastLineAt = t;
     recent.push(line);
     if (recent.length > 4) recent.shift();
-    void wrapped.say(`${line}.`, "progress");
+    void sink.say(`${line}.`, "progress");
   }
 
-  function start(live: () => boolean) {
-    if (turn) clearInterval(turn.timer);
+  async function during<T>(fn: () => Promise<T>): Promise<T> {
+    const mine = { lastLineAt: -Infinity, answered: false };
+    turn = mine;
     busyUntil = Math.max(busyUntil, now());
     note("thinking");
     stores = [];
+    notices.clear();
     const timer = setInterval(tick, TICK_MS);
     timer.unref?.();
-    const mine = { live, lastLineAt: -Infinity, answered: false, timer };
-    turn = mine;
-    return {
-      tool(name: string) {
-        if (turn === mine) note(activityForTool(name));
-      },
-      stop() {
-        clearInterval(timer);
-        if (turn === mine) turn = null;
-      },
-      tick,
-    };
+    try {
+      return await fn();
+    } finally {
+      clearInterval(timer);
+      if (turn === mine) turn = null;
+    }
   }
 
-  return { sink: wrapped, start };
+  return {
+    sink,
+    during,
+    tool(name: string) {
+      if (turn) note(activityForTool(name));
+    },
+    /** For tests: run one check now instead of waiting for the timer. */
+    tick,
+  };
 }
